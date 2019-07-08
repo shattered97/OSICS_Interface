@@ -46,10 +46,10 @@ ViStatus VisaInterface::createDefaultRM(ViSession &defaultSession)
 void VisaInterface::displayResources(ViSession &defaultRMSession, QByteArray &instrumentLoc, ViSession &instrSess, ViUInt32 *numInstr, ViPFindList &findList, FoundInstr &result)
 {
     //Remove harded coded string and replace with variable
-    createDefaultRM(defaultRMSession);
+
     if (findResources(defaultRMSession, "GPIB?*INSTR", numInstr, findList, instrumentLoc))
         createInstrMap(defaultRMSession, instrumentLoc, instrSess, numInstr, findList, result);
-    closeDefaultSession(defaultRMSession);
+
 
 }
 
@@ -152,6 +152,16 @@ ViStatus VisaInterface::closeDefaultSession(ViSession &defaultSession)
 {
     Logging::getInstance()->logEntry("Closing Default Session");
     return closeSession(defaultSession);
+}
+
+ViStatus VisaInterface::openInstrSession(ViSession &defaultSession, QByteArray instrAddr, ViSession &instrSess){
+   ViStatus status = viOpen(defaultSession, instrAddr, VI_NULL, VI_NULL, &instrSess);
+   if(status < VI_SUCCESS){
+       Logging::getInstance()->logEntry("Failed to open session on instrument");
+   }
+   else{
+       Logging::getInstance()->logEntry("Session opened on instrument");
+   }
 }
 
 ViStatus VisaInterface::findNextResource(ViSession &defaultRMSession, QByteArray &instrumentLoc, ViSession &instrSess, ViPFindList &findList, FoundInstr &resultMap, int indexOfInstr)

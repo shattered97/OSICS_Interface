@@ -10,11 +10,9 @@ typedef QPair<QByteArray, QByteArray> InstrData;
 //QMap<Index, Instrument Data>
 typedef QMap<int, InstrData> FoundInstr;
 
-
 //Logging Constansts
 const QString LOG_FILE_PATH  = QDir::currentPath();  //Same dir as exe
 const QString LOG_FILE       = "OSICS_LOG.txt";
-
 const QString TIMESTAMP_FORMAT = "dd_MMM_yy_hh_mm:ss:zzz";
 
 //VISA Resource Queries
@@ -32,9 +30,20 @@ const qint32 VISA_MAX_BUFFER_READ_SIZE = 100;
 const qint32 VISA_MAX_BUFFER_SEND_SIZE = 512;
 
 //SCPI Command*/
-
 const QByteArray IDENTITY = "*IDN?\n";
+const QByteArray EXEC_CLS = "*CLS\n";
+const QByteArray EXEC_ESE = "*ESE\n";
+const QByteArray QUERY_ESE = "*ESE?\n";
+const QByteArray QUERY_ESR = "*ESR?\n";
+const QByteArray QUERY_IDN = "*IDN?\n";
+const QByteArray EXEC_OPC = "*OPC\n";
+const QByteArray QUERY_OPC = "*OPC?\n";
+const QByteArray QUERY_OPT = "*OPT?\n";
+const QByteArray EXEC_RST = "*RST\n";
+const QByteArray QUERY_STB = "*STB?\n";
+const QByteArray QUERY_TST = "*TST?\n";
+const QByteArray EXEC_WAI = "*WAI\n";
 
-
+const int DEFAULT_COMMAND_TIMEOUT_MS = 5000;
 
 #endif // CONSTANTS_H

@@ -37,8 +37,9 @@ DEFINES += QT_DEPRECATED_WARNINGS
 CONFIG += c++11
 
 SOURCES += \
-        shared/DefaultInsturment.cpp \
+        shared/DefaultInstrument.cpp \
         shared/Logging.cpp \
+        shared/N7714A.cpp \
         shared/VisaInterface.cpp \
         main.cpp \
         mainwindow.cpp
@@ -46,6 +47,7 @@ SOURCES += \
 HEADERS += \
         shared/DefaultInstrument.h \
         shared/Logging.h \
+        shared/N7714A.h \
         shared/VisaInterface.h \
         shared/constants.h \
         mainwindow.h

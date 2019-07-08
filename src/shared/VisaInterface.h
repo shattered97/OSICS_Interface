@@ -81,6 +81,29 @@ public:
      * @return Returns comnpletion code
      */
     ViStatus closeDefaultSession(ViSession &defaultSession);
+
+
+    /**
+     * @brief sendCmd Send SCPI command to connected resource
+     * @param instrSession[in] Unique logical identifier reference to a session.
+     * @param instrumentLoc[in]  Unique symbolic name of a resource. Refer to the Description section of the VISA ICD for more information.
+     * @param scpiCmd[in] SCPI Command to send to resource
+     * @param writeCount[out] Number of bytes actually transferred
+     * @return
+     */
+    ViStatus sendCmd(ViSession &instrSession, QByteArray instrAddr, QByteArray scpiCmd, ViUInt32 &writeCount);
+
+    ViStatus readCmd(ViSession &instrSession, QByteArray instrAddr, QByteArray &response, ViUInt32 &retCount);
+
+    ViStatus openInstrSession(ViSession &defaultSession, QByteArray instrAddr, ViSession &instrSess);
+
+    /**
+     * @brief closeSession closes session to instrument or defualt session
+     * @param sessionToClose[in] session to close
+     * @return returns completion code
+     */
+    ViStatus closeSession(ViSession &sessionToClose);
+
 //********************************************End Find Resource*********************************************************************************
 
 private:
@@ -101,12 +124,7 @@ private:
      */
     void charArrayToByteArray(unsigned char (&charArray)[VISA_MAX_BUFFER_READ_SIZE], QByteArray &byteArray, ViUInt32 size);
 
-    /**
-     * @brief closeSession closes session to instrument or defualt session
-     * @param sessionToClose[in] session to close
-     * @return returns completion code
-     */
-    ViStatus closeSession(ViSession &sessionToClose);
+
 
     /**
      * @brief findNextResource used to find the next resouce when multiple resources are connected to the system
@@ -120,17 +138,7 @@ private:
 
     ViStatus queryInstrument(QByteArray &instrumentLoc, ViSession &instrSess, FoundInstr &resultMap, int indexOfInstr);
 
-    /**
-     * @brief sendCmd Send SCPI command to connected resource
-     * @param instrSession[in] Unique logical identifier reference to a session.
-     * @param instrumentLoc[in]  Unique symbolic name of a resource. Refer to the Description section of the VISA ICD for more information.
-     * @param scpiCmd[in] SCPI Command to send to resource
-     * @param writeCount[out] Number of bytes actually transferred
-     * @return
-     */
-    ViStatus sendCmd(ViSession &instrSession, QByteArray instrAddr, QByteArray scpiCmd, ViUInt32 &writeCount);
 
-    ViStatus readCmd(ViSession &instrSession, QByteArray instrAddr, QByteArray &response, ViUInt32 &retCount);
 
     //Private Data Members
 
