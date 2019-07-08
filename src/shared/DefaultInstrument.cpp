@@ -1,6 +1,6 @@
 #include "DefaultInstrument.h"
 #include "constants.h"
-#include <QTimer>
+#include <QElapsedTimer>
 
 DefaultInstrument::DefaultInstrument() :
     theIdentity(""),
@@ -180,7 +180,11 @@ bool DefaultInstrument::checkOperationComplete(ViSession &defaultSession, ViSess
     ViUInt32 writeCount;
 
     // start time
-    QTimer *timer = new QTimer();
+    QElapsedTimer timer;
+    timer.start();
+
+    //put your while loop here
+
 
     ViStatus status = theCommBus.sendCmd(instrSession, theInstrLoc, QUERY_OPC, writeCount);
 
@@ -193,12 +197,15 @@ bool DefaultInstrument::checkOperationComplete(ViSession &defaultSession, ViSess
 
 bool DefaultInstrument::sendCmdNoRsp(ViSession &defaultSession, ViSession &instrSession, QByteArray &command){
 
+    bool success = true;  //assume success
+
     // open session
-    ViStatus sessionStatus;
+    ViStatus sessionStatus = NULL;  //always initialize your variables to a known state
+
     theCommBus.openInstrSession(defaultSession, theInstrLoc, instrSession);
 
     if(sessionStatus < VI_SUCCESS){
-        return false;
+        success = false;  //get out of the habbit of returning early - create a bool
     }
 
     ViUInt32 writeCount;
@@ -209,7 +216,7 @@ bool DefaultInstrument::sendCmdNoRsp(ViSession &defaultSession, ViSession &instr
             // close session
             theCommBus.closeSession(instrSession);
 
-            return false;
+            success = false;
         }
         else{
             qDebug() << "Query succeeded: " << command;
@@ -218,7 +225,7 @@ bool DefaultInstrument::sendCmdNoRsp(ViSession &defaultSession, ViSession &instr
     // close session
     theCommBus.closeSession(instrSession);
 
-    return true;
+    return success;
 }
 
 bool DefaultInstrument::sendCmdRsp(ViSession &defaultSession, ViSession &instrSession, QByteArray &command, QByteArray &response){

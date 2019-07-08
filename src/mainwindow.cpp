@@ -9,6 +9,7 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    //All of this should be in the main.cpp - we need to walk through this code before we go any farther
     theCommBus.createDefaultRM(defaultSession);
     theCommBus.displayResources(defaultSession, instrAddr, currentSession, &numInstruments, findList, foundResources);
 
