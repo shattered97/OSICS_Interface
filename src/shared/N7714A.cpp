@@ -1,7 +1,9 @@
 #include "N7714A.h"
 #include "DefaultInstrument.h"
 
+N7714A::N7714A(){
 
+}
 N7714A::N7714A(QByteArray theIdentity, QByteArray theInstrLoc){
     this->setInstrIdentity(theIdentity);
     qDebug() << this->getInstrIdentity();
@@ -23,4 +25,18 @@ bool N7714A::queryPowerUnit(ViSession &defaultSession, ViSession &instrSession, 
     // send command
     return sendCmdRsp(defaultSession, instrSession, command, response);
 
+}
+
+bool N7714A::execPowerOnModule(ViSession &defaultSession, ViSession &instrSession, int module){
+    QByteArray baseCmd = "sour:pow:stat on\n";
+    baseCmd.insert(baseCmd.indexOf(':'), module);
+
+    qDebug() << baseCmd;
+}
+
+bool N7714A::execPowerOffModule(ViSession &defaultSession, ViSession &instrSession, int module){
+    QByteArray baseCmd = "sour:pow:stat off\n";
+    baseCmd.insert(baseCmd.indexOf(':'), module);
+
+    qDebug() << baseCmd;
 }

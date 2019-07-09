@@ -43,11 +43,11 @@ ViStatus VisaInterface::createDefaultRM(ViSession &defaultSession)
    return theStatus;
 }
 
-void VisaInterface::displayResources(ViSession &defaultRMSession, QByteArray &instrumentLoc, ViSession &instrSess, ViUInt32 *numInstr, ViPFindList &findList, FoundInstr &result)
+void VisaInterface::displayResources(ViSession &defaultRMSession, QByteArray &instrumentLoc, ViSession &instrSess, ViUInt32 *numInstr, ViFindList *findList, FoundInstr &result)
 {
     //Remove harded coded string and replace with variable
 
-    if (findResources(defaultRMSession, "GPIB?*INSTR", numInstr, findList, instrumentLoc))
+    if (findResources(defaultRMSession, "?*", numInstr, findList, instrumentLoc))
         createInstrMap(defaultRMSession, instrumentLoc, instrSess, numInstr, findList, result);
 
 
@@ -56,7 +56,7 @@ void VisaInterface::displayResources(ViSession &defaultRMSession, QByteArray &in
 bool VisaInterface::findResources(ViSession &defaultRMSession,
                               QString query,
                               ViUInt32 *numInstrs,
-                              ViPFindList &findList,
+                              ViFindList *findList,
                               QByteArray &instrumentLoc)
 
 {
@@ -80,8 +80,10 @@ bool VisaInterface::findResources(ViSession &defaultRMSession,
     ViChar instrDescriptor[VI_FIND_BUFLEN];
 
 
+
     //Queries a VISA system to locate the resources associated with a specified interface.
     theStatus = viFindRsrc(defaultRMSession, query.toLatin1(), findList, numInstrs, instrDescriptor);
+
 
     if(theStatus < VI_SUCCESS)
     {
@@ -98,49 +100,51 @@ bool VisaInterface::findResources(ViSession &defaultRMSession,
 
 }
 
-ViStatus VisaInterface::createInstrMap(ViSession &defaultRMSession, QByteArray &instrumentLoc, ViSession &instrSess, ViUInt32 *numInstr, ViPFindList &findList, FoundInstr &resultMap)
+ViStatus VisaInterface::createInstrMap(ViSession &defaultRMSession, QByteArray &instrumentLoc, ViSession &instrSess, ViUInt32 *numInstr, ViFindList *findList, FoundInstr &resultMap)
 {
 
     ViChar instrDescriptor[VI_FIND_BUFLEN];
     strcpy_s(instrDescriptor, instrumentLoc); //QByteArray back to char array
 
-    //Open default Session
+    //Open session to instrument
     theStatus = viOpen(defaultRMSession, instrDescriptor, VI_NULL, VI_NULL, &instrSess);
 
+    int index = 1; // index of instrument in list
 
     if(theStatus < VI_SUCCESS)
     {
-        //We Failed log it and close default session
         Logging::getInstance()->logEntry(QString("Error opening session to %1").arg(instrDescriptor));
-        closeSession(defaultRMSession);
     }
     else
     {
-        //Opened Default Session Log it
+        //Opened instrument Session Log it
         Logging::getInstance()->logEntry(QString("Opened session to: %1").arg(instrDescriptor));
 
         //Lets figure what instrument we are talking too
-       theStatus = queryInstrument(instrumentLoc, instrSess, resultMap, 1);  //This is the first instrument in the list
+       theStatus = queryInstrument(instrumentLoc, instrSess, resultMap, index);
 
        if(theStatus < VI_SUCCESS)
        {
           Logging::getInstance()->logEntry("Failed to get Instrument Identity, Closing Session") ;
+          // if we can't talk to the first instrument, index into list will remain 1.
        }
        else
        {
           Logging::getInstance()->logEntry("Found everything we need from first instrument");
+          // if we can talk to first instrument, we increment our index by 1
+          index ++;
        }
 
         closeSession(instrSess);
     }
 
     (*numInstr)--; //We found first istrument so lets decerment our count
-    int index = 2;  //first instrument already found so we need to start at 2
 
     while(*numInstr > 0)
     {
         Logging::getInstance()->logEntry(QString("Number of instruments left: %1").arg(*numInstr));
         theStatus = findNextResource(defaultRMSession, instrumentLoc, instrSess, findList, resultMap, index);
+
         (*numInstr)--; //added next instrument decrement count
         index++;  //increase index by 1
     }
@@ -164,12 +168,14 @@ ViStatus VisaInterface::openInstrSession(ViSession &defaultSession, QByteArray i
    }
 }
 
+
 ViStatus VisaInterface::findNextResource(ViSession &defaultRMSession, QByteArray &instrumentLoc, ViSession &instrSess, ViPFindList &findList, FoundInstr &resultMap, int indexOfInstr)
 {
     ViChar instrDescriptor[VI_FIND_BUFLEN];
     strcpy_s(instrDescriptor, instrumentLoc); //QByteArray back to char array
 
    theStatus = viFindNext(*findList, instrDescriptor);
+
 
    if(theStatus < VI_SUCCESS)
    {
@@ -216,6 +222,7 @@ ViStatus VisaInterface::queryInstrument(QByteArray &instrumentLoc, ViSession &in
     {
         //We failed log it and close instrument session NOT the default session this is still open
         Logging::getInstance()->logEntry("Failed to send command to instrument");
+
     }
     else
     {
@@ -238,7 +245,7 @@ ViStatus VisaInterface::queryInstrument(QByteArray &instrumentLoc, ViSession &in
             firstInstr.second = rsp;
         }
 
-        resultMap.insert(indexOfInstr, firstInstr);
+        resultMap.insert(resultMap.size() + 1, firstInstr);
     }
 
     return theStatus;

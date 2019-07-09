@@ -12,7 +12,8 @@ public:
 
     bool execPowerUnit(ViSession &defaultSession, ViSession &instrSession, int module, int unit);
     bool queryPowerUnit(ViSession &defaultSession, ViSession &instrSession, int module, QByteArray &response);
-
+    bool execPowerOnModule(ViSession &defaultSession, ViSession &instrSession, int module);
+    bool execPowerOffModule(ViSession &defaultSession, ViSession &instrSession, int module);
 private:
 
 };

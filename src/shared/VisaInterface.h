@@ -52,7 +52,7 @@ public:
     bool findResources(ViSession &defaultRMSession,
                           QString query,
                           ViUInt32 *numInstrs,
-                          ViPFindList &findList,
+                          ViFindList *findList,
                           QByteArray &instrumentLoc);
 
     /**
@@ -62,7 +62,7 @@ public:
      * @param instrSession[out] Unique logical identifier reference to a session.
      * @return Returns completion code
      */
-    ViStatus createInstrMap(ViSession &defaultRMSession, QByteArray &instrumentLoc, ViSession &instrSess, ViUInt32 *numInstr, ViPFindList &findList, FoundInstr &result);
+    ViStatus createInstrMap(ViSession &defaultRMSession, QByteArray &instrumentLoc, ViSession &instrSess, ViUInt32 *numInstr, ViFindList *findList, FoundInstr &result);
 
     /**
      * @brief displayResources
@@ -73,7 +73,7 @@ public:
      * @param mapping of int to QPair of instrument address and identity.
      * @return
      */
-    void displayResources(ViSession &defaultRMSession, QByteArray &instrumentLoc, ViSession &instrSess, ViUInt32 *numInstr, ViPFindList &findList, FoundInstr &result);
+    void displayResources(ViSession &defaultRMSession, QByteArray &instrumentLoc, ViSession &instrSess, ViUInt32 *numInstr, ViFindList *findList, FoundInstr &result);
 
     /**
      * @brief closeDefaultSession closes the default session
