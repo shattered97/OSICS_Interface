@@ -44,6 +44,6 @@ const QByteArray QUERY_STB = "*STB?\n";
 const QByteArray QUERY_TST = "*TST?\n";
 const QByteArray EXEC_WAI = "*WAI\n";
 
-const int DEFAULT_COMMAND_TIMEOUT_MS = 5000;
+const int DEFAULT_COMMAND_TIMEOUT_MS = 1000 * 5;
 
 #endif // CONSTANTS_H

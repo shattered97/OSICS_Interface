@@ -172,106 +172,103 @@ bool DefaultInstrument::queryIDN(ViSession &defaultSession, ViSession &instrSess
 
 bool DefaultInstrument::checkOperationComplete(ViSession &defaultSession, ViSession &instrSession, int timeout = DEFAULT_COMMAND_TIMEOUT_MS){
 
-    // in progress
-
-
-    int complete = 0;
-    QByteArray response;
-    ViUInt32 writeCount;
-
     // start time
     QElapsedTimer timer;
     timer.start();
 
-    //put your while loop here
+    int complete = 0;
 
+    while(timer.elapsed() < DEFAULT_COMMAND_TIMEOUT_MS && complete == 0){
+        complete = 0;
 
-    ViStatus status = theCommBus.sendCmd(instrSession, theInstrLoc, QUERY_OPC, writeCount);
+        ViUInt32 writeCount;
+        ViStatus status = theCommBus.sendCmd(instrSession, theInstrLoc, QUERY_OPC, writeCount);
 
-    ViUInt32 rtnSize;
-    status = theCommBus.readCmd(instrSession, theInstrLoc, response, rtnSize);
+        QByteArray response;
+        ViUInt32 rtnSize;
+        status = theCommBus.readCmd(instrSession, theInstrLoc, response, rtnSize);
 
-    complete = response[0];
+        complete = response[0];
+    }
 
+    return complete;
 }
 
 bool DefaultInstrument::sendCmdNoRsp(ViSession &defaultSession, ViSession &instrSession, QByteArray &command){
 
-    bool success = true;  //assume success
+    bool success = true;
 
     // open session
-    ViStatus sessionStatus = NULL;  //always initialize your variables to a known state
-
+    ViStatus sessionStatus = NULL;
     theCommBus.openInstrSession(defaultSession, theInstrLoc, instrSession);
 
     if(sessionStatus < VI_SUCCESS){
-        success = false;  //get out of the habbit of returning early - create a bool
+        success = false;
     }
+    else{
+        checkOperationComplete(defaultSession, instrSession);
 
-    ViUInt32 writeCount;
-    ViStatus status = theCommBus.sendCmd(instrSession, theInstrLoc, command, writeCount);
+        ViUInt32 writeCount;
+        ViStatus status = theCommBus.sendCmd(instrSession, theInstrLoc, command, writeCount);
 
         if(status < VI_SUCCESS){
             qDebug() << QString("Query failed: %1").arg(status);
-            // close session
-            theCommBus.closeSession(instrSession);
-
             success = false;
         }
         else{
             qDebug() << "Query succeeded: " << command;
         }
 
-    // close session
-    theCommBus.closeSession(instrSession);
+        // close session
+        theCommBus.closeSession(instrSession);
 
-    return success;
+    }
+
+   return success;
+
 }
 
 bool DefaultInstrument::sendCmdRsp(ViSession &defaultSession, ViSession &instrSession, QByteArray &command, QByteArray &response){
 
+    bool success = true;
 
     // open session
-    ViStatus sessionStatus;
+    ViStatus sessionStatus = NULL;
     theCommBus.openInstrSession(defaultSession, theInstrLoc, instrSession);
 
-
     if(sessionStatus < VI_SUCCESS){
-        return false;
+        success = false;
     }
+    else{
 
-    // check if instrument is done processing previous commands
+        // check if instrument is done processing previous commands
+        checkOperationComplete(defaultSession, instrSession);
 
-    checkOperationComplete(defaultSession, instrSession);
+        ViUInt32 writeCount;
+        ViStatus status = theCommBus.sendCmd(instrSession, theInstrLoc, command, writeCount);
+            if(status < VI_SUCCESS){
+                qDebug() << QString("Query failed: %1").arg(status);
+                status = false;
+            }
+            else{
+                qDebug() << "Query succeeded: " << command;
 
-    ViUInt32 writeCount;
-    ViStatus status = theCommBus.sendCmd(instrSession, theInstrLoc, command, writeCount);
-        if(status < VI_SUCCESS){
-            qDebug() << QString("Query failed: %1").arg(status);
-            // close session
-            theCommBus.closeSession(instrSession);
+                ViUInt32 rtnSize;
+                status = theCommBus.readCmd(instrSession, theInstrLoc, response, rtnSize);
 
-            return false;
-        }
-        else{
-            qDebug() << "Query succeeded: " << command;
-        }
+                if(status < VI_SUCCESS){
+                    qDebug() << QString("Reading response failed: %1").arg(status);
+                    success = false;
+                }
+            }
 
-    ViUInt32 rtnSize;
-    status = theCommBus.readCmd(instrSession, theInstrLoc, response, rtnSize);
-    if(status < VI_SUCCESS){
-        qDebug() << QString("Reading response failed: %1").arg(status);
+
         // close session
         theCommBus.closeSession(instrSession);
 
-        return false;
     }
 
-
-    // close session
-    theCommBus.closeSession(instrSession);
-
-    return true;
+    return success;
 
 }
 
