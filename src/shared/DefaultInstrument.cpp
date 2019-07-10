@@ -170,7 +170,7 @@ bool DefaultInstrument::queryIDN(ViSession &defaultSession, ViSession &instrSess
 
 }
 
-bool DefaultInstrument::checkOperationComplete(ViSession &defaultSession, ViSession &instrSession, int timeout = DEFAULT_COMMAND_TIMEOUT_MS){
+bool DefaultInstrument::checkOperationComplete(ViSession &instrSession, int timeout = DEFAULT_COMMAND_TIMEOUT_MS){
 
     // start time
     QElapsedTimer timer;
@@ -178,7 +178,7 @@ bool DefaultInstrument::checkOperationComplete(ViSession &defaultSession, ViSess
 
     int complete = 0;
 
-    while(timer.elapsed() < DEFAULT_COMMAND_TIMEOUT_MS && complete == 0){
+    while(timer.elapsed() < timeout && complete == 0){
         complete = 0;
 
         ViUInt32 writeCount;
@@ -189,8 +189,8 @@ bool DefaultInstrument::checkOperationComplete(ViSession &defaultSession, ViSess
         status = theCommBus.readCmd(instrSession, theInstrLoc, response, rtnSize);
 
         complete = response[0];
-    }
 
+    }
     return complete;
 }
 
@@ -206,7 +206,7 @@ bool DefaultInstrument::sendCmdNoRsp(ViSession &defaultSession, ViSession &instr
         success = false;
     }
     else{
-        checkOperationComplete(defaultSession, instrSession);
+        checkOperationComplete(instrSession);
 
         ViUInt32 writeCount;
         ViStatus status = theCommBus.sendCmd(instrSession, theInstrLoc, command, writeCount);
@@ -233,8 +233,7 @@ bool DefaultInstrument::sendCmdRsp(ViSession &defaultSession, ViSession &instrSe
     bool success = true;
 
     // open session
-    ViStatus sessionStatus = NULL;
-    theCommBus.openInstrSession(defaultSession, theInstrLoc, instrSession);
+    ViStatus sessionStatus = theCommBus.openInstrSession(defaultSession, theInstrLoc, instrSession);
 
     if(sessionStatus < VI_SUCCESS){
         success = false;
@@ -242,7 +241,7 @@ bool DefaultInstrument::sendCmdRsp(ViSession &defaultSession, ViSession &instrSe
     else{
 
         // check if instrument is done processing previous commands
-        checkOperationComplete(defaultSession, instrSession);
+        checkOperationComplete(instrSession);
 
         ViUInt32 writeCount;
         ViStatus status = theCommBus.sendCmd(instrSession, theInstrLoc, command, writeCount);
@@ -261,7 +260,6 @@ bool DefaultInstrument::sendCmdRsp(ViSession &defaultSession, ViSession &instrSe
                     success = false;
                 }
             }
-
 
         // close session
         theCommBus.closeSession(instrSession);

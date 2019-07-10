@@ -121,7 +121,7 @@ ViStatus VisaInterface::createInstrMap(ViSession &defaultRMSession, QByteArray &
         Logging::getInstance()->logEntry(QString("Opened session to: %1").arg(instrDescriptor));
 
         //Lets figure what instrument we are talking too
-       theStatus = queryInstrument(instrumentLoc, instrSess, resultMap, index);
+       theStatus = queryInstrument(instrumentLoc, instrSess, resultMap);
 
        if(theStatus < VI_SUCCESS)
        {
@@ -143,7 +143,7 @@ ViStatus VisaInterface::createInstrMap(ViSession &defaultRMSession, QByteArray &
     while(*numInstr > 0)
     {
         Logging::getInstance()->logEntry(QString("Number of instruments left: %1").arg(*numInstr));
-        theStatus = findNextResource(defaultRMSession, instrumentLoc, instrSess, findList, resultMap, index);
+        theStatus = findNextResource(defaultRMSession, instrumentLoc, instrSess, findList, resultMap);
 
         (*numInstr)--; //added next instrument decrement count
         index++;  //increase index by 1
@@ -166,10 +166,11 @@ ViStatus VisaInterface::openInstrSession(ViSession &defaultSession, QByteArray i
    else{
        Logging::getInstance()->logEntry("Session opened on instrument");
    }
+   return status;
 }
 
 
-ViStatus VisaInterface::findNextResource(ViSession &defaultRMSession, QByteArray &instrumentLoc, ViSession &instrSess, ViPFindList &findList, FoundInstr &resultMap, int indexOfInstr)
+ViStatus VisaInterface::findNextResource(ViSession &defaultRMSession, QByteArray &instrumentLoc, ViSession &instrSess, ViPFindList &findList, FoundInstr &resultMap)
 {
     ViChar instrDescriptor[VI_FIND_BUFLEN];
     strcpy_s(instrDescriptor, instrumentLoc); //QByteArray back to char array
@@ -190,7 +191,7 @@ ViStatus VisaInterface::findNextResource(ViSession &defaultRMSession, QByteArray
        // convert char array to QByteArray
        instrumentLoc = QByteArray(reinterpret_cast<char*>(instrDescriptor));
 
-       theStatus = queryInstrument(instrumentLoc, instrSess, resultMap, indexOfInstr);
+       theStatus = queryInstrument(instrumentLoc, instrSess, resultMap);
 
        if(theStatus < VI_SUCCESS)
        {
@@ -208,7 +209,7 @@ ViStatus VisaInterface::findNextResource(ViSession &defaultRMSession, QByteArray
 
 }
 
-ViStatus VisaInterface::queryInstrument(QByteArray &instrumentLoc, ViSession &instrSess, FoundInstr &resultMap, int indexOfInstr)
+ViStatus VisaInterface::queryInstrument(QByteArray &instrumentLoc, ViSession &instrSess, FoundInstr &resultMap)
 {
     ViUInt32 rtnSize;
     InstrData firstInstr;

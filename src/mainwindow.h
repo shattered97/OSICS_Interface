@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include "VisaInterface.h"
 #include "DefaultInstrument.h"
+#include "N7714A.h"
 
 namespace Ui {
 class MainWindow;
@@ -25,6 +26,10 @@ private slots:
 
     void on_powerToggle_stateChanged(int arg1);
 
+    void on_resetNewLevelBtn_clicked();
+
+    void on_setNewLevelBtn_clicked();
+
 private:
     Ui::MainWindow *ui;
 
@@ -36,7 +41,11 @@ private:
     QByteArray instrAddr;
     FoundInstr foundResources;
     InstrData selectedResourceInfo;
-    DefaultInstrument selectedResource;
+    N7714A selectedResource;
+
+    void setPowerStatusIndicatorOff();
+
+    void setPowerStatusIndicatorOn();
 
     void populateGUIFields();
 };

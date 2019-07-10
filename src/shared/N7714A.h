@@ -10,10 +10,18 @@ public:
     N7714A();
     N7714A(QByteArray theIdentity, QByteArray theInstrLoc);
 
-    bool execPowerUnit(ViSession &defaultSession, ViSession &instrSession, int module, int unit);
     bool queryPowerUnit(ViSession &defaultSession, ViSession &instrSession, int module, QByteArray &response);
+
+    bool queryPowerStatus(ViSession &defaultSession, ViSession &instrSession, int module, QByteArray &response);
+
     bool execPowerOnModule(ViSession &defaultSession, ViSession &instrSession, int module);
+
     bool execPowerOffModule(ViSession &defaultSession, ViSession &instrSession, int module);
+
+    bool queryPowerLevel(ViSession &defaultSession, ViSession &instrSession, int module, QByteArray &response, QByteArray value="");
+
+    bool execPowerLevel(ViSession &defaultSession, ViSession &instrSession, int module, QByteArray value="");
+
 private:
 
 };

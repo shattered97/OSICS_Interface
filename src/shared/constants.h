@@ -45,5 +45,14 @@ const QByteArray QUERY_TST = "*TST?\n";
 const QByteArray EXEC_WAI = "*WAI\n";
 
 const int DEFAULT_COMMAND_TIMEOUT_MS = 1000 * 5;
+const int POWER_ON_TIMEOUT_MS = 1000 * 10;
+
+// N7714A Commands
+const QByteArray N7714A_POW_UNIT_QUERY = "sour:pow:unit?\n";
+const QByteArray N7714A_POW_STAT_QUERY = "sour:pow:stat?\n";
+const QByteArray N7714A_POW_ON_CMD = "sour:pow:stat on\n";
+const QByteArray N7714A_POW_OFF_CMD = "sour:pow:stat off\n";
+const QByteArray N7714A_POW_LEVEL_QUERY = "sour:pow?\n";
+const QByteArray N7714A_POW_LEVEL_CMD = "sour:pow\n";
 
 #endif // CONSTANTS_H

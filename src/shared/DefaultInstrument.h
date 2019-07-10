@@ -13,21 +13,25 @@ public:
     DefaultInstrument(QByteArray theIdentity, QByteArray theInstrLoc);
 
     QByteArray getInstrIdentity();
+
     void setInstrIdentity(QByteArray theIdentity);
 
     QByteArray getInstrLocation();
+
     void setInstrLocation(QByteArray theInstrLoc);
 
     VisaInterface getCommBus();
+
     void setCommBus(VisaInterface theCommBus);
 
     bool sendCmdNoRsp(ViSession &defaultSession, ViSession &instrSession, QByteArray &command);
-    bool sendCmdRsp(ViSession &defaultSession, ViSession &instrSession, QByteArray &command, QByteArray &response);
 
+    bool sendCmdRsp(ViSession &defaultSession, ViSession &instrSession, QByteArray &command, QByteArray &response);
 
     bool querySTB(ViSession &defaultSession, ViSession &instrSession, QByteArray &response);
 
     bool execESE(ViSession &defaultSession, ViSession &instrSession, ViByte registerVal);
+
     bool queryESE(ViSession &defaultSession, ViSession &instrSession, QByteArray &response);
 
     bool querySRE(ViSession &defaultSession, ViSession &instrSession, QByteArray &response);
@@ -35,6 +39,7 @@ public:
     bool queryESR(ViSession &defaultSession, ViSession &instrSession, QByteArray &response);
 
     bool execOPC(ViSession &defaultSession, ViSession &instrSession);
+
     bool queryOPC(ViSession &defaultSession, ViSession &instrSession, QByteArray &response);
 
     bool execCLS(ViSession &defaultSession, ViSession &instrSession);
@@ -49,7 +54,7 @@ public:
 
     bool queryIDN(ViSession &defaultSession, ViSession &instrSession, QByteArray &response);
 
-    bool checkOperationComplete(ViSession &defaultSession, ViSession &instrSession, int timeout);
+    bool checkOperationComplete(ViSession &instrSession, int timeout);
 
 private:
     QByteArray theIdentity;

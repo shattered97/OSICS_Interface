@@ -134,9 +134,9 @@ private:
      * @param indexOfInstr[in] index to store found instrument at in the map
      * @return
      */
-    ViStatus findNextResource(ViSession &defaultRMSession, QByteArray &instrumentLoc, ViSession &instrSess, ViPFindList &findList, FoundInstr &resultMap, int indexOfInstr);
+    ViStatus findNextResource(ViSession &defaultRMSession, QByteArray &instrumentLoc, ViSession &instrSess, ViPFindList &findList, FoundInstr &resultMap);
 
-    ViStatus queryInstrument(QByteArray &instrumentLoc, ViSession &instrSess, FoundInstr &resultMap, int indexOfInstr);
+    ViStatus queryInstrument(QByteArray &instrumentLoc, ViSession &instrSess, FoundInstr &resultMap);
 
 
 
