@@ -196,6 +196,7 @@ bool DefaultInstrument::checkOperationComplete(ViSession &instrSession, int time
 
 bool DefaultInstrument::sendCmdNoRsp(ViSession &defaultSession, ViSession &instrSession, QByteArray &command){
 
+    qDebug() << command;
     bool success = true;
 
     // open session
@@ -212,7 +213,7 @@ bool DefaultInstrument::sendCmdNoRsp(ViSession &defaultSession, ViSession &instr
         ViStatus status = theCommBus.sendCmd(instrSession, theInstrLoc, command, writeCount);
 
         if(status < VI_SUCCESS){
-            qDebug() << QString("Query failed: %1").arg(status);
+//            qDebug() << QString("Query failed: %1").arg(status);
             success = false;
         }
         else{
@@ -230,6 +231,7 @@ bool DefaultInstrument::sendCmdNoRsp(ViSession &defaultSession, ViSession &instr
 
 bool DefaultInstrument::sendCmdRsp(ViSession &defaultSession, ViSession &instrSession, QByteArray &command, QByteArray &response){
 
+    qDebug() << command;
     bool success = true;
 
     // open session

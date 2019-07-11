@@ -15,7 +15,9 @@ win32: LIBS += "C:/Program Files (x86)/IVI Foundation/VISA/WinNT/lib/msc/visa32.
 
 INCLUDEPATH += "C:/Program Files/IVI Foundation/VISA/Win64/Include" \
                 Windows \
-                shared
+                shared \
+                EXFO_OSICS
+
 
 DEPENDPATH += "C:/Program Files/IVI Foundation/VISA/Win64/Include"
 
@@ -37,7 +39,11 @@ DEFINES += QT_DEPRECATED_WARNINGS
 CONFIG += c++11
 
 SOURCES += \
+        shared/EXFO_OSICS/EXFO_OSICS_ATN.cpp \
+        shared/EXFO_OSICS/EXFO_OSICS_MAINFRAME.cpp \
         shared/DefaultInstrument.cpp \
+        shared/EXFO_OSICS/EXFO_OSICS_SWT.cpp \
+        shared/EXFO_OSICS/EXFO_OSICS_T100.cpp \
         shared/Logging.cpp \
         shared/N7714A.cpp \
         shared/VisaInterface.cpp \
@@ -45,7 +51,11 @@ SOURCES += \
         mainwindow.cpp
 
 HEADERS += \
+        shared/EXFO_OSICS/EXFO_OSICS_ATN.h \
+        shared/EXFO_OSICS/EXFO_OSICS_MAINFRAME.h \
         shared/DefaultInstrument.h \
+        shared/EXFO_OSICS/EXFO_OSICS_SWT.h \
+        shared/EXFO_OSICS/EXFO_OSICS_T100.h \
         shared/Logging.h \
         shared/N7714A.h \
         shared/VisaInterface.h \

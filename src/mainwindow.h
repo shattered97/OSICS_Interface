@@ -30,6 +30,8 @@ private slots:
 
     void on_setNewLevelBtn_clicked();
 
+    void on_startMonitorBtn_clicked();
+
 private:
     Ui::MainWindow *ui;
 
@@ -48,6 +50,8 @@ private:
     void setPowerStatusIndicatorOn();
 
     void populateGUIFields();
+
 };
+
 
 #endif // MAINWINDOW_H

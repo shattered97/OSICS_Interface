@@ -24,9 +24,6 @@ public:
 
     void setCommBus(VisaInterface theCommBus);
 
-    bool sendCmdNoRsp(ViSession &defaultSession, ViSession &instrSession, QByteArray &command);
-
-    bool sendCmdRsp(ViSession &defaultSession, ViSession &instrSession, QByteArray &command, QByteArray &response);
 
     bool querySTB(ViSession &defaultSession, ViSession &instrSession, QByteArray &response);
 
@@ -55,6 +52,12 @@ public:
     bool queryIDN(ViSession &defaultSession, ViSession &instrSession, QByteArray &response);
 
     bool checkOperationComplete(ViSession &instrSession, int timeout);
+
+protected:
+
+    bool sendCmdNoRsp(ViSession &defaultSession, ViSession &instrSession, QByteArray &command);
+
+    bool sendCmdRsp(ViSession &defaultSession, ViSession &instrSession, QByteArray &command, QByteArray &response);
 
 private:
     QByteArray theIdentity;

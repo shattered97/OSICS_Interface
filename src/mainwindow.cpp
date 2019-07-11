@@ -3,6 +3,8 @@
 #include "DefaultInstrument.h"
 #include "N7714A.h"
 #include "QMessageBox"
+#include "QThread"
+#include "EXFO_OSICS/EXFO_OSICS_MAINFRAME.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -15,6 +17,35 @@ MainWindow::~MainWindow()
 {
     delete ui;
     theCommBus.closeDefaultSession(defaultSession);
+
+
+    // ***** Test OSICS MAINFRAME COMMANDS *****
+    QByteArray emptyResponse;
+    EXFO_OSICS_MAINFRAME testOsics("", "");
+    testOsics.disableMainframeLaserCmd(defaultSession, currentSession);
+    testOsics.enableMainframeLaserCmd(defaultSession, currentSession);
+    testOsics.laserStateMainframeQuery(defaultSession, currentSession, emptyResponse);
+    testOsics.setMainframeSpectralUnitGHzCmd(defaultSession, currentSession);
+    testOsics.setMainframeSpectralUnitNMCmd(defaultSession, currentSession);
+    testOsics.spectralUnitMainframeQuery(defaultSession, currentSession, emptyResponse);
+    testOsics.setMainframePowerUnitDBmCmd(defaultSession, currentSession);
+    testOsics.setMainframePowerUnitMWCmd(defaultSession, currentSession);
+    testOsics.powerUnitMainframeQuery(defaultSession, currentSession, emptyResponse);
+    QByteArray power = "11.11";
+    testOsics.setMainframeOutputPowerCmd(defaultSession, currentSession, power);
+    testOsics.outputPowerMainframeQuery(defaultSession, currentSession, emptyResponse);
+    QByteArray mod = "INT";
+    testOsics.setMainframeModSrcTypeCmd(defaultSession, currentSession, mod);
+    testOsics.outputPowerMainframeQuery(defaultSession, currentSession, emptyResponse);
+    testOsics.modSrcTypeMainframeQuery(defaultSession, currentSession, emptyResponse);
+    QByteArray frequency = "7000";
+    testOsics.setMainframeFrequencyQuery(defaultSession, currentSession, frequency);
+    testOsics.frequencyMainframeQuery(defaultSession, currentSession, emptyResponse);
+    QByteArray config = "A";
+    testOsics.saveManframeConfigCmd(defaultSession, currentSession, config);
+    testOsics.recallMainframeConfigCmd(defaultSession, currentSession, config);
+    testOsics.remoteInterlockMainframeQuery(defaultSession, currentSession, emptyResponse);
+    testOsics.moduleTypeAtSlotQuery(defaultSession, currentSession, 1, emptyResponse);
 }
 
 void MainWindow::on_comboBox_activated(int index)
@@ -162,3 +193,4 @@ void MainWindow::on_setNewLevelBtn_clicked()
     // if setting the level was successful clear field
     ui->newLevelField->clear();
 }
+
