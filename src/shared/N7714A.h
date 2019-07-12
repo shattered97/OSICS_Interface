@@ -7,7 +7,6 @@
 class N7714A : public DefaultInstrument
 {
 public:
-    N7714A();
     N7714A(QByteArray theIdentity, QByteArray theInstrLoc);
 
     bool queryPowerUnit(ViSession &defaultSession, ViSession &instrSession, int module, QByteArray &response);
@@ -23,7 +22,8 @@ public:
     bool execPowerLevel(ViSession &defaultSession, ViSession &instrSession, int module, QByteArray value="");
 
 private:
-
+    QByteArray theIdentity;
+    QByteArray theInstrLoc;
 };
 
 #endif // N7714A_H

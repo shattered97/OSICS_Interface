@@ -34,10 +34,10 @@ public:
     bool setSecondCalibrationWavelengthCmd(ViSession &defaultSession, ViSession &instrSession, int moduleNum, QByteArray &wavelength);
 
     // CH#:LCAL1?
-    bool firstCalibrationWavelengthQuery(ViSession &defaultSession, ViSession &instrSession, int moduleNum, QByteArray &wavelength, QByteArray &response);
+    bool firstCalibrationWavelengthQuery(ViSession &defaultSession, ViSession &instrSession, int moduleNum,  QByteArray &response);
 
     // CH#:LCAL2?
-    bool secondCalibrationWavelengthQuery(ViSession &defaultSession, ViSession &instrSession, int moduleNum, QByteArray &wavelength, QByteArray &response);
+    bool secondCalibrationWavelengthQuery(ViSession &defaultSession, ViSession &instrSession, int moduleNum, QByteArray &response);
 
     // CH#:PCAL1=
     bool setFirstCalibrationPowerCmd(ViSession &defaultSession, ViSession &instrSession, int moduleNum, QByteArray &power);
@@ -46,10 +46,10 @@ public:
     bool setSecondCalibrationPowerCmd(ViSession &defaultSession, ViSession &instrSession, int moduleNum, QByteArray &power);
 
     // CH#:PCAL1?
-    bool firstCalibrationPowerQuery(ViSession &defaultSession, ViSession &instrSession, int moduleNum, QByteArray &power, QByteArray &response);
+    bool firstCalibrationPowerQuery(ViSession &defaultSession, ViSession &instrSession, int moduleNum, QByteArray &response);
 
     // CH#:PCAL2?
-    bool secondCalibrationPowerQuery(ViSession &defaultSession, ViSession &instrSession, int moduleNum, QByteArray &power, QByteArray &response);
+    bool secondCalibrationPowerQuery(ViSession &defaultSession, ViSession &instrSession, int moduleNum, QByteArray &response);
 
     // ********* Module Parameter-Monitoring Commands *********
 

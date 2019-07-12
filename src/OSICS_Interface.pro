@@ -39,6 +39,8 @@ DEFINES += QT_DEPRECATED_WARNINGS
 CONFIG += c++11
 
 SOURCES += \
+        Worker.cpp \
+        n7714awindow.cpp \
         shared/EXFO_OSICS/EXFO_OSICS_ATN.cpp \
         shared/EXFO_OSICS/EXFO_OSICS_MAINFRAME.cpp \
         shared/DefaultInstrument.cpp \
@@ -51,6 +53,8 @@ SOURCES += \
         mainwindow.cpp
 
 HEADERS += \
+        Worker.h \
+        n7714awindow.h \
         shared/EXFO_OSICS/EXFO_OSICS_ATN.h \
         shared/EXFO_OSICS/EXFO_OSICS_MAINFRAME.h \
         shared/DefaultInstrument.h \
@@ -63,7 +67,8 @@ HEADERS += \
         mainwindow.h
 
 FORMS += \
-        mainwindow.ui
+        mainwindow.ui \
+        n7714awindow.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

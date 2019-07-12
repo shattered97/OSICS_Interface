@@ -1,11 +1,8 @@
 #include "N7714A.h"
 #include "DefaultInstrument.h"
 
-N7714A::N7714A(){
-
-}
-
-N7714A::N7714A(QByteArray theIdentity, QByteArray theInstrLoc){
+N7714A::N7714A( QByteArray theIdentity, QByteArray theInstrLoc) : DefaultInstrument(theIdentity, theInstrLoc)
+{
     this->setInstrIdentity(theIdentity);
     this->setInstrLocation(theInstrLoc);
 }

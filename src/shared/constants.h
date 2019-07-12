@@ -55,4 +55,9 @@ const QByteArray N7714A_POW_OFF_CMD = "sour:pow:stat off\n";
 const QByteArray N7714A_POW_LEVEL_QUERY = "sour:pow?\n";
 const QByteArray N7714A_POW_LEVEL_CMD = "sour:pow\n";
 
+// Device type names
+const QByteArray N7714A_DEVICE = "N7714A";
+const QByteArray EXFO_CHASSIS_DEVICE = "EXFO CHASSIS";
+const QByteArray DEVICE_TYPES[] = {N7714A_DEVICE, EXFO_CHASSIS_DEVICE};
+
 #endif // CONSTANTS_H

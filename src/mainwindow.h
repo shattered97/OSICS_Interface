@@ -2,9 +2,8 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include "VisaInterface.h"
-#include "DefaultInstrument.h"
-#include "N7714A.h"
+#include "Worker.h"
+#include "n7714awindow.h"
 
 namespace Ui {
 class MainWindow;
@@ -20,37 +19,32 @@ public:
 
 private slots:
 
-    void on_comboBox_activated(int index);
+    void on_confirmDevTypeBtn_clicked();
 
-    void on_pushButton_clicked();
+    void on_listWidget_currentItemChanged();
 
-    void on_powerToggle_stateChanged(int arg1);
+    void openN7714AView();
 
-    void on_resetNewLevelBtn_clicked();
+    void slotReceiveDevices(QList<QByteArray> listOfDevices);
 
-    void on_setNewLevelBtn_clicked();
+    void on_launchSelectedDevice_clicked();
 
-    void on_startMonitorBtn_clicked();
+signals:
+
+    void signalDeviceTypeSelected(QByteArray deviceType);
+
+    void signalRequestDevicesFromWorker(QByteArray deviceType);
+
+    void signalCreateDevice(QByteArray instrumentAddress, QByteArray instrumentIdentity);
 
 private:
     Ui::MainWindow *ui;
+    Worker worker;
+    n7714awindow *n7714aNewWindow;
 
-    VisaInterface theCommBus;
-    ViFindList findList;
-    ViSession defaultSession;
-    ViSession currentSession;
-    ViUInt32 numInstruments;
-    QByteArray instrAddr;
-    FoundInstr foundResources;
-    InstrData selectedResourceInfo;
-    N7714A selectedResource;
+    void loadDeviceTypesList();
 
-    void setPowerStatusIndicatorOff();
-
-    void setPowerStatusIndicatorOn();
-
-    void populateGUIFields();
-
+    void searchforSelectedResource(QByteArray selected);
 };
 
 

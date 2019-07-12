@@ -69,7 +69,7 @@ bool EXFO_OSICS_T100::setSecondCalibrationWavelengthCmd(ViSession &defaultSessio
 }
 
 // CH#:LCAL1?
-bool EXFO_OSICS_T100::firstCalibrationWavelengthQuery(ViSession &defaultSession, ViSession &instrSession, int slotNum, QByteArray &wavelength, QByteArray &response){
+bool EXFO_OSICS_T100::firstCalibrationWavelengthQuery(ViSession &defaultSession, ViSession &instrSession, int slotNum, QByteArray &response){
     QByteArray baseCmd = "CH#:LCAL1?\n";
     insertSlotNum(baseCmd, slotNum);
 
@@ -77,7 +77,7 @@ bool EXFO_OSICS_T100::firstCalibrationWavelengthQuery(ViSession &defaultSession,
 }
 
 // CH#:LCAL2?
-bool EXFO_OSICS_T100::secondCalibrationWavelengthQuery(ViSession &defaultSession, ViSession &instrSession, int slotNum, QByteArray &wavelength, QByteArray &response){
+bool EXFO_OSICS_T100::secondCalibrationWavelengthQuery(ViSession &defaultSession, ViSession &instrSession, int slotNum, QByteArray &response){
     QByteArray baseCmd = "CH#:LCAL2?\n";
     insertSlotNum(baseCmd, slotNum);
 
@@ -103,7 +103,7 @@ bool EXFO_OSICS_T100::setSecondCalibrationPowerCmd(ViSession &defaultSession, Vi
 }
 
 // CH#:PCAL1?
-bool EXFO_OSICS_T100::firstCalibrationPowerQuery(ViSession &defaultSession, ViSession &instrSession, int slotNum, QByteArray &power, QByteArray &response){
+bool EXFO_OSICS_T100::firstCalibrationPowerQuery(ViSession &defaultSession, ViSession &instrSession, int slotNum, QByteArray &response){
     QByteArray baseCmd = "CH#:PCAL1?\n";
     insertSlotNum(baseCmd, slotNum);
 
@@ -111,7 +111,7 @@ bool EXFO_OSICS_T100::firstCalibrationPowerQuery(ViSession &defaultSession, ViSe
 }
 
 // CH#:PCAL2?
-bool EXFO_OSICS_T100::secondCalibrationPowerQuery(ViSession &defaultSession, ViSession &instrSession, int slotNum, QByteArray &power, QByteArray &response){
+bool EXFO_OSICS_T100::secondCalibrationPowerQuery(ViSession &defaultSession, ViSession &instrSession, int slotNum, QByteArray &response){
     QByteArray baseCmd = "CH#:PCAL2?\n";
     insertSlotNum(baseCmd, slotNum);
 
