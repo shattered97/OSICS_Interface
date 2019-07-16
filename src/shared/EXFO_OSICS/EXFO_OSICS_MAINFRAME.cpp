@@ -2,9 +2,8 @@
 
 EXFO_OSICS_MAINFRAME::EXFO_OSICS_MAINFRAME(QByteArray theIdentity, QByteArray theInstrLoc) : DefaultInstrument(theIdentity, theInstrLoc)
 {
-
-    this->setInstrIdentity(theIdentity);
-    this->setInstrLocation(theInstrLoc);
+    this->theIdentity = theIdentity;
+    this->theInstrLoc = theInstrLoc;
 }
 
 bool EXFO_OSICS_MAINFRAME::disableMainframeLaserCmd(ViSession &defaultSession, ViSession &instrSession){

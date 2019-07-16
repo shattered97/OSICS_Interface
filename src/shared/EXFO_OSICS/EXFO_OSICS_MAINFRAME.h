@@ -67,9 +67,8 @@ public:
     // PRESENT?
     bool moduleTypeAtSlotQuery(ViSession &defaultSession, ViSession &instrSession, int slotNum, QByteArray &response);
 
-    // ******************************* Shared Module Commands  *******************************
 
-    // ******** Optical-Output Control ********
+    // ************************* Shared Module Commands - Optical-Output Control *********************************
 
     // CH#:DISABLE
     bool disableModuleLaserCmd(ViSession &defaultSession, ViSession &instrSession, int slotNum);
@@ -80,7 +79,8 @@ public:
     // CH#:ENABLE?
     bool laserStateModuleQuery(ViSession &defaultSession, ViSession &instrSession, int slotNum, QByteArray &response);
 
-    // ******** Unit Selection *********
+
+    // **************************** Shared Module Commands - Unit Selection ***********************************
 
     // CH#:GHZ
     bool setModuleSpectralUnitGHzCmd(ViSession &defaultSession, ViSession &instrSession, int slotNum);
@@ -100,7 +100,8 @@ public:
     // CH#:MW?
     bool powerUnitModuleQuery(ViSession &defaultSession, ViSession &instrSession, int slotNum, QByteArray &response);
 
-    // ******** Output Power Setting *******
+
+    // ************************************* Shared Module Commands - Output Power Setting ************************************
 
     // CH#:P=
     bool setModuleOutputPowerCmd(ViSession &defaultSession, ViSession &instrSession, int slotNum, QByteArray &power);
@@ -111,7 +112,8 @@ public:
     // CH#:LIMIT?
     bool outputPowerReachedQuery(ViSession &defaultSession, ViSession &instrSession, int slotNum, QByteArray &response);
 
-    // ******** Optical Emission Wavelength/Frequency Setting *********
+
+    // *******************  Shared Module Commands - Optical Emission Wavelength/Frequency Setting **************************
 
     // CH#:L=
     bool setRefWavelengthModuleCmd(ViSession &defaultSession, ViSession &instrSession, int slotNum, QByteArray &wavelengthNum);
@@ -137,7 +139,8 @@ public:
     // CH#:APF?
     bool autoPeakFindControlQuery(ViSession &defaultSession, ViSession &instrSession, int slotNum, QByteArray &response);
 
-    // ******** Modulation Control *********
+
+    // ****************************** Shared Module Commands - Modulation Control *******************************
 
     // CH#:MOD_CTRL
     bool setModuleModulationCtrlCmd(ViSession &defaultSession, ViSession &instrSession, int slotNum, QByteArray &setting);
@@ -151,7 +154,8 @@ public:
     // CH#:MOD_SRC?
     bool moduleModulationSrcQuery(ViSession &defaultSession, ViSession &instrSession, int slotNum, QByteArray &response);
 
-    // ******** Module System-Version Info ********
+
+    // ************************ Shared Module Commands - Module System-Version Info ****************************
 
     // CH#:FIRM?
     bool softwareVersionModuleQuery(ViSession &defaultSession, ViSession &instrSession, int slotNum, QByteArray &response);
@@ -162,15 +166,35 @@ public:
     // CH#:TYPE?
     bool typeOfModuleQuery(ViSession &defaultSession, ViSession &instrSession, int slotNum, QByteArray &response);
 
+
 protected:
+
     // ********************************** Helper Methods *************************************
+
+    /**
+     * @brief appendParamToCmdWithSpace Appends a parameter to the the end of a command with an additional space character.
+     * @param command Command to modify
+     * @param param Param to append to command
+     */
     void appendParamToCmdWithSpace(QByteArray &command, QByteArray param);
+
+    /**
+     * @brief appendParamToCmdNoSpace Appends a parameter to the end of a command with no space characters.
+     * @param command Command to modify
+     * @param param Param to append to command
+     */
     void appendParamToCmdNoSpace(QByteArray &command, QByteArray param);
+
+    /**
+     * @brief insertSlotNum Inserts the slot number of a device to a base command.
+     * @param command Command to modify
+     * @param slotNum Slot number to insert into command
+     */
     void insertSlotNum(QByteArray &command, int slotNum);
 
 private:
-    QByteArray theIdentity;
-    QByteArray theInstrLoc;
+    QByteArray theIdentity;                 // identity of instrument (manufacturer, model num, etc.)
+    QByteArray theInstrLoc;                 // the physical address of the instrument
 
 };
 

@@ -32,6 +32,7 @@ private slots:
 
 signals:
 
+
     void signalDeviceTypeSelected(QByteArray deviceType);
 
     void signalRequestDevicesFromWorker();
@@ -39,12 +40,25 @@ signals:
     void signalCreateDevice(QByteArray instrumentAddress, QByteArray instrumentIdentity);
 
 private:
+
+    // main window user interface
     Ui::MainWindow *ui;
+
+    // Orchestrator object that handles device communication
     Orchestrator worker;
 
-    void loadDeviceTypesList();
-
+    /**
+     * @brief resourcesQmapToQList Returns a list of device identities that match a particular device type
+     * @param foundResources QMap of all VISA resources found on system
+     * @param deviceType Type of device to search for
+     * @return List of device identities matching device type
+     */
     QList<QByteArray> resourcesQmapToQList(FoundInstr foundResources, QByteArray deviceType);
+
+    /**
+     * @brief loadDeviceTypesList Populates the widget of possible device types
+     */
+    void loadDeviceTypesList();
 
 };
 

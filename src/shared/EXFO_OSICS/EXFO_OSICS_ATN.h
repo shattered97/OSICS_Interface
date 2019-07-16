@@ -27,8 +27,8 @@ public:
     bool moduleAttenuationOffsetQuery(ViSession &defaultSession, ViSession &instrSession, int moduleNum, QByteArray wavelengthNum, QByteArray &response);
 
 private:
-    QByteArray theIdentity;
-    QByteArray theInstrLoc;
+    QByteArray theIdentity;                 // identity of instrument (manufacturer, model num, etc.)
+    QByteArray theInstrLoc;                 // the physical address of the instrument
 };
 
 #endif // EXFO_OSICS_ATN_H

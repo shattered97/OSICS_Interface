@@ -8,7 +8,7 @@ class EXFO_OSICS_T100 : EXFO_OSICS_MAINFRAME
 public:
     EXFO_OSICS_T100(QByteArray theIdentity, QByteArray theInstrLoc);
 
-    // ********* Diode-Current Setting Commands **********
+    // ********************************* Diode-Current Setting Commands *********************************
 
     // CH#:I?
     bool diodeCurrentLevelModuleQuery(ViSession &defaultSession, ViSession &instrSession, int moduleNum, QByteArray &response);
@@ -16,7 +16,8 @@ public:
     // CH#:IMAX?
     bool diodeMaxCurrentModuleQuery(ViSession &defaultSession, ViSession &instrSession, int moduleNum, QByteArray &response);
 
-    // ********* Calibration Control Commands *********
+
+    // ********************************* Calibration Control Commands ********************************
 
     // CH#:MOD_F=
     bool setModFrequencyModuleCmd(ViSession &defaultSession, ViSession &instrSession, int moduleNum, QByteArray &frequency);
@@ -51,7 +52,8 @@ public:
     // CH#:PCAL2?
     bool secondCalibrationPowerQuery(ViSession &defaultSession, ViSession &instrSession, int moduleNum, QByteArray &response);
 
-    // ********* Module Parameter-Monitoring Commands *********
+
+    // ********************************** Module Parameter-Monitoring Commands *********************************
 
     // CH#:AOUT
     bool assignOutBNCPortToSignalCmd(ViSession &defaultSession, ViSession &instrSession, int moduleNum, QByteArray &signalType);
@@ -60,8 +62,8 @@ public:
     bool outBNCPortSignalMonitoringQuery(ViSession &defaultSession, ViSession &instrSession, int moduleNum, QByteArray &response);
 
 private:
-    QByteArray theIdentity;
-    QByteArray theInstrLoc;
+    QByteArray theIdentity;                 // identity of instrument (manufacturer, model num, etc.)
+    QByteArray theInstrLoc;                 // the physical address of the instrument
 
 };
 

@@ -33,8 +33,20 @@ public:
      */
     bool logEntry(QString msg);
 
+    /**
+     * @brief logInstrSendCmd Formats a log entry for sending a command
+     * @param instrAddr Sevice being accessed
+     * @param statusCode Status returned from sending command
+     * @param cmd command Sent
+     */
     void logInstrSendCmd(QByteArray instrAddr, qint32 statusCode, QByteArray cmd);
 
+    /**
+     * @brief logInstrReadCmd Formats a log entry for reading a device response
+     * @param instrAddr Device being accessed
+     * @param statusCode Status returned from reading from device
+     * @param response Response from device
+     */
     void logInstrReadCmd(QByteArray instrAddr, qint32 statusCode, QByteArray response);
 
 private:
@@ -44,12 +56,13 @@ private:
      */
     Logging();
 
+    // pointer to logging instance
     static Logging *theLoggerPtr;
 
-    ///Log File object
+    // Log File object
     QFile theLogFile;
 
-    ///Mutex to lock the log file while writing to it
+    // Mutex to lock the log file while writing to it
     QMutex lockLogMutex;
 
 };

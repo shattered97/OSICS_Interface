@@ -55,8 +55,8 @@ public:
 
 
 private:
-    QByteArray theIdentity;
-    QByteArray theInstrLoc;
+    QByteArray theIdentity;                 // identity of instrument (manufacturer, model num, etc.)
+    QByteArray theInstrLoc;                 // the physical address of the instrument
 };
 
 #endif // EXFO_OSICS_SWT_H

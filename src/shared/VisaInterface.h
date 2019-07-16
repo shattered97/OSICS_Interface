@@ -7,10 +7,9 @@
 
 #include <QString>
 
-
-//Wrapper to National Instruments visa.h library that was written in C
-//See OSICS.pro to determine where the visa.h library must be installed.
-//This is location is the default windows install when VISA drivers are installed
+// Wrapper to National Instruments visa.h library that was written in C
+// See OSICS.pro to determine where the visa.h library must be installed.
+// This is location is the default windows install when VISA drivers are installed
 
 
 class VisaInterface

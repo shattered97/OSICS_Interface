@@ -17,23 +17,34 @@ public:
 
 public slots:
 
-     void slotLookForDevices();
+    /**
+     * @brief slotLookForDevices - Queries for all connected VISA devices. Signals back to the sender a list of found resources.
+     */
+    void slotLookForDevices();
 
-     void slotCreateN7714ADevice(QByteArray instrumentAddress, QByteArray instrumentIdentity);
+    /**
+     * @brief slotCreateN7714ADevice Creates a N7714A device object.
+     * @param instrumentAddress Physical address of instrument
+     * @param instrumentIdentity Identity of instrument (manufacturer, model num, etc.)
+     */
+    void slotCreateN7714ADevice(QByteArray instrumentAddress, QByteArray instrumentIdentity);
 
 signals:
-     void signalReturnDevicesFound(FoundInstr);
+
+    /**
+     * @brief signalReturnDevicesFound Signals the list of instruments found to reciever.
+     */
+    void signalReturnDevicesFound(FoundInstr);
 
 private:
-    VisaInterface theCommBus;
-    ViSession defaultSession;
-    FoundInstr foundResources;
+    VisaInterface theCommBus;               // common methods for talking to VISA devices
+    ViSession defaultSession;               // default session for device communication
+    FoundInstr foundResources;              // map of VISA resources found
 
     ViFindList findList;
     ViSession currentSession;
     ViUInt32 numInstruments;
     QByteArray instrAddr;
-
 
     DefaultInstrument selectedResource;
 

@@ -2,8 +2,8 @@
 
 KeysightPowerMeter::KeysightPowerMeter(QByteArray theIdentity, QByteArray theInstrLoc)
 {
-    this->instrIdentity = theIdentity;
-    this->instrLoc = theInstrLoc;
+    this->theIdentity = theIdentity;
+    this->theInstrLoc = theInstrLoc;
 }
 
 KeysightPowerMeter::~KeysightPowerMeter()

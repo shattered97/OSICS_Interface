@@ -2,8 +2,8 @@
 
 N7714A::N7714A( QByteArray theIdentity, QByteArray theInstrLoc) : DefaultInstrument(theIdentity, theInstrLoc)
 {
-    this->setInstrIdentity(theIdentity);
-    this->setInstrLocation(theInstrLoc);
+    this->theIdentity = theIdentity;
+    this->theInstrLoc = theInstrLoc;
 }
 
 

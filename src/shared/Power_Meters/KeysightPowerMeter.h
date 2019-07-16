@@ -12,8 +12,8 @@ public:
     ~KeysightPowerMeter();
 
 private:
-    QByteArray instrIdentity;
-    QByteArray instrLoc;
+    QByteArray theIdentity;                 // identity of instrument (manufacturer, model num, etc.)
+    QByteArray theInstrLoc;                 // the physical address of the instrument
 };
 
 #endif // KEYSIGHTPOWERMETER_H

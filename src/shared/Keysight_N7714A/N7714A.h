@@ -25,8 +25,8 @@ public:
     bool execWavelength(ViSession &defaultSession, ViSession &instrSession, int module, QByteArray value="");
 
 private:
-    QByteArray theIdentity;
-    QByteArray theInstrLoc;
+    QByteArray theIdentity;                 // identity of instrument (manufacturer, model num, etc.)
+    QByteArray theInstrLoc;                 // the physical address of the instrument
 };
 
 #endif // N7714A_H

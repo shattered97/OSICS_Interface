@@ -12,30 +12,16 @@ DefaultInstrument::DefaultInstrument(QByteArray theIdentity, QByteArray theInstr
     this->theInstrLoc = theInstrLoc;
 }
 
-QByteArray DefaultInstrument::getInstrIdentity(){
+QByteArray DefaultInstrument::getInstrIdentity()
+{
     return theIdentity;
 }
 
-void DefaultInstrument::setInstrIdentity(QByteArray theIdentity){
-    this->theIdentity = theIdentity;
-}
 
-QByteArray DefaultInstrument::getInstrLocation(){
+QByteArray DefaultInstrument::getInstrLocation()
+{
     return theInstrLoc;
 }
-
-void DefaultInstrument::setInstrLocation(QByteArray theInstrLoc){
-    this->theInstrLoc = theInstrLoc;
-}
-
-VisaInterface DefaultInstrument::getCommBus(){
-    return theCommBus;
-}
-
-void DefaultInstrument::setCommBus(VisaInterface theCommBus){
-    this->theCommBus = theCommBus;
-}
-
 
 bool DefaultInstrument::querySTB(ViSession &defaultSession, ViSession &instrSession, QByteArray &response){
     // Command "*STB?\n"
@@ -189,8 +175,7 @@ bool DefaultInstrument::sendCmdNoRsp(ViSession &defaultSession, ViSession &instr
     bool success = true;
 
     // open session
-    ViStatus sessionStatus = NULL;
-    theCommBus.openInstrSession(defaultSession, theInstrLoc, instrSession);
+    ViStatus sessionStatus = theCommBus.openInstrSession(defaultSession, theInstrLoc, instrSession);
 
     if(sessionStatus < VI_SUCCESS){
         success = false;
