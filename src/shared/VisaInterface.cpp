@@ -23,15 +23,16 @@ ViStatus VisaInterface::createDefaultRM(ViSession &defaultSession)
     //This function returns a session to the Default Resource Manager resource.
     theStatus = viOpenDefaultRM(&defaultSession);
 
+
     //Anything greater than 0 is a failure
     //VI_SUCCESS == 0 Operation completed succesfully
     if(theStatus < VI_SUCCESS)
     {
-        Logging::getInstance()->logEntry(QString("Failed to open default resource, status:  %1").arg(theStatus));
+        logger->logEntry(QString("Failed to open default resource, status:  %1").arg(theStatus));
     }
     else
     {
-        Logging::getInstance()->logEntry("Successfully created Default Resource");
+        logger->logEntry("Successfully created Default Resource");
     }
 
    return theStatus;
@@ -81,13 +82,13 @@ bool VisaInterface::findResources(ViSession &defaultRMSession,
 
     if(theStatus < VI_SUCCESS)
     {
-        Logging::getInstance()->logEntry(QString("Error Finding resources, status code: %1").arg(theStatus));
+        logger->logEntry(QString("Error Finding resources, status code: %1").arg(theStatus));
         return false;
     }
     else
     {
         QString response = "Found %1 instruments, First instrument address: %2";
-        Logging::getInstance()->logEntry(response.arg(*numInstrs).arg(instrDescriptor));
+        logger->logEntry(response.arg(*numInstrs).arg(instrDescriptor));
         instrumentLoc = instrDescriptor;  //convert from char array to QByteArray to make things easier
         return true;
     }
@@ -107,24 +108,24 @@ ViStatus VisaInterface::createInstrMap(ViSession &defaultRMSession, QByteArray &
 
     if(theStatus < VI_SUCCESS)
     {
-        Logging::getInstance()->logEntry(QString("Error opening session to %1").arg(instrDescriptor));
+        logger->logEntry(QString("Error opening session to %1").arg(instrDescriptor));
     }
     else
     {
         //Opened instrument Session Log it
-        Logging::getInstance()->logEntry(QString("Opened session to: %1").arg(instrDescriptor));
+        logger->logEntry(QString("Opened session to: %1").arg(instrDescriptor));
 
         //Lets figure what instrument we are talking too
        theStatus = queryInstrument(instrumentLoc, instrSess, resultMap);
 
        if(theStatus < VI_SUCCESS)
        {
-          Logging::getInstance()->logEntry("Failed to get Instrument Identity, Closing Session") ;
+          logger->logEntry("Failed to get Instrument Identity, Closing Session") ;
           // if we can't talk to the first instrument, index into list will remain 1.
        }
        else
        {
-          Logging::getInstance()->logEntry("Found everything we need from first instrument");
+          logger->logEntry("Found everything we need from first instrument");
           // if we can talk to first instrument, we increment our index by 1
           index ++;
        }
@@ -136,7 +137,7 @@ ViStatus VisaInterface::createInstrMap(ViSession &defaultRMSession, QByteArray &
 
     while(*numInstr > 0)
     {
-        Logging::getInstance()->logEntry(QString("Number of instruments left: %1").arg(*numInstr));
+        logger->logEntry(QString("Number of instruments left: %1").arg(*numInstr));
         theStatus = findNextResource(defaultRMSession, instrumentLoc, instrSess, findList, resultMap);
 
         (*numInstr)--; //added next instrument decrement count
@@ -148,17 +149,17 @@ ViStatus VisaInterface::createInstrMap(ViSession &defaultRMSession, QByteArray &
 
 ViStatus VisaInterface::closeDefaultSession(ViSession &defaultSession)
 {
-    Logging::getInstance()->logEntry("Closing Default Session");
+    logger->logEntry("Closing Default Session");
     return closeSession(defaultSession);
 }
 
 ViStatus VisaInterface::openInstrSession(ViSession &defaultSession, QByteArray instrAddr, ViSession &instrSess){
    ViStatus status = viOpen(defaultSession, instrAddr, VI_NULL, VI_NULL, &instrSess);
    if(status < VI_SUCCESS){
-       Logging::getInstance()->logEntry(QString(QString::number(__LINE__) + " Failed to open session on instrument"));
+       logger->logEntry(QString(QString::number(__LINE__) + " Failed to open session on instrument"));
    }
    else{
-       Logging::getInstance()->logEntry(QString("Opened session to: %1").arg(QString::fromLatin1(instrAddr)));
+       logger->logEntry(QString("Opened session to: %1").arg(QString::fromLatin1(instrAddr)));
    }
    return status;
 }
@@ -174,7 +175,7 @@ ViStatus VisaInterface::findNextResource(ViSession &defaultRMSession, QByteArray
 
    if(theStatus < VI_SUCCESS)
    {
-       Logging::getInstance()->logEntry("Command to findNextResource Failed, Closing Session");
+       logger->logEntry("Command to findNextResource Failed, Closing Session");
    }
    else
    {
@@ -182,10 +183,10 @@ ViStatus VisaInterface::findNextResource(ViSession &defaultRMSession, QByteArray
        // open session
        theStatus = viOpen(defaultRMSession, instrDescriptor, VI_NULL, VI_NULL, &instrSess);
        if(theStatus < VI_SUCCESS){
-           Logging::getInstance()->logEntry(QString(QString::number(__LINE__) + " Failed to open session on instrument"));
+           logger->logEntry(QString(QString::number(__LINE__) + " Failed to open session on instrument"));
        }
        else{
-           Logging::getInstance()->logEntry(QString("Opened session to: %1").arg(QString::fromLatin1(instrumentLoc)));
+           logger->logEntry(QString("Opened session to: %1").arg(QString::fromLatin1(instrumentLoc)));
        }
 
        // convert char array to QByteArray
@@ -195,11 +196,11 @@ ViStatus VisaInterface::findNextResource(ViSession &defaultRMSession, QByteArray
 
        if(theStatus < VI_SUCCESS)
        {
-          Logging::getInstance()->logEntry("Failed to get Instrument Identity, Closing Session") ;
+          logger->logEntry("Failed to get Instrument Identity, Closing Session") ;
        }
        else
        {
-          Logging::getInstance()->logEntry("Found everything we need closing instrument Session");
+          logger->logEntry("Found everything we need closing instrument Session");
        }
    }
 
@@ -222,7 +223,7 @@ ViStatus VisaInterface::queryInstrument(QByteArray &instrumentLoc, ViSession &in
     if (theStatus < VI_SUCCESS)
     {
         //We failed log it and close instrument session NOT the default session this is still open
-        Logging::getInstance()->logEntry("Failed to send command to instrument");
+        logger->logEntry("Failed to send command to instrument");
 
     }
     else
@@ -259,11 +260,11 @@ ViStatus VisaInterface::sendCmd(ViSession &instrSession, QByteArray instrAddr, Q
 
     theStatus = viWrite(instrSession, (ViBuf)buffer, (ViUInt32)strlen(buffer), &writeCount);
 
-    Logging::getInstance()->logInstrSendCmd(instrAddr, theStatus, scpiCmd);
+    logger->logInstrSendCmd(instrAddr, theStatus, scpiCmd);
 
     if(theStatus < VI_SUCCESS)
     {
-        Logging::getInstance()->logEntry("Error writing to device");
+        logger->logEntry("Error writing to device");
     }
 
     return theStatus;
@@ -277,15 +278,15 @@ ViStatus VisaInterface::readCmd(ViSession &instrSession, QByteArray instrAddr, Q
 
     charArrayToByteArray(buffer, response, retCount);
 
-    Logging::getInstance()->logInstrReadCmd(instrAddr, theStatus, response);
+    logger->logInstrReadCmd(instrAddr, theStatus, response);
 
     if(theStatus < VI_SUCCESS)
     {
-        Logging::getInstance()->logEntry("Error reading response from device");
+        logger->logEntry("Error reading response from device");
     }
     else
     {
-        Logging::getInstance()->logEntry(QString("%1 Bytes Read:  %2").arg(retCount));
+        logger->logEntry(QString("%1 Bytes Read:  %2").arg(retCount));
         charArrayToByteArray(buffer, response, retCount);
     }
 
@@ -296,7 +297,7 @@ ViStatus VisaInterface::closeSession(ViSession &sessionToClose)
 {
     fflush(stdin);
     theStatus = viClose(sessionToClose);
-    Logging::getInstance()->logEntry("Closed Session");
+    logger->logEntry("Closed Session");
     return theStatus;
 }
 

@@ -14,7 +14,6 @@ typedef QMap<int, InstrData> FoundInstr;
 const QString LOG_FILE_PATH  = QDir::currentPath();  //Same dir as exe
 const QString LOG_FILE       = "OSICS_LOG.txt";
 const QString TIMESTAMP_FORMAT = "dd_MMM_yy_hh_mm:ss:zzz";
-const QString LINE_NUM_PREPEND = QString::number(__LINE__) + ":   ";
 
 //VISA Resource Queries
 const QString GPIB          =  "GPIB[0-9]*::?*INSTR";

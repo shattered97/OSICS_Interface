@@ -142,7 +142,7 @@ private:
     //Private Data Members
 
     ViStatus theStatus;  //Status of last operation - Contains Completion Code
-
+    Logging* logger = Logging::getInstance();
 
 };
 

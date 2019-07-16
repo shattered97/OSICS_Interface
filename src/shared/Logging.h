@@ -35,7 +35,7 @@ public:
 
     /**
      * @brief logInstrSendCmd Formats a log entry for sending a command
-     * @param instrAddr Sevice being accessed
+     * @param instrAddr Device being accessed
      * @param statusCode Status returned from sending command
      * @param cmd command Sent
      */
@@ -52,7 +52,7 @@ public:
 private:
 
     /**
-     * @brief Logging - construstor is private to prevent instancing
+     * @brief Logging - constructor is private to prevent instancing
      */
     Logging();
 
