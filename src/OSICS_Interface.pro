@@ -16,13 +16,11 @@ win32: LIBS += "C:/Program Files (x86)/IVI Foundation/VISA/WinNT/lib/msc/visa32.
 INCLUDEPATH += "C:/Program Files/IVI Foundation/VISA/Win64/Include" \
                 Windows \
                 shared \
-                EXFO_OSICS
-
+                EXFO_OSICS \
+                shared/Keysight_N7714A \
+                shared/Power_Meters
 
 DEPENDPATH += "C:/Program Files/IVI Foundation/VISA/Win64/Include"
-
-
-
 
 
 # The following define makes your compiler emit warnings if you use
@@ -39,36 +37,39 @@ DEFINES += QT_DEPRECATED_WARNINGS
 CONFIG += c++11
 
 SOURCES += \
-        Worker.cpp \
-        n7714awindow.cpp \
+        main.cpp \
+        mainwindow.cpp \
+        shared/DefaultInstrument.cpp \
+        shared/Orchestrator.cpp \
+        shared/VisaInterface.cpp \
+        shared/Logging.cpp \
         shared/EXFO_OSICS/EXFO_OSICS_ATN.cpp \
         shared/EXFO_OSICS/EXFO_OSICS_MAINFRAME.cpp \
-        shared/DefaultInstrument.cpp \
         shared/EXFO_OSICS/EXFO_OSICS_SWT.cpp \
         shared/EXFO_OSICS/EXFO_OSICS_T100.cpp \
-        shared/Logging.cpp \
-        shared/N7714A.cpp \
-        shared/VisaInterface.cpp \
-        main.cpp \
-        mainwindow.cpp
+        shared/Keysight_N7714A/N7714A.cpp \
+        shared/Power_Meters/KeysightPowerMeter.cpp \
+        shared/Power_Meters/PowerMeter.cpp
+
 
 HEADERS += \
-        Worker.h \
-        n7714awindow.h \
+        mainwindow.h \
+        shared/DefaultInstrument.h \
+        shared/Orchestrator.h \
+        shared/VisaInterface.h \
+        shared/Logging.h \
+        shared/constants.h \
         shared/EXFO_OSICS/EXFO_OSICS_ATN.h \
         shared/EXFO_OSICS/EXFO_OSICS_MAINFRAME.h \
-        shared/DefaultInstrument.h \
         shared/EXFO_OSICS/EXFO_OSICS_SWT.h \
         shared/EXFO_OSICS/EXFO_OSICS_T100.h \
-        shared/Logging.h \
-        shared/N7714A.h \
-        shared/VisaInterface.h \
-        shared/constants.h \
-        mainwindow.h
+        shared/Keysight_N7714A/N7714A.h \
+        shared/Power_Meters/PowerMeter.h \
+        shared/Power_Meters/KeysightPowerMeter.h
+
 
 FORMS += \
-        mainwindow.ui \
-        n7714awindow.ui
+        mainwindow.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

@@ -5,12 +5,15 @@
 
 #include <QThread>
 #include <QString>
+#include <QElapsedTimer>
 
 class DefaultInstrument
 {
 public:
     DefaultInstrument();
     DefaultInstrument(QByteArray theIdentity, QByteArray theInstrLoc);
+
+    // ********************** Getters / Setters ************************
 
     QByteArray getInstrIdentity();
 
@@ -24,6 +27,7 @@ public:
 
     void setCommBus(VisaInterface theCommBus);
 
+    // ********************** Common SCPI Commands **********************
 
     bool querySTB(ViSession &defaultSession, ViSession &instrSession, QByteArray &response);
 
@@ -51,9 +55,11 @@ public:
 
     bool queryIDN(ViSession &defaultSession, ViSession &instrSession, QByteArray &response);
 
-    bool checkOperationComplete(ViSession &instrSession, int timeout);
-
 protected:
+
+    // **************************** Helper Functions ****************************************
+
+    bool checkOperationComplete(ViSession &instrSession, int timeout);
 
     bool sendCmdNoRsp(ViSession &defaultSession, ViSession &instrSession, QByteArray &command);
 

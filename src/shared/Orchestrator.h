@@ -7,35 +7,35 @@
 #include <QObject>
 
 
-class Worker : public QObject
+class Orchestrator : public QObject
 {
     Q_OBJECT
 
 public:
-    Worker();
-    ~Worker();
+    Orchestrator();
+    ~Orchestrator();
 
 public slots:
 
-     void slotLookForDevices(QByteArray deviceType);
+     void slotLookForDevices();
 
      void slotCreateN7714ADevice(QByteArray instrumentAddress, QByteArray instrumentIdentity);
 
 signals:
-     void signalReturnDevicesFound(QList<QByteArray>);
+     void signalReturnDevicesFound(FoundInstr);
 
 private:
     VisaInterface theCommBus;
-    ViFindList findList;
     ViSession defaultSession;
+    FoundInstr foundResources;
+
+    ViFindList findList;
     ViSession currentSession;
     ViUInt32 numInstruments;
     QByteArray instrAddr;
-    FoundInstr foundResources;
-    InstrData selectedResourceInfo;
-    DefaultInstrument selectedResource;
 
-    QList<QByteArray> resourcesQmapToQList(FoundInstr foundResources, QByteArray deviceType);
+
+    DefaultInstrument selectedResource;
 
 };
 

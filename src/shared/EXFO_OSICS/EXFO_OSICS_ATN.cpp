@@ -2,7 +2,6 @@
 
 EXFO_OSICS_ATN::EXFO_OSICS_ATN(QByteArray theIdentity, QByteArray theInstrLoc) : EXFO_OSICS_MAINFRAME(theIdentity, theInstrLoc)
 {
-
 }
 
 // CH#:ATN

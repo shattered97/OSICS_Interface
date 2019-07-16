@@ -1,6 +1,4 @@
 #include "DefaultInstrument.h"
-#include "constants.h"
-#include <QElapsedTimer>
 
 DefaultInstrument::DefaultInstrument() :
     theIdentity(""),
@@ -11,10 +9,7 @@ DefaultInstrument::DefaultInstrument() :
 
 DefaultInstrument::DefaultInstrument(QByteArray theIdentity, QByteArray theInstrLoc){
     this->theIdentity = theIdentity;
-    qDebug() << this->theIdentity;
     this->theInstrLoc = theInstrLoc;
-    qDebug() << this->theInstrLoc;
-
 }
 
 QByteArray DefaultInstrument::getInstrIdentity(){
@@ -50,7 +45,6 @@ bool DefaultInstrument::querySTB(ViSession &defaultSession, ViSession &instrSess
     QByteArray command = QUERY_STB;
 
     return sendCmdRsp(defaultSession, instrSession, command, response);
-
 }
 
 bool DefaultInstrument::execESE(ViSession &defaultSession, ViSession &instrSession, ViByte registerVal){
@@ -74,7 +68,6 @@ bool DefaultInstrument::queryESE(ViSession &defaultSession, ViSession &instrSess
     QByteArray command = QUERY_ESE;
 
     return sendCmdRsp(defaultSession, instrSession, command, response);
-
 }
 
 bool DefaultInstrument::queryESR(ViSession &defaultSession, ViSession &instrSession, QByteArray &response){
@@ -85,7 +78,6 @@ bool DefaultInstrument::queryESR(ViSession &defaultSession, ViSession &instrSess
     QByteArray command = QUERY_ESR;
 
     return sendCmdRsp(defaultSession, instrSession, command, response);
-
 }
 
 bool DefaultInstrument::execOPC(ViSession &defaultSession, ViSession &instrSession){
@@ -146,7 +138,6 @@ bool DefaultInstrument::queryOPT(ViSession &defaultSession, ViSession &instrSess
     QByteArray command = QUERY_OPT;
 
     return sendCmdRsp(defaultSession, instrSession, command, response);
-
 }
 
 bool DefaultInstrument::execWAI(ViSession &defaultSession, ViSession &instrSession){
@@ -167,7 +158,6 @@ bool DefaultInstrument::queryIDN(ViSession &defaultSession, ViSession &instrSess
     QByteArray command = QUERY_IDN;
 
     return sendCmdRsp(defaultSession, instrSession, command, response);
-
 }
 
 bool DefaultInstrument::checkOperationComplete(ViSession &instrSession, int timeout = DEFAULT_COMMAND_TIMEOUT_MS){
@@ -182,21 +172,20 @@ bool DefaultInstrument::checkOperationComplete(ViSession &instrSession, int time
         complete = 0;
 
         ViUInt32 writeCount;
-        ViStatus status = theCommBus.sendCmd(instrSession, theInstrLoc, QUERY_OPC, writeCount);
+        theCommBus.sendCmd(instrSession, theInstrLoc, QUERY_OPC, writeCount);
 
         QByteArray response;
         ViUInt32 rtnSize;
-        status = theCommBus.readCmd(instrSession, theInstrLoc, response, rtnSize);
+        theCommBus.readCmd(instrSession, theInstrLoc, response, rtnSize);
 
         complete = response[0];
-
     }
     return complete;
 }
 
 bool DefaultInstrument::sendCmdNoRsp(ViSession &defaultSession, ViSession &instrSession, QByteArray &command){
 
-    qDebug() << command;
+    qDebug() << "Sent command: " << command;
     bool success = true;
 
     // open session
@@ -213,7 +202,6 @@ bool DefaultInstrument::sendCmdNoRsp(ViSession &defaultSession, ViSession &instr
         ViStatus status = theCommBus.sendCmd(instrSession, theInstrLoc, command, writeCount);
 
         if(status < VI_SUCCESS){
-//            qDebug() << QString("Query failed: %1").arg(status);
             success = false;
         }
         else{
@@ -231,7 +219,7 @@ bool DefaultInstrument::sendCmdNoRsp(ViSession &defaultSession, ViSession &instr
 
 bool DefaultInstrument::sendCmdRsp(ViSession &defaultSession, ViSession &instrSession, QByteArray &command, QByteArray &response){
 
-    qDebug() << command;
+    qDebug() << "Command sent: " << command;
     bool success = true;
 
     // open session
@@ -239,6 +227,7 @@ bool DefaultInstrument::sendCmdRsp(ViSession &defaultSession, ViSession &instrSe
 
     if(sessionStatus < VI_SUCCESS){
         success = false;
+        qDebug() << "Opening session failed.  status: " << sessionStatus;
     }
     else{
 

@@ -1,7 +1,8 @@
 #include "EXFO_OSICS_MAINFRAME.h"
 
-EXFO_OSICS_MAINFRAME::EXFO_OSICS_MAINFRAME(QByteArray theIdentity, QByteArray theInstrLoc)
+EXFO_OSICS_MAINFRAME::EXFO_OSICS_MAINFRAME(QByteArray theIdentity, QByteArray theInstrLoc) : DefaultInstrument(theIdentity, theInstrLoc)
 {
+
     this->setInstrIdentity(theIdentity);
     this->setInstrLocation(theInstrLoc);
 }

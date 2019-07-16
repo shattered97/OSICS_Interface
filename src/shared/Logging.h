@@ -10,6 +10,8 @@
 #include <QDebug>
 #include <QFile>
 #include <QMutexLocker>
+#include <QDateTime>
+#include <QMessageBox>
 
 //Singleton
 

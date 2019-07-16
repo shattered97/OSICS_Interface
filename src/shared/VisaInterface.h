@@ -144,6 +144,7 @@ private:
 
     ViStatus theStatus;  //Status of last operation - Contains Completion Code
 
+
 };
 
 #endif // VISAINTERFACE_H

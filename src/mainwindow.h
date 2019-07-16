@@ -1,9 +1,12 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include "ui_mainwindow.h"
+#include "QMessageBox"
+#include "Orchestrator.h"
+
 #include <QMainWindow>
-#include "Worker.h"
-#include "n7714awindow.h"
+#include <QObject>
 
 namespace Ui {
 class MainWindow;
@@ -23,9 +26,7 @@ private slots:
 
     void on_listWidget_currentItemChanged();
 
-    void openN7714AView();
-
-    void slotReceiveDevices(QList<QByteArray> listOfDevices);
+    void slotReceiveDevices(FoundInstr listOfDevices);
 
     void on_launchSelectedDevice_clicked();
 
@@ -33,19 +34,18 @@ signals:
 
     void signalDeviceTypeSelected(QByteArray deviceType);
 
-    void signalRequestDevicesFromWorker(QByteArray deviceType);
+    void signalRequestDevicesFromWorker();
 
     void signalCreateDevice(QByteArray instrumentAddress, QByteArray instrumentIdentity);
 
 private:
     Ui::MainWindow *ui;
-    Worker worker;
-    n7714awindow *n7714aNewWindow;
+    Orchestrator worker;
 
     void loadDeviceTypesList();
 
-    void searchforSelectedResource(QByteArray selected);
-};
+    QList<QByteArray> resourcesQmapToQList(FoundInstr foundResources, QByteArray deviceType);
 
+};
 
 #endif // MAINWINDOW_H

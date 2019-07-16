@@ -1,7 +1,6 @@
 #include "Logging.h"
 
-#include <QDateTime>
-#include <QMessageBox>
+
 
 Logging* Logging::theLoggerPtr = nullptr;
 

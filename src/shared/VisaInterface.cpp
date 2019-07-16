@@ -1,18 +1,12 @@
 #include "VisaInterface.h"
 
-#include "VisaInterface.h"
-#include <QDebug>
 
 VisaInterface::VisaInterface()
-
 {
-
-
 }
 
 VisaInterface::~VisaInterface()
 {
-
 }
 
 ViStatus VisaInterface::createDefaultRM(ViSession &defaultSession)
@@ -161,10 +155,10 @@ ViStatus VisaInterface::closeDefaultSession(ViSession &defaultSession)
 ViStatus VisaInterface::openInstrSession(ViSession &defaultSession, QByteArray instrAddr, ViSession &instrSess){
    ViStatus status = viOpen(defaultSession, instrAddr, VI_NULL, VI_NULL, &instrSess);
    if(status < VI_SUCCESS){
-       Logging::getInstance()->logEntry("Failed to open session on instrument");
+       Logging::getInstance()->logEntry(QString(QString::number(__LINE__) + " Failed to open session on instrument"));
    }
    else{
-       Logging::getInstance()->logEntry("Session opened on instrument");
+       Logging::getInstance()->logEntry(QString("Opened session to: %1").arg(QString::fromLatin1(instrAddr)));
    }
    return status;
 }
@@ -187,6 +181,12 @@ ViStatus VisaInterface::findNextResource(ViSession &defaultRMSession, QByteArray
 
        // open session
        theStatus = viOpen(defaultRMSession, instrDescriptor, VI_NULL, VI_NULL, &instrSess);
+       if(theStatus < VI_SUCCESS){
+           Logging::getInstance()->logEntry(QString(QString::number(__LINE__) + " Failed to open session on instrument"));
+       }
+       else{
+           Logging::getInstance()->logEntry(QString("Opened session to: %1").arg(QString::fromLatin1(instrumentLoc)));
+       }
 
        // convert char array to QByteArray
        instrumentLoc = QByteArray(reinterpret_cast<char*>(instrDescriptor));
