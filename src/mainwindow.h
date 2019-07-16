@@ -35,7 +35,7 @@ signals:
 
     void signalDeviceTypeSelected(QByteArray deviceType);
 
-    void signalRequestDevicesFromWorker();
+    void signalRequestDevicesFromOrchestrator();
 
     void signalCreateDevice(QByteArray instrumentAddress, QByteArray instrumentIdentity);
 
@@ -45,7 +45,7 @@ private:
     Ui::MainWindow *ui;
 
     // Orchestrator object that handles device communication
-    Orchestrator worker;
+    Orchestrator orchestrator;
 
     /**
      * @brief resourcesQmapToQList Returns a list of device identities that match a particular device type

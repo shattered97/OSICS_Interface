@@ -1,5 +1,5 @@
-#ifndef WORKER_H
-#define WORKER_H
+#ifndef ORCHESTRATOR_H
+#define ORCHESTRATOR_H
 
 #include "VisaInterface.h"
 #include "DefaultInstrument.h"
@@ -50,4 +50,4 @@ private:
 
 };
 
-#endif // WORKER_H
+#endif // ORCHESTRATOR_H

@@ -5,7 +5,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    Orchestrator worker;
+    Orchestrator orchestrator;
     loadDeviceTypesList();
 }
 
@@ -30,8 +30,8 @@ void MainWindow::on_confirmDevTypeBtn_clicked()
     ui->confirmDevTypeBtn->setEnabled(false);
 
     // carry out search for devices
-    QObject::connect(this, SIGNAL(signalRequestDevicesFromWorker()), &worker, SLOT(slotLookForDevices()));
-    emit signalRequestDevicesFromWorker();
+    QObject::connect(this, SIGNAL(signalRequestDevicesFromOrchestrator()), &orchestrator, SLOT(slotLookForDevices()));
+    emit signalRequestDevicesFromOrchestrator();
 
     // enable launch button
     if(ui->foundDevicesListWidget->count() > 0){
@@ -74,8 +74,8 @@ void MainWindow::on_launchSelectedDevice_clicked()
         QByteArray instrumentAddress = currentDeviceSelected.split(' ')[0];
         QByteArray instrumentIdentity = currentDeviceSelected.mid(currentDeviceSelected.indexOf(' ') + 1, currentDeviceSelected.size());
 
-        // signal worker to create device
-        QObject::connect(this, SIGNAL(signalCreateDevice(QByteArray, QByteArray)), &worker, SLOT(slotCreateN7714ADevice(QByteArray, QByteArray)));
+        // signal orchestrator to create device
+        QObject::connect(this, SIGNAL(signalCreateDevice(QByteArray, QByteArray)), &orchestrator, SLOT(slotCreateN7714ADevice(QByteArray, QByteArray)));
         emit signalCreateDevice(instrumentAddress, instrumentIdentity);
     }
     // continue for other devices
