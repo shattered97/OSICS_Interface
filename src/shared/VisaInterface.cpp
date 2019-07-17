@@ -65,10 +65,9 @@ bool VisaInterface::findResources(ViSession &defaultRMSession, QString query)
         All resources     "?*"
      */
 
-    //
+    bool success = false;
+
     ViChar instrDescriptor[VI_FIND_BUFLEN];
-
-
 
     //Queries a VISA system to locate the resources associated with a specified interface.
     theStatus = viFindRsrc(defaultRMSession, query.toLatin1(), &findList, &numInstr, instrDescriptor);
@@ -77,15 +76,16 @@ bool VisaInterface::findResources(ViSession &defaultRMSession, QString query)
     if(theStatus < VI_SUCCESS)
     {
         logger->logEntry(QString("Error Finding resources, status code: %1").arg(theStatus));
-        return false;
     }
     else
     {
         QString response = "Found %1 instruments, First instrument address: %2";
         logger->logEntry(response.arg(numInstr).arg(instrDescriptor));
         instrAddr = instrDescriptor;  //convert from char array to QByteArray to make things easier
-        return true;
+        success = true;
     }
+
+    return success;
 
 }
 
