@@ -5,12 +5,13 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    Orchestrator orchestrator;
+    orchestrator = new Orchestrator();
     loadDeviceTypesList();
 }
 
 MainWindow::~MainWindow()
 {
+    delete orchestrator;
     delete ui;
 }
 
@@ -30,7 +31,8 @@ void MainWindow::on_confirmDevTypeBtn_clicked()
     ui->confirmDevTypeBtn->setEnabled(false);
 
     // carry out search for devices
-    QObject::connect(this, SIGNAL(signalRequestDevicesFromOrchestrator()), &orchestrator, SLOT(slotLookForDevices()));
+    QObject::connect(this, SIGNAL(signalRequestDevicesFromOrchestrator()), orchestrator, SLOT(slotLookForDevices()));
+
     emit signalRequestDevicesFromOrchestrator();
 
     // enable launch button
@@ -75,7 +77,7 @@ void MainWindow::on_launchSelectedDevice_clicked()
         QByteArray instrumentIdentity = currentDeviceSelected.mid(currentDeviceSelected.indexOf(' ') + 1, currentDeviceSelected.size());
 
         // signal orchestrator to create device
-        QObject::connect(this, SIGNAL(signalCreateDevice(QByteArray, QByteArray)), &orchestrator, SLOT(slotCreateN7714ADevice(QByteArray, QByteArray)));
+        QObject::connect(this, SIGNAL(signalCreateDevice(QByteArray, QByteArray)), orchestrator, SLOT(slotCreateN7714ADevice(QByteArray, QByteArray)));
         emit signalCreateDevice(instrumentAddress, instrumentIdentity);
     }
     // continue for other devices

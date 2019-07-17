@@ -9,49 +9,49 @@ public:
     EXFO_OSICS_SWT(QByteArray theIdentity, QByteArray theInstrLoc);
 
     // CH#:MODE
-    bool setAPCModuleOperatingMode(ViSession &defaultSession, ViSession &instrSession, int slotNum, QByteArray &mode);
+    bool setAPCModuleOperatingMode(ViSession &defaultSession, int slotNum, QByteArray &mode);
 
     // CH#:MODE?
-    bool getAPCModuleOperatinGMode(ViSession &defaultSession, ViSession &instrSession, int slotNum, QByteArray &response);
+    bool getAPCModuleOperatinGMode(ViSession &defaultSession, int slotNum, QByteArray &response);
 
     // CH#:ACFG
-    bool autoDetectT100Modules(ViSession &defaultSession, ViSession &instrSession, int slotNum);
+    bool autoDetectT100Modules(ViSession &defaultSession, int slotNum);
 
     // CH#:CLOSE=
-    bool selectChannelForSignalAPC(ViSession &defaultSession, ViSession &instrSession, int slotNum, QByteArray &channelNum);
+    bool selectChannelForSignalAPC(ViSession &defaultSession, int slotNum, QByteArray &channelNum);
 
     // CH#:CLOSE?
-    bool getChannelForSignalAPC(ViSession &defaultSession, ViSession &instrSession, int slotNum, QByteArray &response);
+    bool getChannelForSignalAPC(ViSession &defaultSession, int slotNum, QByteArray &response);
 
     // CH#:SHUT
-    bool shutSingleShutter(ViSession &defaultSession, ViSession &instrSession, int slotNum);
+    bool shutSingleShutter(ViSession &defaultSession, int slotNum);
 
     // CH#:OPEN
-    bool openSingleShutter(ViSession &defaultSession, ViSession &instrSession, int slotNum);
+    bool openSingleShutter(ViSession &defaultSession, int slotNum);
 
     // CH#:SHUT?
-    bool getSingleShutterState(ViSession &defaultSession, ViSession &instrSession, int slotNum, QByteArray &response);
+    bool getSingleShutterState(ViSession &defaultSession, int slotNum, QByteArray &response);
 
     // CH#:SHUTMODE
-    bool openCloseShutters(ViSession &defaultSession, ViSession &instrSession, int slotNum, QByteArray &shutterAB, QByteArray &shutter12);
+    bool openCloseShutters(ViSession &defaultSession, int slotNum, QByteArray &shutterAB, QByteArray &shutter12);
 
     // CH#:SHUTMODE?
-    bool getMultipleShutterState(ViSession &defaultSession, ViSession &instrSession, int slotNum, QByteArray &response);
+    bool getMultipleShutterState(ViSession &defaultSession, int slotNum, QByteArray &response);
 
     // CH#:BAR
-    bool setSwitchModeBar(ViSession &defaultSession, ViSession &instrSession, int slotNum);
+    bool setSwitchModeBar(ViSession &defaultSession, int slotNum);
 
     // CH#:CROSS
-    bool setSwitchModeCross(ViSession &defaultSession, ViSession &instrSession, int slotNum);
+    bool setSwitchModeCross(ViSession &defaultSession, int slotNum);
 
     // CH#:BAR?
-    bool getSwitchMode(ViSession &defaultSession, ViSession &instrSession, int slotNum, QByteArray &response);
+    bool getSwitchMode(ViSession &defaultSession, int slotNum, QByteArray &response);
 
     // CH#:CH
-    bool selectSignalChannel(ViSession &defaultSession, ViSession &instrSession, int slotNum, QByteArray &channel);
+    bool selectSignalChannel(ViSession &defaultSession, int slotNum, QByteArray &channel);
 
     // CH#:CH?
-    bool getSignalChannel(ViSession &defaultSession, ViSession &instrSession, int slotNum, QByteArray &response);
+    bool getSignalChannel(ViSession &defaultSession, int slotNum, QByteArray &response);
 
 
 private:

@@ -4,7 +4,7 @@ EXFO_OSICS_ATN::EXFO_OSICS_ATN(QByteArray theIdentity, QByteArray theInstrLoc) :
 {
 }
 
-bool EXFO_OSICS_ATN::setModuleAttenuationCmd(ViSession &defaultSession, ViSession &instrSession, int slotNum, QByteArray &attenuation){
+bool EXFO_OSICS_ATN::setModuleAttenuationCmd(ViSession &defaultSession, int slotNum, QByteArray &attenuation){
     // Command: "CH#:ATN\n"
     // Params: 0 < slotnum <= 8
     // Response: None
@@ -13,10 +13,10 @@ bool EXFO_OSICS_ATN::setModuleAttenuationCmd(ViSession &defaultSession, ViSessio
      insertSlotNum(baseCmd, slotNum);
      appendParamToCmdWithSpace(baseCmd, attenuation);
 
-     return EXFO_OSICS_MAINFRAME::sendCmdNoRsp(defaultSession, instrSession, baseCmd);
+     return EXFO_OSICS_MAINFRAME::sendCmdNoRsp(defaultSession, baseCmd);
 }
 
-bool EXFO_OSICS_ATN::moduleAttenuationQuery(ViSession &defaultSession, ViSession &instrSession, int slotNum, QByteArray &response){
+bool EXFO_OSICS_ATN::moduleAttenuationQuery(ViSession &defaultSession, int slotNum, QByteArray &response){
     // Command: "CH#:ATN?\n";
     // Params: 0 < slotnum <= 8
     // Response: CH#:ATN=xx.xx
@@ -25,10 +25,10 @@ bool EXFO_OSICS_ATN::moduleAttenuationQuery(ViSession &defaultSession, ViSession
 
      insertSlotNum(baseCmd, slotNum);
 
-     return sendCmdRsp(defaultSession, instrSession, baseCmd, response);
+     return sendCmdRsp(defaultSession, baseCmd, response);
 }
 
-bool EXFO_OSICS_ATN::moduleAttenuationMinMaxQuery(ViSession &defaultSession, ViSession &instrSession, int slotNum, QByteArray wavelengthNum, QByteArray &response){
+bool EXFO_OSICS_ATN::moduleAttenuationMinMaxQuery(ViSession &defaultSession, int slotNum, QByteArray wavelengthNum, QByteArray &response){
     // Command: "CH#:ATN_MIN_MAX?\n"
     // Params: 0 < slotnum <= 8
     //         wavelengthNum = 1 (first wavelength of factory calibration) OR wavelengthNum = 2 (second wl of factory calibration)
@@ -38,10 +38,10 @@ bool EXFO_OSICS_ATN::moduleAttenuationMinMaxQuery(ViSession &defaultSession, ViS
     insertSlotNum(baseCmd, slotNum);
     appendParamToCmdWithSpace(baseCmd, wavelengthNum);
 
-    return sendCmdRsp(defaultSession, instrSession, baseCmd, response);
+    return sendCmdRsp(defaultSession, baseCmd, response);
 }
 
-bool EXFO_OSICS_ATN::moduleWavelengthNMQuery(ViSession &defaultSession, ViSession &instrSession, int slotNum, QByteArray wavelengthNum, QByteArray &response){
+bool EXFO_OSICS_ATN::moduleWavelengthNMQuery(ViSession &defaultSession, int slotNum, QByteArray wavelengthNum, QByteArray &response){
     // Command: "CH#:LREF?\n"
     // Params: 0 < slotnum <= 8
     //         wavelengthNum = 1 (first wavelength of factory calibration) OR wavelengthNum = 2 (second wl of factory calibration)
@@ -51,10 +51,10 @@ bool EXFO_OSICS_ATN::moduleWavelengthNMQuery(ViSession &defaultSession, ViSessio
     insertSlotNum(baseCmd, slotNum);
     appendParamToCmdWithSpace(baseCmd, wavelengthNum);
 
-    return sendCmdRsp(defaultSession, instrSession, baseCmd, response);
+    return sendCmdRsp(defaultSession, baseCmd, response);
 }
 
-bool EXFO_OSICS_ATN::moduleAttenuationOffsetCmd(ViSession &defaultSession, ViSession &instrSession, int slotNum, QByteArray wavelengthNum, QByteArray offsetVal){
+bool EXFO_OSICS_ATN::moduleAttenuationOffsetCmd(ViSession &defaultSession, int slotNum, QByteArray wavelengthNum, QByteArray offsetVal){
     // Command: "CH#:OFFSET\n"
     // Params: 0 < slotnum <= 8
     //         wavelengthNum = 1 (first wavelength of factory calibration) OR wavelengthNum = 2 (second wl of factory calibration)
@@ -66,10 +66,10 @@ bool EXFO_OSICS_ATN::moduleAttenuationOffsetCmd(ViSession &defaultSession, ViSes
     appendParamToCmdWithSpace(baseCmd, wavelengthNum);
     appendParamToCmdWithSpace(baseCmd, offsetVal);
 
-    return sendCmdNoRsp(defaultSession, instrSession, baseCmd);
+    return sendCmdNoRsp(defaultSession, baseCmd);
 }
 
-bool EXFO_OSICS_ATN::moduleAttenuationOffsetQuery(ViSession &defaultSession, ViSession &instrSession, int slotNum, QByteArray wavelengthNum, QByteArray &response){
+bool EXFO_OSICS_ATN::moduleAttenuationOffsetQuery(ViSession &defaultSession, int slotNum, QByteArray wavelengthNum, QByteArray &response){
     // Command: "CH#:OFFSET\n"
     // Params: 0 < slotnum <= 8
     //         wavelengthNum = 1 (first wavelength of factory calibration) OR wavelengthNum = 2 (second wl of factory calibration)
@@ -79,5 +79,5 @@ bool EXFO_OSICS_ATN::moduleAttenuationOffsetQuery(ViSession &defaultSession, ViS
      insertSlotNum(baseCmd, slotNum);
      appendParamToCmdWithSpace(baseCmd, wavelengthNum);
 
-     return sendCmdRsp(defaultSession, instrSession, baseCmd, response);
+     return sendCmdRsp(defaultSession, baseCmd, response);
 }

@@ -8,21 +8,21 @@ class N7714A : protected DefaultInstrument
 public:
     N7714A(QByteArray theIdentity, QByteArray theInstrLoc);
 
-    bool queryPowerUnit(ViSession &defaultSession, ViSession &instrSession, int module, QByteArray &response);
+    bool queryPowerUnit(ViSession &defaultSession, int module, QByteArray &response);
 
-    bool queryPowerStatus(ViSession &defaultSession, ViSession &instrSession, int module, QByteArray &response);
+    bool queryPowerStatus(ViSession &defaultSession, int module, QByteArray &response);
 
-    bool execPowerOnModule(ViSession &defaultSession, ViSession &instrSession, int module);
+    bool execPowerOnModule(ViSession &defaultSession, int module);
 
-    bool execPowerOffModule(ViSession &defaultSession, ViSession &instrSession, int module);
+    bool execPowerOffModule(ViSession &defaultSession, int module);
 
-    bool queryPowerLevel(ViSession &defaultSession, ViSession &instrSession, int module, QByteArray &response, QByteArray value="");
+    bool queryPowerLevel(ViSession &defaultSession, int module, QByteArray &response, QByteArray value="");
 
-    bool execPowerLevel(ViSession &defaultSession, ViSession &instrSession, int module, QByteArray value="");
+    bool execPowerLevel(ViSession &defaultSession, int module, QByteArray value="");
 
-    bool queryWavelength(ViSession &defaultSession, ViSession &instrSession, int module, QByteArray &response, QByteArray value="");
+    bool queryWavelength(ViSession &defaultSession, int module, QByteArray &response, QByteArray value="");
 
-    bool execWavelength(ViSession &defaultSession, ViSession &instrSession, int module, QByteArray value="");
+    bool execWavelength(ViSession &defaultSession, int module, QByteArray value="");
 
 private:
     QByteArray theIdentity;                 // identity of instrument (manufacturer, model num, etc.)

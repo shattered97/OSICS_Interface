@@ -13,7 +13,7 @@ Orchestrator::~Orchestrator()
 void Orchestrator::slotLookForDevices()
 {
     // ask hardware for devices
-    theCommBus.displayResources(defaultSession, instrAddr, currentSession, &numInstruments, &findList, foundResources);
+    theCommBus.displayResources(defaultSession, foundResources);
 
     // signal list back to sender
     QObject *sender = QObject::sender();
@@ -29,7 +29,7 @@ void Orchestrator::slotCreateN7714ADevice(QByteArray instrumentAddress, QByteArr
     qDebug() << "-------------------------------------------------------------";
     qDebug() << "Test Query in Orchestrator slot slotCreateN7714ADevice";
     QByteArray response;
-    selectedResource.queryIDN(defaultSession, currentSession, response);
+    selectedResource.queryIDN(defaultSession, response);
     qDebug() << "Response: " << response;
 
 }

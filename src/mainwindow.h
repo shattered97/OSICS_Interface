@@ -45,7 +45,7 @@ private:
     Ui::MainWindow *ui;
 
     // Orchestrator object that handles device communication
-    Orchestrator orchestrator;
+    Orchestrator *orchestrator;
 
     /**
      * @brief resourcesQmapToQList Returns a list of device identities that match a particular device type

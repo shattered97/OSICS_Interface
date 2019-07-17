@@ -9,22 +9,22 @@ public:
     EXFO_OSICS_ATN(QByteArray theIdentity, QByteArray theInstrLoc);
 
     // CH#:ATN
-    bool setModuleAttenuationCmd(ViSession &defaultSession, ViSession &instrSession, int moduleNum, QByteArray &attenuation);
+    bool setModuleAttenuationCmd(ViSession &defaultSession, int moduleNum, QByteArray &attenuation);
 
     // CH#:ATN?
-    bool moduleAttenuationQuery(ViSession &defaultSession, ViSession &instrSession, int slotNum, QByteArray &response);
+    bool moduleAttenuationQuery(ViSession &defaultSession, int slotNum, QByteArray &response);
 
     // CH#:ATN_MIN_MAX?
-    bool moduleAttenuationMinMaxQuery(ViSession &defaultSession, ViSession &instrSession, int moduleNum, QByteArray wavelengthNum, QByteArray &response);
+    bool moduleAttenuationMinMaxQuery(ViSession &defaultSession, int moduleNum, QByteArray wavelengthNum, QByteArray &response);
 
     // CH#:LREF?
-    bool moduleWavelengthNMQuery(ViSession &defaultSession, ViSession &instrSession, int moduleNum, QByteArray wavelengthNum, QByteArray &response);
+    bool moduleWavelengthNMQuery(ViSession &defaultSession, int moduleNum, QByteArray wavelengthNum, QByteArray &response);
 
     // CH#:OFFSET
-    bool moduleAttenuationOffsetCmd(ViSession &defaultSession, ViSession &instrSession, int moduleNum, QByteArray wavelengthNum, QByteArray offsetVal);
+    bool moduleAttenuationOffsetCmd(ViSession &defaultSession, int moduleNum, QByteArray wavelengthNum, QByteArray offsetVal);
 
     // CH#:OFFSET?
-    bool moduleAttenuationOffsetQuery(ViSession &defaultSession, ViSession &instrSession, int moduleNum, QByteArray wavelengthNum, QByteArray &response);
+    bool moduleAttenuationOffsetQuery(ViSession &defaultSession, int moduleNum, QByteArray wavelengthNum, QByteArray &response);
 
 private:
     QByteArray theIdentity;                 // identity of instrument (manufacturer, model num, etc.)

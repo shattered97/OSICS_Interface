@@ -38,21 +38,17 @@ ViStatus VisaInterface::createDefaultRM(ViSession &defaultSession)
    return theStatus;
 }
 
-void VisaInterface::displayResources(ViSession &defaultRMSession, QByteArray &instrumentLoc, ViSession &instrSess, ViUInt32 *numInstr, ViFindList *findList, FoundInstr &result)
+void VisaInterface::displayResources(ViSession &defaultRMSession, FoundInstr &result)
 {
     //Remove harded coded string and replace with variable
 
-    if (findResources(defaultRMSession, "?*", numInstr, findList, instrumentLoc))
-        createInstrMap(defaultRMSession, instrumentLoc, instrSess, numInstr, findList, result);
+    if (findResources(defaultRMSession, ALL_RESOURCES))
+        createInstrMap(defaultRMSession, result);
 
 
 }
 
-bool VisaInterface::findResources(ViSession &defaultRMSession,
-                              QString query,
-                              ViUInt32 *numInstrs,
-                              ViFindList *findList,
-                              QByteArray &instrumentLoc)
+bool VisaInterface::findResources(ViSession &defaultRMSession, QString query)
 
 {
     /*
@@ -77,7 +73,7 @@ bool VisaInterface::findResources(ViSession &defaultRMSession,
 
 
     //Queries a VISA system to locate the resources associated with a specified interface.
-    theStatus = viFindRsrc(defaultRMSession, query.toLatin1(), findList, numInstrs, instrDescriptor);
+    theStatus = viFindRsrc(defaultRMSession, query.toLatin1(), &findList, &numInstr, instrDescriptor);
 
 
     if(theStatus < VI_SUCCESS)
@@ -88,21 +84,21 @@ bool VisaInterface::findResources(ViSession &defaultRMSession,
     else
     {
         QString response = "Found %1 instruments, First instrument address: %2";
-        logger->logEntry(response.arg(*numInstrs).arg(instrDescriptor));
-        instrumentLoc = instrDescriptor;  //convert from char array to QByteArray to make things easier
+        logger->logEntry(response.arg(numInstr).arg(instrDescriptor));
+        instrAddr = instrDescriptor;  //convert from char array to QByteArray to make things easier
         return true;
     }
 
 }
 
-ViStatus VisaInterface::createInstrMap(ViSession &defaultRMSession, QByteArray &instrumentLoc, ViSession &instrSess, ViUInt32 *numInstr, ViFindList *findList, FoundInstr &resultMap)
+ViStatus VisaInterface::createInstrMap(ViSession &defaultRMSession, FoundInstr &resultMap)
 {
 
     ViChar instrDescriptor[VI_FIND_BUFLEN];
-    strcpy_s(instrDescriptor, instrumentLoc); //QByteArray back to char array
+    strcpy_s(instrDescriptor, instrAddr); //QByteArray back to char array
 
     //Open session to instrument
-    theStatus = viOpen(defaultRMSession, instrDescriptor, VI_NULL, VI_NULL, &instrSess);
+    theStatus = viOpen(defaultRMSession, instrDescriptor, VI_NULL, VI_NULL, &instrSession);
 
     int index = 1; // index of instrument in list
 
@@ -116,7 +112,7 @@ ViStatus VisaInterface::createInstrMap(ViSession &defaultRMSession, QByteArray &
         logger->logEntry(QString("Opened session to: %1").arg(instrDescriptor));
 
         //Lets figure what instrument we are talking too
-       theStatus = queryInstrument(instrumentLoc, instrSess, resultMap);
+       theStatus = queryInstrument(instrAddr, instrSession, resultMap);
 
        if(theStatus < VI_SUCCESS)
        {
@@ -130,17 +126,17 @@ ViStatus VisaInterface::createInstrMap(ViSession &defaultRMSession, QByteArray &
           index ++;
        }
 
-        closeSession(instrSess);
+        closeSession(instrSession);
     }
 
-    (*numInstr)--; //We found first istrument so lets decerment our count
+    numInstr--; //We found first istrument so lets decerment our count
 
-    while(*numInstr > 0)
+    while(numInstr > 0)
     {
-        logger->logEntry(QString("Number of instruments left: %1").arg(*numInstr));
-        theStatus = findNextResource(defaultRMSession, instrumentLoc, instrSess, findList, resultMap);
+        logger->logEntry(QString("Number of instruments left: %1").arg(numInstr));
+        theStatus = findNextResource(defaultRMSession, resultMap);
 
-        (*numInstr)--; //added next instrument decrement count
+        numInstr--; //added next instrument decrement count
         index++;  //increase index by 1
     }
 
@@ -165,12 +161,12 @@ ViStatus VisaInterface::openInstrSession(ViSession &defaultSession, QByteArray i
 }
 
 
-ViStatus VisaInterface::findNextResource(ViSession &defaultRMSession, QByteArray &instrumentLoc, ViSession &instrSess, ViPFindList &findList, FoundInstr &resultMap)
+ViStatus VisaInterface::findNextResource(ViSession &defaultRMSession, FoundInstr &resultMap)
 {
     ViChar instrDescriptor[VI_FIND_BUFLEN];
-    strcpy_s(instrDescriptor, instrumentLoc); //QByteArray back to char array
+    strcpy_s(instrDescriptor, instrAddr); //QByteArray back to char array
 
-   theStatus = viFindNext(*findList, instrDescriptor);
+   theStatus = viFindNext(findList, instrDescriptor);
 
 
    if(theStatus < VI_SUCCESS)
@@ -181,18 +177,18 @@ ViStatus VisaInterface::findNextResource(ViSession &defaultRMSession, QByteArray
    {
 
        // open session
-       theStatus = viOpen(defaultRMSession, instrDescriptor, VI_NULL, VI_NULL, &instrSess);
+       theStatus = viOpen(defaultRMSession, instrDescriptor, VI_NULL, VI_NULL, &instrSession);
        if(theStatus < VI_SUCCESS){
            logger->logEntry(QString(QString::number(__LINE__) + " Failed to open session on instrument"));
        }
        else{
-           logger->logEntry(QString("Opened session to: %1").arg(QString::fromLatin1(instrumentLoc)));
+           logger->logEntry(QString("Opened session to: %1").arg(QString::fromLatin1(instrAddr)));
        }
 
        // convert char array to QByteArray
-       instrumentLoc = QByteArray(reinterpret_cast<char*>(instrDescriptor));
+       instrAddr = QByteArray(reinterpret_cast<char*>(instrDescriptor));
 
-       theStatus = queryInstrument(instrumentLoc, instrSess, resultMap);
+       theStatus = queryInstrument(instrAddr, instrSession, resultMap);
 
        if(theStatus < VI_SUCCESS)
        {
@@ -204,7 +200,7 @@ ViStatus VisaInterface::findNextResource(ViSession &defaultRMSession, QByteArray
        }
    }
 
-   closeSession(instrSess);
+   closeSession(instrSession);
 
    return theStatus;
 

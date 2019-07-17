@@ -23,17 +23,17 @@ QByteArray DefaultInstrument::getInstrLocation()
     return theInstrLoc;
 }
 
-bool DefaultInstrument::querySTB(ViSession &defaultSession, ViSession &instrSession, QByteArray &response){
+bool DefaultInstrument::querySTB(ViSession &defaultSession, QByteArray &response){
     // Command "*STB?\n"
     // Response: "+4\n+4\n"
     // Format: 16-bit signed int
 
     QByteArray command = QUERY_STB;
 
-    return sendCmdRsp(defaultSession, instrSession, command, response);
+    return sendCmdRsp(defaultSession, command, response);
 }
 
-bool DefaultInstrument::execESE(ViSession &defaultSession, ViSession &instrSession, ViByte registerVal){
+bool DefaultInstrument::execESE(ViSession &defaultSession, ViByte registerVal){
     // Command: "*ESE [registerVal]\n"
     // Params: 0 <= registerVal <= 255
     // Example: "*ESE 1\n"
@@ -43,107 +43,107 @@ bool DefaultInstrument::execESE(ViSession &defaultSession, ViSession &instrSessi
     QString param = QString(" %1").arg(registerVal);
     QByteArray command = QString(baseCmd.insert(paramPosition, param)).toLatin1();
 
-    return sendCmdNoRsp(defaultSession, instrSession, command);
+    return sendCmdNoRsp(defaultSession, command);
 }
 
-bool DefaultInstrument::queryESE(ViSession &defaultSession, ViSession &instrSession, QByteArray &response){
+bool DefaultInstrument::queryESE(ViSession &defaultSession, QByteArray &response){
     // Command "*ESE?\n"
     // Response: "+4\n+4\n"
     // Format: 16-bit signed int
 
     QByteArray command = QUERY_ESE;
 
-    return sendCmdRsp(defaultSession, instrSession, command, response);
+    return sendCmdRsp(defaultSession, command, response);
 }
 
-bool DefaultInstrument::queryESR(ViSession &defaultSession, ViSession &instrSession, QByteArray &response){
+bool DefaultInstrument::queryESR(ViSession &defaultSession, QByteArray &response){
     // Command "*ESR?\n"
     // Response: "+1\n+1\n"
     // Format: 16-bit signed int
 
     QByteArray command = QUERY_ESR;
 
-    return sendCmdRsp(defaultSession, instrSession, command, response);
+    return sendCmdRsp(defaultSession, command, response);
 }
 
-bool DefaultInstrument::execOPC(ViSession &defaultSession, ViSession &instrSession){
+bool DefaultInstrument::execOPC(ViSession &defaultSession){
     // Command: "*OPC\n"
     // Params: None
     // Response: None
 
     QByteArray command = EXEC_OPC;
 
-    return sendCmdNoRsp(defaultSession, instrSession, command);
+    return sendCmdNoRsp(defaultSession, command);
 }
 
-bool DefaultInstrument::queryOPC(ViSession &defaultSession, ViSession &instrSession, QByteArray &response){
+bool DefaultInstrument::queryOPC(ViSession &defaultSession, QByteArray &response){
     // Command "*OPC?\n"
     // Response: "1\n1\n"
     // Format: 0 or 1
 
     QByteArray command = QUERY_OPC;
 
-    return sendCmdRsp(defaultSession, instrSession, command, response);
+    return sendCmdRsp(defaultSession, command, response);
 }
 
-bool DefaultInstrument::execCLS(ViSession &defaultSession, ViSession &instrSession){
+bool DefaultInstrument::execCLS(ViSession &defaultSession){
     // Command: "*CLS\n"
     // Params: None
     // Response: None
 
     QByteArray command = EXEC_CLS;
 
-    return sendCmdNoRsp(defaultSession, instrSession, command);
+    return sendCmdNoRsp(defaultSession, command);
 }
 
-bool DefaultInstrument::execRST(ViSession &defaultSession, ViSession &instrSession){
+bool DefaultInstrument::execRST(ViSession &defaultSession){
     // Command: "*RST\n"
     // Params: None
     // Response: None
 
     QByteArray command = EXEC_RST;
 
-    return sendCmdNoRsp(defaultSession, instrSession, command);
+    return sendCmdNoRsp(defaultSession, command);
 }
 
-bool DefaultInstrument::queryTST(ViSession &defaultSession, ViSession &instrSession, QByteArray &response){
+bool DefaultInstrument::queryTST(ViSession &defaultSession, QByteArray &response){
     // Command "*TST?\n"
     // Response: "1\n1\n"
     // Format: 32-bit signed int
 
     QByteArray command = QUERY_TST;
 
-    return sendCmdRsp(defaultSession, instrSession, command, response);
+    return sendCmdRsp(defaultSession, command, response);
 }
 
-bool DefaultInstrument::queryOPT(ViSession &defaultSession, ViSession &instrSession, QByteArray &response){
+bool DefaultInstrument::queryOPT(ViSession &defaultSession, QByteArray &response){
     // Command "*OPT?\n"
     // Response: "N7752A,  ,  ,  \nN7752A,  ,  ,  \n"
     // Format: Comma-separated part numbers of installed options. Two spaces if slot is empty.
 
     QByteArray command = QUERY_OPT;
 
-    return sendCmdRsp(defaultSession, instrSession, command, response);
+    return sendCmdRsp(defaultSession, command, response);
 }
 
-bool DefaultInstrument::execWAI(ViSession &defaultSession, ViSession &instrSession){
+bool DefaultInstrument::execWAI(ViSession &defaultSession){
     // Command: "*CLS\n"
     // Params: None
     // Response: None
 
     QByteArray command = EXEC_WAI;
 
-    return sendCmdNoRsp(defaultSession, instrSession, command);
+    return sendCmdNoRsp(defaultSession, command);
 }
 
-bool DefaultInstrument::queryIDN(ViSession &defaultSession, ViSession &instrSession, QByteArray &response){
+bool DefaultInstrument::queryIDN(ViSession &defaultSession, QByteArray &response){
     // Command "*IDN?\n"
     // Response: "Agilent Technologies, N7714A, MY50701231, 1.13.1\nAgilent Technologies, N7714A, MY50701231, 1.13.1\n"
     // Format: Instrument identification
 
     QByteArray command = QUERY_IDN;
 
-    return sendCmdRsp(defaultSession, instrSession, command, response);
+    return sendCmdRsp(defaultSession, command, response);
 }
 
 bool DefaultInstrument::checkOperationComplete(ViSession &instrSession, int timeout = DEFAULT_COMMAND_TIMEOUT_MS){
@@ -169,10 +169,12 @@ bool DefaultInstrument::checkOperationComplete(ViSession &instrSession, int time
     return complete;
 }
 
-bool DefaultInstrument::sendCmdNoRsp(ViSession &defaultSession, ViSession &instrSession, QByteArray &command){
+bool DefaultInstrument::sendCmdNoRsp(ViSession &defaultSession, QByteArray &command){
 
     qDebug() << "Sent command: " << command;
     bool success = true;
+
+    ViSession instrSession;
 
     // open session
     ViStatus sessionStatus = theCommBus.openInstrSession(defaultSession, theInstrLoc, instrSession);
@@ -202,10 +204,12 @@ bool DefaultInstrument::sendCmdNoRsp(ViSession &defaultSession, ViSession &instr
 
 }
 
-bool DefaultInstrument::sendCmdRsp(ViSession &defaultSession, ViSession &instrSession, QByteArray &command, QByteArray &response){
+bool DefaultInstrument::sendCmdRsp(ViSession &defaultSession, QByteArray &command, QByteArray &response){
 
     qDebug() << "Command sent: " << command;
     bool success = true;
+
+    ViSession instrSession;
 
     // open session
     ViStatus sessionStatus = theCommBus.openInstrSession(defaultSession, theInstrLoc, instrSession);

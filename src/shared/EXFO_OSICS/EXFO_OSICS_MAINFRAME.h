@@ -11,160 +11,160 @@ public:
     // ******************************* Mainframe Commands Only  *******************************
 
     // DISABLE
-    bool disableMainframeLaserCmd(ViSession &defaultSession, ViSession &instrSession);
+    bool disableMainframeLaserCmd(ViSession &defaultSession);
 
     // ENABLE
-    bool enableMainframeLaserCmd(ViSession &defaultSession, ViSession &instrSession);
+    bool enableMainframeLaserCmd(ViSession &defaultSession);
 
     // ENABLE?
-    bool laserStateMainframeQuery(ViSession &defaultSession, ViSession &instrSession, QByteArray &response);
+    bool laserStateMainframeQuery(ViSession &defaultSession, QByteArray &response);
 
     // GHZ
-    bool setMainframeSpectralUnitGHzCmd(ViSession &defaultSession, ViSession &instrSession);
+    bool setMainframeSpectralUnitGHzCmd(ViSession &defaultSession);
 
     // NM
-    bool setMainframeSpectralUnitNMCmd(ViSession &defaultSession, ViSession &instrSession);
+    bool setMainframeSpectralUnitNMCmd(ViSession &defaultSession);
 
     // NM?
-    bool spectralUnitMainframeQuery(ViSession &defaultSession, ViSession &instrSession, QByteArray &response);
+    bool spectralUnitMainframeQuery(ViSession &defaultSession, QByteArray &response);
 
     // DBM
-    bool setMainframePowerUnitDBmCmd(ViSession &defaultSession, ViSession &instrSession);
+    bool setMainframePowerUnitDBmCmd(ViSession &defaultSession);
 
     // MW
-    bool setMainframePowerUnitMWCmd(ViSession &defaultSession, ViSession &instrSession);
+    bool setMainframePowerUnitMWCmd(ViSession &defaultSession);
 
     // MW?
-    bool powerUnitMainframeQuery(ViSession &defaultSession, ViSession &instrSession, QByteArray &response);
+    bool powerUnitMainframeQuery(ViSession &defaultSession, QByteArray &response);
 
     // P=
-    bool setMainframeOutputPowerCmd(ViSession &defaultSession, ViSession &instrSession, QByteArray &power);
+    bool setMainframeOutputPowerCmd(ViSession &defaultSession, QByteArray &power);
 
     // P?
-    bool outputPowerMainframeQuery(ViSession &defaultSession, ViSession &instrSession, QByteArray &response);
+    bool outputPowerMainframeQuery(ViSession &defaultSession, QByteArray &response);
 
     // MOD_SRC
-    bool setMainframeModSrcTypeCmd(ViSession &defaultSession, ViSession &instrSession, QByteArray &modSrc);
+    bool setMainframeModSrcTypeCmd(ViSession &defaultSession, QByteArray &modSrc);
 
     // MOD_SRC?
-    bool modSrcTypeMainframeQuery(ViSession &defaultSession, ViSession &instrSession, QByteArray &response);
+    bool modSrcTypeMainframeQuery(ViSession &defaultSession, QByteArray &response);
 
     // MOD_F=
-    bool setMainframeFrequencyQuery(ViSession &defaultSession, ViSession &instrSession, QByteArray &frequency);
+    bool setMainframeFrequencyQuery(ViSession &defaultSession, QByteArray &frequency);
 
     // MOD_F?
-    bool frequencyMainframeQuery(ViSession &defaultSession, ViSession &instrSession, QByteArray &response);
+    bool frequencyMainframeQuery(ViSession &defaultSession, QByteArray &response);
 
     // SAVE
-    bool saveManframeConfigCmd(ViSession &defaultSession, ViSession &instrSession, QByteArray &configMemory);
+    bool saveManframeConfigCmd(ViSession &defaultSession, QByteArray &configMemory);
 
     // RECALL
-    bool recallMainframeConfigCmd(ViSession &defaultSession, ViSession &instrSession, QByteArray &configMemory);
+    bool recallMainframeConfigCmd(ViSession &defaultSession, QByteArray &configMemory);
 
     // INTERLOCK?
-    bool remoteInterlockMainframeQuery(ViSession &defaultSession, ViSession &instrSession, QByteArray &response);
+    bool remoteInterlockMainframeQuery(ViSession &defaultSession, QByteArray &response);
 
     // PRESENT?
-    bool moduleTypeAtSlotQuery(ViSession &defaultSession, ViSession &instrSession, int slotNum, QByteArray &response);
+    bool moduleTypeAtSlotQuery(ViSession &defaultSession, int slotNum, QByteArray &response);
 
 
     // ************************* Shared Module Commands - Optical-Output Control *********************************
 
     // CH#:DISABLE
-    bool disableModuleLaserCmd(ViSession &defaultSession, ViSession &instrSession, int slotNum);
+    bool disableModuleLaserCmd(ViSession &defaultSession, int slotNum);
 
     // CH#:ENABLE
-    bool enableModuleLaserCmd(ViSession &defaultSession, ViSession &instrSession, int slotNum);
+    bool enableModuleLaserCmd(ViSession &defaultSession, int slotNum);
 
     // CH#:ENABLE?
-    bool laserStateModuleQuery(ViSession &defaultSession, ViSession &instrSession, int slotNum, QByteArray &response);
+    bool laserStateModuleQuery(ViSession &defaultSession, int slotNum, QByteArray &response);
 
 
     // **************************** Shared Module Commands - Unit Selection ***********************************
 
     // CH#:GHZ
-    bool setModuleSpectralUnitGHzCmd(ViSession &defaultSession, ViSession &instrSession, int slotNum);
+    bool setModuleSpectralUnitGHzCmd(ViSession &defaultSession, int slotNum);
 
     // CH#:NM
-    bool setModuleSpectralUnitNMCmd(ViSession &defaultSession, ViSession &instrSession, int slotNum);
+    bool setModuleSpectralUnitNMCmd(ViSession &defaultSession, int slotNum);
 
     // CH#:NM?
-    bool spectralUnitModuleQuery(ViSession &defaultSession, ViSession &instrSession, int slotNum, QByteArray &response);
+    bool spectralUnitModuleQuery(ViSession &defaultSession, int slotNum, QByteArray &response);
 
     // CH#:DBM
-    bool setModulePowerUnitDBmCmd(ViSession &defaultSession, ViSession &instrSession, int slotNum);
+    bool setModulePowerUnitDBmCmd(ViSession &defaultSession, int slotNum);
 
     // CH#:MW
-    bool setModulePowerUnitMWCmd(ViSession &defaultSession, ViSession &instrSession, int slotNum);
+    bool setModulePowerUnitMWCmd(ViSession &defaultSession, int slotNum);
 
     // CH#:MW?
-    bool powerUnitModuleQuery(ViSession &defaultSession, ViSession &instrSession, int slotNum, QByteArray &response);
+    bool powerUnitModuleQuery(ViSession &defaultSession, int slotNum, QByteArray &response);
 
 
     // ************************************* Shared Module Commands - Output Power Setting ************************************
 
     // CH#:P=
-    bool setModuleOutputPowerCmd(ViSession &defaultSession, ViSession &instrSession, int slotNum, QByteArray &power);
+    bool setModuleOutputPowerCmd(ViSession &defaultSession, int slotNum, QByteArray &power);
 
     // CH#:P?
-    bool outputPowerModuleQuery(ViSession &defaultSession, ViSession &instrSession, int slotNum, QByteArray &response);
+    bool outputPowerModuleQuery(ViSession &defaultSession, int slotNum, QByteArray &response);
 
     // CH#:LIMIT?
-    bool outputPowerReachedQuery(ViSession &defaultSession, ViSession &instrSession, int slotNum, QByteArray &response);
+    bool outputPowerReachedQuery(ViSession &defaultSession, int slotNum, QByteArray &response);
 
 
     // *******************  Shared Module Commands - Optical Emission Wavelength/Frequency Setting **************************
 
     // CH#:L=
-    bool setRefWavelengthModuleCmd(ViSession &defaultSession, ViSession &instrSession, int slotNum, QByteArray &wavelengthNum);
+    bool setRefWavelengthModuleCmd(ViSession &defaultSession, int slotNum, QByteArray &wavelengthNum);
 
     // CH#:L?
-    bool refWavelengthModuleQuery(ViSession &defaultSession, ViSession &instrSession, int slotNum, QByteArray &wavelengthNum, QByteArray &response);
+    bool refWavelengthModuleQuery(ViSession &defaultSession, int slotNum, QByteArray &wavelengthNum, QByteArray &response);
 
     // CH#:F=
-    bool setFrequencyModuleCmd(ViSession &defaultSession, ViSession &instrSession, int slotNum, QByteArray &frequency);
+    bool setFrequencyModuleCmd(ViSession &defaultSession, int slotNum, QByteArray &frequency);
 
     // CH#:F?
-    bool frequencyModuleQuery(ViSession &defaultSession, ViSession &instrSession, int slotNum, QByteArray &response);
+    bool frequencyModuleQuery(ViSession &defaultSession, int slotNum, QByteArray &response);
 
     // CH#:CTRL
-    bool enableCoherenceControlCmd(ViSession &defaultSession, ViSession &instrSession, int slotNum, QByteArray &setting);
+    bool enableCoherenceControlCmd(ViSession &defaultSession, int slotNum, QByteArray &setting);
 
     // CH#:CTRL?
-    bool coherenceControlEnabledQuery(ViSession &defaultSession, ViSession &instrSession, int slotNum, QByteArray &response);
+    bool coherenceControlEnabledQuery(ViSession &defaultSession, int slotNum, QByteArray &response);
 
     // CH#:APF
-    bool enableAutoPeakFindControlCmd(ViSession &defaultSession, ViSession &instrSession, int slotNum, QByteArray &setting);
+    bool enableAutoPeakFindControlCmd(ViSession &defaultSession, int slotNum, QByteArray &setting);
 
     // CH#:APF?
-    bool autoPeakFindControlQuery(ViSession &defaultSession, ViSession &instrSession, int slotNum, QByteArray &response);
+    bool autoPeakFindControlQuery(ViSession &defaultSession, int slotNum, QByteArray &response);
 
 
     // ****************************** Shared Module Commands - Modulation Control *******************************
 
     // CH#:MOD_CTRL
-    bool setModuleModulationCtrlCmd(ViSession &defaultSession, ViSession &instrSession, int slotNum, QByteArray &setting);
+    bool setModuleModulationCtrlCmd(ViSession &defaultSession, int slotNum, QByteArray &setting);
 
     // CH#:MOD_CTRL?
-    bool moduleModulationCtrlQuery(ViSession &defaultSession, ViSession &instrSession, int slotNum, QByteArray &response);
+    bool moduleModulationCtrlQuery(ViSession &defaultSession, int slotNum, QByteArray &response);
 
     // CH#:MOD_SRC
-    bool setModuleModulationSrcCmd(ViSession &defaultSession, ViSession &instrSession, int slotNum, QByteArray &setting);
+    bool setModuleModulationSrcCmd(ViSession &defaultSession, int slotNum, QByteArray &setting);
 
     // CH#:MOD_SRC?
-    bool moduleModulationSrcQuery(ViSession &defaultSession, ViSession &instrSession, int slotNum, QByteArray &response);
+    bool moduleModulationSrcQuery(ViSession &defaultSession, int slotNum, QByteArray &response);
 
 
     // ************************ Shared Module Commands - Module System-Version Info ****************************
 
     // CH#:FIRM?
-    bool softwareVersionModuleQuery(ViSession &defaultSession, ViSession &instrSession, int slotNum, QByteArray &response);
+    bool softwareVersionModuleQuery(ViSession &defaultSession, int slotNum, QByteArray &response);
 
     // CH#:*IDN?
-    bool identificationModuleQuery(ViSession &defaultSession, ViSession &instrSession, int slotNum, QByteArray &response);
+    bool identificationModuleQuery(ViSession &defaultSession, int slotNum, QByteArray &response);
 
     // CH#:TYPE?
-    bool typeOfModuleQuery(ViSession &defaultSession, ViSession &instrSession, int slotNum, QByteArray &response);
+    bool typeOfModuleQuery(ViSession &defaultSession, int slotNum, QByteArray &response);
 
 
 protected:

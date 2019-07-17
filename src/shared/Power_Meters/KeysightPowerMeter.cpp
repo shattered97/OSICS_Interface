@@ -10,27 +10,27 @@ KeysightPowerMeter::~KeysightPowerMeter()
 {
 }
 
-bool PowerMeter::measurePower(ViSession &defaultSession, ViSession &instrSession, int window, QByteArray response){
+bool PowerMeter::measurePower(ViSession &defaultSession, int window, QByteArray response){
 
     QByteArray baseCmd = "READ:POW?";
     baseCmd.insert(baseCmd.indexOf(':'),  QByteArray::number(window));
 
-    return sendCmdRsp(defaultSession, instrSession, baseCmd, response);
+    return sendCmdRsp(defaultSession, baseCmd, response);
 }
 
-bool PowerMeter::setPowerUnitDBM(ViSession &defaultSession, ViSession &instrSession, int window){
+bool PowerMeter::setPowerUnitDBM(ViSession &defaultSession, int window){
 
     QByteArray baseCmd = "UNIT:POW DBM\n";
     baseCmd.insert(baseCmd.indexOf(':'),  QByteArray::number(window));
 
-    return sendCmdNoRsp(defaultSession, instrSession, baseCmd);
+    return sendCmdNoRsp(defaultSession, baseCmd);
 }
 
-bool PowerMeter::setPowerUnitW(ViSession &defaultSession, ViSession &instrSession, int window){
+bool PowerMeter::setPowerUnitW(ViSession &defaultSession, int window){
 
     QByteArray baseCmd = "UNIT:POW W\n";
     baseCmd.insert(baseCmd.indexOf(':'),  QByteArray::number(window));
 
-    return sendCmdNoRsp(defaultSession, instrSession, baseCmd);
+    return sendCmdNoRsp(defaultSession, baseCmd);
 }
 

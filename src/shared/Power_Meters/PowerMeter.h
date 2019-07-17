@@ -20,7 +20,7 @@ public:
      * @param response[out] Response from device
      * @return true if command successful
      */
-    virtual bool measurePower(ViSession &defaultSession, ViSession &instrSession, int window, QByteArray response) = 0;
+    virtual bool measurePower(ViSession &defaultSession, int window, QByteArray response) = 0;
 
     /**
      * @brief setPowerUnitDBM Sends command to device to set power measurement unit to dBm.
@@ -29,7 +29,7 @@ public:
      * @param window Window number to read from on device
      * @return true if command successful
      */
-    virtual bool setPowerUnitDBM(ViSession &defaultSession, ViSession &instrSession, int window) = 0;
+    virtual bool setPowerUnitDBM(ViSession &defaultSession, int window) = 0;
 
     /**
      * @brief setPowerUnitW Sends command to device to set power measurement unit to W.
@@ -38,7 +38,7 @@ public:
      * @param window Window number to read from on device
      * @return true if command successful
      */
-    virtual bool setPowerUnitW(ViSession &defaultSession, ViSession &instrSession, int window) = 0;
+    virtual bool setPowerUnitW(ViSession &defaultSession, int window) = 0;
 
 };
 

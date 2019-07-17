@@ -41,11 +41,6 @@ private:
     ViSession defaultSession;               // default session for device communication
     FoundInstr foundResources;              // map of VISA resources found
 
-    ViFindList findList;
-    ViSession currentSession;
-    ViUInt32 numInstruments;
-    QByteArray instrAddr;
-
     DefaultInstrument selectedResource;
 
 };

@@ -48,11 +48,7 @@ public:
      *        viFindRsrc requires a char array.  We convert to QByteArray to makes things easier when passing around.
      * @return Returns true if VISA resources were found
      */
-    bool findResources(ViSession &defaultRMSession,
-                          QString query,
-                          ViUInt32 *numInstrs,
-                          ViFindList *findList,
-                          QByteArray &instrumentLoc);
+    bool findResources(ViSession &defaultRMSession, QString query);
 
     /**
      * @brief createInstrSession Connect specified instrument
@@ -61,7 +57,7 @@ public:
      * @param instrSession[out] Unique logical identifier reference to a session.
      * @return Returns completion code
      */
-    ViStatus createInstrMap(ViSession &defaultRMSession, QByteArray &instrumentLoc, ViSession &instrSess, ViUInt32 *numInstr, ViFindList *findList, FoundInstr &result);
+    ViStatus createInstrMap(ViSession &defaultRMSession, FoundInstr &result);
 
     /**
      * @brief displayResources
@@ -72,7 +68,9 @@ public:
      * @param mapping of int to QPair of instrument address and identity.
      * @return
      */
-    void displayResources(ViSession &defaultRMSession, QByteArray &instrumentLoc, ViSession &instrSess, ViUInt32 *numInstr, ViFindList *findList, FoundInstr &result);
+    void displayResources(ViSession &defaultRMSession, FoundInstr &result);
+
+
 
     /**
      * @brief closeDefaultSession closes the default session
@@ -133,7 +131,7 @@ private:
      * @param indexOfInstr[in] index to store found instrument at in the map
      * @return
      */
-    ViStatus findNextResource(ViSession &defaultRMSession, QByteArray &instrumentLoc, ViSession &instrSess, ViPFindList &findList, FoundInstr &resultMap);
+    ViStatus findNextResource(ViSession &defaultRMSession, FoundInstr &resultMap);
 
     ViStatus queryInstrument(QByteArray &instrumentLoc, ViSession &instrSess, FoundInstr &resultMap);
 
@@ -143,6 +141,12 @@ private:
 
     ViStatus theStatus;  //Status of last operation - Contains Completion Code
     Logging* logger = Logging::getInstance();
+
+
+    ViFindList findList;
+    ViSession instrSession;
+    ViUInt32 numInstr;
+    QByteArray instrAddr;
 
 };
 

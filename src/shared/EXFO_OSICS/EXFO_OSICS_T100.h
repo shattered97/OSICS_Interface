@@ -11,55 +11,55 @@ public:
     // ********************************* Diode-Current Setting Commands *********************************
 
     // CH#:I?
-    bool diodeCurrentLevelModuleQuery(ViSession &defaultSession, ViSession &instrSession, int moduleNum, QByteArray &response);
+    bool diodeCurrentLevelModuleQuery(ViSession &defaultSession, int moduleNum, QByteArray &response);
 
     // CH#:IMAX?
-    bool diodeMaxCurrentModuleQuery(ViSession &defaultSession, ViSession &instrSession, int moduleNum, QByteArray &response);
+    bool diodeMaxCurrentModuleQuery(ViSession &defaultSession, int moduleNum, QByteArray &response);
 
 
     // ********************************* Calibration Control Commands ********************************
 
     // CH#:MOD_F=
-    bool setModFrequencyModuleCmd(ViSession &defaultSession, ViSession &instrSession, int moduleNum, QByteArray &frequency);
+    bool setModFrequencyModuleCmd(ViSession &defaultSession, int moduleNum, QByteArray &frequency);
 
     // CH#:MOD_F?
-    bool modFrequencyModuleQuery(ViSession &defaultSession, ViSession &instrSession, int moduleNum, QByteArray &response);
+    bool modFrequencyModuleQuery(ViSession &defaultSession, int moduleNum, QByteArray &response);
 
     // CH#:WAVEREF
-    bool runWavelengthRefProcedureCmd(ViSession &defaultSession, ViSession &instrSession, int moduleNum);
+    bool runWavelengthRefProcedureCmd(ViSession &defaultSession, int moduleNum);
 
     // CH#:LCAL1=
-    bool setFirstCalibrationWavelengthCmd(ViSession &defaultSession, ViSession &instrSession, int moduleNum, QByteArray &wavelength);
+    bool setFirstCalibrationWavelengthCmd(ViSession &defaultSession, int moduleNum, QByteArray &wavelength);
 
     // CH#:LCAL2=
-    bool setSecondCalibrationWavelengthCmd(ViSession &defaultSession, ViSession &instrSession, int moduleNum, QByteArray &wavelength);
+    bool setSecondCalibrationWavelengthCmd(ViSession &defaultSession, int moduleNum, QByteArray &wavelength);
 
     // CH#:LCAL1?
-    bool firstCalibrationWavelengthQuery(ViSession &defaultSession, ViSession &instrSession, int moduleNum,  QByteArray &response);
+    bool firstCalibrationWavelengthQuery(ViSession &defaultSession, int moduleNum,  QByteArray &response);
 
     // CH#:LCAL2?
-    bool secondCalibrationWavelengthQuery(ViSession &defaultSession, ViSession &instrSession, int moduleNum, QByteArray &response);
+    bool secondCalibrationWavelengthQuery(ViSession &defaultSession, int moduleNum, QByteArray &response);
 
     // CH#:PCAL1=
-    bool setFirstCalibrationPowerCmd(ViSession &defaultSession, ViSession &instrSession, int moduleNum, QByteArray &power);
+    bool setFirstCalibrationPowerCmd(ViSession &defaultSession, int moduleNum, QByteArray &power);
 
     // CH#"PCAL2=
-    bool setSecondCalibrationPowerCmd(ViSession &defaultSession, ViSession &instrSession, int moduleNum, QByteArray &power);
+    bool setSecondCalibrationPowerCmd(ViSession &defaultSession, int moduleNum, QByteArray &power);
 
     // CH#:PCAL1?
-    bool firstCalibrationPowerQuery(ViSession &defaultSession, ViSession &instrSession, int moduleNum, QByteArray &response);
+    bool firstCalibrationPowerQuery(ViSession &defaultSession, int moduleNum, QByteArray &response);
 
     // CH#:PCAL2?
-    bool secondCalibrationPowerQuery(ViSession &defaultSession, ViSession &instrSession, int moduleNum, QByteArray &response);
+    bool secondCalibrationPowerQuery(ViSession &defaultSession, int moduleNum, QByteArray &response);
 
 
     // ********************************** Module Parameter-Monitoring Commands *********************************
 
     // CH#:AOUT
-    bool assignOutBNCPortToSignalCmd(ViSession &defaultSession, ViSession &instrSession, int moduleNum, QByteArray &signalType);
+    bool assignOutBNCPortToSignalCmd(ViSession &defaultSession, int moduleNum, QByteArray &signalType);
 
     // CH#:AOUT?
-    bool outBNCPortSignalMonitoringQuery(ViSession &defaultSession, ViSession &instrSession, int moduleNum, QByteArray &response);
+    bool outBNCPortSignalMonitoringQuery(ViSession &defaultSession, int moduleNum, QByteArray &response);
 
 private:
     QByteArray theIdentity;                 // identity of instrument (manufacturer, model num, etc.)

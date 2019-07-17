@@ -30,31 +30,31 @@ public:
 
     // ********************** Common SCPI Commands **********************
 
-    bool querySTB(ViSession &defaultSession, ViSession &instrSession, QByteArray &response);
+    bool querySTB(ViSession &defaultSession, QByteArray &response);
 
-    bool execESE(ViSession &defaultSession, ViSession &instrSession, ViByte registerVal);
+    bool execESE(ViSession &defaultSession, ViByte registerVal);
 
-    bool queryESE(ViSession &defaultSession, ViSession &instrSession, QByteArray &response);
+    bool queryESE(ViSession &defaultSession, QByteArray &response);
 
-    bool querySRE(ViSession &defaultSession, ViSession &instrSession, QByteArray &response);
+    bool querySRE(ViSession &defaultSession, QByteArray &response);
 
-    bool queryESR(ViSession &defaultSession, ViSession &instrSession, QByteArray &response);
+    bool queryESR(ViSession &defaultSession, QByteArray &response);
 
-    bool execOPC(ViSession &defaultSession, ViSession &instrSession);
+    bool execOPC(ViSession &defaultSession);
 
-    bool queryOPC(ViSession &defaultSession, ViSession &instrSession, QByteArray &response);
+    bool queryOPC(ViSession &defaultSession, QByteArray &response);
 
-    bool execCLS(ViSession &defaultSession, ViSession &instrSession);
+    bool execCLS(ViSession &defaultSession);
 
-    bool execRST(ViSession &defaultSession, ViSession &instrSession);
+    bool execRST(ViSession &defaultSession);
 
-    bool queryTST(ViSession &defaultSession, ViSession &instrSession, QByteArray &response);
+    bool queryTST(ViSession &defaultSession, QByteArray &response);
 
-    bool queryOPT(ViSession &defaultSession, ViSession &instrSession, QByteArray &response);
+    bool queryOPT(ViSession &defaultSession, QByteArray &response);
 
-    bool execWAI(ViSession &defaultSession, ViSession &instrSession);
+    bool execWAI(ViSession &defaultSession);
 
-    bool queryIDN(ViSession &defaultSession, ViSession &instrSession, QByteArray &response);
+    bool queryIDN(ViSession &defaultSession, QByteArray &response);
 
 
 protected:
@@ -76,7 +76,7 @@ protected:
      * @param command Command to send to instrument
      * @return
      */
-    bool sendCmdNoRsp(ViSession &defaultSession, ViSession &instrSession, QByteArray &command);
+    bool sendCmdNoRsp(ViSession &defaultSession, QByteArray &command);
 
     /**
      * @brief sendCmdRsp Sends a command to an instrument and returns the response from the instrument.
@@ -86,7 +86,7 @@ protected:
      * @param response[out] Response returned by instrument
      * @return
      */
-    bool sendCmdRsp(ViSession &defaultSession, ViSession &instrSession, QByteArray &command, QByteArray &response);
+    bool sendCmdRsp(ViSession &defaultSession, QByteArray &command, QByteArray &response);
 
 private:
     QByteArray theIdentity;                 // identity of instrument (manufacturer, model num, etc.)
