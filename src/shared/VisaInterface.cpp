@@ -44,8 +44,6 @@ void VisaInterface::displayResources(ViSession &defaultRMSession, FoundInstr &re
 
     if (findResources(defaultRMSession, ALL_RESOURCES))
         createInstrMap(defaultRMSession, result);
-
-
 }
 
 bool VisaInterface::findResources(ViSession &defaultRMSession, QString query)
@@ -168,14 +166,12 @@ ViStatus VisaInterface::findNextResource(ViSession &defaultRMSession, FoundInstr
 
    theStatus = viFindNext(findList, instrDescriptor);
 
-
    if(theStatus < VI_SUCCESS)
    {
        logger->logEntry("Command to findNextResource Failed, Closing Session");
    }
    else
    {
-
        // open session
        theStatus = viOpen(defaultRMSession, instrDescriptor, VI_NULL, VI_NULL, &instrSession);
        if(theStatus < VI_SUCCESS){
@@ -206,13 +202,13 @@ ViStatus VisaInterface::findNextResource(ViSession &defaultRMSession, FoundInstr
 
 }
 
-ViStatus VisaInterface::queryInstrument(QByteArray &instrumentLoc, ViSession &instrSess, FoundInstr &resultMap)
+ViStatus VisaInterface::queryInstrument(QByteArray &instrAddr, ViSession &instrSess, FoundInstr &resultMap)
 {
     ViUInt32 rtnSize;
     InstrData firstInstr;
 
     //Ask the Instrument Identity
-    theStatus = sendCmd(instrSess, instrumentLoc, IDENTITY, rtnSize);
+    theStatus = sendCmd(instrSess, instrAddr, IDENTITY, rtnSize);
 
     QString command(IDENTITY);  //Convert to string
 
@@ -220,18 +216,17 @@ ViStatus VisaInterface::queryInstrument(QByteArray &instrumentLoc, ViSession &in
     {
         //We failed log it and close instrument session NOT the default session this is still open
         logger->logEntry("Failed to send command to instrument");
-
     }
     else
     {
         //Asked for Identity so lets read it
         QByteArray rsp;
 
-        theStatus = readCmd(instrSess, instrumentLoc, rsp, rtnSize);
+        theStatus = readCmd(instrSess, instrAddr, rsp, rtnSize);
 
         QString responseFromCommand(rsp);  //Convert to string
 
-        firstInstr.first = instrumentLoc;  //Record instrument address (Location)
+        firstInstr.first = instrAddr;  //Record instrument address (Location)
 
         if(theStatus < VI_SUCCESS)
         {
@@ -298,7 +293,8 @@ ViStatus VisaInterface::closeSession(ViSession &sessionToClose)
 }
 
 
-//******************Helper Functions*********************************************************************
+//************************************* Helper Functions *******************************************
+
 
 void VisaInterface::charArrayToByteArray(unsigned char (&charArray)[VISA_MAX_BUFFER_READ_SIZE], QByteArray &byteArray, ViUInt32 size)
 {

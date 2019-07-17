@@ -21,91 +21,95 @@ public:
 //***********************************How to find resources*******************************************************
 /*
  *  createDefaultRM(testA);
- *  findResources(testA, "?*INSTR", currentSession, numInstruments, instrAddr);
- *  createInstrMap(testA, instrAddr, currentSession, numInstruments, instrumentMap);
+ *  findResources(testA, "?*INSTR");
+ *  createInstrMap(testA, instrumentMap);
  *  closeDefaultSession(testA);
  *
  *  This is will result in a QMap with all the queried resources ordered by index (order found).
  *  QPair<Instrument Address, Instrument Identity> Instrument Data
  *  QMap<Index, Instrument Data>
  ****************************************************************************************************************/
+
     /**
      * @brief createDefaultRM - This function returns a session to the Default Resource Manager resource.
      *        This method must be run prior to any VISA operation.
      * @param[out] defualtSession Unique logical identifier to a Default Resource Manager session.
-     * @return Retruns completion code
+     * @return Completion code
      */
     ViStatus createDefaultRM(ViSession &defualtSession);
 
     /**
-     * @brief findResource Find all the VISA resources in our system and store the number of resources
-     *        in the system in numInstrs.
-     * @param defaultRMSession[in] Resource Manager session—should always be the session returned from viOpenDefaultRM().
-     * @param query[in] This is a regular expression followed by an optional logical expression. See VISA ICD for more details
-     * @param instrSession[out] Returns a handle identifying this search session. This handle will be used as an input in viFindNext().
-     * @param numInstrs [out] Number of matches.
-     * @param instrumentLoc[out] This string can then be passed to viOpen() to establish a session to the given device.
-     *        viFindRsrc requires a char array.  We convert to QByteArray to makes things easier when passing around.
-     * @return Returns true if VISA resources were found
+     * @brief findResources Find all the VISA resources in system and stores result in data member findList.
+     * @param defaultRMSession Resource Manager session—should always be a session returned from viOpenDefaultRM().
+     * @param query Query for the type of instrument to search for
+     * @return true if finding resources was succesful
      */
     bool findResources(ViSession &defaultRMSession, QString query);
 
     /**
-     * @brief createInstrSession Connect specified instrument
-     * @param[in] defaultRMSession Resource Manager session—should always be a session returned from viOpenDefaultRM().
-     * @param instrumentLoc[in] Unique symbolic name of a resource. Refer to the Description section of the VISA ICD for more information.
-     * @param instrSession[out] Unique logical identifier reference to a session.
-     * @return Returns completion code
+     * @brief createInstrMap Connect specified instrument
+     * @param defaultRMSession Resource Manager session (should always be a session returned from viOpenDefaultRM()).
+     * @param resultMap Map of found resources
+     * @return Completion code
      */
-    ViStatus createInstrMap(ViSession &defaultRMSession, FoundInstr &result);
+    ViStatus createInstrMap(ViSession &defaultRMSession, FoundInstr &resultMap);
 
     /**
-     * @brief displayResources
-     * @param defaultRMSession Ressource Manager session-should always be a session returned from viOpenDefaultRM().
-     * @param instrumentLoc Unique symbolic name of a resource. Refer to the Description section of the VISA ICD for more information.
-     * @param instrSess Unique logical identifier reference to a session.
-     * @param numInstr Number of resources found.
-     * @param mapping of int to QPair of instrument address and identity.
-     * @return
+     * @brief displayResources Facilitates the process of searching for resources. Looks for resources then adds them to map if found.
+     * @param defaultRMSession Resource Manager session
+     * @param result Map of found resources
      */
     void displayResources(ViSession &defaultRMSession, FoundInstr &result);
-
-
 
     /**
      * @brief closeDefaultSession closes the default session
      * @param defaultSession[in] what session needs to be closed
-     * @return Returns comnpletion code
+     * @return Completion code
      */
     ViStatus closeDefaultSession(ViSession &defaultSession);
-
 
     /**
      * @brief sendCmd Send SCPI command to connected resource
      * @param instrSession[in] Unique logical identifier reference to a session.
-     * @param instrumentLoc[in]  Unique symbolic name of a resource. Refer to the Description section of the VISA ICD for more information.
+     * @param instrAddr[in]  Unique symbolic name of a resource. Refer to the Description section of the VISA ICD for more information.
      * @param scpiCmd[in] SCPI Command to send to resource
      * @param writeCount[out] Number of bytes actually transferred
-     * @return
+     * @return Completion code
      */
     ViStatus sendCmd(ViSession &instrSession, QByteArray instrAddr, QByteArray scpiCmd, ViUInt32 &writeCount);
 
+    /**
+     * @brief readCmd Reads response of SCPI command from connected resource
+     * @param instrSession[in] instrument communication session
+     * @param instrAddr[in] instrument address
+     * @param response[out] Response read from instrument
+     * @param retCount[out] Number of bytes actually transferred
+     * @return Completion code
+     */
     ViStatus readCmd(ViSession &instrSession, QByteArray instrAddr, QByteArray &response, ViUInt32 &retCount);
 
+    /**
+     * @brief openInstrSession Opens a session to an instrument located at instrAddr.
+     * @param defaultSession Resource Manager session
+     * @param instrAddr instrument address
+     * @param instrSess instrument communication session to open
+     * @return Completion code
+     */
     ViStatus openInstrSession(ViSession &defaultSession, QByteArray instrAddr, ViSession &instrSess);
 
     /**
      * @brief closeSession closes session to instrument or defualt session
      * @param sessionToClose[in] session to close
-     * @return returns completion code
+     * @return completion code
      */
     ViStatus closeSession(ViSession &sessionToClose);
 
-//********************************************End Find Resource*********************************************************************************
+
+//******************************************** End Find Resource *****************************************************
 
 private:
 
-    //Helper Functions
+    //*********************** Helper Functions ************************
 
     /**
      * @brief byteArrayToCharArray Converts QByteArray to C style char array
@@ -121,31 +125,42 @@ private:
      */
     void charArrayToByteArray(unsigned char (&charArray)[VISA_MAX_BUFFER_READ_SIZE], QByteArray &byteArray, ViUInt32 size);
 
-
-
     /**
-     * @brief findNextResource used to find the next resouce when multiple resources are connected to the system
-     * @param instrumentLoc[in] instrument adddress
-     * @param instrSess[in] instrument communication session
-     * @param resultMap[out] map of all found instruments
-     * @param indexOfInstr[in] index to store found instrument at in the map
-     * @return
+     * @brief findNextResource Used to find the next resouce when multiple resources are connected to the system
+     * @param defaultRMSession Resource Manager session
+     * @param resultMap map of all found instruments
+     * @return Completion code
      */
     ViStatus findNextResource(ViSession &defaultRMSession, FoundInstr &resultMap);
 
-    ViStatus queryInstrument(QByteArray &instrumentLoc, ViSession &instrSess, FoundInstr &resultMap);
+    /**
+     * @brief queryInstrument Queries an individual instrument for its identity and inserts info into a resultMap.
+     * @param instrAddr instrument address
+     * @param instrSess instrument communication session
+     * @param resultMap map of all found instruments
+     * @return Completion code
+     */
+    ViStatus queryInstrument(QByteArray &instrAddr, ViSession &instrSess, FoundInstr &resultMap);
 
 
+    // ******************** Private Data Members **********************
 
-    //Private Data Members
+    //Status of last operation - Contains Completion Code
+    ViStatus theStatus;
 
-    ViStatus theStatus;  //Status of last operation - Contains Completion Code
+    // Logging instance
     Logging* logger = Logging::getInstance();
 
-
+    // Handle identifying a search session from viFindRsrc
     ViFindList findList;
+
+    // Session to an individual instrument
     ViSession instrSession;
+
+    // Number of instruments found by viFindRsrc
     ViUInt32 numInstr;
+
+    // Location of a device
     QByteArray instrAddr;
 
 };
