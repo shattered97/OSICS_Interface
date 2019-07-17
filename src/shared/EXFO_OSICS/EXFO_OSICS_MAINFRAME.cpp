@@ -174,17 +174,16 @@ bool EXFO_OSICS_MAINFRAME::spectralUnitModuleQuery(ViSession &defaultSession, in
 // ******** Wavelength Setting *********
 
 bool EXFO_OSICS_MAINFRAME::setRefWavelengthModuleCmd(ViSession &defaultSession, int slotNum, QByteArray &wavelengthNum){
-    QByteArray baseCmd = "CH#:L=\n";
+    QByteArray baseCmd = "CH#:L\n";
     insertSlotNum(baseCmd, slotNum);
     appendParamToCmdWithSpace(baseCmd, wavelengthNum);
 
     return sendCmdNoRsp(defaultSession, baseCmd);
 }
 
-bool EXFO_OSICS_MAINFRAME::refWavelengthModuleQuery(ViSession &defaultSession, int slotNum, QByteArray &wavelengthNum, QByteArray &response){
+bool EXFO_OSICS_MAINFRAME::refWavelengthModuleQuery(ViSession &defaultSession, int slotNum, QByteArray &response){
     QByteArray baseCmd = "CH#:L?\n";
     insertSlotNum(baseCmd, slotNum);
-    appendParamToCmdWithSpace(baseCmd, wavelengthNum);
 
     return sendCmdRsp(defaultSession, baseCmd, response);
 }

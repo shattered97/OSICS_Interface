@@ -10,22 +10,54 @@ public:
 
     // ******************************* Mainframe Commands Only  *******************************
 
-    // DISABLE
+    /**
+     * @brief disableMainframeLaserCmd Disables the laser output on all OSICS modules
+     *        Base command: DISABLE
+     * @param defaultSession Default communication session
+     * @return true if command was successful
+     */
     bool disableMainframeLaserCmd(ViSession &defaultSession);
 
-    // ENABLE
+    /**
+     * @brief enableMainframeLaserCmd Enables the laser output on all OSICS modules
+     *        Base command: ENABLE
+     * @param defaultSession Default communication session
+     * @return true if command was successful
+     */
     bool enableMainframeLaserCmd(ViSession &defaultSession);
 
-    // ENABLE?
+    /**
+     * @brief laserStateMainframeQuery Returns the current state of the OSICS laser output master control
+     *        Base command: ENABLE?
+     * @param defaultSession Default communication session
+     * @param response Response from instrument - ENABLED | DISABLED
+     * @return true if command was successful
+     */
     bool laserStateMainframeQuery(ViSession &defaultSession, QByteArray &response);
 
-    // GHZ
+    /**
+     * @brief setMainframeSpectralUnitGHzCmd Sets the frequency in GHz as the spectral unit on OSICS system
+     *        Base command: GHZ
+     * @param defaultSession Default communication session
+     * @return true if command was successful
+     */
     bool setMainframeSpectralUnitGHzCmd(ViSession &defaultSession);
 
-    // NM
+    /**
+     * @brief setMainframeSpectralUnitNMCmd Sets the wavelength in nm as the spectral unit on OSICS system
+     *        Base command: NM
+     * @param defaultSession Default communication session
+     * @return true if command was successful
+     */
     bool setMainframeSpectralUnitNMCmd(ViSession &defaultSession);
 
-    // NM?
+    /**
+     * @brief spectralUnitMainframeQuery Returns the current spectral unit used on the OSICS system
+     *        Base command: NM?
+     * @param defaultSession Default communication session
+     * @param response Response from instrument - 0 (spectral unit is nm) | 1 (spectral unit is GHz)
+     * @return true if command was successful
+     */
     bool spectralUnitMainframeQuery(ViSession &defaultSession, QByteArray &response);
 
     // DBM
@@ -115,55 +147,179 @@ public:
 
     // *******************  Shared Module Commands - Optical Emission Wavelength/Frequency Setting **************************
 
-    // CH#:L=
+    /**
+     * @brief setEmissionWavelengthModuleCmd Sets the emission wavelength of the module in nm
+     * @param defaultSession Default communication session
+     * @param slotNum Target slot number
+     * @param wavelength Wavelength in nm to set
+     * @return true if command was successful
+     */
+    bool setEmissionWavelengthModuleQuery(ViSession &defaultSession, int slotNum, QByteArray &wavelength);
+
+    /**
+     * @brief emissionWavelengthModuleCmd Returns the emission wavelenth of the module in nm
+     *        Base command: CH#:L?
+     * @param defaultSession Default communication session
+     * @param slotNum Target slot number
+     * @param response Response from instrument - emission wavelength in nm
+     * @return true if command was successful
+     */
+    bool emissionWavelengthModuleCmd(ViSession &defaultSession, int slotNum, QByteArray &response);
+
+    /**
+     * @brief setRefWavelengthModuleCmd Sets the reference wavelength to one of two factory calibrations
+     *        Base command: CH#:L
+     * @param defaultSession Default communication session
+     * @param slotNum Target slot number
+     * @param wavelengthNum Either 1 (first wavelength value) or 2 (second wavelength value)
+     * @return true if command was successful
+     */
     bool setRefWavelengthModuleCmd(ViSession &defaultSession, int slotNum, QByteArray &wavelengthNum);
 
-    // CH#:L?
-    bool refWavelengthModuleQuery(ViSession &defaultSession, int slotNum, QByteArray &wavelengthNum, QByteArray &response);
+    /**
+     * @brief refWavelengthModuleQuery Returns the number of the wavelength used (1 or 2)
+     *        Base command: CH#:L?
+     * @param defaultSession Default communication session
+     * @param slotNum Target slot number
+     * @param response Response from instrument - Either 1 | 2
+     * @return true if command was successful
+     */
+    bool refWavelengthModuleQuery(ViSession &defaultSession, int slotNum, QByteArray &response);
 
-    // CH#:F=
+    /**
+     * @brief setFrequencyModuleCmd Sets the emission frequency of the module in GHz
+     *        Base command: CH#:F=
+     * @param defaultSession Default communication session
+     * @param slotNum Target slot number
+     * @param frequency Frequency to set on module
+     * @return true if command was successful
+     */
     bool setFrequencyModuleCmd(ViSession &defaultSession, int slotNum, QByteArray &frequency);
 
-    // CH#:F?
+    /**
+     * @brief frequencyModuleQuery Returns the emission frequency of the module in GHz
+     *        Base command: CH#:F?
+     * @param defaultSession Default communication session
+     * @param slotNum Target slot number
+     * @param response Response from instrument - the emission frequency in GHz
+     * @return true if command was successful
+     */
     bool frequencyModuleQuery(ViSession &defaultSession, int slotNum, QByteArray &response);
 
-    // CH#:CTRL
+    /**
+     * @brief enableCoherenceControlCmd Enables/disables the Coherence Control function
+     *        Base command: CH#:CTRL
+     * @param defaultSession Default communication session
+     * @param slotNum Target slot number
+     * @param setting OFF (disable function) | ON (enable function)
+     * @return true if command was successful
+     */
     bool enableCoherenceControlCmd(ViSession &defaultSession, int slotNum, QByteArray &setting);
 
-    // CH#:CTRL?
+    /**
+     * @brief coherenceControlEnabledQuery Returns the state of the Coherence Control function (0 or 1)
+     *        Base command: CH#:CTRL?
+     * @param defaultSession Default communication session
+     * @param slotNum Target slot number
+     * @param response Response from instrument - 0 (coherence control off) | 1 (coherence control on)
+     * @return true if command was successful
+     */
     bool coherenceControlEnabledQuery(ViSession &defaultSession, int slotNum, QByteArray &response);
 
-    // CH#:APF
+    /**
+     * @brief enableAutoPeakFindControlCmd Enables/disables the Auto-peak Find function
+     *        Base command: CH#:APF
+     * @param defaultSession Default communication session
+     * @param slotNum Target slot number
+     * @param setting OFF (disable function | ON (enable function)
+     * @return true if command was successful
+     */
     bool enableAutoPeakFindControlCmd(ViSession &defaultSession, int slotNum, QByteArray &setting);
 
-    // CH#:APF?
+    /**
+     * @brief autoPeakFindControlQuery Returns the state of the Auto-peak Find function (0 or 1)
+     *        Base command: CH#:APF?
+     * @param defaultSession Default communication session
+     * @param slotNum Target slot number
+     * @param response Response from instrument - 0 (function is off) | 1 (function is on)
+     * @return true if command was successful
+     */
     bool autoPeakFindControlQuery(ViSession &defaultSession, int slotNum, QByteArray &response);
 
 
     // ****************************** Shared Module Commands - Modulation Control *******************************
 
-    // CH#:MOD_CTRL
+    /**
+     * @brief setModuleModulationCtrlCmd Sets the digital modulation of the module optical signal
+     *        Base command: CH#:MOD_CTRL
+     * @param defaultSession Default communication session
+     * @param slotNum Target slot number
+     * @param setting OFF (digital modulation is off) | ON (digital modulation on) | ON_INV (reversed digital modulation)
+     * @return true if command was successful
+     */
     bool setModuleModulationCtrlCmd(ViSession &defaultSession, int slotNum, QByteArray &setting);
 
-    // CH#:MOD_CTRL?
+    /**
+     * @brief moduleModulationCtrlQuery Returns the selected modulation activation state
+     *        Base command: CH#:MOD_CTRL?
+     * @param defaultSession Default communication session
+     * @param slotNum Target slot number
+     * @param response Response from instrument - Either OFF | ON | ON_INV
+     * @return true if command was successful
+     */
     bool moduleModulationCtrlQuery(ViSession &defaultSession, int slotNum, QByteArray &response);
 
-    // CH#:MOD_SRC
+    /**
+     * @brief setModuleModulationSrcCmd Sets the type of modulation source of the module
+     *        Base command: CH#:MOD_SRC
+     * @param defaultSession Default communication session
+     * @param slotNum Target slot number
+     * @param setting Either MAIN to set to mainframe or INT to set to internal
+     * @return true if command was successful
+     */
     bool setModuleModulationSrcCmd(ViSession &defaultSession, int slotNum, QByteArray &setting);
 
-    // CH#:MOD_SRC?
+    /**
+     * @brief moduleModulationSrcQuery Returns the selected modulation source
+     *        Base command: CH#:MOD_SRC?
+     * @param defaultSession Default communication session
+     * @param slotNum Target slot number
+     * @param response Response from instrument - Either INT | MAIN
+     * @return
+     */
     bool moduleModulationSrcQuery(ViSession &defaultSession, int slotNum, QByteArray &response);
 
 
     // ************************ Shared Module Commands - Module System-Version Info ****************************
 
-    // CH#:FIRM?
+    /**
+     * @brief softwareVersionModuleQuery Returns the software version of the module
+     *        Base command: CH#:FIRM?
+     * @param defaultSession Default communication session
+     * @param slotNum Target slot number
+     * @param response Response from instrument - the software version of the module
+     * @return true if command was successful
+     */
     bool softwareVersionModuleQuery(ViSession &defaultSession, int slotNum, QByteArray &response);
 
-    // CH#:*IDN?
+    /**
+     * @brief identificationModuleQuery Returns info about the module (company name, module, serial num, software version)
+     *        Base command: CH:*IDN?
+     * @param defaultSession Default communication session
+     * @param slotNum Target slot number
+     * @param response Response from instrument - company name, module, serian num, software version)
+     * @return true if command was successful
+     */
     bool identificationModuleQuery(ViSession &defaultSession, int slotNum, QByteArray &response);
 
-    // CH#:TYPE?
+    /**
+     * @brief typeOfModuleQuery Returns info about the module's type, version and options.
+     *        Base command: CH#:TYPE?
+     * @param defaultSession Default communication session
+     * @param slotNum Target slot number
+     * @param response Response from instrument - module type, version, options
+     * @return true if command was successful
+     */
     bool typeOfModuleQuery(ViSession &defaultSession, int slotNum, QByteArray &response);
 
 
@@ -193,9 +349,12 @@ protected:
     void insertSlotNum(QByteArray &command, int slotNum);
 
 private:
-    QByteArray theIdentity;                 // identity of instrument (manufacturer, model num, etc.)
-    QByteArray theInstrLoc;                 // the physical address of the instrument
 
+    // identity of instrument (manufacturer, model num, etc.)
+    QByteArray theIdentity;
+
+    // the physical address of the instrument
+    QByteArray theInstrLoc;
 };
 
 #endif // EXFO_OSICS_MAINFRAME_H
