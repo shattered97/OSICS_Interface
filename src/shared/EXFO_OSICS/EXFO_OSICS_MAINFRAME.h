@@ -60,88 +60,245 @@ public:
      */
     bool spectralUnitMainframeQuery(ViSession &defaultSession, QByteArray &response);
 
-    // DBM
+    /**
+     * @brief setMainframePowerUnitDBmCmd Sets dBm as the power unit on all modules
+     *        Base command: DBM
+     * @param defaultSession Default communication session
+     * @return true if command was successful
+     */
     bool setMainframePowerUnitDBmCmd(ViSession &defaultSession);
 
-    // MW
+    /**
+     * @brief setMainframePowerUnitMWCmd Sets mW as the power unit on all modules
+     *        Base command: MW
+     * @param defaultSession Default communication session
+     * @return true if command was successful
+     */
     bool setMainframePowerUnitMWCmd(ViSession &defaultSession);
 
-    // MW?
+    /**
+     * @brief powerUnitMainframeQuery Returns the current power unit used on the OSICS system
+     *        Base command: MW?
+     * @param defaultSession Default communication session
+     * @param response Response from instrument - 0 (power is in dBm) | 1 (power is in mW)
+     * @return true if command was successful
+     */
     bool powerUnitMainframeQuery(ViSession &defaultSession, QByteArray &response);
 
-    // P=
+    /**
+     * @brief setMainframeOutputPowerCmd Sets the optical output power of all modules to the same value
+     *        Base command: P=
+     * @param defaultSession Default communication session
+     * @param power Output power to set (in mW or dBm depending on set unit)
+     * @return true if command was successful
+     */
     bool setMainframeOutputPowerCmd(ViSession &defaultSession, QByteArray &power);
 
-    // P?
+    /**
+     * @brief outputPowerMainframeQuery Returns the optical output power value set for the modules
+     *        Base command: P?
+     * @param defaultSession Default communication session
+     * @param response Response from instrument - Value set by the P= command (not the power of installed modules)
+     * @return true if command was successful
+     */
     bool outputPowerMainframeQuery(ViSession &defaultSession, QByteArray &response);
 
-    // MOD_SRC
+    /**
+     * @brief setMainframeModSrcTypeCmd Sets the type of modulation source of the OSICS mainframe
+     *        Base command: MOD_SRC
+     * @param defaultSession Default communication session
+     * @param modSrc Type of modulation source - INT (internal) | EXT (external)
+     * @return true if command was successful
+     */
     bool setMainframeModSrcTypeCmd(ViSession &defaultSession, QByteArray &modSrc);
 
-    // MOD_SRC?
+    /**
+     * @brief modSrcTypeMainframeQuery Returns the type of digital (TTL) modulation source on the system
+     *        Base command: MOD_SRC?
+     * @param defaultSession Default communication session
+     * @param response Response from instrument - INT (internal) | EXT (external)
+     * @return true if command was successful
+     */
     bool modSrcTypeMainframeQuery(ViSession &defaultSession, QByteArray &response);
 
-    // MOD_F=
+    /**
+     * @brief setMainframeFrequencyQuery Sets the frequency of the OSICS internal TTL modulation source
+     *        Base command: MOD_F=
+     * @param defaultSession Default communication session
+     * @param frequency Frequency in Hz in the range 123 Hz to 1000000 Hz (1MHz)
+     * @return true if command was successful
+     */
     bool setMainframeFrequencyQuery(ViSession &defaultSession, QByteArray &frequency);
 
-    // MOD_F?
+    /**
+     * @brief frequencyMainframeQuery Returns the frequency of the OSICS internal digital modulation source in Hz
+     *        Base command: MOD_F?
+     * @param defaultSession Default communication session
+     * @param response Response from instrument - frequency in Hz of internal digital modulation source
+     * @return true if command was successful
+     */
     bool frequencyMainframeQuery(ViSession &defaultSession, QByteArray &response);
 
-    // SAVE
+    /**
+     * @brief saveManframeConfigCmd Saves the current OSICS Mainframe and module config settings to selected memory
+     *        Base command: SAVE
+     * @param defaultSession Default communication session
+     * @param configMemory Memory location to store - STARTUP | A | B | C | D
+     * @return true if command was successful
+     */
     bool saveManframeConfigCmd(ViSession &defaultSession, QByteArray &configMemory);
 
-    // RECALL
+    /**
+     * @brief recallMainframeConfigCmd Loads the selected configuration type
+     *        Base command: RECALL
+     * @param defaultSession Default communication session
+     * @param configMemory Memory location to select - DEFAULT | STARTUP | A | B | C | D
+     * @return true if command was successful
+     */
     bool recallMainframeConfigCmd(ViSession &defaultSession, QByteArray &configMemory);
 
-    // INTERLOCK?
+    /**
+     * @brief remoteInterlockMainframeQuery Returns the current state of the remote interlock mode
+     *        Base command: INTERLOCK?
+     * @param defaultSession Default communication session
+     * @param response Response from instrument - 0 (interlock off) | 1 (interlock on)
+     * @return true if command was successful
+     */
     bool remoteInterlockMainframeQuery(ViSession &defaultSession, QByteArray &response);
 
-    // PRESENT?
+    /**
+     * @brief moduleTypeAtSlotQuery Returns the type of OSICS module installed in channel-slot number #
+     *        Base command: PRESENT?
+     * @param defaultSession Default communication session
+     * @param slotNum Target slot number
+     * @param response Response from instrument - type of OSICS module
+     *        -1 (empty) | 1 (T100) | 2 (DFB/SLD) | 7 (SWT) | 8 (ATN/BKR) | 10 (TLS)
+     * @return true if command was successful
+     */
     bool moduleTypeAtSlotQuery(ViSession &defaultSession, int slotNum, QByteArray &response);
 
 
     // ************************* Shared Module Commands - Optical-Output Control *********************************
 
-    // CH#:DISABLE
+    /**
+     * @brief disableModuleLaserCmd Disables the laser output of the module
+     *        Base command: DISABLE
+     * @param defaultSession Default communication session
+     * @param slotNum Target slot number
+     * @return true if command was successful
+     */
     bool disableModuleLaserCmd(ViSession &defaultSession, int slotNum);
 
-    // CH#:ENABLE
+    /**
+     * @brief enableModuleLaserCmd Enables the laser output of the module
+     *        Base command: ENABLE
+     * @param defaultSession Default communication session
+     * @param slotNum Target slot number
+     * @return true if command was successful
+     */
     bool enableModuleLaserCmd(ViSession &defaultSession, int slotNum);
 
-    // CH#:ENABLE?
+    /**
+     * @brief laserStateModuleQuery Returns the state of the laser output control
+     *        Base command: ENABLE?
+     * @param defaultSession Default communication session
+     * @param slotNum Target slot number
+     * @param response Response from instrument - ENABLED | DISABLED
+     * @return true if command was successful
+     */
     bool laserStateModuleQuery(ViSession &defaultSession, int slotNum, QByteArray &response);
 
 
     // **************************** Shared Module Commands - Unit Selection ***********************************
 
-    // CH#:GHZ
+    /**
+     * @brief setModuleSpectralUnitGHzCmd Sets GHz as the spectral unit of the module
+     *        Base command: CH#:GHZ
+     * @param defaultSession Default communication session
+     * @param slotNum Target slot number
+     * @return true if command was successful
+     */
     bool setModuleSpectralUnitGHzCmd(ViSession &defaultSession, int slotNum);
 
     // CH#:NM
+    /**
+     * @brief setModuleSpectralUnitNMCmd Sets nm as the spectral unit of the module
+     *        Base command: CH#:NM
+     * @param defaultSession Default communication session
+     * @param slotNum Target slot number
+     * @return true if command was successful
+     */
     bool setModuleSpectralUnitNMCmd(ViSession &defaultSession, int slotNum);
 
-    // CH#:NM?
+    /**
+     * @brief spectralUnitModuleQuery Returns the set spectral unit of the module
+     *        Base command: CH#:NM?
+     * @param defaultSession Default communication session
+     * @param slotNum Target slot number
+     * @param response Response from instrument - 0 (unit is GHz) | 1 (unit is nm)
+     * @return true if command was successful
+     */
     bool spectralUnitModuleQuery(ViSession &defaultSession, int slotNum, QByteArray &response);
 
-    // CH#:DBM
+    /**
+     * @brief setModulePowerUnitDBmCmd Sets dBm as the power unit of the module
+     *        Base command: CH#:DBM
+     * @param defaultSession Default communication session
+     * @param slotNum Target slot number
+     * @return true if command was successful
+     */
     bool setModulePowerUnitDBmCmd(ViSession &defaultSession, int slotNum);
 
-    // CH#:MW
+    /**
+     * @brief setModulePowerUnitMWCmd Sets mW as the power unit of the module
+     *        Base command: CH#:MW
+     * @param defaultSession Default communication session
+     * @param slotNum Target slot number
+     * @return true if command was successful
+     */
     bool setModulePowerUnitMWCmd(ViSession &defaultSession, int slotNum);
 
-    // CH#:MW?
+    /**
+     * @brief powerUnitModuleQuery Returns the set power unit of the module
+     *        Base command: CH#:MW?
+     * @param defaultSession Default communication session
+     * @param slotNum Target slot number
+     * @param response Response from instrument - 0 (unit is dBm) | 1 (unit is mW)
+     * @return true if command was successful
+     */
     bool powerUnitModuleQuery(ViSession &defaultSession, int slotNum, QByteArray &response);
 
 
     // ************************************* Shared Module Commands - Output Power Setting ************************************
 
-    // CH#:P=
+    /**
+     * @brief setModuleOutputPowerCmd Sets the optical output power of the module depending on selected power unit
+     *        Base command: CH#:P=
+     * @param defaultSession Default communication session
+     * @param slotNum Target slot number
+     * @param power Optical output power in dBm or mW
+     * @return true if command was successful
+     */
     bool setModuleOutputPowerCmd(ViSession &defaultSession, int slotNum, QByteArray &power);
 
-    // CH#:P?
+    /**
+     * @brief outputPowerModuleQuery Returns the current value of the output power according to selected unit
+     *        Base command: CH#:P?
+     * @param defaultSession Default communication session
+     * @param slotNum Target slot number
+     * @param response Response from instrument - Output power in mW or dBm | Disabled (optical output is disabled)
+     * @return true if command was successful
+     */
     bool outputPowerModuleQuery(ViSession &defaultSession, int slotNum, QByteArray &response);
 
-    // CH#:LIMIT?
+    /**
+     * @brief outputPowerReachedQuery Retuns the state of the output power
+     *        Base command: CH#:LIMIT?
+     * @param defaultSession Default communication session
+     * @param slotNum Target slot number
+     * @param response Response from instrument - 0 (power is reached) | 1 (power not reached)
+     * @return true if command was successful
+     */
     bool outputPowerReachedQuery(ViSession &defaultSession, int slotNum, QByteArray &response);
 
 
@@ -285,7 +442,7 @@ public:
      * @param defaultSession Default communication session
      * @param slotNum Target slot number
      * @param response Response from instrument - Either INT | MAIN
-     * @return
+     * @return true if command was successful
      */
     bool moduleModulationSrcQuery(ViSession &defaultSession, int slotNum, QByteArray &response);
 
