@@ -2,11 +2,11 @@
 #define MAINWINDOW_H
 
 #include "ui_mainwindow.h"
-#include "QMessageBox"
 #include "Orchestrator.h"
 
 #include <QMainWindow>
 #include <QObject>
+
 
 namespace Ui {
 class MainWindow;
@@ -22,22 +22,31 @@ public:
 
 private slots:
 
-    void on_confirmDevTypeBtn_clicked();
-
-    void on_listWidget_currentItemChanged();
+    void on_searchForDevTypeBtn_clicked();
 
     void slotReceiveDevices(FoundInstr listOfDevices);
 
-    void on_launchSelectedDevice_clicked();
+    void on_testTypeComboBox_currentIndexChanged(int index);
+
+    void on_addSelectedDeviceBtn_clicked();
+
+    void on_startTestPushButton_clicked();
+
+    void on_selectedDevicesListWidget_itemDoubleClicked(QListWidgetItem *item);
 
 signals:
-
 
     void signalDeviceTypeSelected(QByteArray deviceType);
 
     void signalRequestDevicesFromOrchestrator();
 
     void signalCreateDevice(QByteArray instrumentAddress, QByteArray instrumentIdentity);
+    void signalCreateN7714ADevice(QString type, QByteArray instrumentAddress, QByteArray instrumentIdentity);
+    void signalCreateN7745ADevice(QString type, QByteArray instrumentAddress, QByteArray instrumentIdentity);
+
+
+
+    void signalTCPDeviceFound(FoundInstr deviceMap);
 
 private:
 
@@ -56,9 +65,19 @@ private:
     QList<QByteArray> resourcesQmapToQList(FoundInstr foundResources, QByteArray deviceType);
 
     /**
-     * @brief loadDeviceTypesList Populates the widget of possible device types
+     * @brief loadDeviceTypesList Populates the device types drop down combo box with possible device types
      */
     void loadDeviceTypesList();
+
+    /**
+     * @brief loadTestTypesList Populates the test types dropdown combo box with possible test types
+     */
+    void loadTestTypesList();
+
+    /**
+     * @brief resetMainWindow Resets the GUI to the starting state
+     */
+    void resetMainWindow();
 
 };
 

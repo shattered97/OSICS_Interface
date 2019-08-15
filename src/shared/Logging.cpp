@@ -10,7 +10,7 @@ Logging::Logging()
     theLogFile.setFileName(LOG_FILE_PATH +  "/" + LOG_FILE);
 
     //Alert user if logging fails to create file at startup
-    if(!logEntry("Logging started.................................................................."))
+    if(!logEntry("Logging started..................................................................", __LINE__))
     {
         QMessageBox alert;
         alert.setText("Failed to Create Log File");
@@ -21,7 +21,7 @@ Logging::Logging()
 
 Logging::~Logging()
 {
-    logEntry("Logging Closed Cleanly");
+    logEntry("Logging Closed Cleanly", __LINE__);
     delete theLoggerPtr;
 }
 
@@ -35,7 +35,7 @@ Logging* Logging::getInstance()
     return theLoggerPtr;
 }
 
-bool Logging::logEntry(QString msg)
+bool Logging::logEntry(QString msg, int lineNum)
 {
     bool success = false;
 
@@ -46,8 +46,8 @@ bool Logging::logEntry(QString msg)
 
         //%1:  Timestamp
         //%2:  Log entry
-        QString logFormat = "%1: %2\n";
-        QString logEntry = logFormat.arg(timeStamp).arg(msg);
+        QString logFormat = "%1 (%2): %3 \n";
+        QString logEntry = logFormat.arg(timeStamp).arg(lineNum).arg(msg);
 
         theLogFile.write(logEntry.toLatin1());
 
@@ -61,7 +61,7 @@ bool Logging::logEntry(QString msg)
     return success;
 }
 
-void Logging::logInstrSendCmd(QByteArray instrAddr, qint32 statusCode,  QByteArray cmd)
+void Logging::logInstrSendCmd(QByteArray instrAddr, qint32 statusCode, QByteArray cmd, int lineNum)
 {
     //%1: instrument address
     //%2: status of command
@@ -73,10 +73,10 @@ void Logging::logInstrSendCmd(QByteArray instrAddr, qint32 statusCode,  QByteArr
     QString address(instrAddr);
 
     QString logFormat = "%1 (status code %2):  Sent: %3";
-    logEntry(logFormat.arg(address).arg(statusCode).arg(command));
+    logEntry(logFormat.arg(address).arg(statusCode).arg(command), lineNum);
 }
 
-void Logging::logInstrReadCmd(QByteArray instrAddr, qint32 statusCode, QByteArray response)
+void Logging::logInstrReadCmd(QByteArray instrAddr, qint32 statusCode, QByteArray response, int lineNum)
 {
     //%1: instrument address
     //%2: status of command
@@ -86,5 +86,5 @@ void Logging::logInstrReadCmd(QByteArray instrAddr, qint32 statusCode, QByteArra
     QString rspStr(response);
 
     QString logFormat = "%1 (status code %2): Received: %3";
-    logEntry(logFormat.arg(address).arg(statusCode).arg(rspStr));
+    logEntry(logFormat.arg(address).arg(statusCode).arg(rspStr), lineNum);
 }

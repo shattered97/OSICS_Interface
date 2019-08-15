@@ -4,8 +4,14 @@
 #include "VisaInterface.h"
 #include "DefaultInstrument.h"
 #include "N7714A.h"
+#include "KeysightPowerMeter.h"
+
 #include <QObject>
 
+Q_DECLARE_METATYPE(N7714A*)
+Q_DECLARE_METATYPE(KeysightPowerMeter*)
+Q_DECLARE_METATYPE(DefaultInstrument*)
+Q_DECLARE_METATYPE(PowerMeter*)
 
 class Orchestrator : public QObject
 {
@@ -14,6 +20,9 @@ class Orchestrator : public QObject
 public:
     Orchestrator();
     ~Orchestrator();
+
+    ViSession * getDefaultSession();
+    QVariant getDeviceAtIndex(int index);
 
 public slots:
 
@@ -27,7 +36,12 @@ public slots:
      * @param instrumentAddress Physical address of instrument
      * @param instrumentIdentity Identity of instrument (manufacturer, model num, etc.)
      */
-    void slotCreateN7714ADevice(QByteArray instrumentAddress, QByteArray instrumentIdentity);
+    void slotCreateN7714ADevice(QString type, QByteArray instrumentAddress, QByteArray instrumentIdentity);
+
+    void slotCreateN7745ADevice(QString type, QByteArray instrumentAddress, QByteArray instrumentIdentity);
+
+    void slotSendCmdRsp(QByteArray instrAddress, QByteArray &command, QByteArray &response);
+    void slotSendCmdNoRsp(QByteArray instrAddress, QByteArray &command);
 
 signals:
 
@@ -41,7 +55,9 @@ private:
     ViSession defaultSession;               // default session for device communication
     FoundInstr foundResources;              // map of VISA resources found
 
-    DefaultInstrument selectedResource;
+    QList<QVariant> selectedDevices;
+
+    bool checkOperationComplete(ViSession instrSession, QByteArray instrAddress, int timeout = DEFAULT_COMMAND_TIMEOUT_MS);
 
 };
 

@@ -6,7 +6,13 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     orchestrator = new Orchestrator();
+    loadTestTypesList();
     loadDeviceTypesList();
+
+    // connect device creation signals/slots
+    QObject::connect(this, SIGNAL(signalCreateN7714ADevice(QString, QByteArray, QByteArray)), orchestrator, SLOT(slotCreateN7714ADevice(QString, QByteArray, QByteArray)));
+    QObject::connect(this, SIGNAL(signalCreateN7745ADevice(QString, QByteArray, QByteArray)), orchestrator, SLOT(slotCreateN7745ADevice(QString, QByteArray, QByteArray)));
+
 }
 
 MainWindow::~MainWindow()
@@ -17,43 +23,35 @@ MainWindow::~MainWindow()
 
 void MainWindow::loadDeviceTypesList(){
     for(auto e: DEVICE_TYPES){
-        ui->listWidget->addItem(e);
+        ui->devicetypeComboBox->addItem(e);
+    }
+
+}
+
+void MainWindow::loadTestTypesList(){
+    for(auto e: TEST_TYPES){
+        ui->testTypeComboBox->addItem(e);
     }
 }
 
-void MainWindow::on_confirmDevTypeBtn_clicked()
+void MainWindow::on_searchForDevTypeBtn_clicked()
 {
+    // clear found devices list
+    ui->foundDevicesListWidget->clear();
+
     // disable cursor
     QApplication::setOverrideCursor(Qt::WaitCursor);
 
-    // disable ui elements
-    ui->listWidget->setEnabled(false);
-    ui->confirmDevTypeBtn->setEnabled(false);
-
-    // carry out search for devices
+    // get devices from orchestrator
     QObject::connect(this, SIGNAL(signalRequestDevicesFromOrchestrator()), orchestrator, SLOT(slotLookForDevices()));
-
     emit signalRequestDevicesFromOrchestrator();
+    QObject::disconnect(this, SIGNAL(signalRequestDevicesFromOrchestrator()), 0, 0);
 
-    // enable launch button
-    if(ui->foundDevicesListWidget->count() > 0){
-        ui->launchSelectedDevice->setEnabled(true);
-    }
-    else{
-        QMessageBox msgBox;
-        msgBox.setText("No instruments found.");
-        msgBox.exec();
-    }
-}
-
-void MainWindow::on_listWidget_currentItemChanged()
-{
-    ui->confirmDevTypeBtn->setEnabled(true);
 }
 
 void MainWindow::slotReceiveDevices(FoundInstr listOfDevices)
 {
-    QList<QByteArray> convertedDevices = resourcesQmapToQList(listOfDevices, ui->listWidget->currentItem()->text().toLatin1());
+    QList<QByteArray> convertedDevices = resourcesQmapToQList(listOfDevices, ui->devicetypeComboBox->currentText().toLatin1());
 
     // populate ui list with devices
     for(auto e: convertedDevices){
@@ -61,27 +59,18 @@ void MainWindow::slotReceiveDevices(FoundInstr listOfDevices)
     }
 
     QApplication::restoreOverrideCursor();
-}
 
-void MainWindow::on_launchSelectedDevice_clicked()
-{
-    // Launch appropriate window depending on device selected
-    // Note: not a permanent method for matching devices to functions
-
-    QByteArray currentDeviceType = ui->listWidget->currentItem()->text().toLatin1();
-    QByteArray currentDeviceSelected = ui->foundDevicesListWidget->currentItem()->text().toLatin1();
-
-    if(currentDeviceType == N7714A_DEVICE){
-
-        QByteArray instrumentAddress = currentDeviceSelected.split(' ')[0];
-        QByteArray instrumentIdentity = currentDeviceSelected.mid(currentDeviceSelected.indexOf(' ') + 1, currentDeviceSelected.size());
-
-        // signal orchestrator to create device
-        QObject::connect(this, SIGNAL(signalCreateDevice(QByteArray, QByteArray)), orchestrator, SLOT(slotCreateN7714ADevice(QByteArray, QByteArray)));
-        emit signalCreateDevice(instrumentAddress, instrumentIdentity);
+    // enable launch button
+    if(ui->foundDevicesListWidget->count() > 0){
+        ui->foundDevicesListWidget->setCurrentItem(ui->foundDevicesListWidget->itemAt(1,1));
+        ui->addSelectedDeviceBtn->setEnabled(true);
     }
-    // continue for other devices
-
+    else{
+        ui->addSelectedDeviceBtn->setEnabled(false);
+        QMessageBox msgBox;
+        msgBox.setText("No instruments found.");
+        msgBox.exec();
+    }
 }
 
 QList<QByteArray> MainWindow::resourcesQmapToQList(FoundInstr foundResources, QByteArray deviceType)
@@ -96,4 +85,64 @@ QList<QByteArray> MainWindow::resourcesQmapToQList(FoundInstr foundResources, QB
         }
     }
     return convertedResourceInfo;
+}
+
+
+void MainWindow::on_testTypeComboBox_currentIndexChanged(int index)
+{
+    // #TODO implement test windows
+}
+
+void MainWindow::on_addSelectedDeviceBtn_clicked()
+{
+    // copy over to selected devices list widget
+    QByteArray instrumentInfo = ui->foundDevicesListWidget->currentItem()->text().toLatin1();
+    ui->selectedDevicesListWidget->addItem(instrumentInfo);
+
+    // determine which device to create (#TODO possibly convert to factory in future)
+    QString currentDeviceType = ui->devicetypeComboBox->currentText();
+
+    QByteArray instrumentAddress = instrumentInfo.split(' ')[0];
+    QByteArray instrumentIdentity = instrumentInfo.mid(instrumentInfo.indexOf(' ') + 1, instrumentInfo.size());
+
+    QApplication::setOverrideCursor(Qt::WaitCursor);
+
+    if(currentDeviceType == "N7714A"){
+        // signal to orchestrator to create n7714a
+        emit signalCreateN7714ADevice(currentDeviceType, instrumentAddress, instrumentIdentity);
+    }
+    else if(currentDeviceType == "N7745A"){
+        // signal to orchestrator to create n7745a
+        emit signalCreateN7745ADevice(currentDeviceType, instrumentAddress, instrumentIdentity);
+    }
+
+    QApplication::restoreOverrideCursor();
+}
+
+void MainWindow::on_startTestPushButton_clicked()
+{
+    // #TODO open test window
+}
+
+void MainWindow::on_selectedDevicesListWidget_itemDoubleClicked(QListWidgetItem *item)
+{
+    int indexOfClickedDevice = ui->selectedDevicesListWidget->currentRow();
+    QVariant device = orchestrator->getDeviceAtIndex(indexOfClickedDevice);
+    QByteArray deviceTypeName = QByteArray(device.typeName());
+
+    // disable cursor
+    QApplication::setOverrideCursor(Qt::WaitCursor);
+
+    // #TODO Factory?
+    if(deviceTypeName.contains("N7714A")){
+        N7714A *n7714a = device.value<N7714A*>();
+
+        n7714a->getConfigWindow()->show();
+    }
+    else if(deviceTypeName.contains("PowerMeter")){
+        PowerMeter *powerMeter = device.value<PowerMeter*>();
+        powerMeter->getConfigWindow()->show();
+    }
+
+    QApplication::restoreOverrideCursor();
 }

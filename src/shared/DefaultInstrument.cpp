@@ -1,13 +1,8 @@
 #include "DefaultInstrument.h"
 
-DefaultInstrument::DefaultInstrument() :
-    theIdentity(""),
-    theInstrLoc("")
-{
-    theCommBus = VisaInterface();
-}
 
-DefaultInstrument::DefaultInstrument(QByteArray theIdentity, QByteArray theInstrLoc){
+DefaultInstrument::DefaultInstrument(QByteArray theIdentity, QByteArray theInstrLoc, QObject *parent) : QObject(parent)
+{
     this->theIdentity = theIdentity;
     this->theInstrLoc = theInstrLoc;
 }
@@ -168,6 +163,16 @@ bool DefaultInstrument::checkOperationComplete(ViSession &instrSession, int time
     }
     return complete;
 }
+
+QMainWindow * DefaultInstrument::getConfigWindow(){
+    return configWindow;
+}
+
+
+void DefaultInstrument::setConfigWindow(QMainWindow *configWindow){
+    this->configWindow = configWindow;
+}
+
 
 bool DefaultInstrument::sendCmdNoRsp(ViSession &defaultSession, QByteArray &command){
 

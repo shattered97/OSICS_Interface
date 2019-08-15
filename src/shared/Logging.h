@@ -31,7 +31,7 @@ public:
      * @param msg what message that needs to be logged
      * @return TRUE if log entry was entered / FALSE if log entry failed to write
      */
-    bool logEntry(QString msg);
+    bool logEntry(QString msg, int lineNum);
 
     /**
      * @brief logInstrSendCmd Formats a log entry for sending a command
@@ -39,7 +39,7 @@ public:
      * @param statusCode Status returned from sending command
      * @param cmd command Sent
      */
-    void logInstrSendCmd(QByteArray instrAddr, qint32 statusCode, QByteArray cmd);
+    void logInstrSendCmd(QByteArray instrAddr, qint32 statusCode, QByteArray cmd, int lineNum);
 
     /**
      * @brief logInstrReadCmd Formats a log entry for reading a device response
@@ -47,7 +47,7 @@ public:
      * @param statusCode Status returned from reading from device
      * @param response Response from device
      */
-    void logInstrReadCmd(QByteArray instrAddr, qint32 statusCode, QByteArray response);
+    void logInstrReadCmd(QByteArray instrAddr, qint32 statusCode, QByteArray response, int lineNum);
 
 private:
 

@@ -37,10 +37,16 @@ DEFINES += QT_DEPRECATED_WARNINGS
 CONFIG += c++11
 
 SOURCES += \
+        confign7714awindow.cpp \
+        configpowermeter.cpp \
+        defaultconfigwindow.cpp \
+        devicesetupwindow.cpp \
+        graphwindow.cpp \
         main.cpp \
         mainwindow.cpp \
         shared/DefaultInstrument.cpp \
         shared/Orchestrator.cpp \
+        shared/Power_Meters/PowerMeterFactory.cpp \
         shared/VisaInterface.cpp \
         shared/Logging.cpp \
         shared/EXFO_OSICS/EXFO_OSICS_ATN.cpp \
@@ -49,15 +55,24 @@ SOURCES += \
         shared/EXFO_OSICS/EXFO_OSICS_T100.cpp \
         shared/Keysight_N7714A/N7714A.cpp \
         shared/Power_Meters/KeysightPowerMeter.cpp \
-        shared/Power_Meters/PowerMeter.cpp
+        shared/Power_Meters/PowerMeter.cpp \
+        shared/WindowFactory.cpp \
+        testsetupwindow.cpp
 
 
 HEADERS += \
+        confign7714awindow.h \
+        configpowermeter.h \
+        defaultconfigwindow.h \
+        devicesetupwindow.h \
+        graphwindow.h \
         mainwindow.h \
         shared/DefaultInstrument.h \
         shared/Orchestrator.h \
+        shared/Power_Meters/PowerMeterFactory.h \
         shared/VisaInterface.h \
         shared/Logging.h \
+        shared/WindowFactory.h \
         shared/constants.h \
         shared/EXFO_OSICS/EXFO_OSICS_ATN.h \
         shared/EXFO_OSICS/EXFO_OSICS_MAINFRAME.h \
@@ -65,11 +80,18 @@ HEADERS += \
         shared/EXFO_OSICS/EXFO_OSICS_T100.h \
         shared/Keysight_N7714A/N7714A.h \
         shared/Power_Meters/PowerMeter.h \
-        shared/Power_Meters/KeysightPowerMeter.h
+        shared/Power_Meters/KeysightPowerMeter.h \
+        testsetupwindow.h
 
 
 FORMS += \
-        mainwindow.ui
+        confign7714awindow.ui \
+        configpowermeter.ui \
+        defaultconfigwindow.ui \
+        devicesetupwindow.ui \
+        graphwindow.ui \
+        mainwindow.ui \
+        testsetupwindow.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

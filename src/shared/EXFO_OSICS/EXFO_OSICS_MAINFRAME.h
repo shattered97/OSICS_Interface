@@ -271,26 +271,29 @@ public:
 
     // ************************************* Shared Module Commands - Output Power Setting ************************************
 
+    // CH#:P=
     /**
-     * @brief setModuleOutputPowerCmd Sets the optical output power of the module depending on selected power unit
+     * @brief setModuleOutputPowerCmd
      *        Base command: CH#:P=
-     * @param defaultSession Default communication session
-     * @param slotNum Target slot number
-     * @param power Optical output power in dBm or mW
-     * @return true if command was successful
+     * @param defaultSession
+     * @param slotNum
+     * @param power
+     * @return 
      */
     bool setModuleOutputPowerCmd(ViSession &defaultSession, int slotNum, QByteArray &power);
 
+    // CH#:P?
     /**
-     * @brief outputPowerModuleQuery Returns the current value of the output power according to selected unit
+     * @brief outputPowerModuleQuery
      *        Base command: CH#:P?
-     * @param defaultSession Default communication session
-     * @param slotNum Target slot number
-     * @param response Response from instrument - Output power in mW or dBm | Disabled (optical output is disabled)
-     * @return true if command was successful
+     * @param defaultSession
+     * @param slotNum
+     * @param response
+     * @return 
      */
     bool outputPowerModuleQuery(ViSession &defaultSession, int slotNum, QByteArray &response);
 
+    // CH#:LIMIT?
     /**
      * @brief outputPowerReachedQuery Retuns the state of the output power
      *        Base command: CH#:LIMIT?
@@ -442,7 +445,7 @@ public:
      * @param defaultSession Default communication session
      * @param slotNum Target slot number
      * @param response Response from instrument - Either INT | MAIN
-     * @return true if command was successful
+     * @return
      */
     bool moduleModulationSrcQuery(ViSession &defaultSession, int slotNum, QByteArray &response);
 

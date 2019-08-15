@@ -7,11 +7,12 @@
 #include <QString>
 #include <QElapsedTimer>
 
-class DefaultInstrument
+class DefaultInstrument : public QObject
 {
+    Q_OBJECT
+
 public:
-    DefaultInstrument();
-    DefaultInstrument(QByteArray theIdentity, QByteArray theInstrLoc);
+    DefaultInstrument(QByteArray theIdentity, QByteArray theInstrLoc, QObject *parent = 0);
 
     // ********************** Getters / Setters ************************
 
@@ -57,6 +58,13 @@ public:
     bool queryIDN(ViSession &defaultSession, QByteArray &response);
 
 
+    void setConfigWindow(QMainWindow *configwindow);
+
+    QMainWindow * getConfigWindow();
+
+    void signalSendCmdRsp(QByteArray instrAddress, QByteArray &command, QByteArray &response);
+    void signalSendCmdNoRsp(QByteArray instrAddress, QByteArray &command);
+
 protected:
 
     // ************************************* Helper Functions ****************************************
@@ -88,10 +96,14 @@ protected:
      */
     bool sendCmdRsp(ViSession &defaultSession, QByteArray &command, QByteArray &response);
 
+
+
 private:
     QByteArray theIdentity;                 // identity of instrument (manufacturer, model num, etc.)
     QByteArray theInstrLoc;                 // the physical address of the instrument
     VisaInterface theCommBus;               // common methods for talking to VISA devices
+
+    QMainWindow *configWindow;
 };
 
 #endif // DEFAULTINSTRUMENT_H

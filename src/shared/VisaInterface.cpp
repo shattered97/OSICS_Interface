@@ -28,11 +28,11 @@ ViStatus VisaInterface::createDefaultRM(ViSession &defaultSession)
     //VI_SUCCESS == 0 Operation completed succesfully
     if(theStatus < VI_SUCCESS)
     {
-        logger->logEntry(QString("Failed to open default resource, status:  %1").arg(theStatus));
+        logger->logEntry(QString("Failed to open default resource, status:  %1").arg(theStatus), __LINE__);
     }
     else
     {
-        logger->logEntry("Successfully created Default Resource");
+        logger->logEntry("Successfully created Default Resource", __LINE__);
     }
 
    return theStatus;
@@ -40,7 +40,6 @@ ViStatus VisaInterface::createDefaultRM(ViSession &defaultSession)
 
 void VisaInterface::displayResources(ViSession &defaultRMSession, FoundInstr &result)
 {
-    //Remove harded coded string and replace with variable
 
     if (findResources(defaultRMSession, ALL_RESOURCES))
         createInstrMap(defaultRMSession, result);
@@ -75,12 +74,12 @@ bool VisaInterface::findResources(ViSession &defaultRMSession, QString query)
 
     if(theStatus < VI_SUCCESS)
     {
-        logger->logEntry(QString("Error Finding resources, status code: %1").arg(theStatus));
+        logger->logEntry(QString("Error Finding resources, status code: %1").arg(theStatus), __LINE__);
     }
     else
     {
         QString response = "Found %1 instruments, First instrument address: %2";
-        logger->logEntry(response.arg(numInstr).arg(instrDescriptor));
+        logger->logEntry(response.arg(numInstr).arg(instrDescriptor), __LINE__);
         instrAddr = instrDescriptor;  //convert from char array to QByteArray to make things easier
         success = true;
     }
@@ -102,24 +101,24 @@ ViStatus VisaInterface::createInstrMap(ViSession &defaultRMSession, FoundInstr &
 
     if(theStatus < VI_SUCCESS)
     {
-        logger->logEntry(QString("Error opening session to %1").arg(instrDescriptor));
+        logger->logEntry(QString("Error opening session to %1").arg(instrDescriptor), __LINE__);
     }
     else
     {
         //Opened instrument Session Log it
-        logger->logEntry(QString("Opened session to: %1").arg(instrDescriptor));
+        logger->logEntry(QString("Opened session to: %1").arg(instrDescriptor), __LINE__);
 
         //Lets figure what instrument we are talking too
        theStatus = queryInstrument(instrAddr, instrSession, resultMap);
 
        if(theStatus < VI_SUCCESS)
        {
-          logger->logEntry("Failed to get Instrument Identity, Closing Session") ;
+          logger->logEntry("Failed to get Instrument Identity, Closing Session", __LINE__) ;
           // if we can't talk to the first instrument, index into list will remain 1.
        }
        else
        {
-          logger->logEntry("Found everything we need from first instrument");
+          logger->logEntry("Found everything we need from first instrument", __LINE__);
           // if we can talk to first instrument, we increment our index by 1
           index ++;
        }
@@ -131,7 +130,7 @@ ViStatus VisaInterface::createInstrMap(ViSession &defaultRMSession, FoundInstr &
 
     while(numInstr > 0)
     {
-        logger->logEntry(QString("Number of instruments left: %1").arg(numInstr));
+        logger->logEntry(QString("Number of instruments left: %1").arg(numInstr), __LINE__);
         theStatus = findNextResource(defaultRMSession, resultMap);
 
         numInstr--; //added next instrument decrement count
@@ -143,17 +142,17 @@ ViStatus VisaInterface::createInstrMap(ViSession &defaultRMSession, FoundInstr &
 
 ViStatus VisaInterface::closeDefaultSession(ViSession &defaultSession)
 {
-    logger->logEntry("Closing Default Session");
+    logger->logEntry("Closing Default Session", __LINE__);
     return closeSession(defaultSession);
 }
 
 ViStatus VisaInterface::openInstrSession(ViSession &defaultSession, QByteArray instrAddr, ViSession &instrSess){
    ViStatus status = viOpen(defaultSession, instrAddr, VI_NULL, VI_NULL, &instrSess);
    if(status < VI_SUCCESS){
-       logger->logEntry(QString(QString::number(__LINE__) + " Failed to open session on instrument"));
+       logger->logEntry(QString("Failed to open session on instrument"), __LINE__);
    }
    else{
-       logger->logEntry(QString("Opened session to: %1").arg(QString::fromLatin1(instrAddr)));
+       logger->logEntry(QString("Opened session to: %1").arg(QString::fromLatin1(instrAddr)), __LINE__);
    }
    return status;
 }
@@ -168,17 +167,17 @@ ViStatus VisaInterface::findNextResource(ViSession &defaultRMSession, FoundInstr
 
    if(theStatus < VI_SUCCESS)
    {
-       logger->logEntry("Command to findNextResource Failed, Closing Session");
+       logger->logEntry("Command to findNextResource Failed, Closing Session", __LINE__);
    }
    else
    {
        // open session
        theStatus = viOpen(defaultRMSession, instrDescriptor, VI_NULL, VI_NULL, &instrSession);
        if(theStatus < VI_SUCCESS){
-           logger->logEntry(QString(QString::number(__LINE__) + " Failed to open session on instrument"));
+           logger->logEntry(QString("Failed to open session on instrument"), __LINE__);
        }
        else{
-           logger->logEntry(QString("Opened session to: %1").arg(QString::fromLatin1(instrAddr)));
+           logger->logEntry(QString("Opened session to: %1").arg(QString::fromLatin1(instrAddr)), __LINE__);
        }
 
        // convert char array to QByteArray
@@ -188,11 +187,11 @@ ViStatus VisaInterface::findNextResource(ViSession &defaultRMSession, FoundInstr
 
        if(theStatus < VI_SUCCESS)
        {
-          logger->logEntry("Failed to get Instrument Identity, Closing Session") ;
+          logger->logEntry("Failed to get Instrument Identity, Closing Session", __LINE__) ;
        }
        else
        {
-          logger->logEntry("Found everything we need closing instrument Session");
+          logger->logEntry("Found everything we need closing instrument Session", __LINE__);
        }
    }
 
@@ -215,7 +214,7 @@ ViStatus VisaInterface::queryInstrument(QByteArray &instrAddr, ViSession &instrS
     if (theStatus < VI_SUCCESS)
     {
         //We failed log it and close instrument session NOT the default session this is still open
-        logger->logEntry("Failed to send command to instrument");
+        logger->logEntry("Failed to send command to instrument", __LINE__);
     }
     else
     {
@@ -251,11 +250,11 @@ ViStatus VisaInterface::sendCmd(ViSession &instrSession, QByteArray instrAddr, Q
 
     theStatus = viWrite(instrSession, (ViBuf)buffer, (ViUInt32)strlen(buffer), &writeCount);
 
-    logger->logInstrSendCmd(instrAddr, theStatus, scpiCmd);
+    logger->logInstrSendCmd(instrAddr, theStatus, scpiCmd, __LINE__);
 
     if(theStatus < VI_SUCCESS)
     {
-        logger->logEntry("Error writing to device");
+        logger->logEntry("Error writing to device", __LINE__);
     }
 
     return theStatus;
@@ -265,20 +264,20 @@ ViStatus VisaInterface::readCmd(ViSession &instrSession, QByteArray instrAddr, Q
 {
     unsigned char buffer[VISA_MAX_BUFFER_READ_SIZE];
 
-    theStatus = viRead(instrSession, buffer, 100, &retCount);
+    theStatus = viRead(instrSession, buffer, VISA_MAX_BUFFER_READ_SIZE, &retCount);
 
     charArrayToByteArray(buffer, response, retCount);
 
-    logger->logInstrReadCmd(instrAddr, theStatus, response);
+    logger->logInstrReadCmd(instrAddr, theStatus, response, __LINE__);
 
     if(theStatus < VI_SUCCESS)
     {
-        logger->logEntry("Error reading response from device");
+        logger->logEntry("Error reading response from device", __LINE__);
     }
     else
     {
-        logger->logEntry(QString("%1 Bytes Read:  %2").arg(retCount));
-        charArrayToByteArray(buffer, response, retCount);
+        logger->logEntry(QString("%1 Bytes Read:  %2").arg(retCount), __LINE__);
+//        charArrayToByteArray(buffer, response, retCount);
     }
 
     return theStatus;
@@ -288,7 +287,7 @@ ViStatus VisaInterface::closeSession(ViSession &sessionToClose)
 {
     fflush(stdin);
     theStatus = viClose(sessionToClose);
-    logger->logEntry("Closed Session");
+    logger->logEntry("Closed Session", __LINE__);
     return theStatus;
 }
 
