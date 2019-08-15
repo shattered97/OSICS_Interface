@@ -8,12 +8,8 @@ ConfigN7714AWindow::ConfigN7714AWindow(Orchestrator &orchestrator, N7714A *devic
 {
     ui->setupUi(this);
 
-    // set session from orchestrator and N7714A device
-    this->orchestrator = &orchestrator;
-    defaultSession = orchestrator.getDefaultSession();
-    this->device = device;
-
     // set device info
+    this->device = device;
     ui->instrumentInfoLabel->setText(ui->instrumentInfoLabel->text() + device->getInstrIdentity());
     ui->instrumentAddressLabel->setText(ui->instrumentAddressLabel->text() + device->getInstrLocation());
 
@@ -27,7 +23,6 @@ ConfigN7714AWindow::ConfigN7714AWindow(Orchestrator &orchestrator, N7714A *devic
     setupAutoMode();
 
     populateAllValues();
-
 
 }
 
@@ -43,7 +38,7 @@ void ConfigN7714AWindow::setupAutoMode(){
 
     // query if auto mode is turned on
     QByteArray response;
-    device->queryAutoWavMode(*defaultSession, slotNum, response);
+    device->queryAutoWavMode(slotNum, response);
     if(response.toInt() != 1){
         // if auto mode is turned off, we need to make sure the laser is off
         // then we can set AUTO mode to 'on'
@@ -52,18 +47,18 @@ void ConfigN7714AWindow::setupAutoMode(){
 
         // get laser power status
         QByteArray response;
-        device->queryPowerStatus(*defaultSession, slotNum, response);
+        device->queryPowerStatus(slotNum, response);
 
 
         if(response.toInt() == 0){
             // if laser is off, send command
-            device->turnOnAutoWavMode(*defaultSession, slotNum);
+            device->turnOnAutoWavMode(slotNum);
         }
         else{
             // if laser is on, turn off, send command then turn laser back on
-            device->execPowerOffModule(*defaultSession, slotNum);
-            device->turnOnAutoWavMode(*defaultSession, slotNum);
-            device->execPowerOnModule(*defaultSession, slotNum);
+            device->execPowerOffModule(slotNum);
+            device->turnOnAutoWavMode(slotNum);
+            device->execPowerOnModule(slotNum);
         }
     }
 
@@ -98,10 +93,10 @@ void ConfigN7714AWindow::populateAllValues(){
 
 // ********************************************* Laser Power ****************************************************
 
-bool ConfigN7714AWindow::populateLaserOutputPowerUnit(){
+void ConfigN7714AWindow::populateLaserOutputPowerUnit(){
 
     QByteArray response;
-    bool status = device->queryPowerUnit(*defaultSession, slotNum, response);
+    device->queryPowerUnit(slotNum, response);
     QByteArray value = response.split('\n')[0];
 
     if(value.toInt() == 0){
@@ -114,48 +109,40 @@ bool ConfigN7714AWindow::populateLaserOutputPowerUnit(){
         int index = ui->powerUnitComboBox->findText("Watt");
         ui->powerUnitComboBox->setCurrentIndex(index);
     }
-    return status;
-
 }
 
-bool ConfigN7714AWindow::populateLaserOutputPower(){
+void ConfigN7714AWindow::populateLaserOutputPower(){
     QByteArray response;
-    bool status = device->queryPowerLevel(*defaultSession, slotNum, response);
+    device->queryPowerLevel(slotNum, response);
     QByteArray value = response.split('\n')[0];
 
     double valueDouble = value.toDouble();
     ui->laserOutputPowerDisplay->setText(QByteArray::number(valueDouble));
-
-    return status;
-
 }
 
-bool ConfigN7714AWindow::populateLaserMinPower(){
+void ConfigN7714AWindow::populateLaserMinPower(){
     QByteArray response;
-    bool status = device->queryPowerLevel(*defaultSession, slotNum, response, "MIN");
+    device->queryPowerLevel(slotNum, response, "MIN");
 
     QByteArray value = response.split('\n')[0];
 
     double valueDouble = value.toDouble();
     ui->laserMinPowerDisplay->setText(QByteArray::number(valueDouble));
-
-    return status;
 }
 
-bool ConfigN7714AWindow::populateLaserMaxPower(){
+void ConfigN7714AWindow::populateLaserMaxPower(){
     QByteArray response;
-    bool status = device->queryPowerLevel(*defaultSession, slotNum, response, "MAX");
+    device->queryPowerLevel(slotNum, response, "MAX");
 
     QByteArray value = response.split('\n')[0];
     double valueDouble = value.toDouble();
     ui->laserMaxPowerDisplay->setText(QByteArray::number(valueDouble));
 
-    return status;
 }
 
-bool ConfigN7714AWindow::populateLaserState(){
+void ConfigN7714AWindow::populateLaserState(){
     QByteArray response;
-    bool status = device->queryPowerStatus(*defaultSession, slotNum, response);
+    device->queryPowerStatus(slotNum, response);
 
     QByteArray value = response.split('\n')[0];
     if(value.toInt() == 0){
@@ -165,13 +152,12 @@ bool ConfigN7714AWindow::populateLaserState(){
         ui->laserStateDisplay->setText("ON");
     }
 
-    return status;
 }
 
 
 // ********************************************* Laser Wavelength ****************************************************
 
-bool ConfigN7714AWindow::populateLaserWavelengthUnit(){
+void ConfigN7714AWindow::populateLaserWavelengthUnit(){
     // the N7714A does not have a configurable wavelength unit
     // you can enter wavelength with a unit (pm | nm |um | mm | m)
     // but you can only read wavelength as meters
@@ -201,12 +187,11 @@ bool ConfigN7714AWindow::populateLaserWavelengthUnit(){
     QByteArray testWavelength = "1520";
     convertWavelengthToMeter(testWavelength);
 
-    return success;
 }
 
-bool ConfigN7714AWindow::populateLaserWavelength(){
+void ConfigN7714AWindow::populateLaserWavelength(){
     QByteArray response;
-    bool status = device->queryWavelength(*defaultSession, slotNum, response);
+    device->queryWavelength(slotNum, response);
     qDebug() << response;
     QByteArray value = response.split('\n')[0];
 
@@ -217,12 +202,11 @@ bool ConfigN7714AWindow::populateLaserWavelength(){
 
     ui->laserWavelengthDisplay->setText(QString::number(valueDouble));
 
-    return status;
 }
 
-bool ConfigN7714AWindow::populateLaserMinWavelength(){
+void ConfigN7714AWindow::populateLaserMinWavelength(){
     QByteArray response;
-    bool status = device->queryWavelength(*defaultSession, slotNum, response, "MIN");
+    device->queryWavelength(slotNum, response, "MIN");
 
     QByteArray value = response.split('\n')[0];
 
@@ -233,12 +217,11 @@ bool ConfigN7714AWindow::populateLaserMinWavelength(){
 
     ui->minWavelengthDisplay->setText(QString::number(valueDouble));
 
-    return status;
 }
 
-bool ConfigN7714AWindow::populateLaserMaxWavelength(){
+void ConfigN7714AWindow::populateLaserMaxWavelength(){
     QByteArray response;
-    bool status = device->queryWavelength(*defaultSession, slotNum, response, "MAX");
+    device->queryWavelength(slotNum, response, "MAX");
 
     QByteArray value = response.split('\n')[0];
 
@@ -248,13 +231,12 @@ bool ConfigN7714AWindow::populateLaserMaxWavelength(){
 
     ui->maxWavelengthDisplay->setText(QString::number(valueDouble));
 
-    return status;
 }
 
 
 // ********************************************* Laser Frequency ****************************************************
 
-bool ConfigN7714AWindow::populateLaserFrequencyUnit(){
+void ConfigN7714AWindow::populateLaserFrequencyUnit(){
     // the N7714A does not have a configurable frequency unit
     // you can enter frequency with a unit
     // but you can only read frequency as Hz
@@ -280,13 +262,11 @@ bool ConfigN7714AWindow::populateLaserFrequencyUnit(){
     ui->minFrequencyUnitLabel->setText(unit);
     ui->maxFrequencyUnitLabel->setText(unit);
 
-    return success;
-
 }
 
-bool ConfigN7714AWindow::populateLaserFrequency(){
+void ConfigN7714AWindow::populateLaserFrequency(){
     QByteArray response;
-    bool status = device->queryFrequency(*defaultSession, slotNum, response);
+    device->queryFrequency(slotNum, response);
 
     QByteArray value = response.split('\n')[0];
     convertFrequencyFromHz(value);
@@ -294,12 +274,11 @@ bool ConfigN7714AWindow::populateLaserFrequency(){
 
     ui->laserFrequencyDisplay->setText(QString::number(valueDouble));
 
-    return status;
 }
 
-bool ConfigN7714AWindow::populateLaserMinFrequency(){
+void ConfigN7714AWindow::populateLaserMinFrequency(){
     QByteArray response;
-    bool status = device->queryFrequency(*defaultSession, slotNum, response, "MIN");
+    device->queryFrequency(slotNum, response, "MIN");
 
     QByteArray value = response.split('\n')[0];
 
@@ -308,12 +287,11 @@ bool ConfigN7714AWindow::populateLaserMinFrequency(){
 
     ui->minFrequencyDisplay->setText(QString::number(valueDouble));
 
-    return status;
 }
 
-bool ConfigN7714AWindow::populateLaserMaxFrequency(){
+void ConfigN7714AWindow::populateLaserMaxFrequency(){
     QByteArray response;
-    bool status = device->queryFrequency(*defaultSession, slotNum, response, "MAX");
+    device->queryFrequency(slotNum, response, "MAX");
 
     QByteArray value = response.split('\n')[0];
     convertFrequencyFromHz(value);
@@ -321,7 +299,6 @@ bool ConfigN7714AWindow::populateLaserMaxFrequency(){
 
     ui->maxFrequencyDisplay->setText(QString::number(valueDouble));
 
-    return status;
 }
 
 
@@ -331,7 +308,7 @@ void ConfigN7714AWindow::on_powerUnitComboBox_currentIndexChanged(const QString 
 {
     // send command to set unit
     QByteArray unitByteArray = unit.toLatin1();
-    device->execPowerUnit(*defaultSession, slotNum, unitByteArray);
+    device->execPowerUnit(slotNum, unitByteArray);
 
     // change unit display field and labels
     ui->outputPowerUnitDisplay->setText(unit);
@@ -383,7 +360,7 @@ void ConfigN7714AWindow::on_laserOutputPowerEdit_editingFinished()
     // send command to set power
     QByteArray powerLevel = ui->laserOutputPowerEdit->text().toLatin1();
     QByteArray unit = ui->powerUnitComboBox->currentText().toLatin1();
-    device->execPowerLevel(*defaultSession, slotNum, powerLevel, unit);
+    device->execPowerLevel(slotNum, powerLevel, unit);
 
     // re-populate power level display
     populateLaserOutputPower();
@@ -394,7 +371,7 @@ void ConfigN7714AWindow::on_laserWavelengthEdit_editingFinished()
     // send command to set wavelength
     QByteArray wavelength = ui->laserWavelengthEdit->text().toLatin1();
     QByteArray unit = ui->wavelngthUnitComboBox->currentText().toLatin1();
-    device->execWavelength(*defaultSession, slotNum, wavelength, unit);
+    device->execWavelength(slotNum, wavelength, unit);
 
     // re-populate wavelength display
     populateLaserWavelength();
@@ -405,7 +382,7 @@ void ConfigN7714AWindow::on_laserFrequencyEdit_editingFinished()
     // send command to set frequency
     QByteArray frequency = ui->laserFrequencyEdit->text().toLatin1();
     QByteArray unit = ui->frequencyUnitComboBox->currentText().toLatin1();
-    device->execFrequency(*defaultSession, slotNum, frequency, unit);
+    device->execFrequency(slotNum, frequency, unit);
 
     // re-populate frequency display
     populateLaserFrequency();
@@ -417,11 +394,11 @@ void ConfigN7714AWindow::on_togglePowerButton_clicked()
 
     if(ui->laserStateDisplay->text() == "OFF"){
         // turn power on
-        device->execPowerOnModule(*defaultSession, slotNum);
+        device->execPowerOnModule(slotNum);
     }
     else{
        // turn power off
-        device->execPowerOffModule(*defaultSession, slotNum);
+        device->execPowerOffModule(slotNum);
     }
 
     // change display
@@ -483,8 +460,6 @@ void ConfigN7714AWindow::on_testEdit_editingFinished()
 {
     QByteArray response;
     QByteArray command = ui->testEdit->text().toLatin1();
-    device->testCommand(*defaultSession, command, response);
+    device->testCommand(command, response);
     qDebug() << response.split('\n')[0];
-
-
 }

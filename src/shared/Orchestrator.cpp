@@ -84,9 +84,7 @@ QVariant Orchestrator::getDeviceAtIndex(int index){
     return selectedDevices.at(index);
 }
 
-
 void Orchestrator::slotSendCmdNoRsp(QByteArray instrAddress, QByteArray &command){
-    qDebug() << "RECEIVED SIGNAL signalSendCmdNoRsp";
     qDebug() << "Sent command: " << command;
     bool success = true;
 
@@ -116,13 +114,10 @@ void Orchestrator::slotSendCmdNoRsp(QByteArray instrAddress, QByteArray &command
 
     }
 
-
     // #TODO SIGNAL QMESSAGEBOX IF UNSUCCESSFUL
-
 }
 
 void Orchestrator::slotSendCmdRsp(QByteArray instrAddress, QByteArray &command, QByteArray &response){
-    qDebug() << "RECEIVED SIGNAL signalSendCmdRsp";
     qDebug() << "Command sent: " << command;
     bool success = true;
 
@@ -147,8 +142,6 @@ void Orchestrator::slotSendCmdRsp(QByteArray instrAddress, QByteArray &command, 
                 status = false;
             }
             else{
-                qDebug() << "Query succeeded: " << command;
-
                 ViUInt32 rtnSize;
                 status = theCommBus.readCmd(instrSession, instrAddress, response, rtnSize);
 
@@ -156,16 +149,15 @@ void Orchestrator::slotSendCmdRsp(QByteArray instrAddress, QByteArray &command, 
                     qDebug() << QString("Reading response failed: %1").arg(status);
                     success = false;
                 }
+                else{
+                    qDebug() << "Response: " << response;
+                }
             }
 
         // close session
         theCommBus.closeSession(instrSession);
 
     }
-
-    qDebug("*******************************\n***************************\n");
-    qDebug() << response;
-    qDebug("*******************************\n***************************\n");
 
     // #TODO SIGNAL QMESSAGEBOX IF UNSUCCESSFUL
 }

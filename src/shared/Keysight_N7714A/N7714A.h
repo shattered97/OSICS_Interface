@@ -10,33 +10,38 @@ class N7714A : public DefaultInstrument
 public:
     N7714A(QByteArray theIdentity, QByteArray theInstrLoc);
 
-    bool queryPowerUnit(ViSession &defaultSession, int module, QByteArray &response);
+    void queryPowerUnit(int module, QByteArray &response);
 
-    bool execPowerUnit(ViSession &defaultSession, int module, QByteArray unit="");
+    void execPowerUnit(int module, QByteArray unit="");
 
-    bool queryPowerStatus(ViSession &defaultSession, int module, QByteArray &response);
+    void queryPowerStatus(int module, QByteArray &response);
 
-    bool execPowerOnModule(ViSession &defaultSession, int module);
+    void execPowerOnModule(int module);
 
-    bool execPowerOffModule(ViSession &defaultSession, int module);
+    void execPowerOffModule(int module);
 
-    bool queryPowerLevel(ViSession &defaultSession, int module, QByteArray &response, QByteArray value="");
+    void queryPowerLevel(int module, QByteArray &response, QByteArray value="");
 
-    bool execPowerLevel(ViSession &defaultSession, int module, QByteArray value, QByteArray unit="");
+    void execPowerLevel(int module, QByteArray value, QByteArray unit="");
 
-    bool queryWavelength(ViSession &defaultSession, int module, QByteArray &response, QByteArray value="");
+    void queryWavelength(int module, QByteArray &response, QByteArray value="");
 
-    bool execWavelength(ViSession &defaultSession, int module, QByteArray value, QByteArray unit="");
+    void execWavelength(int module, QByteArray value, QByteArray unit="");
 
-    bool queryFrequency(ViSession &defaultSession, int module, QByteArray &response, QByteArray value="");
+    void queryFrequency(int module, QByteArray &response, QByteArray value="");
 
-    bool execFrequency(ViSession &defaultSession, int module, QByteArray value, QByteArray unit="");
+    void execFrequency(int module, QByteArray value, QByteArray unit="");
 
-    bool testCommand(ViSession &defaultSession, QByteArray cmd, QByteArray &response);
+    void testCommand(QByteArray cmd, QByteArray &response);
 
-    bool queryAutoWavMode(ViSession &defaultSession, int module, QByteArray &response);
+    void queryAutoWavMode(int module, QByteArray &response);
 
-    bool turnOnAutoWavMode(ViSession &defaultSession, int module);
+    void turnOnAutoWavMode(int module);
+
+
+signals:
+    void signalSendCmdRsp(QByteArray instrAddress, QByteArray &command, QByteArray &response);
+    void signalSendCmdNoRsp(QByteArray instrAddress, QByteArray &command);
 
 private:
     QByteArray theIdentity;                 // identity of instrument (manufacturer, model num, etc.)

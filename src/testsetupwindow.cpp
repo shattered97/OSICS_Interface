@@ -22,10 +22,6 @@ TestSetupWindow::TestSetupWindow(Orchestrator &orchestrator, QByteArray laserInf
 
     qDebug("----------------------------------------------------------");
 
-    // set up
-    this->orchestrator = &orchestrator;
-    defaultSession = orchestrator.getDefaultSession();
-
     addPowerMeterChannels();
     getMinMaxWavelength();
 
@@ -42,7 +38,7 @@ TestSetupWindow::~TestSetupWindow()
 void TestSetupWindow::addPowerMeterChannels(){
     // adds channel(s)? from keysight power meter to list
 
-    int channels = powerMeter->getNumPowerMeterChannels(*defaultSession);
+    int channels = powerMeter->getNumPowerMeterChannels();
     ui->powerMeterTable->setRowCount(channels);
     ui->powerMeterTable->setColumnWidth(0, 150);
     ui->powerMeterTable->setColumnWidth(1, 550);
@@ -68,8 +64,8 @@ void TestSetupWindow::getMinMaxWavelength(){
     QByteArray minWavelengthString;
     QByteArray maxWavelengthString;
 
-    laserSource->queryWavelength(*defaultSession, 1, minWavelengthString, "MIN");
-    laserSource->queryWavelength(*defaultSession, 1, maxWavelengthString, "MAX");
+    laserSource->queryWavelength(1, minWavelengthString, "MIN");
+    laserSource->queryWavelength(1, maxWavelengthString, "MAX");
 
     minWavelength = convertSciToDouble(minWavelengthString.split('\n')[0]);
     qDebug() << "Display Min: " << minWavelength;
@@ -78,19 +74,16 @@ void TestSetupWindow::getMinMaxWavelength(){
     qDebug() << "Display Max: " << maxWavelength;
 }
 
-
 void TestSetupWindow::on_testCommandEdit_returnPressed()
 {
     qDebug() << "---------- Test Command -----------------";
     qDebug() << ui->testCommandEdit->text();
 
     QByteArray response;
-    powerMeter->testCommand(*defaultSession, ui->testCommandEdit->text().toLatin1(), response);
+    powerMeter->testCommand(ui->testCommandEdit->text().toLatin1(), response);
     qDebug() << "Response: " << response;
     qDebug() << "--------------------------------------";
 }
-
-
 
 double TestSetupWindow::convertSciToDouble(QByteArray sci){
     // format: "+1.52760488E-006"
@@ -134,7 +127,6 @@ void TestSetupWindow::on_startWavLineEdit_returnPressed()
     qDebug() << "Entered wavelength: " << enteredWavelength;
     startWavelength = doubleWavelength;
 }
-
 
 void TestSetupWindow::on_endWavLineEdit_returnPressed()
 {
@@ -196,22 +188,15 @@ void TestSetupWindow::on_beginTestPB_clicked()
     // set wavelength to "start wavelength"
 
     QByteArray paramString = QByteArray::number(startWavelength) + "nm";
-    laserSource->execWavelength(*defaultSession, 1, paramString);
+    laserSource->execWavelength(1, paramString);
 
     // display wavelength in box
     QByteArray currentWavelength;
-    laserSource->queryWavelength(*defaultSession, 1, currentWavelength);
+    laserSource->queryWavelength(1, currentWavelength);
     qDebug() << "Current wavelength: " << currentWavelength;
     double wavelengthNm = convertSciToDouble(currentWavelength.split('\n')[0]);
     qDebug() << wavelengthNm;
     ui->currentWavDisplay->setText(QString::number(wavelengthNm));
 
-//    for (;;) {
-//        QByteArray currentWavelength;
-//        laserSource->queryWavelength(defaultSession, 1, currentWavelength);
-//        qDebug() << "Current wavelength: " << currentWavelength;
-//        double wavelengthNm = convertSciToDouble(currentWavelength.split('\n')[0]);
-//        qDebug() << wavelengthNm;
-//        ui->currentWavDisplay->setText(QString::number(wavelengthNm));
-//    }
+
 }

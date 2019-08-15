@@ -10,19 +10,15 @@ KeysightPowerMeter::~KeysightPowerMeter()
 {
 }
 
-// Instead of returning sendCmdRsp/sendCmdNoRsp (which needs default session as param),
-// send signal to orchestrator passing along the command and/or response.
-// in orchestrator a signal will be sent back for
-
-bool KeysightPowerMeter::measurePower(ViSession &defaultSession, int window, QByteArray &response){
+void KeysightPowerMeter::measurePower(int window, QByteArray &response){
 
     QByteArray baseCmd = "read:pow?";
     baseCmd.insert(baseCmd.indexOf(':'),  QByteArray::number(window));
 
-    return sendCmdRsp(defaultSession, baseCmd, response);
+    emit signalSendCmdRsp(theInstrLoc, baseCmd, response);
 }
 
-bool KeysightPowerMeter::setPowerUnit(ViSession &defaultSession, int window, QByteArray unit){
+void KeysightPowerMeter::setPowerUnit(int window, QByteArray unit){
 
     QByteArray baseCmd = "sens:pow:unit\n";
     baseCmd.insert(baseCmd.indexOf(':'),  QByteArray::number(window));
@@ -37,55 +33,51 @@ bool KeysightPowerMeter::setPowerUnit(ViSession &defaultSession, int window, QBy
     }
 
     baseCmd.insert(baseCmd.indexOf('\n'), " " + QString::number(unitCode));
-    return sendCmdNoRsp(defaultSession, baseCmd);
+
+    emit signalSendCmdNoRsp(theInstrLoc, baseCmd);
 }
 
-bool KeysightPowerMeter::getPowerUnit(ViSession &defaultSession, int window, QByteArray &response){
+void KeysightPowerMeter::getPowerUnit(int window, QByteArray &response){
     QByteArray baseCmd = "sens:pow:unit?\n";
     baseCmd.insert(baseCmd.indexOf(':'), QByteArray::number(window));
 
-    return sendCmdRsp(defaultSession, baseCmd, response);
+    emit signalSendCmdRsp(theInstrLoc, baseCmd, response);
 }
 
-bool KeysightPowerMeter::testCommand(ViSession &defaultSession, QByteArray cmd, QByteArray &response){
-    return sendCmdRsp(defaultSession, cmd, response);
+void KeysightPowerMeter::testCommand(QByteArray cmd, QByteArray &response){
+    emit signalSendCmdRsp(theInstrLoc, cmd, response);
+    qDebug() << "Response from test command: " << response;
 }
 
-bool KeysightPowerMeter::queryWavelength(ViSession &defaultSession, int window, QByteArray &response, QByteArray value){
+void KeysightPowerMeter::queryWavelength(int window, QByteArray &response, QByteArray value){
     QByteArray baseCmd = "sens:pow:wav?\n";
     baseCmd.insert(baseCmd.indexOf(':'), QByteArray::number(window));
 
     baseCmd.insert(baseCmd.indexOf('\n'), " " + value);
 
-    // ******************* TEST SIGNAL TO ORCHESTRATOR **********************
-    qDebug() << "EMITTING SIGNAL signalSendCmdRsp";
     emit signalSendCmdRsp(theInstrLoc, baseCmd, response);
-
-
-    // **********************************************************************
-    return true;
 }
 
-bool KeysightPowerMeter::setWavelength(ViSession &defaultSession, int window, QByteArray &value, QByteArray &unit){
+void KeysightPowerMeter::setWavelength(int window, QByteArray &value, QByteArray &unit){
     QByteArray baseCmd = "sens:pow:wav\n";
-
     baseCmd.insert(baseCmd.indexOf(':'), QByteArray::number(window));
     baseCmd.insert(baseCmd.indexOf('\n'), " " + value + unit);
 
-    return sendCmdNoRsp(defaultSession, baseCmd);
+    emit signalSendCmdNoRsp(theInstrLoc, baseCmd);
 }
 
-bool KeysightPowerMeter::getAllPowerUnits(ViSession &defaultSession, QByteArray & response){
+void KeysightPowerMeter::getAllPowerUnits(QByteArray & response){
     QByteArray baseCmd = "sens:pow:unit:all:csv?\n";
-    return sendCmdRsp(defaultSession, baseCmd, response);
+
+    emit signalSendCmdRsp(theInstrLoc, baseCmd, response);
 }
 
-int KeysightPowerMeter::getNumPowerMeterChannels(ViSession &defaultSession){
+int KeysightPowerMeter::getNumPowerMeterChannels(){
     // use the command to read all power units (response is easy to parse)
     QByteArray baseCmd = "sens:pow:unit:all:csv?\n";
 
     QByteArray response;
-    sendCmdRsp(defaultSession, baseCmd, response);
+    emit signalSendCmdRsp(theInstrLoc, baseCmd, response);
 
     // Response format: "1,1,1,1,1,1,1,1,\x00\n"
     // Count the number of tokens separated by ',' minus 1 for <END>\n
@@ -107,7 +99,6 @@ QList<QByteArray> KeysightPowerMeter::formatPowerUnits(QByteArray rawUnits, int 
         else{
             formattedUnits.append("Watt");
         }
-
     }
     return formattedUnits;
 }

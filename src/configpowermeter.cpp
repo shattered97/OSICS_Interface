@@ -20,14 +20,14 @@ ConfigPowerMeter::~ConfigPowerMeter()
     delete ui;
 }
 
-void ConfigPowerMeter::setupWindow(){
-
+void ConfigPowerMeter::setupWindow()
+{
     // display device information
     ui->instrumentInfoLabel->setText(ui->instrumentInfoLabel->text() + device->getInstrIdentity());
     ui->instrumentAddressLabel->setText(ui->instrumentAddressLabel->text() + device->getInstrLocation());
 
     // get number of channels/slots on power meter and initialize display to show info for first channel/slot
-    numSlots = device->getNumPowerMeterChannels(*defaultSession);
+    numSlots = device->getNumPowerMeterChannels();
     slotNum = 1;
 
     // display a radio button for each channel/slot available
@@ -35,7 +35,7 @@ void ConfigPowerMeter::setupWindow(){
 
     // initialize list of units
     QByteArray units;
-    device->getAllPowerUnits(*defaultSession, units);
+    device->getAllPowerUnits(units);
     powerUnits = device->formatPowerUnits(units, numSlots);
 
     // init wavelength unit to meters
@@ -48,7 +48,6 @@ void ConfigPowerMeter::setupWindow(){
 
     // update displayed values
     populateAllValues();
-
 }
 
 void ConfigPowerMeter::initChannelRadioButtons(){
@@ -77,7 +76,7 @@ void ConfigPowerMeter::initWavelengthReadings(){
     // loop for each channel and get the current wavelength (m)
     for(int i = 1; i <= numSlots; i++){
         QByteArray wavelength;
-        device->queryWavelength(*defaultSession, i, wavelength);
+        device->queryWavelength(i, wavelength);
         wavelengthReadings.append(wavelength.toDouble());
     }
 }
@@ -85,7 +84,7 @@ void ConfigPowerMeter::initMinWavelengths(){
     // loop for each channel and get the min wavelength (m)
     for(int i = 1; i <= numSlots; i++){
         QByteArray wavelength;
-        device->queryWavelength(*defaultSession, i, wavelength, "MIN");
+        device->queryWavelength(i, wavelength, "MIN");
 
         minWavelengths.append(wavelength.toDouble());
     }
@@ -95,27 +94,24 @@ void ConfigPowerMeter::initMaxWavelengths(){
     // loop for each channel and get the max wavelength (m)
     for(int i = 1; i <= numSlots; i++){
         QByteArray wavelength;
-        device->queryWavelength(*defaultSession, i, wavelength, "MAX");
+        device->queryWavelength(i, wavelength, "MAX");
 
         maxWavelengths.append(wavelength.toDouble());
     }
 }
 
-void ConfigPowerMeter::populateAllValues(){
-    qDebug() << "populateAllValues()";
-
+void ConfigPowerMeter::populateAllValues()
+{
     populatePowerUnit();
     populatePower();
     populateWavelengthUnit();
     populateWavelength();
     populateMinWavelength();
     populateMaxWavelength();
-
 }
 
-void ConfigPowerMeter::populatePowerUnit(){
-    qDebug() << "populatePowerUnit()";
-
+void ConfigPowerMeter::populatePowerUnit()
+{
     // update the unit display field and unit labels
     QByteArray unitText = powerUnits.at(slotNum - 1);
     ui->powerUnitDisplay->setText(unitText);
@@ -124,15 +120,13 @@ void ConfigPowerMeter::populatePowerUnit(){
     // change dropdown to the current unit
     int unitDropdownIndex = ui->powerUnitComboBox->findText(unitText);
     ui->powerUnitComboBox->setCurrentIndex(unitDropdownIndex);
-
 }
 
-void ConfigPowerMeter::populatePower(){
-    qDebug() << "populatePower()";
-
+void ConfigPowerMeter::populatePower()
+{
     // send command to get power reading from current slot
     QByteArray response;
-    device->measurePower(*defaultSession, slotNum, response);
+    device->measurePower(slotNum, response);
 
     QByteArray value = response;
     double valueDouble = value.toDouble();
@@ -140,10 +134,9 @@ void ConfigPowerMeter::populatePower(){
     ui->powerDisplay->setText(QByteArray::number(valueDouble));
 }
 
-void ConfigPowerMeter::populateWavelengthUnit(){
-    qDebug() << "populateWavelengthUnit()";
+void ConfigPowerMeter::populateWavelengthUnit()
+{
     QByteArray unit = ui->wavelengthComboBox->currentText().toLatin1();
-
     ui->wavelengthUnitDisplay->setText(unit);
 
     // iterate through wavelength exponents to find index of current unit
@@ -163,32 +156,29 @@ void ConfigPowerMeter::populateWavelengthUnit(){
     ui->maxWavelengthUnitLabel->setText(unitFromList);
 }
 
-void ConfigPowerMeter::populateWavelength(){
-    qDebug() << "populateWavelength()";
-
+void ConfigPowerMeter::populateWavelength()
+{
     // convert to selected unit and display
-    qDebug() << wavelengthReadings;
     double converted = convertWavelengthFromMeter(wavelengthReadings[slotNum - 1]);
     ui->wavelengthDisplay->setText(QString::number(converted));
 }
 
-void ConfigPowerMeter::populateMinWavelength(){
-    qDebug() << "populateMinWavelength()";
-
+void ConfigPowerMeter::populateMinWavelength()
+{
     // convert wavelength and apply to display field
     double converted = convertWavelengthFromMeter(minWavelengths[slotNum - 1]);
     ui->minWavelengthDisplay->setText(QString::number(converted));
 }
 
-void ConfigPowerMeter::populateMaxWavelength(){
-    qDebug() << "populateMaxWavelength()";
-
+void ConfigPowerMeter::populateMaxWavelength()
+{
     // convert wavelength and apply to display field
     double converted = convertWavelengthFromMeter(maxWavelengths[slotNum - 1]);
     ui->maxWavelengthDisplay->setText(QString::number(converted));
 }
 
-void ConfigPowerMeter::slot_radio_button_clicked(){
+void ConfigPowerMeter::slot_radio_button_clicked()
+{
     // set the slot number to value indicated by selected button
     for(int i = 0; i < numSlots; i++){
         if(buttons[i]->isChecked()){
@@ -202,9 +192,7 @@ void ConfigPowerMeter::slot_radio_button_clicked(){
 
 void ConfigPowerMeter::on_powerUnitComboBox_currentIndexChanged(const QString &unit)
 {
-    qDebug() << "on_powerUnitComboBox_currentIndexChanged()";
-
-    device->setPowerUnit(*defaultSession, slotNum, unit.toLatin1());
+    device->setPowerUnit(slotNum, unit.toLatin1());
 
     // change labels and QList of units
     ui->powerUnitDisplay->setText(unit);
@@ -217,8 +205,6 @@ void ConfigPowerMeter::on_powerUnitComboBox_currentIndexChanged(const QString &u
 
 void ConfigPowerMeter::on_wavelengthComboBox_currentIndexChanged()
 {
-    qDebug() << "on_wavelengthComboBox_currentIndexChanged()";
-
     // re-populate values to convert values based on unit
     populateWavelengthUnit();
     populateWavelength();
@@ -226,7 +212,8 @@ void ConfigPowerMeter::on_wavelengthComboBox_currentIndexChanged()
     populateMaxWavelength();
 }
 
-double ConfigPowerMeter::convertWavelengthFromMeter(double wavelengthInMeter){
+double ConfigPowerMeter::convertWavelengthFromMeter(double wavelengthInMeter)
+{
     int exponent = WAV_EXPONENT_LIST.at(wavelengthExponentIndex).first;
     double converted = wavelengthInMeter * qPow(10, exponent * -1);
     return converted;
@@ -234,19 +221,17 @@ double ConfigPowerMeter::convertWavelengthFromMeter(double wavelengthInMeter){
 
 void ConfigPowerMeter::on_wavelengthEdit_editingFinished()
 {
-    qDebug() << "on_wavelengthEdit_editingFinished()";
-
     QByteArray wavelength = ui->wavelengthEdit->text().toLatin1();
     QByteArray unit = ui->wavelengthComboBox->currentText().toLatin1();
 
     // #TODO check if wavelength is in range min < wavelength < max
 
     // send command to set wavelength
-    device->setWavelength(*defaultSession, slotNum, wavelength, unit);
+    device->setWavelength(slotNum, wavelength, unit);
 
     // query for updated wavelength
     QByteArray wavelengthReading;
-    device->queryWavelength(*defaultSession, slotNum, wavelengthReading);
+    device->queryWavelength(slotNum, wavelengthReading);
 
     // re-populate wavelength display
     wavelengthReadings[slotNum - 1] = wavelengthReading.toDouble();
@@ -257,47 +242,12 @@ void ConfigPowerMeter::on_testEdit_editingFinished()
 {
     QByteArray response;
     QByteArray command = ui->testEdit->text().toLatin1();
-    device->testCommand(*defaultSession, command, response);
+    device->testCommand(command, response);
     qDebug() << response;
-
-
-
-//    QByteArray binaryBlock = response.split('\n')[0];
-
-
-    // FORMAT:
-    // #<H><LEN><BLOCK><END>
-    // # specifies that this is a binary block
-    // <H> states the number of ascii characters in next field
-    // <LEN> states how many bytes of binary data will follow
-
-//    // get number of ascii characters for length
-//    int lengthChars  = binaryBlock.mid(1, 1).toInt();
-
-//    // get length
-//    int length = binaryBlock.mid(2, lengthChars).toInt();
-
-//    qDebug() << "# Digits: " << lengthChars << "    Length: " << length;
-
-//    // the rest of the data
-//    QByteArray dataBlock = binaryBlock.mid(2 + lengthChars, length);
-
-
-//    for( int i = 0; i < dataBlock.size(); i += 4){
-//        QByteArray value = dataBlock.mid(i, 4);
-//        float val;
-//        QDataStream stream(value);
-//        stream.setFloatingPointPrecision(QDataStream::SinglePrecision); // for double (8-bytes / 64-bits)
-//        stream.setByteOrder(QDataStream::LittleEndian);
-//        stream >> val;
-//        qDebug() << val;
-//    }
-
 }
 
 void ConfigPowerMeter::on_loadSettingsButton_pressed()
 {
-    qDebug() << "on_loadSettingsButton_pressed()";
     QString fileName = QFileDialog::getOpenFileName(this,
             tr("Load Settings File"), "",
             tr("Settings (*.ini);;All Files (*)"));
@@ -309,7 +259,6 @@ void ConfigPowerMeter::on_loadSettingsButton_pressed()
         }
         else{
             settingsFileName = file.fileName();
-            qDebug() << "Load file selected: " << settingsFileName;
 
             file.close();
             loadSettings();
@@ -319,7 +268,6 @@ void ConfigPowerMeter::on_loadSettingsButton_pressed()
 
 void ConfigPowerMeter::on_saveSettingsButton_pressed()
 {
-    qDebug() << "on_saveSettingsButton_pressed()";
     QString fileName = QFileDialog::getSaveFileName(this,
             tr("Save Settings File"), "",
             tr("Settings (*.ini);;All Files (*)"));
@@ -331,7 +279,6 @@ void ConfigPowerMeter::on_saveSettingsButton_pressed()
         }
         else{
             settingsFileName = file.fileName();
-            qDebug() << "Save file selected: " << settingsFileName;
 
             file.close();
             saveSettings();
@@ -339,9 +286,8 @@ void ConfigPowerMeter::on_saveSettingsButton_pressed()
     }
 }
 
-bool ConfigPowerMeter::loadSettings(){
-    qDebug() << "loadSettings()";
-
+bool ConfigPowerMeter::loadSettings()
+{
     QSettings settings(settingsFileName, QSettings::IniFormat);
     settings.beginGroup("Keysight Power Meter");
 
@@ -356,20 +302,17 @@ bool ConfigPowerMeter::loadSettings(){
         // set power unit for each slot
         QString powerUnitSettingsKey = ("Power Unit " + slotIdentifier);
         QString powerUnit = settings.value(powerUnitSettingsKey, QString()).toString();
-        device->setPowerUnit(*defaultSession, i, powerUnit.toLatin1());
+        device->setPowerUnit(i, powerUnit.toLatin1());
         powerUnits[i - 1] = powerUnit.toLatin1();
-        qDebug() << powerUnits[i - 1] << " " << powerUnit.toLatin1();
 
         // set wavelength for each slot
         QString wavelengthSettingsKey = "Wavelength " + slotIdentifier;
         QByteArray wavelength = settings.value(wavelengthSettingsKey, QString()).toString().toLatin1();
-        qDebug() << "setting: " << wavelength;
         QByteArray nativeUnit = M_UNIT.second;
-        device->setWavelength(*defaultSession, i, wavelength, nativeUnit);
+        device->setWavelength(i, wavelength, nativeUnit);
 
         QByteArray wavelengthReading;
-        device->queryWavelength(*defaultSession, i, wavelengthReading);
-        qDebug() << wavelengthReading;
+        device->queryWavelength(i, wavelengthReading);
         wavelengthReadings[i - 1] = wavelengthReading.toDouble();
     }
 
@@ -380,9 +323,8 @@ bool ConfigPowerMeter::loadSettings(){
     return true;
 }
 
-bool ConfigPowerMeter::saveSettings(){
-    qDebug() << "saveSettings()";
-
+bool ConfigPowerMeter::saveSettings()
+{
     QSettings settings(settingsFileName, QSettings::IniFormat);
     settings.beginGroup("Keysight Power Meter");
 

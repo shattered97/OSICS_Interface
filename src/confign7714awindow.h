@@ -17,21 +17,21 @@ public:
     explicit ConfigN7714AWindow(Orchestrator &orchestrator, N7714A *device, QWidget *parent = nullptr);
     ~ConfigN7714AWindow();
 
-    bool populateLaserOutputPowerUnit();
-    bool populateLaserOutputPower();
-    bool populateLaserMinPower();
-    bool populateLaserMaxPower();
-    bool populateLaserState();
+    void populateLaserOutputPowerUnit();
+    void populateLaserOutputPower();
+    void populateLaserMinPower();
+    void populateLaserMaxPower();
+    void populateLaserState();
 
-    bool populateLaserWavelengthUnit();
-    bool populateLaserWavelength();
-    bool populateLaserMinWavelength();
-    bool populateLaserMaxWavelength();
+    void populateLaserWavelengthUnit();
+    void populateLaserWavelength();
+    void populateLaserMinWavelength();
+    void populateLaserMaxWavelength();
 
-    bool populateLaserFrequencyUnit();
-    bool populateLaserFrequency();
-    bool populateLaserMinFrequency();
-    bool populateLaserMaxFrequency();
+    void populateLaserFrequencyUnit();
+    void populateLaserFrequency();
+    void populateLaserMinFrequency();
+    void populateLaserMaxFrequency();
 
 
 
