@@ -3,7 +3,6 @@
 
 #include <QMainWindow>
 #include "N7714A.h"
-#include "Orchestrator.h"
 
 namespace Ui {
 class ConfigN7714AWindow;
@@ -14,7 +13,7 @@ class ConfigN7714AWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit ConfigN7714AWindow(Orchestrator &orchestrator, N7714A *device, QWidget *parent = nullptr);
+    explicit ConfigN7714AWindow(N7714A *device, QWidget *parent = nullptr);
     ~ConfigN7714AWindow();
 
     void populateLaserOutputPowerUnit();
@@ -64,8 +63,7 @@ private:
     Ui::ConfigN7714AWindow *ui;
 
     N7714A *device;
-    Orchestrator *orchestrator;
-    ViSession *defaultSession;
+
     int slotNum;
 
     int wavelengthExponentIndex;

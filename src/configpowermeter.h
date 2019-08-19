@@ -2,13 +2,12 @@
 #define CONFIGPOWERMETER_H
 
 #include <QMainWindow>
-#include "Orchestrator.h"
-#include "KeysightPowerMeter.h"
 #include <QtMath>
 #include <QFileDialog>
 #include <QSettings>
 #include <QRadioButton>
 #include <QHBoxLayout>
+#include "PowerMeter.h"
 
 namespace Ui {
 class ConfigPowerMeter;
@@ -19,7 +18,7 @@ class ConfigPowerMeter : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit ConfigPowerMeter(Orchestrator &orchestrator, PowerMeter *device, QWidget *parent = nullptr);
+    explicit ConfigPowerMeter(PowerMeter *device, QWidget *parent = nullptr);
     ~ConfigPowerMeter();
 
 private slots:
@@ -41,8 +40,7 @@ private:
     Ui::ConfigPowerMeter *ui;
 
     PowerMeter *device;
-    Orchestrator *orchestrator;
-    ViSession *defaultSession;
+
     QList<QRadioButton*> buttons;
     QString settingsFileName;
 

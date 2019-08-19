@@ -4,7 +4,7 @@
 #include <QtMath>
 #include <QCheckBox>
 
-TestSetupWindow::TestSetupWindow(Orchestrator &orchestrator, QByteArray laserInfo, QByteArray powerMeterInfo, QWidget *parent) :
+TestSetupWindow::TestSetupWindow(QByteArray laserInfo, QByteArray powerMeterInfo, QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::TestSetupWindow)
 {
@@ -56,8 +56,6 @@ void TestSetupWindow::addPowerMeterChannels(){
         item->setCheckState(Qt::Unchecked);
         ui->powerMeterTable->setCellWidget(i, 2, checkBox);
     }
-
-
 }
 
 void TestSetupWindow::getMinMaxWavelength(){

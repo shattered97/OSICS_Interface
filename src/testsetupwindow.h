@@ -3,7 +3,6 @@
 
 #include <QMainWindow>
 #include <QObject>
-#include "Orchestrator.h"
 #include "N7714A.h"
 #include "KeysightPowerMeter.h"
 
@@ -16,7 +15,7 @@ class TestSetupWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    TestSetupWindow(Orchestrator &orchestrator, QByteArray laserInfo, QByteArray powerMeterInfo, QWidget *parent = nullptr);
+    TestSetupWindow(QByteArray laserInfo, QByteArray powerMeterInfo, QWidget *parent = nullptr);
     ~TestSetupWindow();
 
 private slots:
@@ -35,9 +34,6 @@ private slots:
 
 private:
     Ui::TestSetupWindow *ui;
-
-    Orchestrator *orchestrator;
-    ViSession *defaultSession;
 
     N7714A *laserSource;
     KeysightPowerMeter *powerMeter;

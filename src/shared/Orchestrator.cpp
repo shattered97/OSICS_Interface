@@ -35,43 +35,46 @@ void Orchestrator::slotCreateN7714ADevice(QString type, QByteArray instrumentAdd
 
     N7714A *device = new N7714A(instrumentIdentity, instrumentAddress);
 
-    // make config window
-//    ConfigN7714AWindow *configWindow = new ConfigN7714AWindow(*this, device);
-//    device->setConfigWindow(configWindow);
-
     QVariant deviceVariant;
     deviceVariant.setValue(device);
     selectedDevices.append(deviceVariant);
+
+    QMainWindow * configWindow = WindowFactory::makeWindow(type, deviceVariant);
+    device->setConfigWindow(configWindow);
+
 
     qDebug() << "-------------------------------------------------------------";
     qDebug() << "Test Query in Orchestrator slot slotCreateN7714ADevice";
     QByteArray response;
     N7714A *test = selectedDevices.at(selectedDevices.size()-1).value<N7714A*>();
-    test->queryIDN(defaultSession, response);
+    test->queryIDN(response);
     qDebug() << "Response: " << response;
     qDebug() << "-------------------------------------------------------------";
 }
 
 void Orchestrator::slotCreateN7745ADevice(QString type, QByteArray instrumentAddress, QByteArray instrumentIdentity){
 
-    PowerMeter *device = PowerMeterFactory::makePowerMeter(type, instrumentIdentity, instrumentAddress, *this);
+    PowerMeter *device = PowerMeterFactory::makePowerMeter(type, instrumentIdentity, instrumentAddress);
 
     // connect device to communication slots
     QObject::connect(device, SIGNAL(signalSendCmdRsp(QByteArray, QByteArray&, QByteArray&)), this, SLOT(slotSendCmdRsp(QByteArray, QByteArray &, QByteArray &)));
     QObject::connect(device, SIGNAL(signalSendCmdNoRsp(QByteArray, QByteArray&)), this, SLOT(slotSendCmdNoRsp(QByteArray, QByteArray &)));
 
-    QMainWindow * configWindow = WindowFactory::makeWindow(type, *this, device);
-    device->setConfigWindow(configWindow);
 
     QVariant deviceVariant;
     deviceVariant.setValue(device);
     selectedDevices.append(deviceVariant);
 
+    QMainWindow * configWindow = WindowFactory::makeWindow(type, deviceVariant);
+    device->setConfigWindow(configWindow);
+
+
+
     qDebug() << "-------------------------------------------------------------";
     qDebug() << "Test Query in Orchestrator slot slotCreateN7745ADevice";
     QByteArray response;
     PowerMeter *test = selectedDevices.at(selectedDevices.size()-1).value<PowerMeter*>();
-    test->queryIDN(defaultSession, response);
+    test->queryIDN(response);
     qDebug() << "Response: " << response;
     qDebug() << "-------------------------------------------------------------";
 }

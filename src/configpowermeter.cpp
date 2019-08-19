@@ -2,14 +2,12 @@
 #include "ui_configpowermeter.h"
 
 
-ConfigPowerMeter::ConfigPowerMeter(Orchestrator &orchestrator, PowerMeter *device, QWidget *parent) :
+ConfigPowerMeter::ConfigPowerMeter(PowerMeter *device, QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::ConfigPowerMeter)
 {
     ui->setupUi(this);
 
-    this->orchestrator = &orchestrator;
-    defaultSession = orchestrator.getDefaultSession();
     this->device = device;
 
     setupWindow();

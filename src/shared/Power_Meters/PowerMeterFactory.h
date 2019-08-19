@@ -12,7 +12,7 @@ class PowerMeterFactory : public QObject
 public:
     explicit PowerMeterFactory(QObject *parent = nullptr);
 
-    static PowerMeter *makePowerMeter(QString powerMeterType, QByteArray instrAddress, QByteArray instrIdentity, Orchestrator &orchestrator);
+    static PowerMeter *makePowerMeter(QString powerMeterType, QByteArray instrAddress, QByteArray instrIdentity);
 signals:
 
 public slots:

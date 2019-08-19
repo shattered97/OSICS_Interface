@@ -2,7 +2,7 @@
 #include "ui_confign7714awindow.h"
 #include <QtMath>
 
-ConfigN7714AWindow::ConfigN7714AWindow(Orchestrator &orchestrator, N7714A *device, QWidget *parent) :
+ConfigN7714AWindow::ConfigN7714AWindow(N7714A *device, QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::ConfigN7714AWindow)
 {

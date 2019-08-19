@@ -38,7 +38,6 @@ public:
 
     void turnOnAutoWavMode(int module);
 
-
 signals:
     void signalSendCmdRsp(QByteArray instrAddress, QByteArray &command, QByteArray &response);
     void signalSendCmdNoRsp(QByteArray instrAddress, QByteArray &command);
