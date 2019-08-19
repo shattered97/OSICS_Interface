@@ -19,16 +19,6 @@ typedef QPair<QByteArray, QByteArray> PowerReading;
 //QMap<Instrument Data, Power reading and channel>
 typedef QMap<InstrData, PowerReading> PowerReadingData;
 
-////Pointer to signal for device creation
-//typedef void (MainWindow::*SignalPointer)(QByteArray, QByteArray);
-
-////QPair<QByteArray, signalPointer>
-//typedef QPair<QByteArray, SignalPointer> DeviceCreationPair;
-
-//// Specific device creation pairs
-//const DeviceCreationPair N7714A_CREATION_PAIR = {"N7714A", &MainWindow::signalCreateDevice};
-//const DeviceCreationPair N7745A_CREATION_PAIR = {"N7745A", &MainWindow::signalCreateN7745A};
-
 //Logging Constansts
 const QString LOG_FILE_PATH  = QDir::currentPath();  //Same dir as exe
 const QString LOG_FILE       = "OSICS_LOG.txt";
@@ -78,6 +68,9 @@ const QByteArray N7714A_WAV_QUERY = "sour:wav?\n";
 const QByteArray N7714A_WAV_CMD = "sour:wav\n";
 const QByteArray N7714A_FREQ_QUERY = "sour:freq?\n";
 const QByteArray N7714A_FREQ_CMD = "sour:wav\n";
+
+// N7714A Constants
+const int N7714A_NUM_SLOTS = 4;
 
 // Keysight Unit Pair List
 const UnitPair PM_UNIT = {-12, "pm"};

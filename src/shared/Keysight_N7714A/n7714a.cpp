@@ -17,6 +17,7 @@ void N7714A::queryPowerUnit(int module, QByteArray &response){
 
     // send command
     emit signalSendCmdRsp(theInstrLoc, command, response);
+    qDebug() << "response" << response;
 }
 
 void N7714A::execPowerUnit(int module, QByteArray unit){

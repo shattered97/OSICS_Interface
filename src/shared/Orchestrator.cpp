@@ -32,8 +32,11 @@ void Orchestrator::slotLookForDevices()
 
 void Orchestrator::slotCreateN7714ADevice(QString type, QByteArray instrumentAddress, QByteArray instrumentIdentity)
 {
-
     N7714A *device = new N7714A(instrumentIdentity, instrumentAddress);
+
+    // connect device to communication slots
+    QObject::connect(device, SIGNAL(signalSendCmdRsp(QByteArray, QByteArray&, QByteArray&)), this, SLOT(slotSendCmdRsp(QByteArray, QByteArray &, QByteArray &)));
+    QObject::connect(device, SIGNAL(signalSendCmdNoRsp(QByteArray, QByteArray&)), this, SLOT(slotSendCmdNoRsp(QByteArray, QByteArray &)));
 
     QVariant deviceVariant;
     deviceVariant.setValue(device);

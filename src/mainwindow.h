@@ -40,13 +40,9 @@ signals:
 
     void signalRequestDevicesFromOrchestrator();
 
-    void signalCreateDevice(QByteArray instrumentAddress, QByteArray instrumentIdentity);
     void signalCreateN7714ADevice(QString type, QByteArray instrumentAddress, QByteArray instrumentIdentity);
+
     void signalCreateN7745ADevice(QString type, QByteArray instrumentAddress, QByteArray instrumentIdentity);
-
-
-
-    void signalTCPDeviceFound(FoundInstr deviceMap);
 
 private:
 

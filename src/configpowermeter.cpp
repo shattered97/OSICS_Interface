@@ -20,6 +20,7 @@ ConfigPowerMeter::~ConfigPowerMeter()
 
 void ConfigPowerMeter::setupWindow()
 {
+
     // display device information
     ui->instrumentInfoLabel->setText(ui->instrumentInfoLabel->text() + device->getInstrIdentity());
     ui->instrumentAddressLabel->setText(ui->instrumentAddressLabel->text() + device->getInstrLocation());

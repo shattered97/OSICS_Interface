@@ -42,12 +42,14 @@ private:
     PowerMeter *device;
 
     QList<QRadioButton*> buttons;
+
     QString settingsFileName;
 
     int numSlots;
     int slotNum;
-    int wavelengthExponentIndex;
 
+    int wavelengthExponentIndex;
+    QSettings *settings;
     QList<QByteArray> powerUnits;
     QList<double> powerReadings;
     QList<double> wavelengthReadings;
@@ -59,7 +61,6 @@ private:
     void initMinWavelengths();
     void initMaxWavelengths();
     void initChannelRadioButtons();
-
     void populateAllValues();
     void populatePowerUnit();
     void populatePower();
@@ -68,7 +69,6 @@ private:
     void populateMinWavelength();
     void populateMaxWavelength();
     double convertWavelengthFromMeter(double wavelength);
-
     bool saveSettings();
     bool loadSettings();
 
