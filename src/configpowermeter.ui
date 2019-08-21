@@ -55,7 +55,7 @@
    </widget>
    <widget class="QLineEdit" name="testEdit">
     <property name="enabled">
-     <bool>true</bool>
+     <bool>false</bool>
     </property>
     <property name="geometry">
      <rect>
@@ -114,19 +114,6 @@
     <property name="title">
      <string>Adjust Power Settings</string>
     </property>
-    <widget class="QLineEdit" name="powerUnitDisplay">
-     <property name="enabled">
-      <bool>false</bool>
-     </property>
-     <property name="geometry">
-      <rect>
-       <x>350</x>
-       <y>30</y>
-       <width>211</width>
-       <height>31</height>
-      </rect>
-     </property>
-    </widget>
     <widget class="QLineEdit" name="powerDisplay">
      <property name="enabled">
       <bool>false</bool>
@@ -200,7 +187,7 @@
     <widget class="QComboBox" name="powerUnitComboBox">
      <property name="geometry">
       <rect>
-       <x>660</x>
+       <x>350</x>
        <y>30</y>
        <width>121</width>
        <height>31</height>
@@ -216,12 +203,12 @@
      </property>
      <item>
       <property name="text">
-       <string>dBm</string>
+       <string>Watt</string>
       </property>
      </item>
      <item>
       <property name="text">
-       <string>Watt</string>
+       <string>dBm</string>
       </property>
      </item>
     </widget>
@@ -243,24 +230,6 @@
     <property name="title">
      <string>Adjust Wavelength Settings</string>
     </property>
-    <widget class="QLineEdit" name="wavelengthUnitDisplay">
-     <property name="enabled">
-      <bool>false</bool>
-     </property>
-     <property name="geometry">
-      <rect>
-       <x>350</x>
-       <y>30</y>
-       <width>211</width>
-       <height>31</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>10</pointsize>
-      </font>
-     </property>
-    </widget>
     <widget class="QLineEdit" name="wavelengthDisplay">
      <property name="enabled">
       <bool>false</bool>
@@ -453,7 +422,7 @@
     <widget class="QComboBox" name="wavelengthComboBox">
      <property name="geometry">
       <rect>
-       <x>660</x>
+       <x>350</x>
        <y>30</y>
        <width>121</width>
        <height>31</height>
@@ -465,21 +434,11 @@
       </font>
      </property>
      <property name="currentIndex">
-      <number>4</number>
+      <number>0</number>
      </property>
      <item>
       <property name="text">
-       <string>pm</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>nm</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>um</string>
+       <string>m</string>
       </property>
      </item>
      <item>
@@ -489,7 +448,17 @@
      </item>
      <item>
       <property name="text">
-       <string>m</string>
+       <string>um</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>nm</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>pm</string>
       </property>
      </item>
     </widget>

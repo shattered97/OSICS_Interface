@@ -13,6 +13,13 @@ Q_DECLARE_METATYPE(KeysightPowerMeter*)
 Q_DECLARE_METATYPE(DefaultInstrument*)
 Q_DECLARE_METATYPE(PowerMeter*)
 
+
+namespace deviceType
+{
+    // #TODO
+    // create enum and enum conversion helper functions string->enum enum->string
+}
+
 class Orchestrator : public QObject
 {
     Q_OBJECT
@@ -43,12 +50,15 @@ public slots:
     void slotSendCmdRsp(QByteArray instrAddress, QByteArray &command, QByteArray &response);
     void slotSendCmdNoRsp(QByteArray instrAddress, QByteArray &command);
 
+    void slotUpdateConfigSettings(QVariant &device, QSettings &configSettings);
+
 signals:
 
     /**
      * @brief signalReturnDevicesFound Signals the list of instruments found to reciever.
      */
     void signalReturnDevicesFound(FoundInstr);
+    void signalSettingsUpdated();
 
 private:
     VisaInterface theCommBus;               // common methods for talking to VISA devices

@@ -28,7 +28,7 @@ void DefaultInstrument::querySTB(QByteArray &response){
     emit signalSendCmdRsp(theInstrLoc, command, response);
 }
 
-void DefaultInstrument::execESE(ViByte registerVal){
+void DefaultInstrument::execESE(char registerVal){
     // Command: "*ESE [registerVal]\n"
     // Params: 0 <= registerVal <= 255
     // Example: "*ESE 1\n"
@@ -149,5 +149,7 @@ void DefaultInstrument::setConfigWindow(QMainWindow *configWindow){
     this->configWindow = configWindow;
 }
 
-
+void DefaultInstrument::updateConfig(QSettings &){
+    qDebug() << "default updateConfig()";
+}
 

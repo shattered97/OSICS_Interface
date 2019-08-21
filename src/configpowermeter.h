@@ -7,6 +7,8 @@
 #include <QSettings>
 #include <QRadioButton>
 #include <QHBoxLayout>
+#include <QMessageBox>
+
 #include "PowerMeter.h"
 
 namespace Ui {
@@ -18,15 +20,22 @@ class ConfigPowerMeter : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit ConfigPowerMeter(PowerMeter *device, QWidget *parent = nullptr);
+    explicit ConfigPowerMeter(QVariant &device, QWidget *parent = nullptr);
     ~ConfigPowerMeter();
+
+
+signals:
+    void signalUpdateConfigSettings(QVariant &device, QSettings &configSettings);
+
+public slots:
+    void slotUpdateWindow();
 
 private slots:
     void slot_radio_button_clicked();
 
     void on_powerUnitComboBox_currentIndexChanged(const QString &unit);
 
-    void on_wavelengthComboBox_currentIndexChanged();
+    void on_wavelengthComboBox_currentIndexChanged(int index);
 
     void on_wavelengthEdit_editingFinished();
 
@@ -39,22 +48,24 @@ private slots:
 private:
     Ui::ConfigPowerMeter *ui;
 
-    PowerMeter *device;
+    QVariant device;
 
     QList<QRadioButton*> buttons;
 
     QString settingsFileName;
+    QSettings *settings;
 
-    int numSlots;
     int slotNum;
 
     int wavelengthExponentIndex;
-    QSettings *settings;
+
+    // values from device
+    int numSlots;
     QList<QByteArray> powerUnits;
-    QList<double> powerReadings;
-    QList<double> wavelengthReadings;
-    QList<double> minWavelengths;
-    QList<double> maxWavelengths;
+    QList<QByteArray> powerReadings;
+    QList<QByteArray> wavelengthSettings;
+    QList<QByteArray> minWavelengths;
+    QList<QByteArray> maxWavelengths;
 
     void setupWindow();
     void initWavelengthReadings();
@@ -69,8 +80,11 @@ private:
     void populateMinWavelength();
     void populateMaxWavelength();
     double convertWavelengthFromMeter(double wavelength);
+    double convertWattToDBm(double powerInWatt);
     bool saveSettings();
     bool loadSettings();
+    void getValuesFromConfig();
+    void showEvent(QShowEvent* event);
 
 };
 

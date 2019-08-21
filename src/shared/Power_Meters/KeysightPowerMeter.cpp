@@ -1,5 +1,5 @@
 #include "KeysightPowerMeter.h"
-
+Q_DECLARE_METATYPE(QList<int>)
 KeysightPowerMeter::KeysightPowerMeter(QByteArray theIdentity, QByteArray theInstrLoc) : PowerMeter(theIdentity, theInstrLoc)
 {
     this->theIdentity = theIdentity;
@@ -64,6 +64,13 @@ void KeysightPowerMeter::setWavelength(int window, QByteArray &value, QByteArray
     baseCmd.insert(baseCmd.indexOf('\n'), " " + value + unit);
 
     emit signalSendCmdNoRsp(theInstrLoc, baseCmd);
+}
+
+
+void KeysightPowerMeter::getAllPowerReadings(QByteArray &response){
+    QByteArray baseCmd = "read:pow:all?\n";
+
+    emit signalSendCmdRsp(theInstrLoc, baseCmd, response);
 }
 
 void KeysightPowerMeter::getAllPowerUnits(QByteArray & response){
@@ -135,4 +142,86 @@ QList<double> KeysightPowerMeter::parseBinaryBlockPowerReadings(QByteArray binar
     return powerReadings;
 }
 
+void KeysightPowerMeter::loadFromConfig(QSettings &configSettings){
+    qDebug() << "Apply config settings from file to instrument";
 
+}
+
+void KeysightPowerMeter::updateConfig(QSettings &configSettings){
+    qDebug() << "Updating config with values from device for: " << theIdentity;
+
+    // get number of slots
+    numSlots = getNumPowerMeterChannels();
+
+    updatePowerSettings(configSettings);
+    updateWavelengthSettings(configSettings);
+
+}
+
+void KeysightPowerMeter::updatePowerSettings(QSettings &configSettings)
+{
+    // query device for power units
+    QByteArray rawPowerUnitList;
+    getAllPowerUnits(rawPowerUnitList);
+    QList<QByteArray> powerUnits = formatPowerUnits(rawPowerUnitList, numSlots);
+
+    // save power units list to settings
+    QString powerUnitKey = "Power Units";
+    configSettings.setValue(powerUnitKey, QVariant::fromValue(powerUnits));
+    configSettings.sync();
+
+    // query device for power readings
+    QByteArray rawPowerReadings;
+    getAllPowerReadings(rawPowerReadings); // all power readings here are in Watts, convert as necessary
+    QList<double> powerReadings = parseBinaryBlockPowerReadings(rawPowerReadings, 4);
+
+    // save power readings to settings
+    QString powerReadingsKey = "Power Readings";
+    QList<QByteArray> textPowerReadings;
+    for(int i = 0; i < powerReadings.size(); i++){
+        // #TODO convert to dbm if needed
+       textPowerReadings.append(QByteArray::number(powerReadings[i]));
+    }
+
+    configSettings.setValue(powerReadingsKey, QVariant::fromValue(textPowerReadings));
+    configSettings.sync();
+}
+
+void KeysightPowerMeter::updateWavelengthSettings(QSettings &configSettings){
+
+    // query device for wavelengths
+    QList<QByteArray> wavelengthSettings;
+    for(int i = 1; i <= numSlots; i++){
+        QByteArray wavelength;
+        queryWavelength(i, wavelength);
+        wavelengthSettings.append(QByteArray::number(wavelength.toDouble()));
+    }
+
+    // save device wavelengths
+    QString wavelengthSettingsKey = "Wavelength Settings";
+    configSettings.setValue(wavelengthSettingsKey, QVariant::fromValue(wavelengthSettings));
+
+    // query for min wavelengths
+    QList<QByteArray> minWavelengths;
+    for(int i = 1; i <= numSlots; i++){
+        QByteArray wavelength;
+        queryWavelength(i, wavelength, "MIN");
+        minWavelengths.append(QByteArray::number(wavelength.toDouble()));
+    }
+
+    // save min wavelengths
+    QString minWavelengthsKey = "Min Wavelengths";
+    configSettings.setValue(minWavelengthsKey, QVariant::fromValue(minWavelengths));
+
+    // query for max wavelengths
+    QList<QByteArray> maxWavelengths;
+    for(int i = 1; i <= numSlots; i++){
+        QByteArray wavelength;
+        queryWavelength(i, wavelength, "MAX");
+        maxWavelengths.append(QByteArray::number(wavelength.toDouble()));
+    }
+
+    // save max wavelengths
+    QString maxWavelengthsKey = "Max Wavelengths";
+    configSettings.setValue(maxWavelengthsKey, QVariant::fromValue(maxWavelengths));
+}

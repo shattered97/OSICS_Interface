@@ -67,16 +67,47 @@ private:
     int slotNum;
 
     int wavelengthExponentIndex;
-
     int frequencyExponentIndex;
 
-    void convertWavelengthFromMeter(QByteArray &wavelengthInMeter);
-    void convertWavelengthToMeter(QByteArray &wavelengthInOtherUnit);
-    void convertFrequencyFromHz(QByteArray &frequencyInHz);
-    void convertFrequencyToHz(QByteArray &frequencyInOtherUnit);
+    QList<QByteArray> powerUnits;
+    QList<double> powerSettings;
+    QList<double> minPowers;
+    QList<double> maxPowers;
 
+    QList<QByteArray> laserState;
+
+    QList<double> wavelengthSettings;
+    QList<double> minWavelengths;
+    QList<double> maxWavelengths;
+
+    QList<double> frequencySettings;
+    QList<double> minFrequencies;
+    QList<double> maxFrequencies;
+
+    double convertWavelengthFromMeter(double wavelengthInMeter);
+    double convertWavelengthToMeter(double wavelengthInOtherUnit);
+    double convertFrequencyFromHz(double frequencyInHz);
+    double convertFrequencyToHz(double frequencyInOtherUnit);
     void setupAutoMode();
+    void setupWindow();
     void populateAllValues();
+
+    // initialize power displays on all channels/slots
+    void initPowerUnits();
+    void initPowerSettings();
+    void initMinPower();
+    void initMaxPower();
+    void initPowerState();
+
+    // initialize wavelength displays on all channels/slots
+    void initWavelengthSettings();
+    void initMinWavelengths();
+    void initMaxWavelengths();
+
+    // initialize frequency displays on all channels/slots
+    void initFrequencySettings();
+    void initMinFrequencies();
+    void initMaxFrequencies();
 };
 
 #endif // CONFIGN7714AWINDOW_H

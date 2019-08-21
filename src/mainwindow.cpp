@@ -114,6 +114,7 @@ void MainWindow::on_addSelectedDeviceBtn_clicked()
     if(currentDeviceType == "N7714A"){
         // signal to orchestrator to create n7714a
         emit signalCreateN7714ADevice(currentDeviceType, instrumentAddress, instrumentIdentity);
+
     }
     else if(currentDeviceType == "N7745A"){
         // signal to orchestrator to create n7745a

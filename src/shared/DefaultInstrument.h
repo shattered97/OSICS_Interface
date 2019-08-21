@@ -1,11 +1,14 @@
 #ifndef DEFAULTINSTRUMENT_H
 #define DEFAULTINSTRUMENT_H
 
-#include "VisaInterface.h"
-
 #include <QThread>
 #include <QString>
 #include <QElapsedTimer>
+#include <QMainWindow>
+#include <QDebug>
+#include <QSettings>
+
+#include "constants.h"
 
 class DefaultInstrument : public QObject
 {
@@ -33,7 +36,7 @@ public:
 
     void querySTB(QByteArray &response);
 
-    void execESE(ViByte registerVal);
+    void execESE(char registerVal);
 
     void queryESE(QByteArray &response);
 
@@ -61,6 +64,8 @@ public:
 
     QMainWindow * getConfigWindow();
 
+    void updateConfig(QSettings &configSettings);
+
 signals:
     void signalSendCmdRsp(QByteArray instrAddress, QByteArray &command, QByteArray &response);
     void signalSendCmdNoRsp(QByteArray instrAddress, QByteArray &command);
@@ -69,7 +74,6 @@ signals:
 private:
     QByteArray theIdentity;                 // identity of instrument (manufacturer, model num, etc.)
     QByteArray theInstrLoc;                 // the physical address of the instrument
-    VisaInterface theCommBus;               // common methods for talking to VISA devices
 
     QMainWindow *configWindow;
 };

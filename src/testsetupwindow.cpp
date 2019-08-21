@@ -3,6 +3,7 @@
 #include <QDebug>
 #include <QtMath>
 #include <QCheckBox>
+#include <QDateTime>
 
 TestSetupWindow::TestSetupWindow(QByteArray laserInfo, QByteArray powerMeterInfo, QWidget *parent) :
     QMainWindow(parent),

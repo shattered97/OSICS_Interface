@@ -22,6 +22,9 @@ public:
     virtual QList<QByteArray> formatPowerUnits(QByteArray rawUnits, int numChannels) = 0;
     virtual QList<double> parseBinaryBlockPowerReadings(QByteArray binaryBlock, int numBytesPerValue) = 0;
 
+    virtual void updateConfig(QSettings &) = 0;
+
+
 private:
     // identity of instrument (manufacturer, model num, etc.)
     QByteArray theIdentity;

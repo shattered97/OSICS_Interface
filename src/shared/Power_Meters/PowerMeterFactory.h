@@ -4,7 +4,6 @@
 #include <QObject>
 #include "PowerMeter.h"
 #include "KeysightPowerMeter.h"
-#include "configpowermeter.h"
 
 class PowerMeterFactory : public QObject
 {

@@ -28,6 +28,7 @@ void Orchestrator::slotLookForDevices()
 
     // disconnect signal so we don't get duplicate returns
     QObject::disconnect(this, SIGNAL(signalReturnDevicesFound(FoundInstr)), 0, 0);
+
 }
 
 void Orchestrator::slotCreateN7714ADevice(QString type, QByteArray instrumentAddress, QByteArray instrumentIdentity)
@@ -46,13 +47,6 @@ void Orchestrator::slotCreateN7714ADevice(QString type, QByteArray instrumentAdd
     device->setConfigWindow(configWindow);
 
 
-    qDebug() << "-------------------------------------------------------------";
-    qDebug() << "Test Query in Orchestrator slot slotCreateN7714ADevice";
-    QByteArray response;
-    N7714A *test = selectedDevices.at(selectedDevices.size()-1).value<N7714A*>();
-    test->queryIDN(response);
-    qDebug() << "Response: " << response;
-    qDebug() << "-------------------------------------------------------------";
 }
 
 void Orchestrator::slotCreateN7745ADevice(QString type, QByteArray instrumentAddress, QByteArray instrumentIdentity){
@@ -60,9 +54,10 @@ void Orchestrator::slotCreateN7745ADevice(QString type, QByteArray instrumentAdd
     PowerMeter *device = PowerMeterFactory::makePowerMeter(type, instrumentIdentity, instrumentAddress);
 
     // connect device to communication slots
-    QObject::connect(device, SIGNAL(signalSendCmdRsp(QByteArray, QByteArray&, QByteArray&)), this, SLOT(slotSendCmdRsp(QByteArray, QByteArray &, QByteArray &)));
-    QObject::connect(device, SIGNAL(signalSendCmdNoRsp(QByteArray, QByteArray&)), this, SLOT(slotSendCmdNoRsp(QByteArray, QByteArray &)));
-
+    QObject::connect(device, SIGNAL(signalSendCmdRsp(QByteArray, QByteArray&, QByteArray&)),
+                     this, SLOT(slotSendCmdRsp(QByteArray, QByteArray &, QByteArray &)));
+    QObject::connect(device, SIGNAL(signalSendCmdNoRsp(QByteArray, QByteArray&)),
+                     this, SLOT(slotSendCmdNoRsp(QByteArray, QByteArray &)));
 
     QVariant deviceVariant;
     deviceVariant.setValue(device);
@@ -71,23 +66,33 @@ void Orchestrator::slotCreateN7745ADevice(QString type, QByteArray instrumentAdd
     QMainWindow * configWindow = WindowFactory::makeWindow(type, deviceVariant);
     device->setConfigWindow(configWindow);
 
-
-
-    qDebug() << "-------------------------------------------------------------";
-    qDebug() << "Test Query in Orchestrator slot slotCreateN7745ADevice";
-    QByteArray response;
-    PowerMeter *test = selectedDevices.at(selectedDevices.size()-1).value<PowerMeter*>();
-    test->queryIDN(response);
-    qDebug() << "Response: " << response;
-    qDebug() << "-------------------------------------------------------------";
-}
-
-ViSession * Orchestrator::getDefaultSession(){
-    return &defaultSession;
+    QObject::connect(configWindow, SIGNAL(signalUpdateConfigSettings(QVariant &, QSettings &)),
+                     this, SLOT(slotUpdateConfigSettings(QVariant &, QSettings &)));
+    QObject::connect(this, SIGNAL(signalSettingsUpdated()), configWindow, SLOT(slotUpdateWindow()));
 }
 
 QVariant Orchestrator::getDeviceAtIndex(int index){
     return selectedDevices.at(index);
+}
+
+void Orchestrator::slotUpdateConfigSettings(QVariant &deviceVariant, QSettings &configSettings){
+    // because QVariant types are <type*> compare result of typeName()[:-1] with enum strings
+    QString typeName = QString(deviceVariant.typeName());
+    typeName.chop(1);
+    qDebug() << typeName;
+
+    if(typeName == "PowerMeter"){
+        qDebug() << "QVariant interpreted as PowerMeter";
+        PowerMeter* device = deviceVariant.value<PowerMeter*>();
+        device->updateConfig(configSettings);
+
+        // config settings updated, signal to sender
+        emit signalSettingsUpdated();
+    }
+    else if(typeName == "N7714A"){
+        qDebug() << "QVariant interpreted as N7714A";
+    }
+    // continue if/else chain when new devices are added to the system
 }
 
 void Orchestrator::slotSendCmdNoRsp(QByteArray instrAddress, QByteArray &command){

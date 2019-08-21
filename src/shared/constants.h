@@ -78,6 +78,7 @@ const UnitPair NM_UNIT = {-9, "nm"};
 const UnitPair UM_UNIT = {-6, "um"};
 const UnitPair MM_UNIT = {-3, "mm"};
 const UnitPair M_UNIT = {0, "m"};
+const QMap<QByteArray, int> WAV_CONVERSION_MAP = {{"m", 0}, {"mm", -3}, {"um", -6}, {"nm", -9}, {"pm", -12}};
 const QList<UnitPair> WAV_EXPONENT_LIST = {PM_UNIT, NM_UNIT, UM_UNIT, MM_UNIT, M_UNIT};
 
 const UnitPair HZ_UNIT = {0, "Hz"};
