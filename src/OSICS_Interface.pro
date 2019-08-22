@@ -44,6 +44,7 @@ SOURCES += \
         graphwindow.cpp \
         main.cpp \
         mainwindow.cpp \
+        shared/ConversionUtilities.cpp \
         shared/DefaultInstrument.cpp \
         shared/Orchestrator.cpp \
         shared/Power_Meters/PowerMeterFactory.cpp \
@@ -67,6 +68,7 @@ HEADERS += \
         devicesetupwindow.h \
         graphwindow.h \
         mainwindow.h \
+        shared/ConversionUtilities.h \
         shared/DefaultInstrument.h \
         shared/Orchestrator.h \
         shared/Power_Meters/PowerMeterFactory.h \

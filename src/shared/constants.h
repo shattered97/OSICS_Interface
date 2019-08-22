@@ -86,6 +86,7 @@ const UnitPair KHZ_UNIT = {3, "KHz"};
 const UnitPair MHZ_UNIT = {6, "MHz"};
 const UnitPair GHZ_UNIT = {9, "GHz"};
 const UnitPair THZ_UNIT = {12, "THz"};
+const QMap<QByteArray, int> FREQ_CONVERSION_MAP = {{"Hz", 0}, {"KHz", 3}, {"MHz", 6}, {"GHz", 9}, {"THz", 12}};
 const QList<UnitPair> FREQ_EXPONENT_LIST = {HZ_UNIT, KHZ_UNIT, MHZ_UNIT, GHZ_UNIT, THZ_UNIT};
 
 // Device type names
@@ -99,5 +100,30 @@ const QByteArray N7714A_WAV_CYCLE_TEST = "N7714A Wavelength Cycle Test";
 const QByteArray OSICS_WAV_CYCLE_TEST = "EXFO OSICS Wavelength Cycle Test";
 const QByteArray TEST_TYPES[] = {N7714A_WAV_CYCLE_TEST, OSICS_WAV_CYCLE_TEST};
 
+
+// QSettings Key Values - General
+const QByteArray DEVICE_LOCATION = "Device Location";
+const QByteArray DEVICE_IDENTIY = "Device Identity";
+
+// QSettings Key Values - Power Meter
+const QByteArray NUM_CHANNELS = "PowerMeter Num Channels";
+const QByteArray POWER_READINGS = "PowerMeter Power Readings";
+const QByteArray WAVELENGTH_SETTINGS = "PowerMeter Wavelength Settings";
+const QByteArray MIN_WAVELENGTHS = "PowerMeter Min Wavelength";
+const QByteArray MAX_WAVELENGTHS = "PowerMeter Max Wavelength";
+
+// QSettings Key Values - N7714A
+const QByteArray N7714A_POWER_SETTINGS = "N7714A Power Settings";
+const QByteArray N7714A_MIN_POWER = "N7714A Min Power";
+const QByteArray N7714A_MAX_POWER = "N7714A Max Power";
+const QByteArray N7714A_LASER_STATE = "N7714A Laser State";
+
+const QByteArray N7714A_WAVELENGTH_SETTINGS = "N7714A Wavelength Settings";
+const QByteArray N7714A_MIN_WAVELENGTH = "N7714A Min Wavelength";
+const QByteArray N7714A_MAX_WAVELENGTH = "N7714A Max Wavelength";
+
+const QByteArray N7714A_FREQUENCY_SETTINGS = "N7714A Frequency Settings";
+const QByteArray N7714A_MIN_FREQUENCY = "N7714A Min Frequency";
+const QByteArray N7714A_MAX_FREQUENCY = "N7714A Max Frequency";
 
 #endif // CONSTANTS_H

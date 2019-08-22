@@ -38,6 +38,11 @@ public:
 
     void turnOnAutoWavMode(int module);
 
+    void updateConfig(QSettings &);
+
+    void applyConfigSettings(QSettings &configSettings);
+
+
 signals:
     void signalSendCmdRsp(QByteArray instrAddress, QByteArray &command, QByteArray &response);
     void signalSendCmdNoRsp(QByteArray instrAddress, QByteArray &command);
@@ -45,6 +50,10 @@ signals:
 private:
     QByteArray theIdentity;                 // identity of instrument (manufacturer, model num, etc.)
     QByteArray theInstrLoc;                 // the physical address of the instrument
+
+    void updatePowerSettings(QSettings &configSettings);
+    void updateWavelengthSettings(QSettings &configSettings);
+    void updateFrequencySettings(QSettings &configSettings);
 };
 
 #endif // N7714A_H

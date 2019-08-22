@@ -16,7 +16,7 @@ QMainWindow *WindowFactory::makeWindow(QString windowType, QVariant &deviceVaria
     }
     else if(windowType.contains("N7714A")){
         N7714A *device = deviceVariant.value<N7714A*>();
-        QMainWindow * window = new ConfigN7714AWindow(device);
+        QMainWindow * window = new ConfigN7714AWindow(deviceVariant);
         qDebug() << "device variant type " << deviceVariant.userType();
         return window;
     }

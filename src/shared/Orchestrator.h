@@ -28,7 +28,6 @@ public:
     Orchestrator();
     ~Orchestrator();
 
-    ViSession * getDefaultSession();
     QVariant getDeviceAtIndex(int index);
 
 public slots:
@@ -37,26 +36,10 @@ public slots:
      * @brief slotLookForDevices - Queries for all connected VISA devices. Signals back to the sender a list of found resources.
      */
     void slotLookForDevices();
-
-    /**
-     * @brief slotCreateN7714ADevice Creates a N7714A device object.
-     * @param instrumentAddress Physical address of instrument
-     * @param instrumentIdentity Identity of instrument (manufacturer, model num, etc.)
-     */
     void slotCreateN7714ADevice(QString type, QByteArray instrumentAddress, QByteArray instrumentIdentity);
-
     void slotCreateN7745ADevice(QString type, QByteArray instrumentAddress, QByteArray instrumentIdentity);
 
-    void slotSendCmdRsp(QByteArray instrAddress, QByteArray &command, QByteArray &response);
-    void slotSendCmdNoRsp(QByteArray instrAddress, QByteArray &command);
-
-    void slotUpdateConfigSettings(QVariant &device, QSettings &configSettings);
-
 signals:
-
-    /**
-     * @brief signalReturnDevicesFound Signals the list of instruments found to reciever.
-     */
     void signalReturnDevicesFound(FoundInstr);
     void signalSettingsUpdated();
 
@@ -64,11 +47,15 @@ private:
     VisaInterface theCommBus;               // common methods for talking to VISA devices
     ViSession defaultSession;               // default session for device communication
     FoundInstr foundResources;              // map of VISA resources found
-
-    QList<QVariant> selectedDevices;
+    QList<QVariant> selectedDevices;        // devices selected by the user
 
     bool checkOperationComplete(ViSession instrSession, QByteArray instrAddress, int timeout = DEFAULT_COMMAND_TIMEOUT_MS);
 
+private slots:
+    void slotSendCmdRsp(QByteArray instrAddress, QByteArray &command, QByteArray &response);
+    void slotSendCmdNoRsp(QByteArray instrAddress, QByteArray &command);
+    void slotUpdateConfigSettings(QVariant &device, QSettings &configSettings);
+    void slotApplyConfigSettings(QVariant &device, QSettings &configSettings);
 };
 
 #endif // ORCHESTRATOR_H

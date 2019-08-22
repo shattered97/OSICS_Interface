@@ -36,8 +36,10 @@ void Orchestrator::slotCreateN7714ADevice(QString type, QByteArray instrumentAdd
     N7714A *device = new N7714A(instrumentIdentity, instrumentAddress);
 
     // connect device to communication slots
-    QObject::connect(device, SIGNAL(signalSendCmdRsp(QByteArray, QByteArray&, QByteArray&)), this, SLOT(slotSendCmdRsp(QByteArray, QByteArray &, QByteArray &)));
-    QObject::connect(device, SIGNAL(signalSendCmdNoRsp(QByteArray, QByteArray&)), this, SLOT(slotSendCmdNoRsp(QByteArray, QByteArray &)));
+    QObject::connect(device, SIGNAL(signalSendCmdRsp(QByteArray, QByteArray&, QByteArray&)),
+                     this, SLOT(slotSendCmdRsp(QByteArray, QByteArray &, QByteArray &)));
+    QObject::connect(device, SIGNAL(signalSendCmdNoRsp(QByteArray, QByteArray&)),
+                     this, SLOT(slotSendCmdNoRsp(QByteArray, QByteArray &)));
 
     QVariant deviceVariant;
     deviceVariant.setValue(device);
@@ -46,11 +48,16 @@ void Orchestrator::slotCreateN7714ADevice(QString type, QByteArray instrumentAdd
     QMainWindow * configWindow = WindowFactory::makeWindow(type, deviceVariant);
     device->setConfigWindow(configWindow);
 
+    QObject::connect(configWindow, SIGNAL(signalUpdateConfigSettings(QVariant &, QSettings &)),
+                     this, SLOT(slotUpdateConfigSettings(QVariant &, QSettings &)));
+    QObject::connect(configWindow, SIGNAL(signalApplyConfigSettings(QVariant &, QSettings &)),
+                     this, SLOT(slotApplyConfigSettings(QVariant &, QSettings &)));
+    QObject::connect(this, SIGNAL(signalSettingsUpdated()), configWindow, SLOT(slotUpdateWindow()));
 
 }
 
-void Orchestrator::slotCreateN7745ADevice(QString type, QByteArray instrumentAddress, QByteArray instrumentIdentity){
-
+void Orchestrator::slotCreateN7745ADevice(QString type, QByteArray instrumentAddress, QByteArray instrumentIdentity)
+{
     PowerMeter *device = PowerMeterFactory::makePowerMeter(type, instrumentIdentity, instrumentAddress);
 
     // connect device to communication slots
@@ -66,8 +73,10 @@ void Orchestrator::slotCreateN7745ADevice(QString type, QByteArray instrumentAdd
     QMainWindow * configWindow = WindowFactory::makeWindow(type, deviceVariant);
     device->setConfigWindow(configWindow);
 
-    QObject::connect(configWindow, SIGNAL(signalUpdateConfigSettings(QVariant &, QSettings &)),
+    QObject::connect(configWindow, SIGNAL(PowerMeter::signalUpdateConfigSettings(QVariant &, QSettings &)),
                      this, SLOT(slotUpdateConfigSettings(QVariant &, QSettings &)));
+    QObject::connect(configWindow, SIGNAL(PowerMeter::signalApplyConfigSettings(QVariant &, QSettings &)),
+                     this, SLOT(slotApplyConfigSettings(QVariant &, QSettings &)));
     QObject::connect(this, SIGNAL(signalSettingsUpdated()), configWindow, SLOT(slotUpdateWindow()));
 }
 
@@ -79,7 +88,6 @@ void Orchestrator::slotUpdateConfigSettings(QVariant &deviceVariant, QSettings &
     // because QVariant types are <type*> compare result of typeName()[:-1] with enum strings
     QString typeName = QString(deviceVariant.typeName());
     typeName.chop(1);
-    qDebug() << typeName;
 
     if(typeName == "PowerMeter"){
         qDebug() << "QVariant interpreted as PowerMeter";
@@ -91,8 +99,33 @@ void Orchestrator::slotUpdateConfigSettings(QVariant &deviceVariant, QSettings &
     }
     else if(typeName == "N7714A"){
         qDebug() << "QVariant interpreted as N7714A";
+        N7714A* device = deviceVariant.value<N7714A*>();
+        device->updateConfig(configSettings);
+
+        emit signalSettingsUpdated();
     }
     // continue if/else chain when new devices are added to the system
+}
+
+void Orchestrator::slotApplyConfigSettings(QVariant &deviceVariant, QSettings &configSettings){
+    QString typeName = QString(deviceVariant.typeName());
+    typeName.chop(1);
+
+    if(typeName == "PowerMeter"){
+        qDebug() << "QVariant interpreted as PowerMeter";
+        PowerMeter* device = deviceVariant.value<PowerMeter*>();
+        device->applyConfigSettings(configSettings);
+
+        // config settings updated, signal to sender
+        emit signalSettingsUpdated();
+    }
+    else if(typeName == "N7714A"){
+        qDebug() << "QVariant interpreted as N7714A";
+        N7714A* device = deviceVariant.value<N7714A*>();
+        device->applyConfigSettings(configSettings);
+
+        emit signalSettingsUpdated();
+    }
 }
 
 void Orchestrator::slotSendCmdNoRsp(QByteArray instrAddress, QByteArray &command){

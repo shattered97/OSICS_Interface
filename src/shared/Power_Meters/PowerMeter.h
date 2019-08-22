@@ -20,10 +20,10 @@ public:
     virtual void testCommand(QByteArray cmd, QByteArray &response) = 0;
     virtual int getNumPowerMeterChannels() = 0;
     virtual QList<QByteArray> formatPowerUnits(QByteArray rawUnits, int numChannels) = 0;
-    virtual QList<double> parseBinaryBlockPowerReadings(QByteArray binaryBlock, int numBytesPerValue) = 0;
+    virtual QList<QByteArray> parseBinaryBlockPowerReadings(QByteArray binaryBlock, int numBytesPerValue) = 0;
 
     virtual void updateConfig(QSettings &) = 0;
-
+    virtual void applyConfigSettings(QSettings &) = 0;
 
 private:
     // identity of instrument (manufacturer, model num, etc.)

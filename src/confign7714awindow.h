@@ -2,7 +2,12 @@
 #define CONFIGN7714AWINDOW_H
 
 #include <QMainWindow>
+#include <QFileDialog>
+#include <QSettings>
+#include <QMessageBox>
+
 #include "N7714A.h"
+#include "ConversionUtilities.h"
 
 namespace Ui {
 class ConfigN7714AWindow;
@@ -13,7 +18,7 @@ class ConfigN7714AWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit ConfigN7714AWindow(N7714A *device, QWidget *parent = nullptr);
+    explicit ConfigN7714AWindow(QVariant &device, QWidget *parent = nullptr);
     ~ConfigN7714AWindow();
 
     void populateLaserOutputPowerUnit();
@@ -32,7 +37,11 @@ public:
     void populateLaserMinFrequency();
     void populateLaserMaxFrequency();
 
-
+signals:
+    void signalUpdateConfigSettings(QVariant &device, QSettings &configSettings);
+    void signalApplyConfigSettings(QVariant &device, QSettings &configSettings);
+public slots:
+    void slotUpdateWindow();
 
 private slots:
     void on_powerUnitComboBox_currentIndexChanged(const QString &arg1);
@@ -57,37 +66,30 @@ private slots:
 
     void on_laserFrequencyEdit_editingFinished();
 
-    void on_testEdit_editingFinished();
-
 private:
     Ui::ConfigN7714AWindow *ui;
 
-    N7714A *device;
+    QVariant device;
+    QString settingsFileName;
+    QSettings *settings;
 
     int slotNum;
 
-    int wavelengthExponentIndex;
-    int frequencyExponentIndex;
+    QList<QByteArray> powerSettings;
+    QList<QByteArray> minPowerSettings;
+    QList<QByteArray> maxPowerSettings;
+    QList<QByteArray> laserStates;
 
-    QList<QByteArray> powerUnits;
-    QList<double> powerSettings;
-    QList<double> minPowers;
-    QList<double> maxPowers;
+    QList<QByteArray> wavelengthSettings;
+    QList<QByteArray> minWavelengths;
+    QList<QByteArray> maxWavelengths;
 
-    QList<QByteArray> laserState;
+    QList<QByteArray> frequencySettings;
+    QList<QByteArray> minFrequencies;
+    QList<QByteArray> maxFrequencies;
 
-    QList<double> wavelengthSettings;
-    QList<double> minWavelengths;
-    QList<double> maxWavelengths;
+    void showEvent(QShowEvent* event);
 
-    QList<double> frequencySettings;
-    QList<double> minFrequencies;
-    QList<double> maxFrequencies;
-
-    double convertWavelengthFromMeter(double wavelengthInMeter);
-    double convertWavelengthToMeter(double wavelengthInOtherUnit);
-    double convertFrequencyFromHz(double frequencyInHz);
-    double convertFrequencyToHz(double frequencyInOtherUnit);
     void setupAutoMode();
     void setupWindow();
     void populateAllValues();
@@ -108,6 +110,8 @@ private:
     void initFrequencySettings();
     void initMinFrequencies();
     void initMaxFrequencies();
+
+    void getValuesFromConfig();
 };
 
 #endif // CONFIGN7714AWINDOW_H

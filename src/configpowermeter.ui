@@ -53,32 +53,6 @@
      <string>Address: </string>
     </property>
    </widget>
-   <widget class="QLineEdit" name="testEdit">
-    <property name="enabled">
-     <bool>false</bool>
-    </property>
-    <property name="geometry">
-     <rect>
-      <x>800</x>
-      <y>680</y>
-      <width>211</width>
-      <height>31</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QLabel" name="testLabel">
-    <property name="geometry">
-     <rect>
-      <x>730</x>
-      <y>680</y>
-      <width>81</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Test</string>
-    </property>
-   </widget>
    <widget class="QGroupBox" name="radioButtonGroupBox">
     <property name="geometry">
      <rect>
@@ -90,7 +64,7 @@
     </property>
     <property name="font">
      <font>
-      <pointsize>12</pointsize>
+      <pointsize>14</pointsize>
      </font>
     </property>
     <property name="title">
@@ -108,11 +82,11 @@
     </property>
     <property name="font">
      <font>
-      <pointsize>12</pointsize>
+      <pointsize>14</pointsize>
      </font>
     </property>
     <property name="title">
-     <string>Adjust Power Settings</string>
+     <string>Power Reading</string>
     </property>
     <widget class="QLineEdit" name="powerDisplay">
      <property name="enabled">
@@ -125,6 +99,11 @@
        <width>211</width>
        <height>31</height>
       </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>12</pointsize>
+      </font>
      </property>
      <property name="text">
       <string/>
@@ -141,7 +120,7 @@
      </property>
      <property name="font">
       <font>
-       <pointsize>10</pointsize>
+       <pointsize>12</pointsize>
       </font>
      </property>
      <property name="text">
@@ -159,7 +138,7 @@
      </property>
      <property name="font">
       <font>
-       <pointsize>10</pointsize>
+       <pointsize>12</pointsize>
       </font>
      </property>
      <property name="text">
@@ -177,7 +156,7 @@
      </property>
      <property name="font">
       <font>
-       <pointsize>10</pointsize>
+       <pointsize>12</pointsize>
       </font>
      </property>
      <property name="text">
@@ -195,7 +174,7 @@
      </property>
      <property name="font">
       <font>
-       <pointsize>10</pointsize>
+       <pointsize>12</pointsize>
       </font>
      </property>
      <property name="styleSheet">
@@ -219,12 +198,12 @@
       <x>10</x>
       <y>390</y>
       <width>1001</width>
-      <height>231</height>
+      <height>281</height>
      </rect>
     </property>
     <property name="font">
      <font>
-      <pointsize>12</pointsize>
+      <pointsize>14</pointsize>
      </font>
     </property>
     <property name="title">
@@ -237,14 +216,14 @@
      <property name="geometry">
       <rect>
        <x>350</x>
-       <y>80</y>
+       <y>120</y>
        <width>211</width>
        <height>31</height>
       </rect>
      </property>
      <property name="font">
       <font>
-       <pointsize>10</pointsize>
+       <pointsize>12</pointsize>
       </font>
      </property>
      <property name="text">
@@ -258,14 +237,14 @@
      <property name="geometry">
       <rect>
        <x>350</x>
-       <y>130</y>
+       <y>170</y>
        <width>211</width>
        <height>31</height>
       </rect>
      </property>
      <property name="font">
       <font>
-       <pointsize>10</pointsize>
+       <pointsize>12</pointsize>
       </font>
      </property>
      <property name="text">
@@ -279,14 +258,14 @@
      <property name="geometry">
       <rect>
        <x>350</x>
-       <y>180</y>
+       <y>220</y>
        <width>211</width>
        <height>31</height>
       </rect>
      </property>
      <property name="font">
       <font>
-       <pointsize>10</pointsize>
+       <pointsize>12</pointsize>
       </font>
      </property>
      <property name="text">
@@ -297,14 +276,14 @@
      <property name="geometry">
       <rect>
        <x>580</x>
-       <y>90</y>
+       <y>130</y>
        <width>51</width>
        <height>21</height>
       </rect>
      </property>
      <property name="font">
       <font>
-       <pointsize>10</pointsize>
+       <pointsize>12</pointsize>
       </font>
      </property>
      <property name="text">
@@ -315,14 +294,14 @@
      <property name="geometry">
       <rect>
        <x>580</x>
-       <y>140</y>
+       <y>180</y>
        <width>51</width>
        <height>21</height>
       </rect>
      </property>
      <property name="font">
       <font>
-       <pointsize>10</pointsize>
+       <pointsize>12</pointsize>
       </font>
      </property>
      <property name="text">
@@ -333,14 +312,14 @@
      <property name="geometry">
       <rect>
        <x>580</x>
-       <y>190</y>
+       <y>230</y>
        <width>51</width>
        <height>21</height>
       </rect>
      </property>
      <property name="font">
       <font>
-       <pointsize>10</pointsize>
+       <pointsize>12</pointsize>
       </font>
      </property>
      <property name="text">
@@ -351,14 +330,14 @@
      <property name="geometry">
       <rect>
        <x>20</x>
-       <y>30</y>
+       <y>70</y>
        <width>331</width>
        <height>31</height>
       </rect>
      </property>
      <property name="font">
       <font>
-       <pointsize>10</pointsize>
+       <pointsize>12</pointsize>
       </font>
      </property>
      <property name="text">
@@ -369,14 +348,14 @@
      <property name="geometry">
       <rect>
        <x>20</x>
-       <y>80</y>
+       <y>120</y>
        <width>331</width>
        <height>31</height>
       </rect>
      </property>
      <property name="font">
       <font>
-       <pointsize>10</pointsize>
+       <pointsize>12</pointsize>
       </font>
      </property>
      <property name="text">
@@ -387,14 +366,14 @@
      <property name="geometry">
       <rect>
        <x>20</x>
-       <y>130</y>
+       <y>170</y>
        <width>331</width>
        <height>31</height>
       </rect>
      </property>
      <property name="font">
       <font>
-       <pointsize>10</pointsize>
+       <pointsize>12</pointsize>
       </font>
      </property>
      <property name="text">
@@ -405,14 +384,14 @@
      <property name="geometry">
       <rect>
        <x>20</x>
-       <y>180</y>
+       <y>220</y>
        <width>331</width>
        <height>31</height>
       </rect>
      </property>
      <property name="font">
       <font>
-       <pointsize>10</pointsize>
+       <pointsize>12</pointsize>
       </font>
      </property>
      <property name="text">
@@ -423,14 +402,14 @@
      <property name="geometry">
       <rect>
        <x>350</x>
-       <y>30</y>
+       <y>70</y>
        <width>121</width>
        <height>31</height>
       </rect>
      </property>
      <property name="font">
       <font>
-       <pointsize>10</pointsize>
+       <pointsize>12</pointsize>
       </font>
      </property>
      <property name="currentIndex">
@@ -469,14 +448,14 @@
      <property name="geometry">
       <rect>
        <x>660</x>
-       <y>80</y>
+       <y>120</y>
        <width>211</width>
        <height>31</height>
       </rect>
      </property>
      <property name="font">
       <font>
-       <pointsize>10</pointsize>
+       <pointsize>12</pointsize>
       </font>
      </property>
     </widget>
@@ -484,14 +463,14 @@
      <property name="geometry">
       <rect>
        <x>890</x>
-       <y>90</y>
+       <y>130</y>
        <width>81</width>
        <height>21</height>
       </rect>
      </property>
      <property name="font">
       <font>
-       <pointsize>10</pointsize>
+       <pointsize>12</pointsize>
       </font>
      </property>
      <property name="text">
@@ -543,14 +522,31 @@
      </property>
     </widget>
    </widget>
+   <widget class="QPushButton" name="saveChangesButton">
+    <property name="geometry">
+     <rect>
+      <x>820</x>
+      <y>670</y>
+      <width>191</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>12</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>Submit Changes</string>
+    </property>
+   </widget>
    <zorder>groupBox_2</zorder>
    <zorder>groupBox</zorder>
    <zorder>instrumentInfoLabel</zorder>
    <zorder>instrumentAddressLabel</zorder>
-   <zorder>testEdit</zorder>
-   <zorder>testLabel</zorder>
    <zorder>radioButtonGroupBox</zorder>
    <zorder>groupBox_3</zorder>
+   <zorder>saveChangesButton</zorder>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">

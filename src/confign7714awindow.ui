@@ -27,19 +27,6 @@
      <string>Output Power Unit:</string>
     </property>
    </widget>
-   <widget class="QLineEdit" name="outputPowerUnitDisplay">
-    <property name="enabled">
-     <bool>false</bool>
-    </property>
-    <property name="geometry">
-     <rect>
-      <x>240</x>
-      <y>140</y>
-      <width>211</width>
-      <height>31</height>
-     </rect>
-    </property>
-   </widget>
    <widget class="QLabel" name="label_2">
     <property name="geometry">
      <rect>
@@ -56,7 +43,7 @@
    <widget class="QComboBox" name="powerUnitComboBox">
     <property name="geometry">
      <rect>
-      <x>660</x>
+      <x>240</x>
       <y>140</y>
       <width>111</width>
       <height>31</height>
@@ -239,23 +226,10 @@
      <string>Laser Wavelength Unit</string>
     </property>
    </widget>
-   <widget class="QLineEdit" name="laserWavelengthUnitDisplay">
-    <property name="enabled">
-     <bool>false</bool>
-    </property>
+   <widget class="QComboBox" name="wavelengthUnitComboBox">
     <property name="geometry">
      <rect>
       <x>240</x>
-      <y>370</y>
-      <width>211</width>
-      <height>31</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QComboBox" name="wavelngthUnitComboBox">
-    <property name="geometry">
-     <rect>
-      <x>650</x>
       <y>370</y>
       <width>121</width>
       <height>31</height>
@@ -454,26 +428,10 @@
      <string>Laser Frequency Unit</string>
     </property>
    </widget>
-   <widget class="QLineEdit" name="laserFrequencyUnitDisplay">
-    <property name="enabled">
-     <bool>false</bool>
-    </property>
-    <property name="geometry">
-     <rect>
-      <x>240</x>
-      <y>570</y>
-      <width>211</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string/>
-    </property>
-   </widget>
    <widget class="QComboBox" name="frequencyUnitComboBox">
     <property name="geometry">
      <rect>
-      <x>660</x>
+      <x>240</x>
       <y>570</y>
       <width>121</width>
       <height>31</height>
@@ -799,32 +757,6 @@
       <string notr="true">slotRadioButtonGroup</string>
      </attribute>
     </widget>
-   </widget>
-   <widget class="QLineEdit" name="testEdit">
-    <property name="enabled">
-     <bool>true</bool>
-    </property>
-    <property name="geometry">
-     <rect>
-      <x>800</x>
-      <y>10</y>
-      <width>211</width>
-      <height>31</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QLabel" name="testLabel">
-    <property name="geometry">
-     <rect>
-      <x>730</x>
-      <y>10</y>
-      <width>81</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Test</string>
-    </property>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
