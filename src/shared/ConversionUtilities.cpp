@@ -11,6 +11,12 @@ double ConversionUtilities::convertWattToDBm(double powerInWatt){
     return converted;
 }
 
+double ConversionUtilities::convertDBmToWatt(double powerInDBm){
+    // 10(43dBm/ 10) / 1000
+    double converted = qPow(10, (powerInDBm / 10)) / 1000;
+    return converted;
+}
+
 double ConversionUtilities::convertWavelengthFromMeter(double wavelength, QByteArray unit){
     int exp = WAV_CONVERSION_MAP.value(unit);
     double converted = wavelength * qPow(10, exp * -1);

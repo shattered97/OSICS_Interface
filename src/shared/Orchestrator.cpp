@@ -28,7 +28,6 @@ void Orchestrator::slotLookForDevices()
 
     // disconnect signal so we don't get duplicate returns
     QObject::disconnect(this, SIGNAL(signalReturnDevicesFound(FoundInstr)), 0, 0);
-
 }
 
 void Orchestrator::slotCreateN7714ADevice(QString type, QByteArray instrumentAddress, QByteArray instrumentIdentity)
@@ -53,7 +52,6 @@ void Orchestrator::slotCreateN7714ADevice(QString type, QByteArray instrumentAdd
     QObject::connect(configWindow, SIGNAL(signalApplyConfigSettings(QVariant &, QSettings &)),
                      this, SLOT(slotApplyConfigSettings(QVariant &, QSettings &)));
     QObject::connect(this, SIGNAL(signalSettingsUpdated()), configWindow, SLOT(slotUpdateWindow()));
-
 }
 
 void Orchestrator::slotCreateN7745ADevice(QString type, QByteArray instrumentAddress, QByteArray instrumentIdentity)
@@ -73,11 +71,11 @@ void Orchestrator::slotCreateN7745ADevice(QString type, QByteArray instrumentAdd
     QMainWindow * configWindow = WindowFactory::makeWindow(type, deviceVariant);
     device->setConfigWindow(configWindow);
 
-    QObject::connect(configWindow, SIGNAL(PowerMeter::signalUpdateConfigSettings(QVariant &, QSettings &)),
-                     this, SLOT(slotUpdateConfigSettings(QVariant &, QSettings &)));
-    QObject::connect(configWindow, SIGNAL(PowerMeter::signalApplyConfigSettings(QVariant &, QSettings &)),
-                     this, SLOT(slotApplyConfigSettings(QVariant &, QSettings &)));
-    QObject::connect(this, SIGNAL(signalSettingsUpdated()), configWindow, SLOT(slotUpdateWindow()));
+//    QObject::connect(configWindow, SIGNAL(signalUpdateConfigSettings(QVariant &, QSettings &)),
+//                     this, SLOT(slotUpdateConfigSettings(QVariant &, QSettings &)));
+//    QObject::connect(configWindow, SIGNAL(signalApplyConfigSettings(QVariant &, QSettings &)),
+//                     this, SLOT(slotApplyConfigSettings(QVariant &, QSettings &)));
+//    QObject::connect(this, SIGNAL(signalSettingsUpdated()), configWindow, SLOT(slotUpdateWindow()));
 }
 
 QVariant Orchestrator::getDeviceAtIndex(int index){

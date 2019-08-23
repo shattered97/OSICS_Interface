@@ -67,7 +67,7 @@ const QByteArray N7714A_POW_LEVEL_CMD = "sour:pow\n";
 const QByteArray N7714A_WAV_QUERY = "sour:wav?\n";
 const QByteArray N7714A_WAV_CMD = "sour:wav\n";
 const QByteArray N7714A_FREQ_QUERY = "sour:freq?\n";
-const QByteArray N7714A_FREQ_CMD = "sour:wav\n";
+const QByteArray N7714A_FREQ_CMD = "sour:freq\n";
 
 // N7714A Constants
 const int N7714A_NUM_SLOTS = 4;

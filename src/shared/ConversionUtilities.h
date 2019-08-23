@@ -11,6 +11,7 @@ public:
     ConversionUtilities();
 
     static double convertWattToDBm(double powerInWatt);
+    static double convertDBmToWatt(double powerInDBm);
     static double convertWavelengthFromMeter(double wavelength, QByteArray unit);
     static double convertWavelengthToMeter(double wavelength, QByteArray unit);
     static double convertFrequencyFromHz(double frequency, QByteArray unit);

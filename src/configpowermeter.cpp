@@ -191,9 +191,8 @@ void ConfigPowerMeter::on_wavelengthEdit_editingFinished()
 
     if(fieldText != ""){
         // convert entered wavelength to double
-        QByteArray wavelength = ui->wavelengthEdit->text().toLatin1();
         bool ok;
-        double wavDouble = wavelength.toDouble(&ok);
+        double wavDouble =fieldText.toDouble(&ok);
 
         // if conversion can't be made, error message
         if(!ok){

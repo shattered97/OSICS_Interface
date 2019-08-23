@@ -185,6 +185,11 @@ void N7714A::turnOnAutoWavMode(int module){
 void N7714A::updateConfig(QSettings &configSettings){
     qDebug() << "n7714a update config";
 
+    // make sure auto mode is on
+    for(int i = 1; i < N7714A_NUM_SLOTS; i++){
+        turnOnAutoWavMode(i);
+    }
+
     updatePowerSettings(configSettings);
     updateWavelengthSettings(configSettings);
     updateFrequencySettings(configSettings);
@@ -193,15 +198,27 @@ void N7714A::updateConfig(QSettings &configSettings){
 void N7714A::applyConfigSettings(QSettings &configSettings){
     // apply power settings to device
     QList<QByteArray> powerSettings = configSettings.value(N7714A_POWER_SETTINGS).value<QList<QByteArray>>();
-    for(int i = 0; i <= N7714A_NUM_SLOTS; i++){
+    QList<QByteArray> powerStates = configSettings.value(N7714A_LASER_STATE).value<QList<QByteArray>>();
+
+    for(int i = 0; i < N7714A_NUM_SLOTS; i++){
         int slot = i + 1;
         QByteArray unit = "Watt";
         execPowerLevel(slot, powerSettings[i], unit);
+
+        // change power if needed
+        int powerOn = powerStates[i].toInt();
+        if(!powerOn){
+            execPowerOffModule(slot);
+        }
+        else{
+            execPowerOnModule(slot);
+        }
     }
 
     // apply wavelength settings to device
     QList<QByteArray> wavelengthSettings = configSettings.value(N7714A_WAVELENGTH_SETTINGS).value<QList<QByteArray>>();
-    for(int i = 0; i <= N7714A_NUM_SLOTS; i++){
+    qDebug() << wavelengthSettings;
+    for(int i = 0; i < N7714A_NUM_SLOTS; i++){
         int slot = i + 1;
         QByteArray unit = "m";
         execWavelength(slot, wavelengthSettings[i], unit);
@@ -209,7 +226,7 @@ void N7714A::applyConfigSettings(QSettings &configSettings){
 
     // apply frequency settings to device
     QList<QByteArray> frequencySettings = configSettings.value(N7714A_FREQUENCY_SETTINGS).value<QList<QByteArray>>();
-    for(int i = 0; i <= N7714A_NUM_SLOTS; i++){
+    for(int i = 0; i < N7714A_NUM_SLOTS; i++){
         int slot = i + 1;
         QByteArray unit = "Hz";
         execFrequency(slot, frequencySettings[i], unit);
@@ -258,27 +275,29 @@ void N7714A::updatePowerSettings(QSettings &configSettings){
 
 void N7714A::updateWavelengthSettings(QSettings &configSettings){
     QList<QByteArray> wavelengthSettings;
-    QList<QByteArray> minWavelength;
-    QList<QByteArray> maxWavelength;
+    QList<QByteArray> minWavelengthSettings;
+    QList<QByteArray> maxWavelengthSettings;
 
     for(int i = 1; i <= N7714A_NUM_SLOTS; i++){
         QByteArray wavelength;
+        QByteArray minWavelength;
+        QByteArray maxWavelength;
         queryWavelength(i, wavelength);
         wavelengthSettings.append(QByteArray::number(wavelength.toDouble()));
 
-        queryWavelength(i, wavelength, "MIN");
-        minWavelength.append(QByteArray::number(wavelength.toDouble()));
+        queryWavelength(i, minWavelength, "MIN");
+        minWavelengthSettings.append(QByteArray::number(minWavelength.toDouble()));
 
-        queryWavelength(i, wavelength, "MAX");
-        maxWavelength.append(QByteArray::number(wavelength.toDouble()));
+        queryWavelength(i, maxWavelength, "MAX");
+        maxWavelengthSettings.append(QByteArray::number(maxWavelength.toDouble()));
     }
 
     // save to config
     configSettings.setValue(N7714A_WAVELENGTH_SETTINGS, QVariant::fromValue(wavelengthSettings));
     qDebug() << configSettings.value(N7714A_WAVELENGTH_SETTINGS).value<QList<QByteArray>>();
-    configSettings.setValue(N7714A_MIN_WAVELENGTH, QVariant::fromValue(minWavelength));
+    configSettings.setValue(N7714A_MIN_WAVELENGTH, QVariant::fromValue(minWavelengthSettings));
     qDebug() << configSettings.value(N7714A_MIN_WAVELENGTH).value<QList<QByteArray>>();
-    configSettings.setValue(N7714A_MAX_WAVELENGTH, QVariant::fromValue(maxWavelength));
+    configSettings.setValue(N7714A_MAX_WAVELENGTH, QVariant::fromValue(maxWavelengthSettings));
     qDebug() << configSettings.value(N7714A_MAX_WAVELENGTH).value<QList<QByteArray>>();
     configSettings.sync();
 }
@@ -286,26 +305,28 @@ void N7714A::updateWavelengthSettings(QSettings &configSettings){
 void N7714A::updateFrequencySettings(QSettings &configSettings){
 
     QList<QByteArray> frequencySettings;
-    QList<QByteArray> minFrequency;
-    QList<QByteArray> maxFrequency;
+    QList<QByteArray> minFrequencySettings;
+    QList<QByteArray> maxFrequencySettings;
     for(int i = 1; i <= N7714A_NUM_SLOTS; i++){
         QByteArray frequency;
+        QByteArray minFrequency;
+        QByteArray maxFrequency;
         queryFrequency(i, frequency);
         frequencySettings.append(QByteArray::number(frequency.toDouble()));
 
-        queryFrequency(i, frequency, "MIN");
-        minFrequency.append(QByteArray::number(frequency.toDouble()));
+        queryFrequency(i, minFrequency, "MIN");
+        minFrequencySettings.append(QByteArray::number(minFrequency.toDouble()));
 
-        queryFrequency(i, frequency, "MAX");
-        maxFrequency.append(QByteArray::number(frequency.toDouble()));
+        queryFrequency(i, maxFrequency, "MAX");
+        maxFrequencySettings.append(QByteArray::number(maxFrequency.toDouble()));
     }
 
     // save to config
     configSettings.setValue(N7714A_FREQUENCY_SETTINGS, QVariant::fromValue(frequencySettings));
     qDebug() << configSettings.value(N7714A_FREQUENCY_SETTINGS).value<QList<QByteArray>>();
-    configSettings.setValue(N7714A_MIN_FREQUENCY, QVariant::fromValue(minFrequency));
+    configSettings.setValue(N7714A_MIN_FREQUENCY, QVariant::fromValue(minFrequencySettings));
     qDebug() << configSettings.value(N7714A_MIN_FREQUENCY).value<QList<QByteArray>>();
-    configSettings.setValue(N7714A_MAX_FREQUENCY, QVariant::fromValue(maxFrequency));
+    configSettings.setValue(N7714A_MAX_FREQUENCY, QVariant::fromValue(maxFrequencySettings));
     qDebug() << configSettings.value(N7714A_MAX_FREQUENCY).value<QList<QByteArray>>();
     configSettings.sync();
 
