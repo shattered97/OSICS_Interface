@@ -40,3 +40,13 @@ double ConversionUtilities::convertFrequencyToHz(double frequency, QByteArray un
     double converted = frequency * qPow(10, exp);
     return converted;
 }
+
+double ConversionUtilities::convertWavelengthToFrequency(double wavelength){
+    double frequency = SPEED_OF_LIGHT / wavelength;
+    return frequency;
+}
+
+double ConversionUtilities::convertFrequencyToWavelength(double frequency){
+    double wavelength = SPEED_OF_LIGHT / frequency;
+    return wavelength;
+}

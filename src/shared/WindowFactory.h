@@ -4,6 +4,7 @@
 #include <QObject>
 #include "configpowermeter.h"
 #include "confign7714awindow.h"
+#include "OSICSMainframeSetupWindow.h"
 
 
 class WindowFactory : public QObject

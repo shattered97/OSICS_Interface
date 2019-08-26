@@ -30,53 +30,92 @@ void Orchestrator::slotLookForDevices()
     QObject::disconnect(this, SIGNAL(signalReturnDevicesFound(FoundInstr)), 0, 0);
 }
 
-void Orchestrator::slotCreateN7714ADevice(QString type, QByteArray instrumentAddress, QByteArray instrumentIdentity)
+void Orchestrator::slotCreateDevice(QString type, QByteArray instrumentAddress, QByteArray instrumentIdentity)
 {
-    N7714A *device = new N7714A(instrumentIdentity, instrumentAddress);
-
-    // connect device to communication slots
-    QObject::connect(device, SIGNAL(signalSendCmdRsp(QByteArray, QByteArray&, QByteArray&)),
-                     this, SLOT(slotSendCmdRsp(QByteArray, QByteArray &, QByteArray &)));
-    QObject::connect(device, SIGNAL(signalSendCmdNoRsp(QByteArray, QByteArray&)),
-                     this, SLOT(slotSendCmdNoRsp(QByteArray, QByteArray &)));
-
     QVariant deviceVariant;
-    deviceVariant.setValue(device);
+    // #TODO finish enum for type strings
+
+    if(type == "N7714A"){
+        N7714A *device = new N7714A(instrumentIdentity, instrumentAddress);
+        deviceVariant.setValue(device);
+        QObject::connect(device, SIGNAL(signalSendCmdRsp(QByteArray, QByteArray&, QByteArray&)),
+                         this, SLOT(slotSendCmdRsp(QByteArray, QByteArray &, QByteArray &)));
+        QObject::connect(device, SIGNAL(signalSendCmdNoRsp(QByteArray, QByteArray&)),
+                         this, SLOT(slotSendCmdNoRsp(QByteArray, QByteArray &)));
+    }
+    else if(type == "N7745A") {
+        PowerMeter *device = PowerMeterFactory::makePowerMeter(type, instrumentIdentity, instrumentAddress);
+        deviceVariant.setValue(device);
+        QObject::connect(device, SIGNAL(signalSendCmdRsp(QByteArray, QByteArray&, QByteArray&)),
+                         this, SLOT(slotSendCmdRsp(QByteArray, QByteArray &, QByteArray &)));
+        QObject::connect(device, SIGNAL(signalSendCmdNoRsp(QByteArray, QByteArray&)),
+                         this, SLOT(slotSendCmdNoRsp(QByteArray, QByteArray &)));
+    }
+    else if(type == "EXFO OSICS"){
+
+    }
+    else{
+        // #TODO error/exit
+    }
+
     selectedDevices.append(deviceVariant);
 
     QMainWindow * configWindow = WindowFactory::makeWindow(type, deviceVariant);
-    device->setConfigWindow(configWindow);
+    deviceVariant.value<DefaultInstrument*>()->setConfigWindow(configWindow);
 
     QObject::connect(configWindow, SIGNAL(signalUpdateConfigSettings(QVariant &, QSettings &)),
                      this, SLOT(slotUpdateConfigSettings(QVariant &, QSettings &)));
     QObject::connect(configWindow, SIGNAL(signalApplyConfigSettings(QVariant &, QSettings &)),
                      this, SLOT(slotApplyConfigSettings(QVariant &, QSettings &)));
-    QObject::connect(this, SIGNAL(signalSettingsUpdated()), configWindow, SLOT(slotUpdateWindow()));
 }
 
-void Orchestrator::slotCreateN7745ADevice(QString type, QByteArray instrumentAddress, QByteArray instrumentIdentity)
-{
-    PowerMeter *device = PowerMeterFactory::makePowerMeter(type, instrumentIdentity, instrumentAddress);
+//void Orchestrator::slotCreateN7714ADevice(QString type, QByteArray instrumentAddress, QByteArray instrumentIdentity)
+//{
+//    N7714A *device = new N7714A(instrumentIdentity, instrumentAddress);
 
-    // connect device to communication slots
-    QObject::connect(device, SIGNAL(signalSendCmdRsp(QByteArray, QByteArray&, QByteArray&)),
-                     this, SLOT(slotSendCmdRsp(QByteArray, QByteArray &, QByteArray &)));
-    QObject::connect(device, SIGNAL(signalSendCmdNoRsp(QByteArray, QByteArray&)),
-                     this, SLOT(slotSendCmdNoRsp(QByteArray, QByteArray &)));
+//    // connect device to communication slots
+//    QObject::connect(device, SIGNAL(signalSendCmdRsp(QByteArray, QByteArray&, QByteArray&)),
+//                     this, SLOT(slotSendCmdRsp(QByteArray, QByteArray &, QByteArray &)));
+//    QObject::connect(device, SIGNAL(signalSendCmdNoRsp(QByteArray, QByteArray&)),
+//                     this, SLOT(slotSendCmdNoRsp(QByteArray, QByteArray &)));
 
-    QVariant deviceVariant;
-    deviceVariant.setValue(device);
-    selectedDevices.append(deviceVariant);
+//    QVariant deviceVariant;
+//    deviceVariant.setValue(device);
+//    selectedDevices.append(deviceVariant);
 
-    QMainWindow * configWindow = WindowFactory::makeWindow(type, deviceVariant);
-    device->setConfigWindow(configWindow);
+//    QMainWindow * configWindow = WindowFactory::makeWindow(type, deviceVariant);
+//    device->setConfigWindow(configWindow);
 
 //    QObject::connect(configWindow, SIGNAL(signalUpdateConfigSettings(QVariant &, QSettings &)),
 //                     this, SLOT(slotUpdateConfigSettings(QVariant &, QSettings &)));
 //    QObject::connect(configWindow, SIGNAL(signalApplyConfigSettings(QVariant &, QSettings &)),
 //                     this, SLOT(slotApplyConfigSettings(QVariant &, QSettings &)));
-//    QObject::connect(this, SIGNAL(signalSettingsUpdated()), configWindow, SLOT(slotUpdateWindow()));
-}
+
+//}
+
+//void Orchestrator::slotCreateN7745ADevice(QString type, QByteArray instrumentAddress, QByteArray instrumentIdentity)
+//{
+//    PowerMeter *device = PowerMeterFactory::makePowerMeter(type, instrumentIdentity, instrumentAddress);
+
+//    // connect device to communication slots
+//    QObject::connect(device, SIGNAL(signalSendCmdRsp(QByteArray, QByteArray&, QByteArray&)),
+//                     this, SLOT(slotSendCmdRsp(QByteArray, QByteArray &, QByteArray &)));
+//    QObject::connect(device, SIGNAL(signalSendCmdNoRsp(QByteArray, QByteArray&)),
+//                     this, SLOT(slotSendCmdNoRsp(QByteArray, QByteArray &)));
+
+//    QVariant deviceVariant;
+//    deviceVariant.setValue(device);
+//    selectedDevices.append(deviceVariant);
+
+//    QMainWindow * configWindow = WindowFactory::makeWindow(type, deviceVariant);
+//    device->setConfigWindow(configWindow);
+
+//    QObject::connect(configWindow, SIGNAL(signalUpdateConfigSettings(QVariant &, QSettings &)),
+//                     this, SLOT(slotUpdateConfigSettings(QVariant &, QSettings &)));
+//    QObject::connect(configWindow, SIGNAL(signalApplyConfigSettings(QVariant &, QSettings &)),
+//                     this, SLOT(slotApplyConfigSettings(QVariant &, QSettings &)));
+
+//}
 
 QVariant Orchestrator::getDeviceAtIndex(int index){
     return selectedDevices.at(index);
@@ -93,6 +132,7 @@ void Orchestrator::slotUpdateConfigSettings(QVariant &deviceVariant, QSettings &
         device->updateConfig(configSettings);
 
         // config settings updated, signal to sender
+        QObject::connect(this, SIGNAL(signalSettingsUpdated()), device->getConfigWindow(), SLOT(slotUpdateWindow()));
         emit signalSettingsUpdated();
     }
     else if(typeName == "N7714A"){
@@ -100,6 +140,7 @@ void Orchestrator::slotUpdateConfigSettings(QVariant &deviceVariant, QSettings &
         N7714A* device = deviceVariant.value<N7714A*>();
         device->updateConfig(configSettings);
 
+        QObject::connect(this, SIGNAL(signalSettingsUpdated()), device->getConfigWindow(), SLOT(slotUpdateWindow()));
         emit signalSettingsUpdated();
     }
     // continue if/else chain when new devices are added to the system
@@ -115,6 +156,7 @@ void Orchestrator::slotApplyConfigSettings(QVariant &deviceVariant, QSettings &c
         device->applyConfigSettings(configSettings);
 
         // config settings updated, signal to sender
+        QObject::connect(this, SIGNAL(signalSettingsUpdated()), device->getConfigWindow(), SLOT(slotUpdateWindow()));
         emit signalSettingsUpdated();
     }
     else if(typeName == "N7714A"){
@@ -122,6 +164,7 @@ void Orchestrator::slotApplyConfigSettings(QVariant &deviceVariant, QSettings &c
         N7714A* device = deviceVariant.value<N7714A*>();
         device->applyConfigSettings(configSettings);
 
+        QObject::connect(this, SIGNAL(signalSettingsUpdated()), device->getConfigWindow(), SLOT(slotUpdateWindow()));
         emit signalSettingsUpdated();
     }
 }

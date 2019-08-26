@@ -8,6 +8,7 @@
 #include <QRadioButton>
 #include <QHBoxLayout>
 #include <QMessageBox>
+#include <QLineEdit>
 
 #include "PowerMeter.h"
 #include "ConversionUtilities.h"
@@ -82,6 +83,7 @@ private:
     bool loadSettings();
     void getValuesFromConfig();
     void showEvent(QShowEvent* event);
+    void convertAndDisplayWavelength(QList<QByteArray> wavelength, QLineEdit* displayField);
 
 };
 

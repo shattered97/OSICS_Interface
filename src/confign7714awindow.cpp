@@ -1,6 +1,5 @@
 #include "confign7714awindow.h"
 #include "ui_confign7714awindow.h"
-#include <QtMath>
 
 ConfigN7714AWindow::ConfigN7714AWindow(QVariant &device, QWidget *parent) :
     QMainWindow(parent),
@@ -35,38 +34,33 @@ void ConfigN7714AWindow::slotUpdateWindow()
     ui->laserFrequencyEdit->clear();
     ui->laserOutputPowerEdit->clear();
 
+    // reset text fields
+    resetDisplayFieldColoredStatus();
+
     // store values from settings
     getValuesFromConfig();
 
     // display values
     populateAllValues();
+
+    // disconnect signal
+    QObject::disconnect(QObject::sender(), SIGNAL(signalSettingsUpdated()), this, SLOT(slotUpdateWindow()));
 }
 
 void ConfigN7714AWindow::getValuesFromConfig()
 {
-    qDebug() << "n7714a get values from config";
     powerSettings = settings->value(N7714A_POWER_SETTINGS).value<QList<QByteArray>>();
-    qDebug() << "power settings " << powerSettings;
     minPowerSettings = settings->value(N7714A_MIN_POWER).value<QList<QByteArray>>();
-    qDebug() << "min power " << minPowerSettings;
     maxPowerSettings = settings->value(N7714A_MAX_POWER).value<QList<QByteArray>>();
-    qDebug() << "max power " << maxPowerSettings;
     laserStates = settings->value(N7714A_LASER_STATE).value<QList<QByteArray>>();
-    qDebug() << "laser state " << laserStates;
 
     wavelengthSettings = settings->value(N7714A_WAVELENGTH_SETTINGS).value<QList<QByteArray>>();
-    qDebug() << "wavelength settings " << wavelengthSettings;
     minWavelengths = settings->value(N7714A_MIN_WAVELENGTH).value<QList<QByteArray>>();
-    qDebug() << "min wavelengths " << minWavelengths;
     maxWavelengths = settings->value(N7714A_MAX_WAVELENGTH).value<QList<QByteArray>>();
-    qDebug() << "max wavelengths " << maxWavelengths;
 
     frequencySettings = settings->value(N7714A_FREQUENCY_SETTINGS).value<QList<QByteArray>>();
-    qDebug() << "frequency settings " << frequencySettings;
     minFrequencies = settings->value(N7714A_MIN_FREQUENCY).value<QList<QByteArray>>();
-    qDebug() << "min frequencies " << minFrequencies;
     maxFrequencies = settings->value(N7714A_MAX_FREQUENCY).value<QList<QByteArray>>();
-    qDebug() << "max frequencies " << maxFrequencies;
 }
 
 void ConfigN7714AWindow::populateAllValues()
@@ -106,42 +100,31 @@ void ConfigN7714AWindow::populateLaserOutputPowerUnit()
     ui->maxPowerDisplayUnitLabel->setText(unitText);
 }
 
-void ConfigN7714AWindow::populateLaserOutputPower()
-{
-    qDebug() << "populateLaserOutputPower()";
-    qDebug() << powerSettings;
-    qDebug() << slotNum;
-    double power = powerSettings[slotNum - 1].toDouble();
+void ConfigN7714AWindow::convertAndDisplayPower(QList<QByteArray> powerList, QLineEdit* displayField){
+    double power = powerList[slotNum - 1].toDouble();
     double converted = power;
     if(ui->powerUnitComboBox->currentText() == "dBm"){
         converted = ConversionUtilities::convertWattToDBm(power);
     }
-    ui->laserOutputPowerDisplay->setText(QByteArray::number(converted));
+    displayField->setText(QByteArray::number(converted));
+}
+
+void ConfigN7714AWindow::populateLaserOutputPower()
+{
+    qDebug() << "populateLaserOutputPower()";
+    convertAndDisplayPower(powerSettings, ui->laserOutputPowerDisplay);
 }
 
 void ConfigN7714AWindow::populateLaserMinPower()
 {
     qDebug() << "populateLaserMinPower()";
-    qDebug() << minPowerSettings;
-    double power = minPowerSettings[slotNum - 1].toDouble();
-    double converted = power;
-    if(ui->powerUnitComboBox->currentText() == "dBm"){
-        converted = ConversionUtilities::convertWattToDBm(power);
-    }
-
-    ui->laserMinPowerDisplay->setText(QByteArray::number(converted));
+    convertAndDisplayPower(minPowerSettings, ui->laserMinPowerDisplay);
 }
 
 void ConfigN7714AWindow::populateLaserMaxPower()
 {
     qDebug() << "populateLaserMaxPower()";
-    qDebug() << maxPowerSettings;
-    double power = maxPowerSettings[slotNum - 1].toDouble();
-    double converted = power;
-    if(ui->powerUnitComboBox->currentText() == "dBm"){
-        converted = ConversionUtilities::convertWattToDBm(power);
-    }
-    ui->laserMaxPowerDisplay->setText(QByteArray::number(converted));
+    convertAndDisplayPower(maxPowerSettings, ui->laserMaxPowerDisplay);
 }
 
 void ConfigN7714AWindow::populateLaserState()
@@ -168,29 +151,26 @@ void ConfigN7714AWindow::populateLaserWavelengthUnit()
     ui->maxWavelengthUnitLabel->setText(unitText);
 }
 
+void ConfigN7714AWindow::convertAndDisplayWavelength(QList<QByteArray> wavelengthList, QLineEdit* displayField){
+    double wavelength = wavelengthList[slotNum - 1].toDouble();
+    QByteArray unit = ui->wavelengthUnitComboBox->currentText().toLatin1();
+    double converted = ConversionUtilities::convertWavelengthFromMeter(wavelength, unit);
+    displayField->setText(QByteArray::number(converted));
+}
+
 void ConfigN7714AWindow::populateLaserWavelength(){
     // convert to selected unit and display
-    double wavelength = wavelengthSettings[slotNum - 1].toDouble();
-    QByteArray unit = ui->wavelengthUnitComboBox->currentText().toLatin1();
-    qDebug() << wavelength << " " << unit;
-    double converted = ConversionUtilities::convertWavelengthFromMeter(wavelength, unit);
-    ui->laserWavelengthDisplay->setText(QString::number(converted));
+    convertAndDisplayWavelength(wavelengthSettings, ui->laserWavelengthDisplay);
 }
 
 void ConfigN7714AWindow::populateLaserMinWavelength(){
     // convert min wavelength and apply to display field
-    double wavelength = minWavelengths[slotNum - 1].toDouble();
-    QByteArray unit = ui->wavelengthUnitComboBox->currentText().toLatin1();
-    double converted = ConversionUtilities::convertWavelengthFromMeter(wavelength, unit);
-    ui->minWavelengthDisplay->setText(QString::number(converted));
+    convertAndDisplayWavelength(minWavelengths, ui->minWavelengthDisplay);
 }
 
 void ConfigN7714AWindow::populateLaserMaxWavelength(){
     // convert max wavelength and apply to display field
-    double wavelength = maxWavelengths[slotNum - 1].toDouble();
-    QByteArray unit = ui->wavelengthUnitComboBox->currentText().toLatin1();
-    double converted = ConversionUtilities::convertWavelengthFromMeter(wavelength, unit);
-    ui->maxWavelengthDisplay->setText(QString::number(converted));
+    convertAndDisplayWavelength(maxWavelengths, ui->maxWavelengthDisplay);
 }
 
 // ********************************************* Laser Frequency ****************************************************
@@ -204,28 +184,26 @@ void ConfigN7714AWindow::populateLaserFrequencyUnit()
     ui->maxFrequencyUnitLabel->setText(unitText);
 }
 
-void ConfigN7714AWindow::populateLaserFrequency(){
-    // convert frequency and apply to display field
-    double frequency = frequencySettings[slotNum - 1].toDouble();
+void ConfigN7714AWindow::convertAndDisplayFrequency(QList<QByteArray> frequencyList, QLineEdit *displayField){
+    double frequency = frequencyList[slotNum - 1].toDouble();
     QByteArray unit = ui->frequencyUnitComboBox->currentText().toLatin1();
     double converted = ConversionUtilities::convertFrequencyFromHz(frequency, unit);
-    ui->laserFrequencyDisplay->setText(QString::number(converted));
+    displayField->setText(QString::number(converted));
+}
+
+void ConfigN7714AWindow::populateLaserFrequency(){
+    // convert frequency and apply to display field
+    convertAndDisplayFrequency(frequencySettings, ui->laserFrequencyDisplay);
 }
 
 void ConfigN7714AWindow::populateLaserMinFrequency(){
     // convert frequency and apply to display field
-    double frequency = minFrequencies[slotNum - 1].toDouble();
-    QByteArray unit = ui->frequencyUnitComboBox->currentText().toLatin1();
-    double converted = ConversionUtilities::convertFrequencyFromHz(frequency, unit);
-    ui->minFrequencyDisplay->setText(QString::number(converted));
+    convertAndDisplayFrequency(minFrequencies, ui->minFrequencyDisplay);
 }
 
 void ConfigN7714AWindow::populateLaserMaxFrequency(){
     // convert frequency and apply to display field
-    double frequency = maxFrequencies[slotNum - 1].toDouble();
-    QByteArray unit = ui->frequencyUnitComboBox->currentText().toLatin1();
-    double converted = ConversionUtilities::convertFrequencyFromHz(frequency, unit);
-    ui->maxFrequencyDisplay->setText(QString::number(converted));
+    convertAndDisplayFrequency(maxFrequencies, ui->maxFrequencyDisplay);
 }
 
 // ********************************************* UI Slots ****************************************************
@@ -261,146 +239,153 @@ void ConfigN7714AWindow::on_slot1RadioBtn_clicked()
 {
     slotNum = 1;
     populateAllValues();
+    colorDisplayFieldText();
 }
 
 void ConfigN7714AWindow::on_slot2RadioBtn_clicked()
 {
     slotNum = 2;
     populateAllValues();
+    colorDisplayFieldText();
 }
 
 void ConfigN7714AWindow::on_slot3RadioBtn_clicked()
 {
     slotNum = 3;
     populateAllValues();
+    colorDisplayFieldText();
 }
 
 void ConfigN7714AWindow::on_slot4RadioBtn_clicked()
 {
     slotNum = 4;
     populateAllValues();
+    colorDisplayFieldText();
+}
+
+bool ConfigN7714AWindow::isInputValueValid(QByteArray inputValue, QByteArray minValue, QByteArray maxValue)
+{
+    bool valid = true;
+
+    if(inputValue == ""){
+        valid = false;
+    }
+    else{
+        bool conversionOk = true;
+        double valueToDouble = inputValue.toDouble(&conversionOk);
+
+        if(!conversionOk){
+            valid = false;
+            QMessageBox msgBox;
+            msgBox.setText("Value entered is invalid (non-numeric).");
+            msgBox.exec();
+        }
+        else{
+            double minValToDouble = minValue.toDouble();
+            double maxValToDouble = maxValue.toDouble();
+
+            if(valueToDouble < minValToDouble || valueToDouble > maxValToDouble){
+                valid = false;
+                QMessageBox msgBox;
+                msgBox.setText("Value entered is invalid (out of min/max range).");
+                msgBox.exec();
+            }
+        }
+    }
+    return valid;
 }
 
 void ConfigN7714AWindow::on_laserOutputPowerEdit_editingFinished()
 {
     qDebug() << "on_laserOutputPowerEdit_editingFinished()";
 
-    QByteArray fieldText = ui->laserOutputPowerEdit->text().toLatin1();
+    QByteArray powerValue = ui->laserOutputPowerEdit->text().toLatin1();
+    QByteArray minPower = ui->laserMinPowerDisplay->text().toLatin1();
+    QByteArray maxPower = ui->laserMaxPowerDisplay->text().toLatin1();
 
-    if(fieldText != ""){
-        // try to convert to double
-        bool ok;
-        double powDouble = fieldText.toDouble(&ok);
-
-        // display error dialog if conversion can't be made
-        if(!ok){
-            QMessageBox msgBox;
-            msgBox.setText("Power entered is invalid (non-numeric).");
-            msgBox.exec();
+    if(isInputValueValid(powerValue, minPower, maxPower)){
+        // power is valid, insert into list
+        double powDouble = powerValue.toDouble();
+        QByteArray unit = ui->powerUnitComboBox->currentText().toLatin1();
+        double converted = powDouble;
+        if(unit == "dBm"){
+            converted = ConversionUtilities::convertDBmToWatt(powDouble);
+            qDebug() << powDouble << " to " << converted;
         }
-        else{
-            double minPower = ui->laserMinPowerDisplay->text().toDouble();
-            double maxPower = ui->laserMaxPowerDisplay->text().toDouble();
+        powerSettings[slotNum - 1] = QByteArray::number(converted);
 
-            if(powDouble < minPower || powDouble > maxPower){
-                QMessageBox msgBox;
-                msgBox.setText("Power entered is invalid (out of min/max range).");
-                msgBox.exec();
-            }
-            else{
-                // power is valid, insert into list
-                QByteArray unit = ui->powerUnitComboBox->currentText().toLatin1();
-                double converted = powDouble;
-                if(unit == "dBm"){
-                    converted = ConversionUtilities::convertDBmToWatt(powDouble);
-                    qDebug() << powDouble << " to " << converted;
-                }
-                powerSettings[slotNum - 1] = QByteArray::number(converted);
-
-                // update the settings object
-                settings->setValue(N7714A_POWER_SETTINGS, QVariant::fromValue(powerSettings));
-            }
-        }
-        ui->laserOutputPowerEdit->clearFocus();
+        // update the settings object
+        settings->setValue(N7714A_POWER_SETTINGS, QVariant::fromValue(powerSettings));
+        populateLaserOutputPower();
+        powerSettingDisplayTextColored[slotNum - 1] = true;
     }
+
+    colorDisplayFieldText();
+    ui->laserOutputPowerEdit->clearFocus();
 }
 
 void ConfigN7714AWindow::on_laserWavelengthEdit_editingFinished()
 {
     qDebug() << "on_laserWavelengthEdit_editingFinished()";
 
-    QByteArray fieldText = ui->laserWavelengthEdit->text().toLatin1();
-    if(fieldText != ""){
-        // try to convert to double
-        bool ok;
-        double wavDouble = fieldText.toDouble(&ok);
+    QByteArray wavelengthValue = ui->laserWavelengthEdit->text().toLatin1();
+    QByteArray minWavelength = ui->minWavelengthDisplay->text().toLatin1();
+    QByteArray maxWavelength = ui->maxWavelengthDisplay->text().toLatin1();
 
-        // display error dialog if conversion can't be made
-        if(!ok){
-            QMessageBox msgBox;
-            msgBox.setText("Wavelength entered is invalid (non-numeric).");
-            msgBox.exec();
-        }
-        else{
-            double minWavelength = ui->minWavelengthDisplay->text().toDouble();
-            double maxWavelength = ui->maxWavelengthDisplay->text().toDouble();
+    if(isInputValueValid(wavelengthValue, minWavelength, maxWavelength)){
+        // wavelength is valid, insert into list
+        double wavDouble = wavelengthValue.toDouble();
+        QByteArray unit = ui->wavelengthUnitComboBox->currentText().toLatin1();
+        double converted = ConversionUtilities::convertWavelengthToMeter(wavDouble, unit);
+        wavelengthSettings[slotNum - 1] = QByteArray::number(converted);
 
-            if(wavDouble < minWavelength || wavDouble > maxWavelength){
-                QMessageBox msgBox;
-                msgBox.setText("Wavelength entered is invalid (out of min/max range).");
-                msgBox.exec();
-            }
-            else{
-                // wavelength is valid, insert into list
-                QByteArray unit = ui->wavelengthUnitComboBox->currentText().toLatin1();
-                double converted = ConversionUtilities::convertWavelengthToMeter(wavDouble, unit);
-                wavelengthSettings[slotNum - 1] = QByteArray::number(converted);
+        // update the settings object
+        settings->setValue(N7714A_WAVELENGTH_SETTINGS, QVariant::fromValue(wavelengthSettings));
+        populateLaserWavelength();
+        wavelengthDisplayTextColored[slotNum - 1] = true;
 
-                // update the settings object
-                settings->setValue(N7714A_WAVELENGTH_SETTINGS, QVariant::fromValue(wavelengthSettings));
-            }
-        }
+        // update frequency b/c the values are related
+        double frequency = ConversionUtilities::convertWavelengthToFrequency(converted);
+        frequencySettings[slotNum - 1] = QByteArray::number(frequency);
+        settings->setValue(N7714A_FREQUENCY_SETTINGS, QVariant::fromValue(frequencySettings));
+        populateLaserFrequency();
+        frequencyDisplayTextColored[slotNum - 1] = true;
+
     }
-        ui->laserWavelengthEdit->clearFocus();
+    colorDisplayFieldText();
+    ui->laserWavelengthEdit->clearFocus();
 }
 
 void ConfigN7714AWindow::on_laserFrequencyEdit_editingFinished()
 {
     qDebug() << "on_laserFrequencyEdit_editingFinished()";
 
-    QByteArray fieldText = ui->laserFrequencyEdit->text().toLatin1();
-    if(fieldText != ""){
-        // try to convert to double
-        bool ok;
-        double freqDouble = fieldText.toDouble(&ok);
+    QByteArray frequencyValue = ui->laserFrequencyEdit->text().toLatin1();
+    QByteArray minFrequencyValue = ui->minFrequencyDisplay->text().toLatin1();
+    QByteArray maxFrequencyValue = ui->maxFrequencyDisplay->text().toLatin1();
 
-        // display error dialog if conversion can't be made
-        if(!ok){
-            QMessageBox msgBox;
-            msgBox.setText("Frequency entered is invalid (non-numeric).");
-            msgBox.exec();
-        }
-        else{
-            double minFrequency = ui->minFrequencyDisplay->text().toDouble();
-            double maxFrequency = ui->maxFrequencyDisplay->text().toDouble();
+    if(isInputValueValid(frequencyValue, minFrequencyValue, maxFrequencyValue)){
+        // frequency is valid, insert into list
+        double freqDouble = frequencyValue.toDouble();
+        QByteArray unit = ui->frequencyUnitComboBox->currentText().toLatin1();
+        double converted = ConversionUtilities::convertFrequencyToHz(freqDouble, unit);
+        frequencySettings[slotNum - 1] = QByteArray::number(converted);
 
-            if(freqDouble < minFrequency || freqDouble > maxFrequency){
-                QMessageBox msgBox;
-                msgBox.setText("Frequency entered is invalid (out of min/max range).");
-                msgBox.exec();
-            }
-            else{
-                // frequency is valid, insert into list
-                QByteArray unit = ui->frequencyUnitComboBox->currentText().toLatin1();
-                double converted = ConversionUtilities::convertFrequencyToHz(freqDouble, unit);
-                frequencySettings[slotNum - 1] = QByteArray::number(converted);
+        // update the settings object
+        settings->setValue(N7714A_FREQUENCY_SETTINGS, QVariant::fromValue(frequencySettings));
+        populateLaserFrequency();
+        frequencyDisplayTextColored[slotNum - 1] = true;
 
-                // update the settings object
-                settings->setValue(N7714A_FREQUENCY_SETTINGS, QVariant::fromValue(frequencySettings));
-            }
-        }
+        // update wavelength b/c the values are related
+        double wavelength = ConversionUtilities::convertFrequencyToWavelength(converted);
+        wavelengthSettings[slotNum - 1] = QByteArray::number(wavelength);
+        settings->setValue(N7714A_WAVELENGTH_SETTINGS, QVariant::fromValue(wavelengthSettings));
+        populateLaserWavelength();
+        wavelengthDisplayTextColored[slotNum - 1] = true;
     }
-        ui->laserFrequencyEdit->clearFocus();
+
+    colorDisplayFieldText();
+    ui->laserFrequencyEdit->clearFocus();
 }
 
 void ConfigN7714AWindow::on_togglePowerButton_clicked()
@@ -416,6 +401,9 @@ void ConfigN7714AWindow::on_togglePowerButton_clicked()
     }
 
     settings->setValue(N7714A_LASER_STATE, QVariant::fromValue(laserStates));
+    populateLaserState();
+    powerStatusDisplayTextColored[slotNum - 1] = true;
+    colorDisplayFieldText();
 }
 
 void ConfigN7714AWindow::on_saveChangesButton_clicked()
@@ -428,7 +416,6 @@ void ConfigN7714AWindow::on_saveChangesButton_clicked()
 
     QApplication::restoreOverrideCursor();
 }
-
 
 bool ConfigN7714AWindow::loadSettings()
 {
@@ -501,4 +488,35 @@ void ConfigN7714AWindow::on_saveSettingsButton_clicked()
             saveSettings();
         }
     }
+}
+
+void ConfigN7714AWindow::colorText(QLineEdit *textField, bool colored){
+    if(colored){
+        textField->setStyleSheet("QLineEdit {color: rgb(0, 0, 255);}");
+    }
+    else{
+        textField->setStyleSheet("QLineEdit {color: rgb(0, 0, 0);}");
+    }
+}
+
+void ConfigN7714AWindow::colorDisplayFieldText()
+{
+    colorText(ui->laserOutputPowerDisplay, powerSettingDisplayTextColored[slotNum - 1]);
+    colorText(ui->laserStateDisplay, powerStatusDisplayTextColored[slotNum - 1]);
+    colorText(ui->laserWavelengthDisplay, wavelengthDisplayTextColored[slotNum - 1]);
+    colorText(ui->laserFrequencyDisplay, frequencyDisplayTextColored[slotNum - 1]);
+}
+
+void ConfigN7714AWindow::resetDisplayFieldColoredStatus(){
+    qDebug() << "resetDisplayFieldColoredStatus()";
+
+
+    for(int i = 0; i < N7714A_NUM_SLOTS; i++){
+        powerSettingDisplayTextColored[i] = false;
+        powerStatusDisplayTextColored[i] = false;
+        wavelengthDisplayTextColored[i] = false;
+        frequencyDisplayTextColored[i] = false;
+    }
+
+    colorDisplayFieldText();
 }

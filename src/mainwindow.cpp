@@ -12,10 +12,14 @@ MainWindow::MainWindow(QWidget *parent) :
     loadDeviceTypesList();
 
     // connect device creation signals/slots
-    QObject::connect(this, SIGNAL(signalCreateN7714ADevice(QString, QByteArray, QByteArray)),
-                     orchestrator, SLOT(slotCreateN7714ADevice(QString, QByteArray, QByteArray)));
-    QObject::connect(this, SIGNAL(signalCreateN7745ADevice(QString, QByteArray, QByteArray)),
-                     orchestrator, SLOT(slotCreateN7745ADevice(QString, QByteArray, QByteArray)));
+//    QObject::connect(this, SIGNAL(signalCreateN7714ADevice(QString, QByteArray, QByteArray)),
+//                     orchestrator, SLOT(slotCreateN7714ADevice(QString, QByteArray, QByteArray)));
+//    QObject::connect(this, SIGNAL(signalCreateN7745ADevice(QString, QByteArray, QByteArray)),
+//                     orchestrator, SLOT(slotCreateN7745ADevice(QString, QByteArray, QByteArray)));
+
+
+    QObject::connect(this, SIGNAL(signalCreateDevice(QString, QByteArray, QByteArray)),
+                     orchestrator, SLOT(slotCreateDevice(QString, QByteArray, QByteArray)));
 }
 
 MainWindow::~MainWindow()
@@ -113,12 +117,13 @@ void MainWindow::on_addSelectedDeviceBtn_clicked()
     // #TODO device factory?
     if(currentDeviceType == "N7714A"){
         // signal to orchestrator to create n7714a
-        emit signalCreateN7714ADevice(currentDeviceType, instrumentAddress, instrumentIdentity);
-
+//        emit signalCreateN7714ADevice(currentDeviceType, instrumentAddress, instrumentIdentity);
+        emit signalCreateDevice(currentDeviceType, instrumentAddress, instrumentIdentity);
     }
     else if(currentDeviceType == "N7745A"){
         // signal to orchestrator to create n7745a
-        emit signalCreateN7745ADevice(currentDeviceType, instrumentAddress, instrumentIdentity);
+//        emit signalCreateN7745ADevice(currentDeviceType, instrumentAddress, instrumentIdentity);
+        emit signalCreateDevice(currentDeviceType, instrumentAddress, instrumentIdentity);
     }
 
     QApplication::restoreOverrideCursor();
@@ -134,12 +139,13 @@ void MainWindow::on_selectedDevicesListWidget_itemDoubleClicked(QListWidgetItem 
     int indexOfClickedDevice = ui->selectedDevicesListWidget->currentRow();
     QVariant device = orchestrator->getDeviceAtIndex(indexOfClickedDevice);
     QByteArray deviceTypeName = QByteArray(device.typeName());
-
+    qDebug() << deviceTypeName;
     // disable cursor
     QApplication::setOverrideCursor(Qt::WaitCursor);
 
     // open window (can cast QVariant as default b/c window knows specific type)
     DefaultInstrument *instrument = device.value<DefaultInstrument*>();
+    qDebug() << typeid(instrument->getConfigWindow()).name();
     instrument->getConfigWindow()->show();
 
     QApplication::restoreOverrideCursor();

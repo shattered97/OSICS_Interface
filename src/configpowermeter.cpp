@@ -39,6 +39,9 @@ void ConfigPowerMeter::slotUpdateWindow()
 
     // display values
     populateAllValues();
+
+    // disconnect signal
+    QObject::disconnect(QObject::sender(), SIGNAL(signalSettingsUpdated()), this, SLOT(slotUpdateWindow()));
 }
 
 void ConfigPowerMeter::getValuesFromConfig()
@@ -92,36 +95,31 @@ void ConfigPowerMeter::populateWavelengthUnit()
     ui->maxWavelengthUnitLabel->setText(unitText);
 }
 
+void ConfigPowerMeter::convertAndDisplayWavelength(QList<QByteArray> wavelengthList, QLineEdit* displayField){
+    double wavelength = wavelengthList[slotNum - 1].toDouble();
+    QByteArray unit = ui->wavelengthComboBox->currentText().toLatin1();
+    double converted = ConversionUtilities::convertWavelengthFromMeter(wavelength, unit);
+    qDebug() << wavelength << " to " << converted;
+    displayField->setText(QByteArray::number(converted));
+}
+
 void ConfigPowerMeter::populateWavelength()
 {
     qDebug() << "populateWavelength()";
-    // convert wavelength and display
-    double wavelength = wavelengthSettings[slotNum - 1].toDouble();
-    QByteArray unit = ui->wavelengthComboBox->currentText().toLatin1();
-    double converted = ConversionUtilities::convertWavelengthFromMeter(wavelength, unit);
-    ui->wavelengthDisplay->setText(QByteArray::number(converted));
+    convertAndDisplayWavelength(wavelengthSettings, ui->wavelengthDisplay);
 }
 
 void ConfigPowerMeter::populateMinWavelength()
 {
     qDebug() << "populateMinWavelength()";
-    // convert min wavelength and display
-    double wavelength = minWavelengths[slotNum - 1].toDouble();
-    QByteArray unit = ui->wavelengthComboBox->currentText().toLatin1();
-    double converted = ConversionUtilities::convertWavelengthFromMeter(wavelength, unit);
-    ui->minWavelengthDisplay->setText(QByteArray::number(converted));
+    convertAndDisplayWavelength(minWavelengths, ui->minWavelengthDisplay);
 }
 
 void ConfigPowerMeter::populateMaxWavelength()
 {
     qDebug() << "populateMaxWavelength()";
-    // convert max wavelength and display
-    double wavelength = maxWavelengths[slotNum - 1].toDouble();
-    QByteArray unit = ui->wavelengthComboBox->currentText().toLatin1();
-    double converted = ConversionUtilities::convertWavelengthFromMeter(wavelength, unit);
-    ui->maxWavelengthDisplay->setText(QByteArray::number(converted));
+    convertAndDisplayWavelength(maxWavelengths, ui->maxWavelengthDisplay);
 }
-
 
 void ConfigPowerMeter::initChannelRadioButtons()
 {

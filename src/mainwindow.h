@@ -44,6 +44,7 @@ signals:
 
     void signalCreateN7745ADevice(QString type, QByteArray instrumentAddress, QByteArray instrumentIdentity);
 
+    void signalCreateDevice(QString type, QByteArray instrumentAddress, QByteArray instrumentIdentity);
 private:
 
     // main window user interface

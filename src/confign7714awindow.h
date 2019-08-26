@@ -5,6 +5,7 @@
 #include <QFileDialog>
 #include <QSettings>
 #include <QMessageBox>
+#include <QLineEdit>
 
 #include "N7714A.h"
 #include "ConversionUtilities.h"
@@ -82,6 +83,10 @@ private:
     QSettings *settings;
 
     int slotNum;
+    bool powerSettingDisplayTextColored[N7714A_NUM_SLOTS] = {false};
+    bool powerStatusDisplayTextColored[N7714A_NUM_SLOTS] = {false};
+    bool wavelengthDisplayTextColored[N7714A_NUM_SLOTS] = {false};
+    bool frequencyDisplayTextColored[N7714A_NUM_SLOTS] = {false};
 
     QList<QByteArray> powerSettings;
     QList<QByteArray> minPowerSettings;
@@ -102,6 +107,14 @@ private:
     bool loadSettings();
     bool saveSettings();
 
+    void convertAndDisplayPower(QList<QByteArray> powerList, QLineEdit* displayField);
+    void convertAndDisplayWavelength(QList<QByteArray> wavelengthList, QLineEdit* displayField);
+    void convertAndDisplayFrequency(QList<QByteArray> wavelengthList, QLineEdit* displayField);
+    bool isInputValueValid(QByteArray inputValue, QByteArray minValue, QByteArray maxValue);
+
+    void resetDisplayFieldColoredStatus();
+    void colorDisplayFieldText();
+    void colorText(QLineEdit *textField, bool colored);
 };
 
 #endif // CONFIGN7714AWINDOW_H

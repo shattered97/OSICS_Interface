@@ -126,4 +126,7 @@ const QByteArray N7714A_FREQUENCY_SETTINGS = "N7714A Frequency Settings";
 const QByteArray N7714A_MIN_FREQUENCY = "N7714A Min Frequency";
 const QByteArray N7714A_MAX_FREQUENCY = "N7714A Max Frequency";
 
+
+// Math Constants
+const double SPEED_OF_LIGHT = 299792458;
 #endif // CONSTANTS_H

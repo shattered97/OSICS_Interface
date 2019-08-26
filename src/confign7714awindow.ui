@@ -111,6 +111,9 @@
       <height>31</height>
      </rect>
     </property>
+    <property name="styleSheet">
+     <string notr="true"/>
+    </property>
    </widget>
    <widget class="QLabel" name="powerDisplayUnitLabel">
     <property name="geometry">
@@ -617,6 +620,9 @@
       <width>201</width>
       <height>21</height>
      </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true"/>
     </property>
     <property name="text">
      <string>Max Laser Power:</string>

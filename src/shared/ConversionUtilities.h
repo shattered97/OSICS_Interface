@@ -16,6 +16,8 @@ public:
     static double convertWavelengthToMeter(double wavelength, QByteArray unit);
     static double convertFrequencyFromHz(double frequency, QByteArray unit);
     static double convertFrequencyToHz(double freuqency, QByteArray unit);
+    static double convertWavelengthToFrequency(double wavelength);
+    static double convertFrequencyToWavelength(double frequency);
 };
 
 #endif // CONVERSIONUTILITIES_H
