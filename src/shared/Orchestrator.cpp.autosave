@@ -94,7 +94,11 @@ void Orchestrator::slotUpdateConfigSettings(QVariant &deviceVariant, QSettings &
         QObject::connect(this, SIGNAL(signalSettingsUpdated()), device->getConfigWindow(), SLOT(slotUpdateWindow()));
         emit signalSettingsUpdated();
     }
-    // continue if/else chain when new devices are added to the system
+    else{
+        //
+    }
+    
+    
 }
 
 void Orchestrator::slotApplyConfigSettings(QVariant &deviceVariant, QSettings &configSettings){
@@ -117,6 +121,17 @@ void Orchestrator::slotApplyConfigSettings(QVariant &deviceVariant, QSettings &c
 
         QObject::connect(this, SIGNAL(signalSettingsUpdated()), device->getConfigWindow(), SLOT(slotUpdateWindow()));
         emit signalSettingsUpdated();
+    }
+    else if(typeName == "EXFO_OSICS_MAINFRAME"){
+        qDebug() << "QVariant interpreted as EXFO_OSICS_MAINFRAME";
+        EXFO_OSICS_MAINFRAME* device = deviceVariant.value<EXFO_OSICS_MAINFRAME*>();
+        device->applyConfigSettings(configSettings);   
+        
+        QObject::connect(this, SIGNAL(signalSettingsUpdated()), device->getConfigWindow(), SLOT(slotUpdateWindow()));
+        emit signalSettingsUpdated();
+    }
+    else{
+        // #TODO error/exit
     }
 }
 

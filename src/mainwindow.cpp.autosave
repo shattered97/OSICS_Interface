@@ -133,3 +133,13 @@ void MainWindow::on_selectedDevicesListWidget_itemDoubleClicked(QListWidgetItem 
 
     QApplication::restoreOverrideCursor();
 }
+
+void MainWindow::on_gpibConnectionRadioBtn_clicked()
+{
+    
+}
+
+void MainWindow::on_ethernetConnectionRadioBtn_clicked()
+{
+    
+}

@@ -6,7 +6,6 @@ N7714A::N7714A( QByteArray theIdentity, QByteArray theInstrLoc) : DefaultInstrum
     this->theInstrLoc = theInstrLoc;
 }
 
-
 void N7714A::queryPowerUnit(int module, QByteArray &response){
 
     QByteArray baseCmd = N7714A_POW_UNIT_QUERY;

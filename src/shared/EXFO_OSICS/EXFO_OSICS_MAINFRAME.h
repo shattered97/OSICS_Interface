@@ -3,7 +3,7 @@
 
 #include "DefaultInstrument.h"
 
-class EXFO_OSICS_MAINFRAME : protected DefaultInstrument
+class EXFO_OSICS_MAINFRAME : public DefaultInstrument
 {
     Q_OBJECT
 public:

@@ -37,6 +37,9 @@ DEFINES += QT_DEPRECATED_WARNINGS
 CONFIG += c++11
 
 SOURCES += \
+        ConfigOSICS_ATN.cpp \
+        ConfigOSICS_SWT.cpp \
+        ConfigOSICS_T100.cpp \
         OSICSMainframeSetupWindow.cpp \
         confign7714awindow.cpp \
         configpowermeter.cpp \
@@ -63,6 +66,9 @@ SOURCES += \
 
 
 HEADERS += \
+        ConfigOSICS_ATN.h \
+        ConfigOSICS_SWT.h \
+        ConfigOSICS_T100.h \
         OSICSMainframeSetupWindow.h \
         confign7714awindow.h \
         configpowermeter.h \
@@ -89,6 +95,9 @@ HEADERS += \
 
 
 FORMS += \
+        ConfigOSICS_ATN.ui \
+        ConfigOSICS_SWT.ui \
+        ConfigOSICS_T100.ui \
         OSICSMainframeSetupWindow.ui \
         confign7714awindow.ui \
         configpowermeter.ui \
