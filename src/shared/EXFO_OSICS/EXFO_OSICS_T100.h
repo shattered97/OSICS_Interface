@@ -3,8 +3,9 @@
 
 #include "EXFO_OSICS_MAINFRAME.h"
 
-class EXFO_OSICS_T100 : EXFO_OSICS_MAINFRAME
+class EXFO_OSICS_T100 : public EXFO_OSICS_MAINFRAME
 {
+    Q_OBJECT
 public:
     EXFO_OSICS_T100(QByteArray theIdentity, QByteArray theInstrLoc);
 
@@ -153,6 +154,12 @@ public:
      */
     void outBNCPortSignalMonitoringQuery(int slotNum, QByteArray &response);
 
+
+// *********** Functions for Applying/Updating Config Settings **********
+
+    void applyConfigSettings(QSettings &configSettings);
+    void updateConfig(QSettings &configSettings);
+
 private:
 
     // identity of instrument (manufacturer, model num, etc.)
@@ -160,6 +167,11 @@ private:
 
     // the physical address of the instrument
     QByteArray theInstrLoc;
+
+
+    void updatePowerSettings(QSettings &configSettings);
+    void updateWavelengthSettings(QSettings &configSettings);
+    void updateFrequencySettings(QSettings &configSettings);
 
 };
 

@@ -72,6 +72,9 @@ const QByteArray N7714A_FREQ_CMD = "sour:freq\n";
 // N7714A Constants
 const int N7714A_NUM_SLOTS = 4;
 
+// EXFO OSICS CONSTANTS
+const int EXFO_OSICS_NUM_SLOTS = 8;
+
 // Keysight Unit Pair List
 const UnitPair PM_UNIT = {-12, "pm"};
 const UnitPair NM_UNIT = {-9, "nm"};
@@ -103,7 +106,7 @@ const QByteArray TEST_TYPES[] = {N7714A_WAV_CYCLE_TEST, OSICS_WAV_CYCLE_TEST};
 
 // QSettings Key Values - General
 const QByteArray DEVICE_LOCATION = "Device Location";
-const QByteArray DEVICE_IDENTIY = "Device Identity";
+const QByteArray DEVICE_IDENTITY = "Device Identity";
 
 // QSettings Key Values - Power Meter
 const QByteArray NUM_CHANNELS = "PowerMeter Num Channels";
@@ -125,6 +128,10 @@ const QByteArray N7714A_MAX_WAVELENGTH = "N7714A Max Wavelength";
 const QByteArray N7714A_FREQUENCY_SETTINGS = "N7714A Frequency Settings";
 const QByteArray N7714A_MIN_FREQUENCY = "N7714A Min Frequency";
 const QByteArray N7714A_MAX_FREQUENCY = "N7714A Max Frequency";
+
+
+// QSettings Key Values - EXFO OSICS MAINFRAME
+const QByteArray EXFO_OSICS_MODULE_NAMES = "EXFO OSICS Module Names";
 
 
 // Math Constants

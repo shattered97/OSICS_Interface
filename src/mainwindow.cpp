@@ -87,7 +87,6 @@ QList<QByteArray> MainWindow::resourcesQmapToQList(FoundInstr foundResources, QB
     return convertedResourceInfo;
 }
 
-
 void MainWindow::on_testTypeComboBox_currentIndexChanged(int index)
 {
     // #TODO implement test windows
@@ -101,12 +100,11 @@ void MainWindow::on_addSelectedDeviceBtn_clicked()
 
     // determine which device to create (#TODO possibly convert to factory in future)
     QString currentDeviceType = ui->devicetypeComboBox->currentText();
-
+    qDebug() << "device type from combo " << currentDeviceType;
     QByteArray instrumentAddress = instrumentInfo.split(' ')[0];
     QByteArray instrumentIdentity = instrumentInfo.mid(instrumentInfo.indexOf(' ') + 1, instrumentInfo.size());
-
     QApplication::setOverrideCursor(Qt::WaitCursor);
-
+    qDebug() << "addr/identity " << instrumentAddress << " " << instrumentIdentity;
     emit signalCreateDevice(currentDeviceType, instrumentAddress, instrumentIdentity);
 
     QApplication::restoreOverrideCursor();

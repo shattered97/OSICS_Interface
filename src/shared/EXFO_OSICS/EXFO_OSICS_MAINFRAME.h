@@ -435,9 +435,13 @@ public:
      */
     void typeOfModuleQuery(int slotNum, QByteArray &response);
 
-signals:
-    void signalSendCmdRsp(QByteArray instrAddress, QByteArray &command, QByteArray &response);
-    void signalSendCmdNoRsp(QByteArray instrAddress, QByteArray &command);
+
+    // *********** Functions for Applying/Updating Config Settings **********
+
+    void applyConfigSettings(QSettings &configSettings);
+    void updateConfig(QSettings &configSettings);
+    void updateInstalledModules(QSettings &configSettings);
+
 
 protected:
 
@@ -463,6 +467,7 @@ protected:
      * @param slotNum Slot number to insert into command
      */
     void insertSlotNum(QByteArray &command, int slotNum);
+
 
 private:
 

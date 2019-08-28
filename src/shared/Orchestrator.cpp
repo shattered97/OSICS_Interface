@@ -44,7 +44,7 @@ void Orchestrator::slotCreateDevice(QString type, QByteArray instrumentAddress, 
         deviceVariant.setValue(device);
 
     }
-    else if(type == "EXFO OSICS"){
+    else if(type == "EXFO,OSICS"){
         EXFO_OSICS_MAINFRAME *device = new EXFO_OSICS_MAINFRAME(instrumentIdentity, instrumentAddress);
         deviceVariant.setValue(device);
     }
@@ -54,7 +54,7 @@ void Orchestrator::slotCreateDevice(QString type, QByteArray instrumentAddress, 
 
     selectedDevices.append(deviceVariant);
 
-    QMainWindow * configWindow = WindowFactory::makeWindow(type, deviceVariant);
+    QMainWindow *configWindow = WindowFactory::makeWindow(type, deviceVariant);
     DefaultInstrument *device = deviceVariant.value<DefaultInstrument*>();
     device->setConfigWindow(configWindow);
 
@@ -62,6 +62,7 @@ void Orchestrator::slotCreateDevice(QString type, QByteArray instrumentAddress, 
                      this, SLOT(slotSendCmdRsp(QByteArray, QByteArray &, QByteArray &)));
     QObject::connect(device, SIGNAL(signalSendCmdNoRsp(QByteArray, QByteArray&)),
                      this, SLOT(slotSendCmdNoRsp(QByteArray, QByteArray &)));
+
     QObject::connect(configWindow, SIGNAL(signalUpdateConfigSettings(QVariant &, QSettings &)),
                      this, SLOT(slotUpdateConfigSettings(QVariant &, QSettings &)));
     QObject::connect(configWindow, SIGNAL(signalApplyConfigSettings(QVariant &, QSettings &)),
@@ -72,10 +73,46 @@ QVariant Orchestrator::getDeviceAtIndex(int index){
     return selectedDevices.at(index);
 }
 
+void Orchestrator::slotGetEXFOModuleQVariants(QList<QVariant> &modules, QList<QByteArray> modTypes, QVariant &device){
+    // #TODO Factory?
+
+    qDebug() << "slotGetEXFOModuleQVariants";
+    DefaultInstrument *deviceFromVariant = device.value<DefaultInstrument*>();
+    QByteArray chassisAddress = deviceFromVariant->getInstrIdentity();
+    QByteArray chassisIdentity = deviceFromVariant->getInstrLocation();
+
+    QVariant moduleVariant;
+    for(int i = 0; i < modTypes.size(); i++){
+        if(modTypes[i].contains("T100")){
+            qDebug() << "t100";
+            EXFO_OSICS_T100 *module = new EXFO_OSICS_T100(chassisIdentity, chassisAddress);
+            moduleVariant.setValue(module);
+            modules.append(moduleVariant);
+        }
+        else if(modTypes[i].contains("ATN")){
+            qDebug() << "atn";
+            EXFO_OSICS_ATN *module = new EXFO_OSICS_ATN(chassisIdentity, chassisAddress);
+            moduleVariant.setValue(module);
+            modules.append(moduleVariant);
+        }
+        else if(modTypes[i].contains("SWT")){
+            qDebug() << "swt";
+            EXFO_OSICS_SWT *module = new EXFO_OSICS_SWT(chassisIdentity, chassisAddress);
+            moduleVariant.setValue(module);
+            modules.append(moduleVariant);
+        }
+        else{
+            // #TODO slot is either empty or module is not supported (error msg)
+        }
+    }
+}
+
 void Orchestrator::slotUpdateConfigSettings(QVariant &deviceVariant, QSettings &configSettings){
     // because QVariant types are <type*> compare result of typeName()[:-1] with enum strings
     QString typeName = QString(deviceVariant.typeName());
     typeName.chop(1);
+
+     qDebug() << "slotupdateconfigsettings()";
 
     if(typeName == "PowerMeter"){
         qDebug() << "QVariant interpreted as PowerMeter";
@@ -94,7 +131,41 @@ void Orchestrator::slotUpdateConfigSettings(QVariant &deviceVariant, QSettings &
         QObject::connect(this, SIGNAL(signalSettingsUpdated()), device->getConfigWindow(), SLOT(slotUpdateWindow()));
         emit signalSettingsUpdated();
     }
-    // continue if/else chain when new devices are added to the system
+    else if(typeName == "EXFO_OSICS_MAINFRAME"){
+        qDebug() << "updatig exfo config";
+        EXFO_OSICS_MAINFRAME* device = deviceVariant.value<EXFO_OSICS_MAINFRAME*>();
+        device->updateConfig(configSettings);
+
+        QObject::connect(this, SIGNAL(signalSettingsUpdated()), device->getConfigWindow(), SLOT(slotUpdateWindow()));
+        emit signalSettingsUpdated();
+    }
+    else if(typeName == "EXFO_OSICS_T100"){
+
+
+        qDebug() << "updating t100";
+        EXFO_OSICS_T100* device = deviceVariant.value<EXFO_OSICS_T100*>();
+        device->updateConfig(configSettings);
+
+        QObject::connect(device, SIGNAL(signalSendCmdRsp(QByteArray, QByteArray&, QByteArray&)),
+                         this, SLOT(slotSendCmdRsp(QByteArray, QByteArray &, QByteArray &)));
+        QObject::connect(device, SIGNAL(signalSendCmdNoRsp(QByteArray, QByteArray&)),
+                         this, SLOT(slotSendCmdNoRsp(QByteArray, QByteArray &)));
+
+        QObject::connect(this, SIGNAL(signalSettingsUpdated()), device->getConfigWindow(), SLOT(slotUpdateWindow()));
+        emit signalSettingsUpdated();
+    }
+    else if(typeName == "EXFO_OSICS_ATN"){
+        qDebug() << "updating atn";
+
+    }
+    else if(typeName == "EXFO_OSICS_SWT"){
+        qDebug() << "updating swt";
+    }
+    else{
+        // #TODO error/exit
+    }
+
+
 }
 
 void Orchestrator::slotApplyConfigSettings(QVariant &deviceVariant, QSettings &configSettings){
@@ -117,6 +188,17 @@ void Orchestrator::slotApplyConfigSettings(QVariant &deviceVariant, QSettings &c
 
         QObject::connect(this, SIGNAL(signalSettingsUpdated()), device->getConfigWindow(), SLOT(slotUpdateWindow()));
         emit signalSettingsUpdated();
+    }
+    else if(typeName == "EXFO_OSICS_MAINFRAME"){
+        qDebug() << "QVariant interpreted as EXFO_OSICS_MAINFRAME";
+        EXFO_OSICS_MAINFRAME* device = deviceVariant.value<EXFO_OSICS_MAINFRAME*>();
+        device->applyConfigSettings(configSettings);
+
+        QObject::connect(this, SIGNAL(signalSettingsUpdated()), device->getConfigWindow(), SLOT(slotUpdateWindow()));
+        emit signalSettingsUpdated();
+    }
+    else{
+        // #TODO error/exit
     }
 }
 

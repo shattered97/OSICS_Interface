@@ -3,7 +3,7 @@
 
 #include "EXFO_OSICS_MAINFRAME.h"
 
-class EXFO_OSICS_SWT :  EXFO_OSICS_MAINFRAME
+class EXFO_OSICS_SWT :  public EXFO_OSICS_MAINFRAME
 {
     Q_OBJECT
 public:

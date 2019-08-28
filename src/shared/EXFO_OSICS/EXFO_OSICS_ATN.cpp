@@ -80,3 +80,6 @@ void EXFO_OSICS_ATN::moduleAttenuationOffsetQuery(int slotNum, QByteArray wavele
 
      emit signalSendCmdRsp(theInstrLoc, baseCmd, response);
 }
+
+
+

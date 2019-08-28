@@ -6,6 +6,9 @@
 #include "N7714A.h"
 #include "KeysightPowerMeter.h"
 #include "EXFO_OSICS/EXFO_OSICS_MAINFRAME.h"
+#include "EXFO_OSICS/EXFO_OSICS_ATN.h"
+#include "EXFO_OSICS/EXFO_OSICS_SWT.h"
+#include "EXFO_OSICS/EXFO_OSICS_T100.h"
 
 #include <QObject>
 
@@ -14,8 +17,9 @@ Q_DECLARE_METATYPE(KeysightPowerMeter*)
 Q_DECLARE_METATYPE(DefaultInstrument*)
 Q_DECLARE_METATYPE(PowerMeter*)
 Q_DECLARE_METATYPE(EXFO_OSICS_MAINFRAME*)
-
-
+Q_DECLARE_METATYPE(EXFO_OSICS_ATN*)
+Q_DECLARE_METATYPE(EXFO_OSICS_SWT*)
+Q_DECLARE_METATYPE(EXFO_OSICS_T100*)
 namespace deviceType
 {
     // #TODO
@@ -38,9 +42,8 @@ public slots:
      * @brief slotLookForDevices - Queries for all connected VISA devices. Signals back to the sender a list of found resources.
      */
     void slotLookForDevices();
-//    void slotCreateN7714ADevice(QString type, QByteArray instrumentAddress, QByteArray instrumentIdentity);
-//    void slotCreateN7745ADevice(QString type, QByteArray instrumentAddress, QByteArray instrumentIdentity);
     void slotCreateDevice(QString type, QByteArray instrumentAddress, QByteArray instrumentIdentity);
+    void slotGetEXFOModuleQVariants(QList<QVariant> &modules, QList<QByteArray> moduleTypes, QVariant &device);
 
 signals:
     void signalReturnDevicesFound(FoundInstr);

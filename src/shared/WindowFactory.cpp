@@ -15,12 +15,12 @@ QMainWindow *WindowFactory::makeWindow(QString windowType, QVariant &deviceVaria
         QMainWindow * window = new ConfigN7714AWindow(deviceVariant);
         return window;
     }
-    else if(windowType.contains("EXFO OSICS")){
+    else if(windowType.contains("EXFO,OSICS")){
         QMainWindow *window = new OSICSMainframeSetupWindow(deviceVariant);
         return window;
     }
     else{
-        // display error message, exit?
+        // #TODO error/exit
         return nullptr;
     }
 }

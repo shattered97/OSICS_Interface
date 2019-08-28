@@ -186,6 +186,7 @@ void EXFO_OSICS_MAINFRAME::refWavelengthModuleQuery(int slotNum, QByteArray &res
     insertSlotNum(baseCmd, slotNum);
 
     emit signalSendCmdRsp(theInstrLoc, baseCmd, response);
+    qDebug() << "response" << response;
 }
 
 // ******** Module System-Version Info ********
@@ -395,7 +396,45 @@ void EXFO_OSICS_MAINFRAME::appendParamToCmdNoSpace(QByteArray &command, QByteArr
 }
 
 void EXFO_OSICS_MAINFRAME::insertSlotNum(QByteArray &command, int slotNum){
-    QByteArray convertedSlotNum;
-    convertedSlotNum.setNum(slotNum);
-    command.insert(command.indexOf('#'), convertedSlotNum);
+    int index = command.indexOf('#');
+    command.remove(index, 1);
+    command.insert(index, QByteArray::number(slotNum));
 }
+
+// *********** Functions for Applying/Updating Config Settings **********
+
+void EXFO_OSICS_MAINFRAME::applyConfigSettings(QSettings &configSettings){
+    // # TODO mainframe won't have many config settings (if any) so apply
+    // settings to modules
+    qDebug() << "applyConfigSettings() in EXFO_OSICS_MAINFRAME";
+}
+
+void EXFO_OSICS_MAINFRAME::updateConfig(QSettings &configSettings){
+    qDebug() << "updateConfigSettings()";
+
+    configSettings.setValue(DEVICE_LOCATION, QVariant::fromValue(theInstrLoc));
+    configSettings.setValue(DEVICE_IDENTITY, QVariant::fromValue(theIdentity));
+
+    updateInstalledModules(configSettings);
+}
+
+void EXFO_OSICS_MAINFRAME::updateInstalledModules(QSettings &configSettings){
+    QList<QByteArray> moduleTypes;
+    for(int i = 0; i < EXFO_OSICS_NUM_SLOTS; i++){
+        QByteArray present;
+        moduleTypeAtSlotQuery(i + 1, present);
+        if(present.toInt() == -1){
+            moduleTypes.append("EMPTY");
+        }
+        else{
+            QByteArray moduleType;
+            typeOfModuleQuery(i + 1, moduleType);
+            moduleTypes.append(moduleType.split(':')[1]);
+        }
+    }
+
+    configSettings.setValue(EXFO_OSICS_MODULE_NAMES, QVariant::fromValue(moduleTypes));
+    qDebug() << configSettings.value(EXFO_OSICS_MODULE_NAMES).value<QList<QByteArray>>();
+}
+
+

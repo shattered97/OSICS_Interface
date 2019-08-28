@@ -105,7 +105,7 @@ void EXFO_OSICS_T100::setSecondCalibrationPowerCmd(int slotNum, QByteArray &powe
 void EXFO_OSICS_T100::firstCalibrationPowerQuery(int slotNum, QByteArray &response){
     QByteArray baseCmd = "CH#:PCAL1?\n";
     insertSlotNum(baseCmd, slotNum);
-
+    qDebug() << "emitting signal";
     emit signalSendCmdRsp(theInstrLoc, baseCmd, response);
 }
 
@@ -134,4 +134,60 @@ void EXFO_OSICS_T100::outBNCPortSignalMonitoringQuery(int slotNum, QByteArray &r
     insertSlotNum(baseCmd, slotNum);
 
     emit signalSendCmdRsp(theInstrLoc, baseCmd, response);
+}
+
+
+void EXFO_OSICS_T100::applyConfigSettings(QSettings &configSettings){
+    qDebug() << "t100 applyConfigSettings()";
+}
+
+void EXFO_OSICS_T100::updateConfig(QSettings &configSettings){
+    qDebug() << "t100 updateConfig()";
+
+    // test some commands
+    QByteArray minPower;
+    QByteArray maxPower;
+    firstCalibrationPowerQuery(1, minPower);
+    qDebug() << minPower;
+    secondCalibrationPowerQuery(1, maxPower);
+    qDebug() << maxPower;
+
+
+}
+
+void EXFO_OSICS_T100::updatePowerSettings(QSettings &configSettings){
+    // query device for power values
+
+    QByteArray power;
+    QByteArray minPower;
+    QByteArray maxPower;
+    QByteArray laserState;
+
+    outputPowerModuleQuery(1, power);
+    qDebug() << power;
+    firstCalibrationPowerQuery(1, minPower);
+    qDebug() << minPower;
+    secondCalibrationPowerQuery(1, maxPower);
+    qDebug() << maxPower;
+    laserStateModuleQuery(1, laserState);
+    qDebug() << laserState;
+
+//    // save to config
+//    configSettings.setValue(N7714A_POWER_SETTINGS, QVariant::fromValue(powerSettings));
+//    qDebug() << configSettings.value(N7714A_POWER_SETTINGS).value<QList<QByteArray>>();
+//    configSettings.setValue(N7714A_MIN_POWER, QVariant::fromValue(minPowerSettings));
+//    qDebug() << configSettings.value(N7714A_MIN_POWER).value<QList<QByteArray>>();
+//    configSettings.setValue(N7714A_MAX_POWER, QVariant::fromValue(maxPowerSettings));
+//    qDebug() << configSettings.value(N7714A_MAX_POWER).value<QList<QByteArray>>();
+//    configSettings.setValue(N7714A_LASER_STATE, QVariant::fromValue(laserStates));
+//    qDebug() << configSettings.value(N7714A_LASER_STATE).value<QList<QByteArray>>();
+//    configSettings.sync();
+}
+
+void EXFO_OSICS_T100::updateWavelengthSettings(QSettings &configSettings){
+
+}
+
+void EXFO_OSICS_T100::updateFrequencySettings(QSettings &configSettings){
+
 }

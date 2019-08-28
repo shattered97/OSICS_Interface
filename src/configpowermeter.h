@@ -70,7 +70,7 @@ private:
     void initMinWavelengths();
     void initMaxWavelengths();
     void initChannelRadioButtons();
-    void populateAllValues();
+
 
     void populatePowerUnit();
     void populatePower();
@@ -81,6 +81,7 @@ private:
 
     bool saveSettings();
     bool loadSettings();
+    void populateAllValues();
     void getValuesFromConfig();
     void showEvent(QShowEvent* event);
     void convertAndDisplayWavelength(QList<QByteArray> wavelength, QLineEdit* displayField);
