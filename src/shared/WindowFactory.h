@@ -5,6 +5,9 @@
 #include "configpowermeter.h"
 #include "confign7714awindow.h"
 #include "OSICSMainframeSetupWindow.h"
+#include "ConfigOSICS_ATN.h"
+#include "ConfigOSICS_SWT.h"
+#include "ConfigOSICS_T100.h"
 
 
 class WindowFactory : public QObject

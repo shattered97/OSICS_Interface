@@ -2,6 +2,8 @@
 
 EXFO_OSICS_ATN::EXFO_OSICS_ATN(QByteArray theIdentity, QByteArray theInstrLoc) : EXFO_OSICS_MAINFRAME(theIdentity, theInstrLoc)
 {
+    this->theIdentity = theIdentity;
+    this->theInstrLoc = theInstrLoc;
 }
 
 void EXFO_OSICS_ATN::setModuleAttenuationCmd(int slotNum, QByteArray &attenuation){

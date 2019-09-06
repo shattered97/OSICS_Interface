@@ -12,7 +12,7 @@ class ConfigOSICS_SWT : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit ConfigOSICS_SWT(QWidget *parent = nullptr);
+    explicit ConfigOSICS_SWT(QVariant &device, QWidget *parent = nullptr);
     ~ConfigOSICS_SWT();
 
 private:

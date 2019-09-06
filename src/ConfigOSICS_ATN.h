@@ -12,7 +12,7 @@ class ConfigOSICS_ATN : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit ConfigOSICS_ATN(QWidget *parent = nullptr);
+    explicit ConfigOSICS_ATN(QVariant &device, QWidget *parent = nullptr);
     ~ConfigOSICS_ATN();
 
 private:

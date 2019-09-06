@@ -150,6 +150,7 @@ ViStatus VisaInterface::openInstrSession(ViSession &defaultSession, QByteArray i
    ViStatus status = viOpen(defaultSession, instrAddr, VI_NULL, VI_NULL, &instrSess);
    if(status < VI_SUCCESS){
        logger->logEntry(QString("Failed to open session on instrument"), __LINE__);
+       qDebug() << "instr address: " << instrAddr;
    }
    else{
        logger->logEntry(QString("Opened session to: %1").arg(QString::fromLatin1(instrAddr)), __LINE__);

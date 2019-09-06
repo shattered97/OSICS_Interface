@@ -21,27 +21,14 @@ public:
 signals:
     void signalUpdateConfigSettings(QVariant &device, QSettings &configSettings);
     void signalApplyConfigSettings(QVariant &device, QSettings &configSettings);
-    void signalGetEXFOModuleQVariants(QList<QVariant> &modules, QList<QByteArray> moduleTypes, QVariant &device);
+    void signalGetEXFOModuleQVariants(QList<ModuleConfigPair> &modules, QList<QByteArray> moduleTypes, QVariant &device);
 
 public slots:
     void slotUpdateWindow();
 
+
 private slots:
-    void on_configSlot1Btn_clicked();
-
-    void on_configSlot2Btn_clicked();
-
-    void on_configSlot3Btn_clicked();
-
-    void on_configSlot4Btn_clicked();
-
-    void on_configSlot5Btn_clicked();
-
-    void on_configSlot6Btn_clicked();
-
-    void on_configSlot7Btn_clicked();
-
-    void on_configSlot8Btn_clicked();
+    void on_configButton_clicked(int index);
 
 private:
     Ui::OSICSMainframeSetupWindow *ui;
@@ -55,7 +42,7 @@ private:
     QByteArray deviceIdentity;
     QByteArray deviceLocation;
     QList<QByteArray> moduleNames;
-    QList<QVariant> modules;
+    QList<ModuleConfigPair> modules;
 
     void populateAllValues();
     void getValuesFromConfig();

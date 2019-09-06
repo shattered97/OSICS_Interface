@@ -476,6 +476,10 @@ private:
 
     // the physical address of the instrument
     QByteArray theInstrLoc;
+
+    // list of modules installed in chassis
+    QList<QVariant> modules;
+
 };
 
 #endif // EXFO_OSICS_MAINFRAME_H

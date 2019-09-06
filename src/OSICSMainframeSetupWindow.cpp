@@ -8,6 +8,8 @@ OSICSMainframeSetupWindow::OSICSMainframeSetupWindow(QVariant &device, QWidget *
     ui->setupUi(this);
     this->device = device;
 
+    // connect button group
+    QObject::connect(ui->configureButtonGroup, SIGNAL(buttonClicked(int)), this, SLOT(on_configButton_clicked(int)));
 }
 
 OSICSMainframeSetupWindow::~OSICSMainframeSetupWindow()
@@ -28,9 +30,10 @@ void OSICSMainframeSetupWindow::showEvent( QShowEvent* event )
 
 
 void OSICSMainframeSetupWindow::slotUpdateWindow(){
+
     // connect slot to create module classes/windows
-    QObject::connect(this, SIGNAL(signalGetEXFOModuleQVariants(QList<QVariant>&, QList<QByteArray>, QVariant&)),
-                     QObject::sender(), SLOT(slotGetEXFOModuleQVariants(QList<QVariant>&, QList<QByteArray>, QVariant&)));
+    QObject::connect(this, SIGNAL(signalGetEXFOModuleQVariants(QList<ModuleConfigPair>&, QList<QByteArray>, QVariant&)),
+                     QObject::sender(), SLOT(slotGetEXFOModuleQVariants(QList<ModuleConfigPair>&, QList<QByteArray>, QVariant&)));
 
     // store values from settings
     getValuesFromConfig();
@@ -83,6 +86,7 @@ void OSICSMainframeSetupWindow::populateIdentityAndLoc(){
 }
 
 void OSICSMainframeSetupWindow::populateModuleNames(){
+
     numInstalledModules = 0;
     for(int i = 0; i < EXFO_OSICS_NUM_SLOTS; i++){
         QLabel *label = new QLabel();
@@ -92,49 +96,26 @@ void OSICSMainframeSetupWindow::populateModuleNames(){
         if(moduleNames[i] != "EMPTY"){
             numInstalledModules++;
         }
+        else{
+            // disable config button
+            int index = i * -1 - 2;
+            ui->configureButtonGroup->button(index)->setEnabled(false);
+        }
     }
     qDebug() << "num installed" << numInstalledModules;
 }
 
-void OSICSMainframeSetupWindow::on_configSlot1Btn_clicked()
-{
-    QVariant module = modules[0];
+
+void OSICSMainframeSetupWindow::on_configButton_clicked(int index){
+    // QButton groups start at index -2 and decrease by 1
+    index = index * -1 - 2;
+    qDebug() << index;
+
+    QVariant module = modules[index].first;
+
+    // update settings for the module
     emit signalUpdateConfigSettings(module, *settings);
+
+    modules[index].second->show();
 }
-
-void OSICSMainframeSetupWindow::on_configSlot2Btn_clicked()
-{
-
-}
-
-void OSICSMainframeSetupWindow::on_configSlot3Btn_clicked()
-{
-
-}
-
-void OSICSMainframeSetupWindow::on_configSlot4Btn_clicked()
-{
-
-}
-
-void OSICSMainframeSetupWindow::on_configSlot5Btn_clicked()
-{
-
-}
-
-void OSICSMainframeSetupWindow::on_configSlot6Btn_clicked()
-{
-
-}
-
-void OSICSMainframeSetupWindow::on_configSlot7Btn_clicked()
-{
-
-}
-
-void OSICSMainframeSetupWindow::on_configSlot8Btn_clicked()
-{
-
-}
-
 

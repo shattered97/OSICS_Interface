@@ -2,7 +2,8 @@
 
 EXFO_OSICS_SWT::EXFO_OSICS_SWT(QByteArray theIdentity, QByteArray theInstrLoc) : EXFO_OSICS_MAINFRAME(theIdentity, theInstrLoc)
 {
-
+    this->theIdentity = theIdentity;
+    this->theInstrLoc = theInstrLoc;
 }
 
 void EXFO_OSICS_SWT::setAPCModuleOperatingMode(int slotNum, QByteArray &mode){

@@ -12,7 +12,7 @@ class ConfigOSICS_T100 : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit ConfigOSICS_T100(QWidget *parent = nullptr);
+    explicit ConfigOSICS_T100(QVariant &device, QWidget *parent = nullptr);
     ~ConfigOSICS_T100();
 
 private:

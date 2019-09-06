@@ -168,7 +168,6 @@ private:
     // the physical address of the instrument
     QByteArray theInstrLoc;
 
-
     void updatePowerSettings(QSettings &configSettings);
     void updateWavelengthSettings(QSettings &configSettings);
     void updateFrequencySettings(QSettings &configSettings);

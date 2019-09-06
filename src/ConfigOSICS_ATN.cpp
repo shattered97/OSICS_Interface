@@ -1,7 +1,7 @@
 #include "ConfigOSICS_ATN.h"
 #include "ui_ConfigOSICS_ATN.h"
 
-ConfigOSICS_ATN::ConfigOSICS_ATN(QWidget *parent) :
+ConfigOSICS_ATN::ConfigOSICS_ATN(QVariant &device, QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::ConfigOSICS_ATN)
 {

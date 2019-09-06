@@ -9,7 +9,6 @@
 #include "EXFO_OSICS/EXFO_OSICS_ATN.h"
 #include "EXFO_OSICS/EXFO_OSICS_SWT.h"
 #include "EXFO_OSICS/EXFO_OSICS_T100.h"
-
 #include <QObject>
 
 Q_DECLARE_METATYPE(N7714A*)
@@ -17,9 +16,7 @@ Q_DECLARE_METATYPE(KeysightPowerMeter*)
 Q_DECLARE_METATYPE(DefaultInstrument*)
 Q_DECLARE_METATYPE(PowerMeter*)
 Q_DECLARE_METATYPE(EXFO_OSICS_MAINFRAME*)
-Q_DECLARE_METATYPE(EXFO_OSICS_ATN*)
-Q_DECLARE_METATYPE(EXFO_OSICS_SWT*)
-Q_DECLARE_METATYPE(EXFO_OSICS_T100*)
+
 namespace deviceType
 {
     // #TODO
@@ -43,7 +40,7 @@ public slots:
      */
     void slotLookForDevices();
     void slotCreateDevice(QString type, QByteArray instrumentAddress, QByteArray instrumentIdentity);
-    void slotGetEXFOModuleQVariants(QList<QVariant> &modules, QList<QByteArray> moduleTypes, QVariant &device);
+    void slotGetEXFOModuleQVariants(QList<ModuleConfigPair> &modules, QList<QByteArray> moduleTypes, QVariant &device);
 
 signals:
     void signalReturnDevicesFound(FoundInstr);

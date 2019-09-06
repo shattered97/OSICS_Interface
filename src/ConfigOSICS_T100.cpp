@@ -1,7 +1,7 @@
 #include "ConfigOSICS_T100.h"
 #include "ui_ConfigOSICS_T100.h"
 
-ConfigOSICS_T100::ConfigOSICS_T100(QWidget *parent) :
+ConfigOSICS_T100::ConfigOSICS_T100(QVariant &device, QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::ConfigOSICS_T100)
 {

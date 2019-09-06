@@ -3,6 +3,7 @@
 
 #include <QDir>
 #include <QMap>
+#include <QMainWindow>
 
 //QPair<Instrument Address, Instrument Identity>
 typedef QPair<QByteArray, QByteArray> InstrData;
@@ -18,6 +19,9 @@ typedef QPair<QByteArray, QByteArray> PowerReading;
 
 //QMap<Instrument Data, Power reading and channel>
 typedef QMap<InstrData, PowerReading> PowerReadingData;
+
+// QPair<module variant, configWindow>
+typedef QPair<QVariant, QMainWindow*> ModuleConfigPair;
 
 //Logging Constansts
 const QString LOG_FILE_PATH  = QDir::currentPath();  //Same dir as exe
@@ -133,6 +137,19 @@ const QByteArray N7714A_MAX_FREQUENCY = "N7714A Max Frequency";
 // QSettings Key Values - EXFO OSICS MAINFRAME
 const QByteArray EXFO_OSICS_MODULE_NAMES = "EXFO OSICS Module Names";
 
+// QSettings Key Values - EXFO OSICS T100
+const QByteArray EXFO_OSICS_T100_POWER = "EXFO OSICS T100 Power Setting";
+const QByteArray EXFO_OSICS_T100_MIN_POWER = "EXFO OSICS T100 Min Power";
+const QByteArray EXFO_OSICS_T100_MAX_POWER = "EXFO OSICS T100 Max Power";
+const QByteArray EXFO_OSICS_T100_LASER_STATE = "EXFO OSICS T100 Laser State";
+
+const QByteArray EXFO_OSICS_T100_WAVELENGTH = "EXFO OSICS T100 Wavelength Setting";
+const QByteArray EXFO_OSICS_T100_MIN_WAVELENGTH = "EXFO OSICS T100 Min Wavelength";
+const QByteArray EXFO_OSICS_T100_MAX_WAVELENGTH = "EXFO OSICS T100 Max Wavelength";
+
+const QByteArray EXFO_OSICS_T100_FREQUENCY = "EXFO OSICS T100 Frequency Setting";
+const QByteArray EXFO_OSICS_T100_MIN_FREQUENCY = "EXFO OSICS T100 Min Frequency";
+const QByteArray EXFO_OSICS_T100_MAX_FREQUENCY = "EXFO OSICS T100 Max Frequency";
 
 // Math Constants
 const double SPEED_OF_LIGHT = 299792458;
