@@ -19,6 +19,7 @@ QMainWindow *WindowFactory::makeWindow(QString windowType, QVariant &deviceVaria
         window = new OSICSMainframeSetupWindow(deviceVariant);
     }
     else if(windowType.contains("T100")){
+        qDebug() << "t100 window created";
         window = new ConfigOSICS_T100(deviceVariant);
     }
     else if(windowType.contains("ATN")){

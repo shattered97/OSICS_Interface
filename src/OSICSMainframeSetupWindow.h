@@ -18,6 +18,7 @@ public:
     explicit OSICSMainframeSetupWindow(QVariant &device, QWidget *parent = 0);
     ~OSICSMainframeSetupWindow();
 
+
 signals:
     void signalUpdateConfigSettings(QVariant &device, QSettings &configSettings);
     void signalApplyConfigSettings(QVariant &device, QSettings &configSettings);
@@ -25,7 +26,8 @@ signals:
 
 public slots:
     void slotUpdateWindow();
-
+    void slotForwardApplyConfigSettings(QVariant &deviceVariant, QSettings &configSettings);
+    void slotForwardUpdateConfigSettings(QVariant &deviceVariant, QSettings &configSettings);
 
 private slots:
     void on_configButton_clicked(int index);

@@ -146,15 +146,9 @@ void EXFO_OSICS_T100::applyConfigSettings(QSettings &configSettings){
 void EXFO_OSICS_T100::updateConfig(QSettings &configSettings){
     qDebug() << "t100 updateConfig() " << theInstrLoc;
 
-    // test some commands
-    QByteArray minPower;
-    QByteArray maxPower;
-    firstCalibrationPowerQuery(1, minPower);
-    qDebug() << "min power " << minPower;
-    secondCalibrationPowerQuery(1, maxPower);
-    qDebug() << "max power " << maxPower;
-
-
+    updatePowerSettings(configSettings);
+    updateWavelengthSettings(configSettings);
+    updateFrequencySettings(configSettings);
 }
 
 void EXFO_OSICS_T100::updatePowerSettings(QSettings &configSettings){
@@ -169,17 +163,28 @@ void EXFO_OSICS_T100::updatePowerSettings(QSettings &configSettings){
     secondCalibrationPowerQuery(1, maxPower);
     laserStateModuleQuery(1, laserState);
 
+    // parse returned
+    power = power.split(':')[1].trimmed();
+    if(power != "Disabled"){
+        power = power.split('=')[1];
+    }
+
+    minPower = minPower.split('=')[1];
+    maxPower = maxPower.split('=')[1];
+    laserState = laserState.split(':')[1];
+
     // save to config
     configSettings.setValue(EXFO_OSICS_T100_POWER, QVariant::fromValue(power));
     configSettings.setValue(EXFO_OSICS_T100_MIN_POWER, QVariant::fromValue(minPower));
     configSettings.setValue(EXFO_OSICS_T100_MAX_POWER, QVariant::fromValue(maxPower));
     configSettings.setValue(EXFO_OSICS_T100_LASER_STATE, QVariant::fromValue(laserState));
 
-    qDebug() << configSettings.value(EXFO_OSICS_T100_POWER).value<QList<QByteArray>>();
-    qDebug() << configSettings.value(EXFO_OSICS_T100_MIN_POWER).value<QList<QByteArray>>();
-    qDebug() << configSettings.value(EXFO_OSICS_T100_MAX_POWER).value<QList<QByteArray>>();
-    qDebug() << configSettings.value(EXFO_OSICS_T100_LASER_STATE).value<QList<QByteArray>>();
-
+    qDebug() << "*******************************************************************";
+    qDebug() << configSettings.value(EXFO_OSICS_T100_POWER).value<QByteArray>();
+    qDebug() << configSettings.value(EXFO_OSICS_T100_MIN_POWER).value<QByteArray>();
+    qDebug() << configSettings.value(EXFO_OSICS_T100_MAX_POWER).value<QByteArray>();
+    qDebug() << configSettings.value(EXFO_OSICS_T100_LASER_STATE).value<QByteArray>();
+    qDebug() << "*******************************************************************";
     configSettings.sync();
 }
 
@@ -192,13 +197,21 @@ void EXFO_OSICS_T100::updateWavelengthSettings(QSettings &configSettings){
     firstCalibrationWavelengthQuery(1, minWavelength);
     secondCalibrationWavelengthQuery(1, maxWavelength);
 
+    // parse returned strings
+    wavelength = wavelength.split('=')[1];
+    minWavelength = minWavelength.split('=')[1];
+    maxWavelength = maxWavelength.split('=')[1];
+
     configSettings.setValue(EXFO_OSICS_T100_WAVELENGTH, QVariant::fromValue(wavelength));
     configSettings.setValue(EXFO_OSICS_T100_MIN_WAVELENGTH, QVariant::fromValue(minWavelength));
     configSettings.setValue(EXFO_OSICS_T100_MAX_WAVELENGTH, QVariant::fromValue(minWavelength));
 
-    qDebug() << configSettings.value(EXFO_OSICS_T100_WAVELENGTH).value<QList<QByteArray>>();
-    qDebug() << configSettings.value(EXFO_OSICS_T100_MIN_WAVELENGTH).value<QList<QByteArray>>();
-    qDebug() << configSettings.value(EXFO_OSICS_T100_MAX_WAVELENGTH).value<QList<QByteArray>>();
+    qDebug() << "*******************************************************************";
+    qDebug() << configSettings.value(EXFO_OSICS_T100_WAVELENGTH).value<QByteArray>();
+    qDebug() << configSettings.value(EXFO_OSICS_T100_MIN_WAVELENGTH).value<QByteArray>();
+    qDebug() << configSettings.value(EXFO_OSICS_T100_MAX_WAVELENGTH).value<QByteArray>();
+    qDebug() << "*******************************************************************";
+    configSettings.sync();
 }
 
 void EXFO_OSICS_T100::updateFrequencySettings(QSettings &configSettings){
@@ -207,13 +220,21 @@ void EXFO_OSICS_T100::updateFrequencySettings(QSettings &configSettings){
     QByteArray maxFrequency;
 
     frequencyModuleQuery(1, frequency);
+    // #TODO how to handle min/max values with no queries?
+    minFrequency = "0";
+    maxFrequency = "0";
+
+    // parse returned strings
+    frequency = frequency.split('=')[1];
 
     configSettings.setValue(EXFO_OSICS_T100_FREQUENCY, QVariant::fromValue(frequency));
     configSettings.setValue(EXFO_OSICS_T100_MIN_FREQUENCY, QVariant::fromValue(minFrequency));
     configSettings.setValue(EXFO_OSICS_T100_MAX_FREQUENCY, QVariant::fromValue(maxFrequency));
 
-    qDebug() << configSettings.value(EXFO_OSICS_T100_FREQUENCY).value<QList<QByteArray>>();
-    qDebug() << configSettings.value(EXFO_OSICS_T100_MIN_FREQUENCY).value<QList<QByteArray>>();
-    qDebug() << configSettings.value(EXFO_OSICS_T100_MAX_FREQUENCY).value<QList<QByteArray>>();
-
+    qDebug() << "*******************************************************************";
+    qDebug() << configSettings.value(EXFO_OSICS_T100_FREQUENCY).value<QByteArray>();
+    qDebug() << configSettings.value(EXFO_OSICS_T100_MIN_FREQUENCY).value<QByteArray>();
+    qDebug() << configSettings.value(EXFO_OSICS_T100_MAX_FREQUENCY).value<QByteArray>();
+    qDebug() << "*******************************************************************";
+    configSettings.sync();
 }

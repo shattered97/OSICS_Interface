@@ -32,6 +32,7 @@ public:
     ~Orchestrator();
 
     QVariant getDeviceAtIndex(int index);
+    void characterizeT100Power();
 
 public slots:
 

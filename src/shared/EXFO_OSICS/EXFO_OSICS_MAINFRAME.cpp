@@ -401,6 +401,8 @@ void EXFO_OSICS_MAINFRAME::insertSlotNum(QByteArray &command, int slotNum){
     command.insert(index, QByteArray::number(slotNum));
 }
 
+
+
 // *********** Functions for Applying/Updating Config Settings **********
 
 void EXFO_OSICS_MAINFRAME::applyConfigSettings(QSettings &configSettings){

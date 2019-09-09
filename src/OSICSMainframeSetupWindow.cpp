@@ -113,9 +113,27 @@ void OSICSMainframeSetupWindow::on_configButton_clicked(int index){
 
     QVariant module = modules[index].first;
 
-    // update settings for the module
+    // update settings (for mainframe, if any)
     emit signalUpdateConfigSettings(module, *settings);
 
+    // connect the window to be shown with a slot that forwards apply/update
+    // config settings to orchestrator
+
+    QObject::connect(modules[index].second, SIGNAL(signalApplyConfigSettings(QVariant &, QSettings &)),
+                     this, SLOT(slotForwardApplyConfigSettings(QVariant &, QSettings &)));
+
+    QObject::connect(modules[index].second, SIGNAL(signalUpdateConfigSettings(QVariant &, QSettings &)),
+                     this, SLOT(slotForwardUpdateConfigSettings(QVariant &, QSettings &)));
+
     modules[index].second->show();
+}
+
+
+void OSICSMainframeSetupWindow::slotForwardApplyConfigSettings(QVariant &deviceVariant, QSettings &configSettings){
+    emit signalApplyConfigSettings(deviceVariant, *settings);
+}
+
+void OSICSMainframeSetupWindow::slotForwardUpdateConfigSettings(QVariant &deviceVariant, QSettings &configSettings){
+    emit signalUpdateConfigSettings(deviceVariant, *settings);
 }
 

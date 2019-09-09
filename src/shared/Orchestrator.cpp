@@ -1,6 +1,7 @@
 #include "Orchestrator.h"
 #include "PowerMeterFactory.h"
 #include "WindowFactory.h"
+#include "ConversionUtilities.h"
 
 Orchestrator::Orchestrator()
 {
@@ -84,6 +85,7 @@ void Orchestrator::slotGetEXFOModuleQVariants(QList<ModuleConfigPair> &modules, 
     QVariant moduleVariant;
     for(int i = 0; i < modTypes.size(); i++){
         if(modTypes[i].contains("T100")){
+            qDebug() << "t100 module";
             EXFO_OSICS_T100 *module = new EXFO_OSICS_T100(chassisIdentity, chassisAddress);
             moduleVariant.setValue(module);
         }
@@ -99,9 +101,12 @@ void Orchestrator::slotGetEXFOModuleQVariants(QList<ModuleConfigPair> &modules, 
             // #TODO slot is either empty or module is not supported (error msg)
         }
 
+
+
         // create window
         QMainWindow *configWindow = WindowFactory::makeWindow(modTypes[i], moduleVariant);
         DefaultInstrument *module = moduleVariant.value<DefaultInstrument*>();
+
         QObject::connect(module, SIGNAL(signalSendCmdRsp(QByteArray, QByteArray&, QByteArray&)),
                          this, SLOT(slotSendCmdRsp(QByteArray, QByteArray &, QByteArray &)));
         QObject::connect(module, SIGNAL(signalSendCmdNoRsp(QByteArray, QByteArray&)),
@@ -114,6 +119,7 @@ void Orchestrator::slotGetEXFOModuleQVariants(QList<ModuleConfigPair> &modules, 
         modConfigPair.second = configWindow;
         modules.append(modConfigPair);
     }
+
 }
 
 void Orchestrator::slotUpdateConfigSettings(QVariant &deviceVariant, QSettings &configSettings){
@@ -153,9 +159,8 @@ void Orchestrator::slotUpdateConfigSettings(QVariant &deviceVariant, QSettings &
         EXFO_OSICS_T100* device = deviceVariant.value<EXFO_OSICS_T100*>();
         device->updateConfig(configSettings);
 
-
-//        QObject::connect(this, SIGNAL(signalSettingsUpdated()), device->getConfigWindow(), SLOT(slotUpdateWindow()));
-//        emit signalSettingsUpdated();
+        QObject::connect(this, SIGNAL(signalSettingsUpdated()), device->getConfigWindow(), SLOT(slotUpdateWindow()));
+        emit signalSettingsUpdated();
     }
     else if(typeName == "EXFO_OSICS_ATN"){
         qDebug() << "updating atn";
@@ -200,6 +205,7 @@ void Orchestrator::slotApplyConfigSettings(QVariant &deviceVariant, QSettings &c
         emit signalSettingsUpdated();
     }
     else{
+        qDebug() << "device not recognized in slotApplyConfigSettings()";
         // #TODO error/exit
     }
 }
@@ -304,3 +310,164 @@ bool Orchestrator::checkOperationComplete(ViSession instrSession, QByteArray ins
     }
     return complete;
 }
+
+QByteArray testPMPowerReading(KeysightPowerMeter *powerMeter, int slotNum){
+    QByteArray power;
+    powerMeter->measurePower(1, power);
+    double powerDouble = power.split('\n')[0].toDouble();
+    powerDouble = ConversionUtilities::convertWattToDBm(powerDouble);
+    return QByteArray::number(powerDouble);
+}
+
+QByteArray testPMWavelengthReading(KeysightPowerMeter *powerMeter, int slotNum){
+    QByteArray pmWavelength;
+    powerMeter->queryWavelength(1, pmWavelength);
+    double pmWavDouble = pmWavelength.split('\n')[0].toDouble();
+    pmWavDouble = ConversionUtilities::convertWavelengthFromMeter(pmWavDouble, "nm");
+    return QByteArray::number(pmWavDouble);
+}
+
+void testSetPMWavelength(KeysightPowerMeter *powerMeter, int slotNum, QByteArray wavelength, QByteArray unit){
+    qDebug() << "setting wavelength on power meter to: " << wavelength;
+    QByteArray wavUnit = "nm";
+    powerMeter->setWavelength(1, wavelength, unit);
+}
+
+QByteArray testT100GetWavelength(EXFO_OSICS_T100 *t100, int slotNum){
+    QByteArray wavelength;
+    t100->refWavelengthModuleQuery(1, wavelength);
+    double wavDouble = wavelength.split('=')[1].toDouble();
+    return QByteArray::number(wavDouble);
+}
+
+void testSetT100Wavelength(EXFO_OSICS_T100 *t100, int slotNum, QByteArray wavelength){
+    qDebug() << "setting wavelength on t100 to: " << wavelength;
+    t100->setRefWavelengthModuleCmd(slotNum, wavelength);
+}
+
+void testSetT100Power(EXFO_OSICS_T100 *t100, int slotNum, QByteArray power){
+    qDebug() << "setting power on t100 to: " << power;
+    t100->setModuleOutputPowerCmd(1, power);
+}
+
+QByteArray testT100OutputPower(EXFO_OSICS_T100 *t100, int slotNum){
+    QByteArray power;
+    t100->outputPowerModuleQuery(1, power);
+    double powerDouble = power.split('=')[1].toDouble();
+    return QByteArray::number(powerDouble);
+}
+
+void Orchestrator::characterizeT100Power(){
+    qDebug() << selectedDevices.size();
+    QVariant powerMeterVariant = selectedDevices[0];
+    QVariant exfoVariant = selectedDevices[1];
+
+    KeysightPowerMeter *n7745a = powerMeterVariant.value<KeysightPowerMeter*>();
+    QObject::connect(n7745a, SIGNAL(signalSendCmdRsp(QByteArray, QByteArray&, QByteArray&)),
+                     this, SLOT(slotSendCmdRsp(QByteArray, QByteArray &, QByteArray &)));
+    QObject::connect(n7745a, SIGNAL(signalSendCmdNoRsp(QByteArray, QByteArray&)),
+                     this, SLOT(slotSendCmdNoRsp(QByteArray, QByteArray &)));
+
+    EXFO_OSICS_MAINFRAME *exfo = exfoVariant.value<EXFO_OSICS_MAINFRAME*>();
+    EXFO_OSICS_T100 *t100 = new EXFO_OSICS_T100(exfo->getInstrIdentity(), exfo->getInstrLocation());
+
+    QObject::connect(t100, SIGNAL(signalSendCmdRsp(QByteArray, QByteArray&, QByteArray&)),
+                     this, SLOT(slotSendCmdRsp(QByteArray, QByteArray &, QByteArray &)));
+    QObject::connect(t100, SIGNAL(signalSendCmdNoRsp(QByteArray, QByteArray&)),
+                     this, SLOT(slotSendCmdNoRsp(QByteArray, QByteArray &)));
+
+    // init output file
+    QString filename = "t100_1310_power_wav_cycle.csv";
+    QFile file(filename);
+    file.open(QIODevice::ReadWrite);
+    QTextStream stream(&file);
+    stream << "T100 Wavelength,Desired T100 Output Power,T100 Output Power,Power Meter Wavelength,Power Meter Reading" << endl;
+
+    double startPower = -6.9;
+    double endPower = 5;
+    double powerStep = 0.5;
+
+    double startWavelength = 1260;
+    double endWavelength = 1280;
+    double wavelengthStep = 10;
+
+    int waitTimeSeconds = 0;
+
+    //enable laser
+    t100->enableModuleLaserCmd(1);
+
+    // get wavelength from exfo t100
+    QByteArray wavelength = testT100GetWavelength(t100, 1);
+    qDebug() << wavelength;
+
+    // get wavelength from power meter
+    qDebug() << testPMWavelengthReading(n7745a, 1);
+
+    // set wavelength on power meter
+    testSetPMWavelength(n7745a, 1, wavelength, "nm");
+
+    // check if wavelength was accepted
+    qDebug() << testPMWavelengthReading(n7745a, 1);
+
+    // test power reading
+    qDebug() << testPMPowerReading(n7745a, 1);
+
+    double currentWavelength = startWavelength;
+
+
+    while(currentWavelength < endWavelength){
+        qDebug() << "-------------------------------------------------------------------";
+        // set current wavelength on exfo t100 (slot 1)
+        testSetT100Wavelength(t100, 1, QByteArray::number(currentWavelength));
+
+        // wait
+        QTime timer = QTime::currentTime().addSecs(waitTimeSeconds);
+        while(QTime::currentTime() < timer){
+            // do nothing
+        }
+
+        double currentPower = startPower;
+
+        while(currentPower < endPower){
+
+            // write out current wavelengths
+            stream << testT100GetWavelength(t100, 1) << ",";
+
+            stream << QByteArray::number(currentPower) << ",";
+
+            // set current power on exfo t100 (slot 1);
+            testSetT100Power(t100, 1, QByteArray::number(currentPower));
+
+            // wait
+            QTime timer = QTime::currentTime().addSecs(waitTimeSeconds);
+            while(QTime::currentTime() < timer){
+                // do nothing
+            }
+
+            stream << testT100OutputPower(t100, 1) << ",";
+
+            // set power meter wavelength
+            testSetPMWavelength(n7745a, 1, QByteArray::number(currentWavelength), "nm");
+
+            // check set wavelength;
+            stream << testPMWavelengthReading(n7745a, 1) << ",";
+
+            // read power on power meter
+            stream << testPMPowerReading(n7745a, 1) << "," << endl;
+
+            // increment power by powerStep
+            currentPower += powerStep;
+        }
+
+
+        // increment wavelength by wavelengthStep
+        currentWavelength += wavelengthStep;
+    }
+
+    t100->disableModuleLaserCmd(1);
+
+    qDebug("*************************** COMPLETE *****************************");
+
+
+}
+
