@@ -101,7 +101,9 @@ const QByteArray N7714A_DEVICE = "N7714A";
 const QByteArray N7745A_POWER_METER = "N7745A";
 const QByteArray EXFO_CHASSIS_DEVICE = "EXFO,OSICS";
 const QByteArray ANDO_AQ6331_DEVICE = "ANDO,AQ6331";
-const QByteArray DEVICE_TYPES[] = {N7714A_DEVICE, N7745A_POWER_METER, EXFO_CHASSIS_DEVICE, ANDO_AQ6331_DEVICE};
+const QByteArray Bristol_428A_DEVICE = "Bristol Wavemeter, 428A";
+const QByteArray DEVICE_TYPES[] = {N7714A_DEVICE, N7745A_POWER_METER, EXFO_CHASSIS_DEVICE, ANDO_AQ6331_DEVICE,
+                                   Bristol_428A_DEVICE};
 
 // Test type names
 const QByteArray N7714A_WAV_CYCLE_TEST = "N7714A Wavelength Cycle Test";

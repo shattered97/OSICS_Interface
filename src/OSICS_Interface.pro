@@ -19,6 +19,7 @@ INCLUDEPATH += "C:/Program Files/IVI Foundation/VISA/Win64/Include" \
                 EXFO_OSICS \
                 shared/Keysight_N7714A \
                 shared/ANDO_AQ6331 \
+                shared/Bristol_428A \
                 shared/Power_Meters
 
 DEPENDPATH += "C:/Program Files/IVI Foundation/VISA/Win64/Include"
@@ -49,6 +50,7 @@ SOURCES += \
         graphwindow.cpp \
         main.cpp \
         mainwindow.cpp \
+        shared/Bristol_428A/Bristol_428A.cpp \
         shared/ConversionUtilities.cpp \
         shared/DefaultInstrument.cpp \
         shared/Orchestrator.cpp \
@@ -78,6 +80,7 @@ HEADERS += \
         devicesetupwindow.h \
         graphwindow.h \
         mainwindow.h \
+        shared/Bristol_428A/Bristol_428A.h \
         shared/ConversionUtilities.h \
         shared/DefaultInstrument.h \
         shared/Orchestrator.h \
