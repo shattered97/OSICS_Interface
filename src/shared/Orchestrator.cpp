@@ -325,51 +325,7 @@ bool Orchestrator::checkOperationComplete(ViSession instrSession, QByteArray ins
     return complete;
 }
 
-QByteArray testPMPowerReading(KeysightPowerMeter *powerMeter, int slotNum){
-    QByteArray power;
-    powerMeter->measurePower(1, power);
-    double powerDouble = power.split('\n')[0].toDouble();
-    powerDouble = ConversionUtilities::convertWattToDBm(powerDouble);
-    return QByteArray::number(powerDouble);
-}
 
-QByteArray testPMWavelengthReading(KeysightPowerMeter *powerMeter, int slotNum){
-    QByteArray pmWavelength;
-    powerMeter->queryWavelength(1, pmWavelength);
-    double pmWavDouble = pmWavelength.split('\n')[0].toDouble();
-    pmWavDouble = ConversionUtilities::convertWavelengthFromMeter(pmWavDouble, "nm");
-    return QByteArray::number(pmWavDouble);
-}
-
-void testSetPMWavelength(KeysightPowerMeter *powerMeter, int slotNum, QByteArray wavelength, QByteArray unit){
-    qDebug() << "setting wavelength on power meter to: " << wavelength;
-    QByteArray wavUnit = "nm";
-    powerMeter->setWavelength(1, wavelength, unit);
-}
-
-QByteArray testT100GetWavelength(EXFO_OSICS_T100 *t100, int slotNum){
-    QByteArray wavelength;
-    t100->refWavelengthModuleQuery(1, wavelength);
-    double wavDouble = wavelength.split('=')[1].toDouble();
-    return QByteArray::number(wavDouble);
-}
-
-void testSetT100Wavelength(EXFO_OSICS_T100 *t100, int slotNum, QByteArray wavelength){
-    qDebug() << "setting wavelength on t100 to: " << wavelength;
-    t100->setRefWavelengthModuleCmd(slotNum, wavelength);
-}
-
-void testSetT100Power(EXFO_OSICS_T100 *t100, int slotNum, QByteArray power){
-    qDebug() << "setting power on t100 to: " << power;
-    t100->setModuleOutputPowerCmd(1, power);
-}
-
-QByteArray testT100OutputPower(EXFO_OSICS_T100 *t100, int slotNum){
-    QByteArray power;
-    t100->outputPowerModuleQuery(1, power);
-    double powerDouble = power.split('=')[1].toDouble();
-    return QByteArray::number(powerDouble);
-}
 
 void Orchestrator::testOSACommands(){
 
@@ -383,40 +339,40 @@ void Orchestrator::testOSACommands(){
 
 // ************************************************************** test csv output
 
-    filename = "t100_1415_OSAWavStep_1360_1470_20.csv";
-    startWav = 1360;
-    endWav = 1470;
-    wavStep = 20;
-    span = "5";
-    slotNum = 2;
+//    filename = "t100_1415_OSAWavStep_1360_1470_20.csv";
+//    startWav = 1360;
+//    endWav = 1470;
+//    wavStep = 20;
+//    span = "5";
+//    slotNum = 2;
 
 // ************************************************************** step through wavelengths, fine granularity
 
-//    filename = "t100_1310_OSAWavStep_1260_1360_005.csv";
-//    startWav = 1260;
-//    endWav = 1360;
-//    wavStep = 0.05;
-//    span = "3";
-//    slotNum = 1;
+    filename = "t100_1310_OSAWavStep_1260_1360_01.csv";
+    startWav = 1260;
+    endWav = 1360;
+    wavStep = 0.1;
+    span = "3";
+    slotNum = 1;
 
 //    filename = "t100_1415_OSAWavStep_1360_1470_005.csv";
 //    startWav = 1360;
 //    endWav = 1470;
-//    wavStep = 0.05;
+//    wavStep = 0.1;
 //    span = "3";
 //    slotNum = 2;
 
 //    filename = "t100_1520_OSAWavStep_1465_1575_005.csv";
 //    startWav = 1465;
 //    endWav = 1575;
-//    wavStep = 0.05;
+//    wavStep = 0.1;
 //    span = "3";
 //    slotNum = 3;
 
 //    filename = "t100_1620_OSAWavStep_1560_1680_005.csv";
 //    startWav = 1560;
 //    endWav = 1680;
-//    wavStep = 0.05;
+//    wavStep = 0.1;
 //    span = "3";
 //    slotNum = 4;
 
@@ -498,8 +454,67 @@ void Orchestrator::runOSATest(QByteArray filename, double startWav, double endWa
     qDebug() << "COMPLETE **********************************************";
 
 }
-void Orchestrator::characterizeT100Power(){
-    qDebug() << selectedDevices.size();
+
+
+QByteArray testPMPowerReading(KeysightPowerMeter *powerMeter, int slotNum){
+    slotNum = 1;
+    QByteArray power;
+    powerMeter->measurePower(slotNum, power);
+    qDebug() << "-----------------------------------------" << power;
+    double powerDouble = power.split('\n')[0].toDouble();
+    powerDouble = ConversionUtilities::convertWattToDBm(powerDouble);
+    qDebug() << "=========================================" << powerDouble;
+    return QByteArray::number(powerDouble);
+}
+
+QByteArray testPMWavelengthReading(KeysightPowerMeter *powerMeter, int slotNum){
+    slotNum = 1;
+    QByteArray pmWavelength;
+    powerMeter->queryWavelength(slotNum, pmWavelength);
+    double pmWavDouble = pmWavelength.split('\n')[0].toDouble();
+    pmWavDouble = ConversionUtilities::convertWavelengthFromMeter(pmWavDouble, "nm");
+    return QByteArray::number(pmWavDouble);
+}
+
+void testSetPMWavelength(KeysightPowerMeter *powerMeter, int slotNum, QByteArray wavelength, QByteArray unit){
+    slotNum = 1;
+    qDebug() << "setting wavelength on power meter to: " << wavelength;
+    QByteArray wavUnit = "nm";
+    powerMeter->setWavelength(slotNum, wavelength, unit);
+}
+
+QByteArray testT100GetWavelength(EXFO_OSICS_T100 *t100, int slotNum){
+    QByteArray wavelength;
+    t100->refWavelengthModuleQuery(slotNum, wavelength);
+    double wavDouble = wavelength.split('=')[1].toDouble();
+    return QByteArray::number(wavDouble);
+}
+
+void testSetT100Wavelength(EXFO_OSICS_T100 *t100, int slotNum, QByteArray wavelength){
+    qDebug() << "setting wavelength on t100 to: " << wavelength;
+    t100->setRefWavelengthModuleCmd(slotNum, wavelength);
+}
+
+void testSetT100Power(EXFO_OSICS_T100 *t100, int slotNum, QByteArray power){
+    qDebug() << "setting power on t100 to: " << power;
+    t100->setModuleOutputPowerCmd(slotNum, power);
+}
+
+QByteArray testT100OutputPower(EXFO_OSICS_T100 *t100, int slotNum){
+    QByteArray power;
+    t100->outputPowerModuleQuery(slotNum, power);
+    double powerDouble = power.split('=')[1].toDouble();
+    return QByteArray::number(powerDouble);
+}
+
+void Orchestrator::runT100CharacterizationExperiment(QString filename,
+                                                     int slotNum,
+                                                     double startPower,
+                                                     double endPower,
+                                                     double powerStep,
+                                                     double startWav,
+                                                     double endWav,
+                                                     double wavStep){
     QVariant powerMeterVariant = selectedDevices[0];
     QVariant exfoVariant = selectedDevices[1];
 
@@ -518,48 +533,57 @@ void Orchestrator::characterizeT100Power(){
                      this, SLOT(slotSendCmdNoRsp(QByteArray, QByteArray &)));
 
     // init output file
-    QString filename = "t100_1310_power_wav_cycle.csv";
     QFile file(filename);
     file.open(QIODevice::ReadWrite);
     QTextStream stream(&file);
-    stream << "T100 Wavelength,Desired T100 Output Power,T100 Output Power,Power Meter Wavelength,Power Meter Reading" << endl;
-
-    double startPower = -6.9;
-    double endPower = 5;
-    double powerStep = 0.5;
-
-    double startWavelength = 1260;
-    double endWavelength = 1280;
-    double wavelengthStep = 10;
-
-    int waitTimeSeconds = 0;
-
-    //enable laser
-    t100->enableModuleLaserCmd(1);
-
-    // get wavelength from exfo t100
-    QByteArray wavelength = testT100GetWavelength(t100, 1);
-    qDebug() << wavelength;
-
-    // get wavelength from power meter
-    qDebug() << testPMWavelengthReading(n7745a, 1);
-
-    // set wavelength on power meter
-    testSetPMWavelength(n7745a, 1, wavelength, "nm");
-
-    // check if wavelength was accepted
-    qDebug() << testPMWavelengthReading(n7745a, 1);
-
-    // test power reading
-    qDebug() << testPMPowerReading(n7745a, 1);
-
-    double currentWavelength = startWavelength;
+    stream << "Desired T100 Wavelength,";
+    stream << "Actual T100 Wavelength,";
+    stream << "Desired T100 Output Power,";
+    stream << "Actual T100 Output Power,";
+    stream << "Power Meter Wavelength Setting,";
+    stream << "Power Meter Reading" << endl;
 
 
-    while(currentWavelength < endWavelength){
+    // init laser
+    t100->setModulePowerUnitDBmCmd(slotNum);
+    t100->enableModuleLaserCmd(slotNum);
+
+    // set power to something low
+    // set current power on exfo t100;
+    testSetT100Power(t100, slotNum, QByteArray::number(startPower));
+
+    // wait
+    QTime timer = QTime::currentTime().addSecs(2);
+    while(QTime::currentTime() < timer){
+        // do nothing
+    }
+
+    // init wait time
+    int waitTimeSeconds = 2;
+
+//    // get wavelength from exfo t100
+//    QByteArray wavelength = testT100GetWavelength(t100, slotNum);
+//    qDebug() << wavelength;
+
+//    // get wavelength from power meter
+//    qDebug() << testPMWavelengthReading(n7745a, slotNum);
+
+//    // set wavelength on power meter
+//    testSetPMWavelength(n7745a, slotNum, wavelength, "nm");
+
+//    // check if wavelength was accepted
+//    qDebug() << testPMWavelengthReading(n7745a, slotNum);
+
+//    // test power reading
+//    qDebug() << testPMPowerReading(n7745a, slotNum);
+
+
+    double currentWavelength = startWav;
+    while(currentWavelength < endWav){
         qDebug() << "-------------------------------------------------------------------";
-        // set current wavelength on exfo t100 (slot 1)
-        testSetT100Wavelength(t100, 1, QByteArray::number(currentWavelength));
+
+        // set current wavelength on exfo t100
+        testSetT100Wavelength(t100, slotNum, QByteArray::number(currentWavelength));
 
         // wait
         QTime timer = QTime::currentTime().addSecs(waitTimeSeconds);
@@ -568,16 +592,17 @@ void Orchestrator::characterizeT100Power(){
         }
 
         double currentPower = startPower;
-
         while(currentPower < endPower){
 
             // write out current wavelengths
-            stream << testT100GetWavelength(t100, 1) << ",";
+            stream << currentWavelength << ",";
+
+            stream << testT100GetWavelength(t100, slotNum) << ",";
 
             stream << QByteArray::number(currentPower) << ",";
 
-            // set current power on exfo t100 (slot 1);
-            testSetT100Power(t100, 1, QByteArray::number(currentPower));
+            // set current power on exfo t100;
+            testSetT100Power(t100, slotNum, QByteArray::number(currentPower));
 
             // wait
             QTime timer = QTime::currentTime().addSecs(waitTimeSeconds);
@@ -585,16 +610,16 @@ void Orchestrator::characterizeT100Power(){
                 // do nothing
             }
 
-            stream << testT100OutputPower(t100, 1) << ",";
+            stream << testT100OutputPower(t100, slotNum) << ",";
 
             // set power meter wavelength
-            testSetPMWavelength(n7745a, 1, QByteArray::number(currentWavelength), "nm");
+            testSetPMWavelength(n7745a, slotNum, QByteArray::number(currentWavelength), "nm");
 
             // check set wavelength;
-            stream << testPMWavelengthReading(n7745a, 1) << ",";
+            stream << testPMWavelengthReading(n7745a, slotNum) << ",";
 
             // read power on power meter
-            stream << testPMPowerReading(n7745a, 1) << "," << endl;
+            stream << testPMPowerReading(n7745a, slotNum) << "," << endl;
 
             // increment power by powerStep
             currentPower += powerStep;
@@ -602,13 +627,94 @@ void Orchestrator::characterizeT100Power(){
 
 
         // increment wavelength by wavelengthStep
-        currentWavelength += wavelengthStep;
+        currentWavelength += wavStep;
     }
 
-    t100->disableModuleLaserCmd(1);
+    t100->disableModuleLaserCmd(slotNum);
 
     qDebug("*************************** COMPLETE *****************************");
 
-
 }
+
+void Orchestrator::characterizeT100Power(){
+    qDebug() << selectedDevices.size();
+
+//    QString filename = "t100_1310_1250_1370_5_7_7_1.csv";
+//    int slotNum = 1;
+//    double startPower = -7;
+//    double endPower = 7;
+//    double powerStep = 1;
+//    double startWave = 1250;
+//    double endWav = 1370;
+//    double waveStep = 5;
+
+    QString filename = "t100_1415_1350_1480_5_7_7_1.csv";
+    int slotNum = 2;
+    double startPower = -7;
+    double endPower = 7;
+    double powerStep = 1;
+    double startWave = 1350;
+    double endWav = 1480;
+    double waveStep = 5;
+
+//    QString filename = "t100_1520_1455_1585_5_7_7_1.csv";
+//    int slotNum = 3;
+//    double startPower = -7;
+//    double endPower = 7;
+//    double powerStep = 1;
+//    double startWave = 1455;
+//    double endWav = 1585;
+//    double waveStep = 5;
+
+//    QString filename = "t100_1620_1550_1690_5_7_7_1.csv";
+//    int slotNum = 4;
+//    double startPower = -7;
+//    double endPower = 7;
+//    double powerStep = 1;
+//    double startWave = 1550;
+//    double endWav = 1690;
+//    double waveStep = 5;
+
+
+// ****************************** wavelength range tests ************************************
+
+//        QString filename = "t100_1310_1250_1370_1_0_8_2.csv";
+//        int slotNum = 1;
+//        double startPower = 0;
+//        double endPower = 9;
+//        double powerStep = 2;
+//        double startWave = 1250;
+//        double endWav = 1370;
+//        double waveStep = 1;
+
+//        QString filename = "t100_1415_1350_1480_1_0_8_2.csv";
+//        int slotNum = 2;
+//        double startPower = 0;
+//        double endPower = 9;
+//        double powerStep = 2;
+//        double startWave = 1350;
+//        double endWav = 1480;
+//        double waveStep = 1;
+
+//        QString filename = "t100_1520_1455_1585_1_0_8_2.csv";
+//        int slotNum = 3;
+//        double startPower = 0;
+//        double endPower = 9;
+//        double powerStep = 2;
+//        double startWave = 1455;
+//        double endWav = 1585;
+//        double waveStep = 1;
+
+//        QString filename = "t100_1620_1550_1690_1_0_8_2.csv";
+//        int slotNum = 4;
+//        double startPower = 0;
+//        double endPower = 9;
+//        double powerStep = 2;
+//        double startWave = 1550;
+//        double endWav = 1690;
+//        double waveStep = 1;
+
+    runT100CharacterizationExperiment(filename, slotNum, startPower, endPower, powerStep, startWave, endWav, waveStep);
+}
+
 
