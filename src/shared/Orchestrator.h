@@ -34,9 +34,19 @@ public:
     ~Orchestrator();
 
     QVariant getDeviceAtIndex(int index);
-    void characterizeT100Power();
+
+    // ******** testing only ***********
     void testOSACommands();
     void runOSATest(QByteArray filename, double startWav, double endWav, double wavStep, QByteArray span, int slotNum);
+    void characterizeT100Power();
+    void runT100CharacterizationExperiment(QString filename,
+                                                         int slotNum,
+                                                         double startPower,
+                                                         double endPower,
+                                                         double powerStep,
+                                                         double startWav,
+                                                         double endWav,
+                                                         double wavStep);
 
 public slots:
 
