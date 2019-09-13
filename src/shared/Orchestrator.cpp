@@ -49,6 +49,10 @@ void Orchestrator::slotCreateDevice(QString type, QByteArray instrumentAddress, 
         EXFO_OSICS_MAINFRAME *device = new EXFO_OSICS_MAINFRAME(instrumentIdentity, instrumentAddress);
         deviceVariant.setValue(device);
     }
+    else if(type == "ANDO,AQ6331"){
+        Ando_AQ6331 *device = new Ando_AQ6331(instrumentIdentity, instrumentAddress);
+        deviceVariant.setValue(device);
+    }
     else{
         // #TODO error/exit
     }
@@ -90,17 +94,18 @@ void Orchestrator::slotGetEXFOModuleQVariants(QList<ModuleConfigPair> &modules, 
             moduleVariant.setValue(module);
         }
         else if(modTypes[i].contains("ATN")){
+            qDebug() << "atn module";
             EXFO_OSICS_ATN *module = new EXFO_OSICS_ATN(chassisIdentity, chassisAddress);
             moduleVariant.setValue(module);
         }
         else if(modTypes[i].contains("SWT")){
+            qDebug() << "swt module";
             EXFO_OSICS_SWT *module = new EXFO_OSICS_SWT(chassisIdentity, chassisAddress);
             moduleVariant.setValue(module);
         }
         else{
             // #TODO slot is either empty or module is not supported (error msg)
         }
-
 
 
         // create window
@@ -164,10 +169,19 @@ void Orchestrator::slotUpdateConfigSettings(QVariant &deviceVariant, QSettings &
     }
     else if(typeName == "EXFO_OSICS_ATN"){
         qDebug() << "updating atn";
+        EXFO_OSICS_ATN* device = deviceVariant.value<EXFO_OSICS_ATN*>();
+        device->updateConfig(configSettings);
 
+        QObject::connect(this, SIGNAL(signalSettingsUpdated()), device->getConfigWindow(), SLOT(slotUpdateWindow()));
+        emit signalSettingsUpdated();
     }
     else if(typeName == "EXFO_OSICS_SWT"){
         qDebug() << "updating swt";
+        EXFO_OSICS_SWT* device = deviceVariant.value<EXFO_OSICS_SWT*>();
+        device->updateConfig(configSettings);
+
+        QObject::connect(this, SIGNAL(signalSettingsUpdated()), device->getConfigWindow(), SLOT(slotUpdateWindow()));
+        emit signalSettingsUpdated();
     }
     else{
         // #TODO error/exit
@@ -357,6 +371,133 @@ QByteArray testT100OutputPower(EXFO_OSICS_T100 *t100, int slotNum){
     return QByteArray::number(powerDouble);
 }
 
+void Orchestrator::testOSACommands(){
+
+    QByteArray filename;
+    double startWav;
+    double endWav;
+    double wavStep = 0;
+    QByteArray span;
+    int slotNum = 0;
+
+
+// ************************************************************** test csv output
+
+    filename = "t100_1415_OSAWavStep_1360_1470_20.csv";
+    startWav = 1360;
+    endWav = 1470;
+    wavStep = 20;
+    span = "5";
+    slotNum = 2;
+
+// ************************************************************** step through wavelengths, fine granularity
+
+//    filename = "t100_1310_OSAWavStep_1260_1360_005.csv";
+//    startWav = 1260;
+//    endWav = 1360;
+//    wavStep = 0.05;
+//    span = "3";
+//    slotNum = 1;
+
+//    filename = "t100_1415_OSAWavStep_1360_1470_005.csv";
+//    startWav = 1360;
+//    endWav = 1470;
+//    wavStep = 0.05;
+//    span = "3";
+//    slotNum = 2;
+
+//    filename = "t100_1520_OSAWavStep_1465_1575_005.csv";
+//    startWav = 1465;
+//    endWav = 1575;
+//    wavStep = 0.05;
+//    span = "3";
+//    slotNum = 3;
+
+//    filename = "t100_1620_OSAWavStep_1560_1680_005.csv";
+//    startWav = 1560;
+//    endWav = 1680;
+//    wavStep = 0.05;
+//    span = "3";
+//    slotNum = 4;
+
+
+    runOSATest(filename, startWav, endWav, wavStep, span, slotNum);
+
+}
+
+void Orchestrator::runOSATest(QByteArray filename, double startWav, double endWav, double wavStep, QByteArray span, int slotNum){
+    // ************ Test Setting Values and Sweeping ***********
+    QVariant andoVariant = selectedDevices[0];
+    Ando_AQ6331 *ando = andoVariant.value<Ando_AQ6331*>();
+
+    QVariant exfoVariant = selectedDevices[1];
+
+    EXFO_OSICS_MAINFRAME *exfo = exfoVariant.value<EXFO_OSICS_MAINFRAME*>();
+    EXFO_OSICS_T100 *t100 = new EXFO_OSICS_T100(exfo->getInstrIdentity(), exfo->getInstrLocation());
+
+    QObject::connect(t100, SIGNAL(signalSendCmdRsp(QByteArray, QByteArray&, QByteArray&)),
+                     this, SLOT(slotSendCmdRsp(QByteArray, QByteArray &, QByteArray &)));
+    QObject::connect(t100, SIGNAL(signalSendCmdNoRsp(QByteArray, QByteArray&)),
+                     this, SLOT(slotSendCmdNoRsp(QByteArray, QByteArray &)));
+
+
+    // init output file
+    QFile file(filename);
+    file.open(QIODevice::ReadWrite);
+    QTextStream stream(&file);
+    stream << "T100 Wavelength,";
+    stream << "OSA Wavelength,";
+    stream << "OSA Power Level" << endl;
+
+
+    t100->setModulePowerUnitDBmCmd(slotNum);
+    t100->enableModuleLaserCmd(slotNum);
+    QByteArray startWavString = QByteArray::number(startWav);
+    t100->setRefWavelengthModuleCmd(slotNum, startWavString);
+
+    // wait for wav adjustment
+    QTime timer = QTime::currentTime().addSecs(2);
+    while(QTime::currentTime() < timer){
+        // do nothing
+    }
+
+    double currentWavelength = startWav;
+    while(currentWavelength <= endWav){
+
+        // set current wavelength on exfo
+        QByteArray currentWavString = QByteArray::number(currentWavelength);
+        t100->setRefWavelengthModuleCmd(slotNum, currentWavString);
+        stream << currentWavString << ",";
+
+        // wait for wav adjustment
+        QTime timer = QTime::currentTime().addSecs(2);
+        while(QTime::currentTime() < timer){
+            // do nothing
+        }
+
+        // set OSA values
+        ando->setCenterWavelength(currentWavString);
+        ando->setSpan(span);
+        ando->runSingleSweep();
+
+        // wait for sweep
+        QTime sweepTimer = QTime::currentTime().addSecs(2);
+        while(QTime::currentTime() < sweepTimer){
+            // do nothing
+        }
+
+        QByteArray peakWav;
+        QByteArray peakPower;
+        ando->getPeakDataFromTrace(peakWav, peakPower);
+        stream << peakWav << ",";
+        stream << peakPower << endl;
+
+        currentWavelength += wavStep;
+    }
+
+    qDebug() << "COMPLETE **********************************************";
+
+}
 void Orchestrator::characterizeT100Power(){
     qDebug() << selectedDevices.size();
     QVariant powerMeterVariant = selectedDevices[0];

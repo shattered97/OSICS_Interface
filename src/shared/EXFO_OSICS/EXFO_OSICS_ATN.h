@@ -67,9 +67,11 @@ public:
      */
     void moduleAttenuationOffsetQuery(int slotNum, QByteArray wavelengthNum, QByteArray &response);
 
-signals:
-    void signalSendCmdRsp(QByteArray instrAddress, QByteArray &command, QByteArray &response);
-    void signalSendCmdNoRsp(QByteArray instrAddress, QByteArray &command);
+
+// *********** Functions for Applying/Updating Config Settings **********
+
+    void applyConfigSettings(QSettings &configSettings);
+    void updateConfig(QSettings &configSettings);
 
 private:
 
@@ -78,6 +80,12 @@ private:
 
     // the physical address of the instrument
     QByteArray theInstrLoc;
+
+    int slotNum;
+
+    void updateAttenuationSettings(QSettings &configSettings);
+    void updateOffsetSettings(QSettings &configSettings);
+    void updateWavelengthSettings(QSettings &configSettings);
 };
 
 #endif // EXFO_OSICS_ATN_H

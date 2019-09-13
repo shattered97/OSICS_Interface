@@ -38,7 +38,6 @@ public:
 
     void turnOnAutoWavMode(int module);
 
-
     void updateConfig(QSettings &);
 
     void applyConfigSettings(QSettings &configSettings);

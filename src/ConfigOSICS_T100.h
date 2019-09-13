@@ -5,6 +5,8 @@
 #include <QSettings>
 #include <QLineEdit>
 #include <QDebug>
+#include <QMessageBox>
+#include <QFileDialog>
 #include "constants.h"
 
 namespace Ui {
@@ -50,11 +52,26 @@ private slots:
 
     void on_frequencyUnitComboBox_currentIndexChanged(int index);
 
+    void on_laserOutputPowerEdit_editingFinished();
+
+    void on_laserWavelengthEdit_editingFinished();
+
+    void on_laserFrequencyEdit_editingFinished();
+
+    void on_togglePowerButton_clicked();
+
+    void on_loadSettingsButton_clicked();
+
+    void on_saveSettingsButton_clicked();
+
+    void on_saveChangesButton_clicked();
+
 private:
     Ui::ConfigOSICS_T100 *ui;
 
     QVariant device;
     QSettings *settings;
+    QString settingsFileName;
 
     int slotNum;
 
@@ -72,10 +89,13 @@ private:
     QByteArray maxFrequency;
 
     void showEvent(QShowEvent* event);
-    void populateAllValues();
     void getValuesFromConfig();
+    void populateAllValues();
+    bool isInputValueValid(QByteArray inputValue, QByteArray minValue, QByteArray maxValue);
+
     bool loadSettings();
     bool saveSettings();
+
     void convertAndDisplayPower(QList<QByteArray> powerList, QLineEdit* displayField);
     void convertAndDisplayWavelength(QList<QByteArray> wavelengthList, QLineEdit* displayField);
     void convertAndDisplayFrequency(QList<QByteArray> wavelengthList, QLineEdit* displayField);

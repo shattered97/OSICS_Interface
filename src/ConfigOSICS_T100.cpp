@@ -1,6 +1,6 @@
 #include "ConfigOSICS_T100.h"
 #include "ui_ConfigOSICS_T100.h"
-
+#include "ConversionUtilities.h"
 ConfigOSICS_T100::ConfigOSICS_T100(QVariant &device, QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::ConfigOSICS_T100)
@@ -164,6 +164,9 @@ void ConfigOSICS_T100::populateLaserMaxFrequency(){
     ui->maxFrequencyDisplay->setText(QByteArray::number(maxFrequency.toDouble()));
 }
 
+// ********************************************* UI Slots ****************************************************
+
+
 void ConfigOSICS_T100::on_powerUnitComboBox_currentIndexChanged(int index)
 {
     // refresh displayed power values
@@ -190,3 +193,212 @@ void ConfigOSICS_T100::on_frequencyUnitComboBox_currentIndexChanged(int index)
     populateLaserMinFrequency();
     populateLaserMaxFrequency();
 }
+
+bool ConfigOSICS_T100::isInputValueValid(QByteArray inputValue, QByteArray minValue, QByteArray maxValue)
+{
+    bool valid = true;
+
+    if(inputValue == ""){
+        valid = false;
+    }
+    else{
+        bool conversionOk = true;
+        double valueToDouble = inputValue.toDouble(&conversionOk);
+
+        if(!conversionOk){
+            valid = false;
+            QMessageBox msgBox;
+            msgBox.setText("Value entered is invalid (non-numeric).");
+            msgBox.exec();
+        }
+        else{
+            double minValToDouble = minValue.toDouble();
+            double maxValToDouble = maxValue.toDouble();
+
+            if(valueToDouble < minValToDouble || valueToDouble > maxValToDouble){
+                valid = false;
+                QMessageBox msgBox;
+                msgBox.setText("Value entered is invalid (out of min/max range).");
+                msgBox.exec();
+            }
+        }
+    }
+    return valid;
+}
+
+void ConfigOSICS_T100::on_laserOutputPowerEdit_editingFinished()
+{
+    QByteArray powerValue = ui->laserOutputPowerEdit->text().toLatin1();
+    QByteArray minPower = ui->laserMinPowerDisplay->text().toLatin1();
+    QByteArray maxPower = ui->laserMaxPowerDisplay->text().toLatin1();
+
+    if(isInputValueValid(powerValue, minPower, maxPower)){
+        // convert to dBm if value is in Watt
+        double powDouble = powerSetting.toDouble();
+        QByteArray unit = ui->powerUnitComboBox->currentText().toLatin1();
+        double converted = powDouble;
+        if(unit == "Watt"){
+            converted = ConversionUtilities::convertWattToDBm(powDouble);
+        }
+        powerSetting = QByteArray::number(converted);
+
+        // update settings object
+        settings->setValue(EXFO_OSICS_T100_POWER, QVariant::fromValue(powerSetting));
+        populateLaserOutputPower();
+    }
+}
+
+void ConfigOSICS_T100::on_laserWavelengthEdit_editingFinished()
+{
+    QByteArray wavelengthValue = ui->laserWavelengthEdit->text().toLatin1();
+    QByteArray minWavelength = ui->minWavelengthDisplay->text().toLatin1();
+    QByteArray maxWavelength = ui->maxWavelengthDisplay->text().toLatin1();
+
+    if(isInputValueValid(wavelengthValue, minWavelength, maxWavelength)){
+        // wavelength is valid, insert into list
+        double wavDouble = wavelengthValue.toDouble();
+        QByteArray unit = ui->wavelengthUnitComboBox->currentText().toLatin1();
+        double converted = ConversionUtilities::convertWavelengthToMeter(wavDouble, unit);
+        wavelengthSetting = QByteArray::number(converted);
+
+        // update the settings object
+        settings->setValue(EXFO_OSICS_T100_WAVELENGTH, QVariant::fromValue(wavelengthSetting));
+        populateLaserWavelength();
+
+        // update frequency b/c the values are related
+        double frequency = ConversionUtilities::convertWavelengthToFrequency(converted);
+        frequencySetting = QByteArray::number(frequency);
+        settings->setValue(EXFO_OSICS_T100_FREQUENCY, QVariant::fromValue(frequencySetting));
+        populateLaserFrequency();
+    }
+}
+
+void ConfigOSICS_T100::on_laserFrequencyEdit_editingFinished()
+{
+    QByteArray frequencyValue = ui->laserFrequencyEdit->text().toLatin1();
+    QByteArray minFrequencyValue = ui->minFrequencyDisplay->text().toLatin1();
+    QByteArray maxFrequencyValue = ui->maxFrequencyDisplay->text().toLatin1();
+
+    if(isInputValueValid(frequencyValue, minFrequencyValue, maxFrequencyValue)){
+        // frequency is valid, insert into list
+        double freqDouble = frequencyValue.toDouble();
+        QByteArray unit = ui->frequencyUnitComboBox->currentText().toLatin1();
+        double converted = ConversionUtilities::convertFrequencyToHz(freqDouble, unit);
+        frequencySetting = QByteArray::number(converted);
+
+        // update the settings object
+        settings->setValue(EXFO_OSICS_T100_FREQUENCY, QVariant::fromValue(frequencySetting));
+        populateLaserFrequency();
+
+        // update wavelength b/c the values are related
+        double wavelength = ConversionUtilities::convertFrequencyToWavelength(converted);
+        wavelengthSetting = QByteArray::number(wavelength);
+        settings->setValue(EXFO_OSICS_T100_WAVELENGTH, QVariant::fromValue(wavelengthSetting));
+        populateLaserWavelength();
+
+    }
+}
+
+void ConfigOSICS_T100::on_togglePowerButton_clicked()
+{
+    QByteArray state = ui->laserStateDisplay->text().toLatin1();
+    if(state == "Enabled"){
+        // change to off
+        laserState = "Disabled";
+    }
+    else if(state == "Disabled"){
+       // change to on
+        laserState = "Enabled";
+    }
+
+    settings->setValue(EXFO_OSICS_T100_LASER_STATE, QVariant::fromValue(laserState));
+    populateLaserState();
+
+}
+
+void ConfigOSICS_T100::on_saveChangesButton_clicked()
+{
+    // disable cursor until finished
+    QApplication::setOverrideCursor(Qt::WaitCursor);
+
+    // signal to orchestrator to update the device with the values from QSettings
+    emit signalApplyConfigSettings(device, *settings);
+
+    QApplication::restoreOverrideCursor();
+}
+
+bool ConfigOSICS_T100::loadSettings()
+{
+    QSettings settingsFromFile(settingsFileName, QSettings::IniFormat);
+
+    QStringList keys = settingsFromFile.allKeys();
+    for( QStringList::iterator i = keys.begin(); i != keys.end(); i++ )
+    {
+        settings->setValue( *i, settingsFromFile.value( *i ) );
+    }
+
+    settings->sync();
+
+    emit signalApplyConfigSettings(device, *settings);
+
+    return true;
+}
+
+bool ConfigOSICS_T100::saveSettings()
+{
+    QSettings settingsFromFile(settingsFileName, QSettings::IniFormat);
+
+    QStringList keys = settings->allKeys();
+    for( QStringList::iterator i = keys.begin(); i != keys.end(); i++ )
+    {
+        settingsFromFile.setValue( *i, settings->value( *i ) );
+    }
+
+    settingsFromFile.sync();
+    return true;
+}
+
+void ConfigOSICS_T100::on_loadSettingsButton_clicked()
+{
+    qDebug() << "on_loadSettingsButton_pressed()";
+    QString fileName = QFileDialog::getOpenFileName(this,
+            tr("Load Settings File"), "",
+            tr("Settings (*.ini);;All Files (*)"));
+
+    if(!fileName.isEmpty()){
+        QFile file(fileName);
+        if(!file.open(QIODevice::ReadWrite)){
+            QMessageBox::information(this, tr("Can't open file"), file.errorString());
+        }
+        else{
+            settingsFileName = file.fileName();
+
+            file.close();
+            loadSettings();
+        }
+    }
+}
+
+void ConfigOSICS_T100::on_saveSettingsButton_clicked()
+{
+    qDebug() << "on_saveSettingsButton_pressed()";
+    QString fileName = QFileDialog::getSaveFileName(this,
+            tr("Save Settings File"), "",
+            tr("Settings (*.ini);;All Files (*)"));
+
+    if (!fileName.isEmpty()){
+        QFile file(fileName);
+        if(!file.open(QIODevice::ReadWrite)){
+            QMessageBox::information(this, tr("Can't open file"), file.errorString());
+        }
+        else{
+            settingsFileName = file.fileName();
+
+            file.close();
+            saveSettings();
+        }
+    }
+}
+
+
+

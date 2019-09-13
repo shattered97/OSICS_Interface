@@ -9,6 +9,7 @@
 #include "EXFO_OSICS/EXFO_OSICS_ATN.h"
 #include "EXFO_OSICS/EXFO_OSICS_SWT.h"
 #include "EXFO_OSICS/EXFO_OSICS_T100.h"
+#include "Ando_AQ6331.h"
 #include <QObject>
 
 Q_DECLARE_METATYPE(N7714A*)
@@ -16,6 +17,7 @@ Q_DECLARE_METATYPE(KeysightPowerMeter*)
 Q_DECLARE_METATYPE(DefaultInstrument*)
 Q_DECLARE_METATYPE(PowerMeter*)
 Q_DECLARE_METATYPE(EXFO_OSICS_MAINFRAME*)
+Q_DECLARE_METATYPE(Ando_AQ6331*);
 
 namespace deviceType
 {
@@ -33,6 +35,8 @@ public:
 
     QVariant getDeviceAtIndex(int index);
     void characterizeT100Power();
+    void testOSACommands();
+    void runOSATest(QByteArray filename, double startWav, double endWav, double wavStep, QByteArray span, int slotNum);
 
 public slots:
 

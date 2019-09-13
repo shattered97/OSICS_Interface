@@ -114,7 +114,7 @@ void MainWindow::on_startTestPushButton_clicked()
 {
     // #TODO open test window
     // assuming power meter at [0], exfo at [1]
-    orchestrator->characterizeT100Power();
+    orchestrator->testOSACommands();
 }
 
 void MainWindow::on_selectedDevicesListWidget_itemDoubleClicked(QListWidgetItem *item)

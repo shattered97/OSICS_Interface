@@ -1,4 +1,5 @@
 #include "EXFO_OSICS_SWT.h"
+#include "ConversionUtilities.h"
 
 EXFO_OSICS_SWT::EXFO_OSICS_SWT(QByteArray theIdentity, QByteArray theInstrLoc) : EXFO_OSICS_MAINFRAME(theIdentity, theInstrLoc)
 {
@@ -55,7 +56,7 @@ void  EXFO_OSICS_SWT::selectChannelForSignalAPC(int slotNum, QByteArray &channel
 }
 
 void  EXFO_OSICS_SWT::getChannelForSignalAPC(int slotNum, QByteArray &response){
-    // Command: "CH#:CLOSE\n"
+    // Command: "CH#:CLOSE?\n"
     // Params: 0 < slotnum <= 8
     // Response: CH#:CLOSE=<channel number>
 
@@ -180,3 +181,107 @@ void  EXFO_OSICS_SWT::getSignalChannel(int slotNum, QByteArray &response){
 
     emit signalSendCmdRsp(theInstrLoc, baseCmd, response);
 }
+
+void EXFO_OSICS_SWT::updateConfig(QSettings &configSettings){
+    qDebug() << "swt updateConfig() " << theInstrLoc;
+
+    updateOperatingModeSettings(configSettings);
+    updateActiveChannelSettings(configSettings);
+    updatePowerSettings(configSettings);
+    updateWavelengthSettings(configSettings);
+    updateFrequencySettings(configSettings);
+}
+
+void EXFO_OSICS_SWT::applyConfigSettings(QSettings &configSettings){
+    qDebug() << "swt applyConfigSettings()";
+
+    // apply operating mode from settings
+    QByteArray operatingMode = configSettings.value(EXFO_OSICS_SWT_POWER_SETTING).value<QByteArray>();
+    setAPCModuleOperatingMode(slotNum, operatingMode);
+
+    // apply active channel from settings
+    QByteArray activeChannel = configSettings.value(EXFO_OSICS_SWT_ACTIVE_CHANNEL).value<QByteArray>();
+    selectChannelForSignalAPC(slotNum, activeChannel);
+
+    // apply power from settings
+    // make sure power unit is set to dbm
+    setModulePowerUnitDBmCmd(slotNum);
+    QByteArray power = configSettings.value(EXFO_OSICS_SWT_POWER_SETTING).value<QByteArray>();
+    setModuleOutputPowerCmd(slotNum, power);
+
+    // apply wavelength from settings
+    QByteArray wavelength = configSettings.value(EXFO_OSICS_SWT_WAVELENGTH_SETTING).value<QByteArray>();
+    // convert to nanometers
+    double wavDouble = ConversionUtilities::convertWavelengthFromMeter(wavelength.toDouble(), "nm");
+    wavelength = QByteArray::number(wavDouble);
+    setRefWavelengthModuleCmd(slotNum, wavelength);
+
+    // apply frequency from settings
+    QByteArray frequency = configSettings.value(EXFO_OSICS_SWT_FREQUENCY_SETTING).value<QByteArray>();
+    // convert to GHz
+    double freqDouble = ConversionUtilities::convertFrequencyFromHz(frequency.toDouble(), "GHz");
+    frequency = QByteArray::number(freqDouble);
+    setFrequencyModuleCmd(slotNum, frequency);
+
+    // update values
+    updateConfig(configSettings);
+}
+
+
+void EXFO_OSICS_SWT::updateOperatingModeSettings(QSettings &configSettings)
+{
+    QByteArray operatingMode;
+    getAPCModuleOperatingMode(slotNum, operatingMode);
+
+    // parse returned value
+    operatingMode = operatingMode.split('=')[1];
+
+    configSettings.setValue(EXFO_OSICS_SWT_OPMODE, QVariant::fromValue(operatingMode));
+}
+
+void EXFO_OSICS_SWT::updateActiveChannelSettings(QSettings &configSettings)
+{
+    QByteArray activeChannel;
+    getChannelForSignalAPC(slotNum, activeChannel);
+
+    // parse returned value
+    activeChannel = activeChannel.split('=')[1];
+
+    configSettings.setValue(EXFO_OSICS_SWT_ACTIVE_CHANNEL, QVariant::fromValue(activeChannel));
+}
+
+void EXFO_OSICS_SWT::updatePowerSettings(QSettings &configSettings)
+{
+    QByteArray power;
+    outputPowerModuleQuery(slotNum, power);
+
+    // parse returned value
+    power = power.split('=')[1];
+
+    configSettings.setValue(EXFO_OSICS_SWT_POWER_SETTING, QVariant::fromValue(power));
+}
+
+void EXFO_OSICS_SWT::updateWavelengthSettings(QSettings &configSettings)
+{
+    QByteArray wavelength;
+    refWavelengthModuleQuery(slotNum, wavelength);
+
+    // parse returned value
+    wavelength = wavelength.split('=')[1];
+
+    configSettings.setValue(EXFO_OSICS_SWT_WAVELENGTH_SETTING, QVariant::fromValue(wavelength));
+}
+
+void EXFO_OSICS_SWT::updateFrequencySettings(QSettings &configSettings)
+{
+    QByteArray frequency;
+    frequencyModuleQuery(slotNum, frequency);
+
+    // parse returned value
+    frequency = frequency.split('=')[1];
+
+    configSettings.setValue(EXFO_OSICS_SWT_FREQUENCY_SETTING, QVariant::fromValue(frequency));
+}
+
+
+

@@ -588,7 +588,7 @@
     <widget class="QRadioButton" name="opModeRadioBtnSwitch">
      <property name="geometry">
       <rect>
-       <x>10</x>
+       <x>260</x>
        <y>30</y>
        <width>459</width>
        <height>21</height>
@@ -602,11 +602,14 @@
      <property name="text">
       <string>Switch</string>
      </property>
+     <attribute name="buttonGroup">
+      <string notr="true">buttonGroup</string>
+     </attribute>
     </widget>
     <widget class="QRadioButton" name="opModeRadioBtnFullBand">
      <property name="geometry">
       <rect>
-       <x>230</x>
+       <x>20</x>
        <y>30</y>
        <width>228</width>
        <height>21</height>
@@ -620,6 +623,9 @@
      <property name="text">
       <string>Full-band</string>
      </property>
+     <attribute name="buttonGroup">
+      <string notr="true">buttonGroup</string>
+     </attribute>
     </widget>
    </widget>
    <widget class="QGroupBox" name="groupBox_5">

@@ -39,7 +39,7 @@ const QString ALL_INSTR     =  "?*INSTR";
 const QString ALL_RESOURCES =  "?*";
 
 //VISA read buffer max size
-const qint32 VISA_MAX_BUFFER_READ_SIZE = 100;
+const qint32 VISA_MAX_BUFFER_READ_SIZE = 8192;
 const qint32 VISA_MAX_BUFFER_SEND_SIZE = 512;
 
 //SCPI Command*/
@@ -100,13 +100,17 @@ const QList<UnitPair> FREQ_EXPONENT_LIST = {HZ_UNIT, KHZ_UNIT, MHZ_UNIT, GHZ_UNI
 const QByteArray N7714A_DEVICE = "N7714A";
 const QByteArray N7745A_POWER_METER = "N7745A";
 const QByteArray EXFO_CHASSIS_DEVICE = "EXFO,OSICS";
-const QByteArray DEVICE_TYPES[] = {N7714A_DEVICE, N7745A_POWER_METER, EXFO_CHASSIS_DEVICE};
+const QByteArray ANDO_AQ6331_DEVICE = "ANDO,AQ6331";
+const QByteArray DEVICE_TYPES[] = {N7714A_DEVICE, N7745A_POWER_METER, EXFO_CHASSIS_DEVICE, ANDO_AQ6331_DEVICE};
 
 // Test type names
 const QByteArray N7714A_WAV_CYCLE_TEST = "N7714A Wavelength Cycle Test";
 const QByteArray OSICS_WAV_CYCLE_TEST = "EXFO OSICS Wavelength Cycle Test";
 const QByteArray TEST_TYPES[] = {N7714A_WAV_CYCLE_TEST, OSICS_WAV_CYCLE_TEST};
 
+// EXFO_OSICS_ATN Values
+const QByteArray EXFO_OSICS_ATN_MIN_OFFSET = "-10"; // defined in spec sheet/prog guide
+const QByteArray EXFO_OSICS_ATN_MAX_OFFSET = "10"; // defined in spec sheet/prog guide
 
 // QSettings Key Values - General
 const QByteArray DEVICE_LOCATION = "Device Location";
@@ -133,7 +137,6 @@ const QByteArray N7714A_FREQUENCY_SETTINGS = "N7714A Frequency Settings";
 const QByteArray N7714A_MIN_FREQUENCY = "N7714A Min Frequency";
 const QByteArray N7714A_MAX_FREQUENCY = "N7714A Max Frequency";
 
-
 // QSettings Key Values - EXFO OSICS MAINFRAME
 const QByteArray EXFO_OSICS_MODULE_NAMES = "EXFO OSICS Module Names";
 
@@ -151,6 +154,25 @@ const QByteArray EXFO_OSICS_T100_FREQUENCY = "EXFO OSICS T100 Frequency Setting"
 const QByteArray EXFO_OSICS_T100_MIN_FREQUENCY = "EXFO OSICS T100 Min Frequency";
 const QByteArray EXFO_OSICS_T100_MAX_FREQUENCY = "EXFO OSICS T100 Max Frequency";
 
+// QSettings Key Values - EXFO OSICS SWT
+const QByteArray EXFO_OSICS_SWT_OPMODE = "EXFO OSICS SWT Operating Mode";
+const QByteArray EXFO_OSICS_SWT_ACTIVE_CHANNEL = "EXFO OSICS SWT Active Channel";
+const QByteArray EXFO_OSICS_SWT_POWER_SETTING = "EXFO OSICS SWT Power Setting";
+const QByteArray EXFO_OSICS_SWT_WAVELENGTH_SETTING = "EXFO OSICS SWT Wavelength Setting";
+const QByteArray EXFO_OSICS_SWT_FREQUENCY_SETTING = "EXFO OSICS SWT Frequency Setting";
+
+// QSettings Key Values - EXFO OSICS ATN
+const QByteArray EXFO_OSICS_ATN_ATTENUATION  = "EXFO OSICS ATN Attenuation";
+const QByteArray EXFO_OSICS_ATN_MIN_ATTENUATION_1 = "EXFO OSICS ATN First Min Attenuation";
+const QByteArray EXFO_OSICS_ATN_MAX_ATTENUATION_1 = "EXFO OSICS ATN First Max Attenuation";
+const QByteArray EXFO_OSICS_ATN_MIN_ATTENUATION_2 = "EXFO OSICS ATN Second Min Attenuation";
+const QByteArray EXFO_OSICS_ATN_MAX_ATTENUATION_2 = "EXFO OSICS ATN Second Max Attenuation";
+const QByteArray EXFO_OSICS_ATN_REF_WAV_NUMBER = "EXFO OSICS ATN Reference Wavelength Number";
+const QByteArray EXFO_OSICS_ATN_REF_WAVELENGTH_1 = "EXFO OSICS ATN First Reference Wavelength";
+const QByteArray EXFO_OSICS_ATN_REF_WAVELENGTH_2 = "EXFO OSICS ATN Second Reference Wavelength";
+const QByteArray EXFO_OSICS_ATN_OFFSET = "EXFO OSICS ATN Offset";
+
 // Math Constants
 const double SPEED_OF_LIGHT = 299792458;
 #endif // CONSTANTS_H
+

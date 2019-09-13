@@ -145,9 +145,10 @@ public:
      */
     void getSignalChannel(int slotNum, QByteArray &response);
 
-signals:
-    void signalSendCmdRsp(QByteArray instrAddress, QByteArray &command, QByteArray &response);
-    void signalSendCmdNoRsp(QByteArray instrAddress, QByteArray &command);
+// *********** Functions for Applying/Updating Config Settings **********
+
+    void applyConfigSettings(QSettings &configSettings);
+    void updateConfig(QSettings &configSettings);
 
 private:
 
@@ -156,6 +157,15 @@ private:
 
     // the physical address of the instrument
     QByteArray theInstrLoc;
+
+    int slotNum = 1;
+
+    void updateOperatingModeSettings(QSettings &configSettings);
+    void updateActiveChannelSettings(QSettings &configSettings);
+    void updatePowerSettings(QSettings &configSettings);
+    void updateWavelengthSettings(QSettings &configSettings);
+    void updateFrequencySettings(QSettings &configSettings);
+
 };
 
 #endif // EXFO_OSICS_SWT_H

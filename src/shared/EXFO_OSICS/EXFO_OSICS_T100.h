@@ -168,10 +168,11 @@ private:
     // the physical address of the instrument
     QByteArray theInstrLoc;
 
+    int slotNum = 1;
+
     void updatePowerSettings(QSettings &configSettings);
     void updateWavelengthSettings(QSettings &configSettings);
     void updateFrequencySettings(QSettings &configSettings);
-
 };
 
 #endif // EXFO_OSICS_T100_H

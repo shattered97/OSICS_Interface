@@ -84,4 +84,39 @@ void EXFO_OSICS_ATN::moduleAttenuationOffsetQuery(int slotNum, QByteArray wavele
 }
 
 
+void EXFO_OSICS_ATN::applyConfigSettings(QSettings &configSettings){
+
+}
+
+void EXFO_OSICS_ATN::updateConfig(QSettings &configSettings){
+    qDebug() << "atn updateConfig()";
+
+    updateAttenuationSettings(configSettings);
+    updateOffsetSettings(configSettings);
+    updateWavelengthSettings(configSettings);
+}
+
+void EXFO_OSICS_ATN::updateAttenuationSettings(QSettings &configSettings){
+    QByteArray attenuation;
+    QByteArray minAndMaxAttenuation;
+
+    moduleAttenuationQuery(slotNum, attenuation);
+
+    // parse returned value
+    attenuation = attenuation.split('=')[1];
+
+    // depending on the reference wavelength, the min/max attenuation is different
+    QByteArray refWavelengthNumber;
+    refWavelengthModuleQuery(slotNum, refWavelengthNumber);
+
+    moduleAttenuationMinMaxQuery(slotNum, refWavelengthNumber, minAndMaxAttenuation);
+}
+
+void EXFO_OSICS_ATN::updateOffsetSettings(QSettings &configSettings){
+
+}
+
+void EXFO_OSICS_ATN::updateWavelengthSettings(QSettings &configSettings){
+
+}
 

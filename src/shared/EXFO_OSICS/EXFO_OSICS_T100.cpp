@@ -158,12 +158,12 @@ void EXFO_OSICS_T100::updatePowerSettings(QSettings &configSettings){
     QByteArray maxPower;
     QByteArray laserState;
 
-    outputPowerModuleQuery(1, power);
-    firstCalibrationPowerQuery(1, minPower);
-    secondCalibrationPowerQuery(1, maxPower);
-    laserStateModuleQuery(1, laserState);
+    outputPowerModuleQuery(slotNum, power);
+    firstCalibrationPowerQuery(slotNum, minPower);
+    secondCalibrationPowerQuery(slotNum, maxPower);
+    laserStateModuleQuery(slotNum, laserState);
 
-    // parse returned
+    // parse returned value
     power = power.split(':')[1].trimmed();
     if(power != "Disabled"){
         power = power.split('=')[1];
@@ -193,9 +193,9 @@ void EXFO_OSICS_T100::updateWavelengthSettings(QSettings &configSettings){
     QByteArray minWavelength;
     QByteArray maxWavelength;
 
-    refWavelengthModuleQuery(1, wavelength);
-    firstCalibrationWavelengthQuery(1, minWavelength);
-    secondCalibrationWavelengthQuery(1, maxWavelength);
+    refWavelengthModuleQuery(slotNum, wavelength);
+    firstCalibrationWavelengthQuery(slotNum, minWavelength);
+    secondCalibrationWavelengthQuery(slotNum, maxWavelength);
 
     // parse returned strings
     wavelength = wavelength.split('=')[1];
@@ -219,7 +219,7 @@ void EXFO_OSICS_T100::updateFrequencySettings(QSettings &configSettings){
     QByteArray minFrequency;
     QByteArray maxFrequency;
 
-    frequencyModuleQuery(1, frequency);
+    frequencyModuleQuery(slotNum, frequency);
     // #TODO how to handle min/max values with no queries?
     minFrequency = "0";
     maxFrequency = "0";

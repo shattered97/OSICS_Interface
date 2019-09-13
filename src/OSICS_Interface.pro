@@ -18,6 +18,7 @@ INCLUDEPATH += "C:/Program Files/IVI Foundation/VISA/Win64/Include" \
                 shared \
                 EXFO_OSICS \
                 shared/Keysight_N7714A \
+                shared/ANDO_AQ6331 \
                 shared/Power_Meters
 
 DEPENDPATH += "C:/Program Files/IVI Foundation/VISA/Win64/Include"
@@ -59,6 +60,7 @@ SOURCES += \
         shared/EXFO_OSICS/EXFO_OSICS_SWT.cpp \
         shared/EXFO_OSICS/EXFO_OSICS_T100.cpp \
         shared/Keysight_N7714A/N7714A.cpp \
+        shared/Ando_AQ6331/Ando_AQ6331.cpp \
         shared/Power_Meters/KeysightPowerMeter.cpp \
         shared/Power_Meters/PowerMeter.cpp \
         shared/WindowFactory.cpp \
@@ -89,6 +91,7 @@ HEADERS += \
         shared/EXFO_OSICS/EXFO_OSICS_SWT.h \
         shared/EXFO_OSICS/EXFO_OSICS_T100.h \
         shared/Keysight_N7714A/N7714A.h \
+        shared/Ando_AQ6331/Ando_AQ6331.h \
         shared/Power_Meters/PowerMeter.h \
         shared/Power_Meters/KeysightPowerMeter.h \
         testsetupwindow.h
