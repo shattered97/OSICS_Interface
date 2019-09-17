@@ -1,0 +1,11 @@
+#ifndef EXFO_T100_SWT_OSA_WAVELENGTHTEST_H
+#define EXFO_T100_SWT_OSA_WAVELENGTHTEST_H
+
+
+class EXFO_T100_SWT_OSA_WavelengthTest
+{
+public:
+    EXFO_T100_SWT_OSA_WavelengthTest();
+};
+
+#endif // EXFO_T100_SWT_OSA_WAVELENGTHTEST_H
