@@ -33,6 +33,7 @@ void Orchestrator::slotLookForDevices()
 
 void Orchestrator::slotCreateDevice(QString type, QByteArray instrumentAddress, QByteArray instrumentIdentity)
 {
+    qDebug() << "slotCreateDevice()";
     QVariant deviceVariant;
     // #TODO finish enum for type strings
 
@@ -46,11 +47,28 @@ void Orchestrator::slotCreateDevice(QString type, QByteArray instrumentAddress, 
 
     }
     else if(type == "EXFO,OSICS"){
+        qDebug() << "exfo in slotCreateDevice()";
+
         EXFO_OSICS_MAINFRAME *device = new EXFO_OSICS_MAINFRAME(instrumentIdentity, instrumentAddress);
+
+        // connecting signals for sending commands here so we can query for installed modules
+        QObject::connect(device, SIGNAL(signalSendCmdRsp(QByteArray, QByteArray&, QByteArray&)),
+                         this, SLOT(slotSendCmdRsp(QByteArray, QByteArray &, QByteArray &)));
+        QObject::connect(device, SIGNAL(signalSendCmdNoRsp(QByteArray, QByteArray&)),
+                         this, SLOT(slotSendCmdNoRsp(QByteArray, QByteArray &)));
+
+        QObject::connect(this, SIGNAL(signalSetupEXFOModules()), device, SLOT(slotSetupEXFOModules()));
+        emit signalSetupEXFOModules();
+
         deviceVariant.setValue(device);
+
     }
     else if(type == "ANDO,AQ6331"){
         Ando_AQ6331 *device = new Ando_AQ6331(instrumentIdentity, instrumentAddress);
+        deviceVariant.setValue(device);
+    }
+    else if(type == Bristol_428A_DEVICE){
+        Bristol_428A *device = new Bristol_428A(instrumentIdentity, instrumentAddress);
         deviceVariant.setValue(device);
     }
     else{
@@ -78,53 +96,94 @@ QVariant Orchestrator::getDeviceAtIndex(int index){
     return selectedDevices.at(index);
 }
 
-void Orchestrator::slotGetEXFOModuleQVariants(QList<ModuleConfigPair> &modules, QList<QByteArray> modTypes, QVariant &device){
+void Orchestrator::slotGetEXFOModuleQVariants(QMap<int, QVariant> &modules, QVariant &device){
     // #TODO Factory class?
 
-    qDebug() << "slotGetEXFOModuleQVariants";
-    DefaultInstrument *deviceFromVariant = device.value<DefaultInstrument*>();
-    QByteArray chassisAddress = deviceFromVariant->getInstrLocation();
-    QByteArray chassisIdentity = deviceFromVariant->getInstrIdentity();
-
+    qDebug() << "slotGetEXFOModuleQVariants()";
+    EXFO_OSICS_MAINFRAME *exfo = device.value<EXFO_OSICS_MAINFRAME*>();
+    QByteArray chassisAddress = exfo->getInstrLocation();
+    QByteArray chassisIdentity = exfo->getInstrIdentity();
+    QList<QByteArray> modTypes = exfo->getModuleTypeNames();
     QVariant moduleVariant;
-    for(int i = 0; i < modTypes.size(); i++){
+
+
+    for(int i = 0; i < EXFO_OSICS_NUM_SLOTS; i++){
+        int slotNum = i + 1;
         if(modTypes[i].contains("T100")){
             qDebug() << "t100 module";
             EXFO_OSICS_T100 *module = new EXFO_OSICS_T100(chassisIdentity, chassisAddress);
+            module->setSlotNum(slotNum);
             moduleVariant.setValue(module);
+            modules.insert(slotNum, moduleVariant);
+
+            QObject::connect(module, SIGNAL(signalSendCmdRsp(QByteArray, QByteArray&, QByteArray&)),
+                             this, SLOT(slotSendCmdRsp(QByteArray, QByteArray &, QByteArray &)));
+            QObject::connect(module, SIGNAL(signalSendCmdNoRsp(QByteArray, QByteArray&)),
+                             this, SLOT(slotSendCmdNoRsp(QByteArray, QByteArray &)));
+
+            // create window
+            QMainWindow *configWindow = WindowFactory::makeWindow(modTypes[i], moduleVariant);
+            module->setConfigWindow(configWindow);
         }
         else if(modTypes[i].contains("ATN")){
             qDebug() << "atn module";
             EXFO_OSICS_ATN *module = new EXFO_OSICS_ATN(chassisIdentity, chassisAddress);
+            module->setSlotNum(slotNum);
             moduleVariant.setValue(module);
+            modules.insert(slotNum, moduleVariant);
+
+            QObject::connect(module, SIGNAL(signalSendCmdRsp(QByteArray, QByteArray&, QByteArray&)),
+                             this, SLOT(slotSendCmdRsp(QByteArray, QByteArray &, QByteArray &)));
+            QObject::connect(module, SIGNAL(signalSendCmdNoRsp(QByteArray, QByteArray&)),
+                             this, SLOT(slotSendCmdNoRsp(QByteArray, QByteArray &)));
+
+            // create window
+            QMainWindow *configWindow = WindowFactory::makeWindow(modTypes[i], moduleVariant);
+            module->setConfigWindow(configWindow);
         }
         else if(modTypes[i].contains("SWT")){
             qDebug() << "swt module";
             EXFO_OSICS_SWT *module = new EXFO_OSICS_SWT(chassisIdentity, chassisAddress);
+            module->setSlotNum(slotNum);
             moduleVariant.setValue(module);
+            modules.insert(slotNum, moduleVariant);
+
+            QObject::connect(module, SIGNAL(signalSendCmdRsp(QByteArray, QByteArray&, QByteArray&)),
+                             this, SLOT(slotSendCmdRsp(QByteArray, QByteArray &, QByteArray &)));
+            QObject::connect(module, SIGNAL(signalSendCmdNoRsp(QByteArray, QByteArray&)),
+                             this, SLOT(slotSendCmdNoRsp(QByteArray, QByteArray &)));
+
+            // create window
+            QMainWindow *configWindow = WindowFactory::makeWindow(modTypes[i], moduleVariant);
+            module->setConfigWindow(configWindow);
         }
         else{
             // #TODO slot is either empty or module is not supported (error msg)
         }
 
 
-        // create window
-        QMainWindow *configWindow = WindowFactory::makeWindow(modTypes[i], moduleVariant);
         DefaultInstrument *module = moduleVariant.value<DefaultInstrument*>();
 
-        QObject::connect(module, SIGNAL(signalSendCmdRsp(QByteArray, QByteArray&, QByteArray&)),
-                         this, SLOT(slotSendCmdRsp(QByteArray, QByteArray &, QByteArray &)));
-        QObject::connect(module, SIGNAL(signalSendCmdNoRsp(QByteArray, QByteArray&)),
-                         this, SLOT(slotSendCmdNoRsp(QByteArray, QByteArray &)));
-
-        module->setConfigWindow(configWindow);
-
-        ModuleConfigPair modConfigPair;
-        modConfigPair.first = moduleVariant;
-        modConfigPair.second = configWindow;
-        modules.append(modConfigPair);
     }
 
+}
+
+void Orchestrator::slotGetEXFOModuleConfigPairs(QVariant &device, QMap<int, ModuleConfigPair> &moduleConfigPairs){
+    // get exfo from qvariant
+    qDebug() << "slotGetEXFOModuleConfigPairs()";
+    EXFO_OSICS_MAINFRAME *exfo = device.value<EXFO_OSICS_MAINFRAME*>();
+    QMap<int, QVariant> moduleVariantMap = exfo->getModuleSlotQVariantMap();
+
+    QList<ModuleConfigPair> configPairs;
+    for(int i = 0; i < EXFO_OSICS_NUM_SLOTS; i++){
+        int slotNum = i + 1;
+        if(moduleVariantMap.count(slotNum)){
+            QVariant moduleVariant = exfo->getModuleAtSlot(slotNum);
+            QMainWindow *moduleWindow = exfo->getWindowForModuleAtSlot(slotNum);
+            ModuleConfigPair modPair(moduleVariant, moduleWindow);
+            moduleConfigPairs.insert(slotNum, modPair);
+        }
+    }
 }
 
 void Orchestrator::slotUpdateConfigSettings(QVariant &deviceVariant, QSettings &configSettings){
@@ -132,7 +191,7 @@ void Orchestrator::slotUpdateConfigSettings(QVariant &deviceVariant, QSettings &
     QString typeName = QString(deviceVariant.typeName());
     typeName.chop(1);
 
-     qDebug() << "slotupdateconfigsettings()";
+    qDebug() << "slotupdateconfigsettings()";
 
     if(typeName == "PowerMeter"){
         qDebug() << "QVariant interpreted as PowerMeter";
@@ -193,6 +252,7 @@ void Orchestrator::slotApplyConfigSettings(QVariant &deviceVariant, QSettings &c
     QString typeName = QString(deviceVariant.typeName());
     typeName.chop(1);
 
+    qDebug() << typeName;
     if(typeName == "PowerMeter"){
         qDebug() << "QVariant interpreted as PowerMeter";
         PowerMeter* device = deviceVariant.value<PowerMeter*>();
@@ -218,6 +278,27 @@ void Orchestrator::slotApplyConfigSettings(QVariant &deviceVariant, QSettings &c
         QObject::connect(this, SIGNAL(signalSettingsUpdated()), device->getConfigWindow(), SLOT(slotUpdateWindow()));
         emit signalSettingsUpdated();
     }
+    else if(typeName == "EXFO_OSICS_ATN"){
+        EXFO_OSICS_ATN* device = deviceVariant.value<EXFO_OSICS_ATN*>();
+        device->applyConfigSettings(configSettings);
+
+        QObject::connect(this, SIGNAL(signalSettingsUpdated()), device->getConfigWindow(), SLOT(slotUpdateWindow()));
+        emit signalSettingsUpdated();
+    }
+    else if(typeName == "EXFO_OSICS_SWT"){
+        EXFO_OSICS_SWT* device = deviceVariant.value<EXFO_OSICS_SWT*>();
+        device->applyConfigSettings(configSettings);
+
+        QObject::connect(this, SIGNAL(signalSettingsUpdated()), device->getConfigWindow(), SLOT(slotUpdateWindow()));
+        emit signalSettingsUpdated();
+    }
+    else if(typeName == "EXFO_OSICS_T100"){
+        EXFO_OSICS_T100* device = deviceVariant.value<EXFO_OSICS_T100*>();
+        device->applyConfigSettings(configSettings);
+
+        QObject::connect(this, SIGNAL(signalSettingsUpdated()), device->getConfigWindow(), SLOT(slotUpdateWindow()));
+        emit signalSettingsUpdated();
+    }
     else{
         qDebug() << "device not recognized in slotApplyConfigSettings()";
         // #TODO error/exit
@@ -225,6 +306,7 @@ void Orchestrator::slotApplyConfigSettings(QVariant &deviceVariant, QSettings &c
 }
 
 void Orchestrator::slotSendCmdNoRsp(QByteArray instrAddress, QByteArray &command){
+    qDebug() << QObject::sender();
     qDebug() << "Sent command: " << command;
     bool success = true;
 
@@ -258,6 +340,7 @@ void Orchestrator::slotSendCmdNoRsp(QByteArray instrAddress, QByteArray &command
 }
 
 void Orchestrator::slotSendCmdRsp(QByteArray instrAddress, QByteArray &command, QByteArray &response){
+    qDebug() << QObject::sender();
     qDebug() << "Command sent: " << command;
     bool success = true;
 
@@ -391,11 +474,6 @@ void Orchestrator::runOSATest(QByteArray filename, double startWav, double endWa
     EXFO_OSICS_MAINFRAME *exfo = exfoVariant.value<EXFO_OSICS_MAINFRAME*>();
     EXFO_OSICS_T100 *t100 = new EXFO_OSICS_T100(exfo->getInstrIdentity(), exfo->getInstrLocation());
 
-    QObject::connect(t100, SIGNAL(signalSendCmdRsp(QByteArray, QByteArray&, QByteArray&)),
-                     this, SLOT(slotSendCmdRsp(QByteArray, QByteArray &, QByteArray &)));
-    QObject::connect(t100, SIGNAL(signalSendCmdNoRsp(QByteArray, QByteArray&)),
-                     this, SLOT(slotSendCmdNoRsp(QByteArray, QByteArray &)));
-
 
     // init output file
     QFile file(filename);
@@ -452,6 +530,18 @@ void Orchestrator::runOSATest(QByteArray filename, double startWav, double endWa
     }
 
     qDebug() << "COMPLETE **********************************************";
+
+}
+
+void Orchestrator::slotBeginTest(QString testTypeName){
+    // #TODO probably turn this into a factory
+    // #TODO probably do enum for test types
+    qDebug() << "in slotBeginTest()";
+    DeviceTest *test = DeviceTestFactory::makeDeviceTest(testTypeName, selectedDevices);
+
+    qDebug() << "created DeviceTest from factory";
+    // call function to start test
+    test->runDeviceTest();
 
 }
 
@@ -519,18 +609,10 @@ void Orchestrator::runT100CharacterizationExperiment(QString filename,
     QVariant exfoVariant = selectedDevices[1];
 
     KeysightPowerMeter *n7745a = powerMeterVariant.value<KeysightPowerMeter*>();
-    QObject::connect(n7745a, SIGNAL(signalSendCmdRsp(QByteArray, QByteArray&, QByteArray&)),
-                     this, SLOT(slotSendCmdRsp(QByteArray, QByteArray &, QByteArray &)));
-    QObject::connect(n7745a, SIGNAL(signalSendCmdNoRsp(QByteArray, QByteArray&)),
-                     this, SLOT(slotSendCmdNoRsp(QByteArray, QByteArray &)));
 
     EXFO_OSICS_MAINFRAME *exfo = exfoVariant.value<EXFO_OSICS_MAINFRAME*>();
     EXFO_OSICS_T100 *t100 = new EXFO_OSICS_T100(exfo->getInstrIdentity(), exfo->getInstrLocation());
 
-    QObject::connect(t100, SIGNAL(signalSendCmdRsp(QByteArray, QByteArray&, QByteArray&)),
-                     this, SLOT(slotSendCmdRsp(QByteArray, QByteArray &, QByteArray &)));
-    QObject::connect(t100, SIGNAL(signalSendCmdNoRsp(QByteArray, QByteArray&)),
-                     this, SLOT(slotSendCmdNoRsp(QByteArray, QByteArray &)));
 
     // init output file
     QFile file(filename);

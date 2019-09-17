@@ -441,7 +441,16 @@ public:
     void applyConfigSettings(QSettings &configSettings);
     void updateConfig(QSettings &configSettings);
     void updateInstalledModules(QSettings &configSettings);
+    QVariant getModuleAtSlot(int slotNum);
+    QMainWindow* getWindowForModuleAtSlot(int slotNum);
+    QList<QByteArray> getModuleTypeNames();
+    QMap<int, QVariant> getModuleSlotQVariantMap();
 
+public slots:
+    void slotSetupEXFOModules();
+
+signals:
+    void signalGetEXFOModuleQVariants(QMap<int, QVariant> &modules, QVariant &device);
 
 protected:
 
@@ -477,8 +486,13 @@ private:
     // the physical address of the instrument
     QByteArray theInstrLoc;
 
-    // list of modules installed in chassis
-    QList<QVariant> modules;
+    // map of slot numbers to modules installed in chassis
+    QMap<int, QVariant> modules;
+
+    // list of module names
+    QList<QByteArray> moduleNames;
+
+    void setupModuleTypesList();
 
 };
 

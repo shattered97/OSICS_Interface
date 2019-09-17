@@ -17,15 +17,18 @@ QMainWindow *WindowFactory::makeWindow(QString windowType, QVariant &deviceVaria
     }
     else if(windowType.contains("EXFO,OSICS")){
         window = new OSICSMainframeSetupWindow(deviceVariant);
+
     }
     else if(windowType.contains("T100")){
         qDebug() << "t100 window created";
         window = new ConfigOSICS_T100(deviceVariant);
     }
     else if(windowType.contains("ATN")){
+        qDebug() << "atn window created";
         window = new ConfigOSICS_ATN(deviceVariant);
     }
     else if(windowType.contains("SWT")){
+        qDebug() << "swt window created";
         window = new ConfigOSICS_SWT(deviceVariant);
     }
     else{

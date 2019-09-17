@@ -49,7 +49,7 @@ void ConfigOSICS_SWT::getValuesFromConfig()
 {
     qDebug() << "getValuesFromConfig() t100";
 
-    operatingMode = settings->value(EXFO_OSICS_SWT_OPMODE).value<QByteArray>();
+    operatingMode = settings->value(EXFO_OSICS_SWT_OPMODE).value<QByteArray>().trimmed();
     qDebug() << operatingMode;
 
     activeChannel = settings->value(EXFO_OSICS_SWT_ACTIVE_CHANNEL).value<QByteArray>();
@@ -58,14 +58,12 @@ void ConfigOSICS_SWT::getValuesFromConfig()
     powerSetting = settings->value(EXFO_OSICS_SWT_POWER_SETTING).value<QByteArray>();
     qDebug() << powerSetting;
 
-    wavelengthSetting = settings->value(EXFO_OSICS_T100_WAVELENGTH).value<QByteArray>();
+    wavelengthSetting = settings->value(EXFO_OSICS_SWT_WAVELENGTH_SETTING).value<QByteArray>();
     qDebug() << wavelengthSetting;
 
-    frequencySetting = settings->value(EXFO_OSICS_T100_FREQUENCY).value<QByteArray>();
+    frequencySetting = settings->value(EXFO_OSICS_SWT_FREQUENCY_SETTING).value<QByteArray>();
     qDebug() << frequencySetting;
-
 }
-
 
 void ConfigOSICS_SWT::populateAllValues()
 {
@@ -80,7 +78,6 @@ void ConfigOSICS_SWT::populateAllValues()
     populateMaxPower();
 
     // wavelength values
-    populateWavelengthUnit();
     populateWavelength();
     populateMinWavelength();
     populateMaxWavelength();
@@ -94,47 +91,54 @@ void ConfigOSICS_SWT::populateAllValues()
 }
 void ConfigOSICS_SWT::populateOperatingMode()
 {
-    if(operatingMode == "Full-Band"){
+    if(operatingMode == "ECL"){
         ui->opModeRadioBtnFullBand->setChecked(true);
     }
-    else{
+    else if(operatingMode == "SWT"){
         ui->opModeRadioBtnSwitch->setChecked(true);
     }
 }
 
 void ConfigOSICS_SWT::populatePowerUnit()
 {
-    if(operatingMode == "Full-Band"){
-        ui->opModeRadioBtnFullBand->setChecked(true);
-    }
-    else{
-        ui->opModeRadioBtnSwitch->setChecked(true);
-    }
+//    if(operatingMode == "ECL"){
+//        ui->opModeRadioBtnFullBand->setChecked(true);
+//    }
+//    else{
+//        ui->opModeRadioBtnSwitch->setChecked(true);
+//    }
 }
 
 void ConfigOSICS_SWT::populatePower()
 {
-    ui->powerDisplay->setText(QByteArray::number(powerSetting.toDouble()));
+    // power is stored in dBm (output of module)
+    double convertedPower = powerSetting.toDouble();
+    if(ui->powerUnitComboBox->currentText() == "Watt"){
+        convertedPower = ConversionUtilities::convertDBmToWatt(convertedPower);
+    }
+    ui->powerDisplay->setText(QByteArray::number(convertedPower));
 }
 
 void ConfigOSICS_SWT::populateMinPower()
 {
-    ui->minPowerDisplay->setText("0");
+    // power is stored in dBm (output of module)
+    double convertedPower = EXFO_OSICS_SWT_MIN_POWER_DBM.toDouble();
+    if(ui->powerUnitComboBox->currentText() == "Watt"){
+        convertedPower = ConversionUtilities::convertDBmToWatt(convertedPower);
+    }
+    ui->minPowerDisplay->setText(QByteArray::number(convertedPower));
 }
 
 void ConfigOSICS_SWT::populateMaxPower()
 {
-    ui->maxPowerDisplay->setText("0");
+    // power is stored in dBm (output of module)
+    double convertedPower = EXFO_OSICS_SWT_MAX_POWER_DBM.toDouble();
+    if(ui->powerUnitComboBox->currentText() == "Watt"){
+        convertedPower = ConversionUtilities::convertDBmToWatt(convertedPower);
+    }
+    ui->maxPowerDisplay->setText(QByteArray::number(convertedPower));
 }
 
-void ConfigOSICS_SWT::populateWavelengthUnit()
-{
-    QByteArray unitText = ui->wavelengthUnitComboBox->currentText().toLatin1();
-    ui->wavelengthDisplayUnitLabel->setText(unitText);
-    ui->wavelengthEditUnitLabel->setText(unitText);
-    ui->minWavelengthDisplayUnitLabel->setText(unitText);
-    ui->maxWavelengthDisplayUnitLabel->setText(unitText);
-}
 
 void ConfigOSICS_SWT::populateWavelength()
 {
@@ -143,12 +147,12 @@ void ConfigOSICS_SWT::populateWavelength()
 
 void ConfigOSICS_SWT::populateMinWavelength()
 {
-    ui->minWavelengthDisplay->setText("0");
+    ui->minWavelengthDisplay->setText(EXFO_OSICS_SWT_MIN_WAV_NM);
 }
 
 void ConfigOSICS_SWT::populateMaxWavelength()
 {
-    ui->maxWavelengthDisplay->setText("0");
+    ui->maxWavelengthDisplay->setText(EXFO_OSICS_SWT_MAX_WAV_NM);
 }
 
 void ConfigOSICS_SWT::populateFrequencyUnit()
@@ -167,12 +171,31 @@ void ConfigOSICS_SWT::populateFrequency()
 
 void ConfigOSICS_SWT::populateMinFrequency()
 {
-    ui->frequencyDisplay->setText("0");
+    // get min frequency by converting min wavelength
+
+    double minWavelengthNM = EXFO_OSICS_SWT_MIN_WAV_NM.toDouble();
+    // convert to meters
+    double minWavelengthM = ConversionUtilities::convertWavelengthToMeter(minWavelengthNM, "nm");
+    double minFrequencyHz = ConversionUtilities::convertWavelengthToFrequency(minWavelengthM);
+    // convert from Hz
+    QByteArray unit = ui->frequencyUnitComboBox->currentText().toLatin1();
+    double minFrequencyConverted = ConversionUtilities::convertFrequencyFromHz(minFrequencyHz, unit);
+    ui->minFrequencyDisplay->setText(QByteArray::number(minFrequencyConverted));
+
 }
 
 void ConfigOSICS_SWT::populateMaxFrequency()
 {
-    ui->maxFrequencyDisplay->setText("0");
+    // get max frequency by converting ax wavelength
+
+    double maxWavelengthNM = EXFO_OSICS_SWT_MAX_WAV_NM.toDouble();
+    // convert to meters
+    double maxWavelengthM = ConversionUtilities::convertWavelengthToMeter(maxWavelengthNM, "nm");
+    double maxFrequencyHz = ConversionUtilities::convertWavelengthToFrequency(maxWavelengthM);
+    // convert from Hz
+    QByteArray unit = ui->frequencyUnitComboBox->currentText().toLatin1();
+    double maxFrequencyConverted = ConversionUtilities::convertFrequencyFromHz(maxFrequencyHz, unit);
+    ui->maxFrequencyDisplay->setText(QByteArray::number(maxFrequencyConverted));
 }
 
 void ConfigOSICS_SWT::on_opModeRadioBtnFullBand_clicked()
@@ -182,7 +205,7 @@ void ConfigOSICS_SWT::on_opModeRadioBtnFullBand_clicked()
     ui->wavelengthSettingsGroup->show();
     ui->frequencySettingsGroup->show();
 
-    operatingMode = ui->opModeRadioBtnSwitch->text().toLatin1();
+    operatingMode = "ECL";
     settings->setValue(EXFO_OSICS_SWT_OPMODE, QVariant::fromValue(operatingMode));
     populateOperatingMode();
 }
@@ -194,7 +217,7 @@ void ConfigOSICS_SWT::on_opModeRadioBtnSwitch_clicked()
     ui->wavelengthSettingsGroup->hide();
     ui->frequencySettingsGroup->hide();
 
-    operatingMode = ui->opModeRadioBtnSwitch->text().toLatin1();
+    operatingMode = "SWT";
     settings->setValue(EXFO_OSICS_SWT_OPMODE, QVariant::fromValue(operatingMode));
     populateOperatingMode();
 }
@@ -236,7 +259,6 @@ void ConfigOSICS_SWT::on_powerUnitComboBox_currentIndexChanged(const QString &ar
 void ConfigOSICS_SWT::on_wavelengthUnitComboBox_currentIndexChanged(const QString &arg1)
 {
     // refresh displayed wavelength values
-    populateWavelengthUnit();
     populateWavelength();
     populateMinWavelength();
     populateMaxWavelength();
@@ -313,16 +335,14 @@ void ConfigOSICS_SWT::on_wavelengthEdit_editingFinished()
     if(isInputValueValid(wavelengthValue, minWavelength, maxWavelength)){
         // wavelength is valid, insert into list
         double wavDouble = wavelengthValue.toDouble();
-        QByteArray unit = ui->wavelengthUnitComboBox->currentText().toLatin1();
-        double converted = ConversionUtilities::convertWavelengthToMeter(wavDouble, unit);
-        wavelengthSetting = QByteArray::number(converted);
+        wavelengthSetting = QByteArray::number(wavDouble);
 
         // update the settings object
         settings->setValue(EXFO_OSICS_T100_WAVELENGTH, QVariant::fromValue(wavelengthSetting));
         populateWavelength();
 
         // update frequency b/c the values are related
-        double frequency = ConversionUtilities::convertWavelengthToFrequency(converted);
+        double frequency = ConversionUtilities::convertWavelengthToFrequency(wavDouble);
         frequencySetting = QByteArray::number(frequency);
         settings->setValue(EXFO_OSICS_T100_FREQUENCY, QVariant::fromValue(frequencySetting));
         populateFrequency();

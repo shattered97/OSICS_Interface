@@ -22,8 +22,7 @@ public:
 signals:
     void signalUpdateConfigSettings(QVariant &device, QSettings &configSettings);
     void signalApplyConfigSettings(QVariant &device, QSettings &configSettings);
-    void signalGetEXFOModuleQVariants(QList<ModuleConfigPair> &modules, QList<QByteArray> moduleTypes, QVariant &device);
-
+    void signalGetEXFOModuleConfigPairs(QVariant &device, QMap<int, ModuleConfigPair> &moduleConfigPairs);
 public slots:
     void slotUpdateWindow();
     void slotForwardApplyConfigSettings(QVariant &deviceVariant, QSettings &configSettings);
@@ -44,7 +43,7 @@ private:
     QByteArray deviceIdentity;
     QByteArray deviceLocation;
     QList<QByteArray> moduleNames;
-    QList<ModuleConfigPair> modules;
+    QMap<int, ModuleConfigPair> moduleConfigPairs;
 
     void populateAllValues();
     void getValuesFromConfig();

@@ -1,6 +1,7 @@
 #include "DeviceTest.h"
 
-DeviceTest::DeviceTest()
+DeviceTest::DeviceTest(QList<QVariant> &selectedDevices, QMainWindow &configWindow)
 {
-
+    this->selectedDevices = &selectedDevices;
+    this->configWindow = &configWindow;
 }

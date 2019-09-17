@@ -4,6 +4,19 @@ EXFO_OSICS_MAINFRAME::EXFO_OSICS_MAINFRAME(QByteArray theIdentity, QByteArray th
 {
     this->theIdentity = theIdentity;
     this->theInstrLoc = theInstrLoc;
+
+}
+
+void EXFO_OSICS_MAINFRAME::slotSetupEXFOModules(){
+    qDebug() << "slotSetupEXFOModules()";
+
+    setupModuleTypesList();
+
+    QVariant exfoVariant = QVariant::fromValue(this);
+    QObject::connect(this, SIGNAL(signalGetEXFOModuleQVariants(QMap<int, QVariant> &, QVariant &)),
+                     QObject::sender(), SLOT(slotGetEXFOModuleQVariants(QMap<int, QVariant> &, QVariant &)));
+    emit signalGetEXFOModuleQVariants(modules, exfoVariant);
+
 }
 
 void EXFO_OSICS_MAINFRAME::disableMainframeLaserCmd(){
@@ -186,7 +199,6 @@ void EXFO_OSICS_MAINFRAME::refWavelengthModuleQuery(int slotNum, QByteArray &res
     insertSlotNum(baseCmd, slotNum);
 
     emit signalSendCmdRsp(theInstrLoc, baseCmd, response);
-    qDebug() << "response" << response;
 }
 
 // ******** Module System-Version Info ********
@@ -421,22 +433,41 @@ void EXFO_OSICS_MAINFRAME::updateConfig(QSettings &configSettings){
 }
 
 void EXFO_OSICS_MAINFRAME::updateInstalledModules(QSettings &configSettings){
-    QList<QByteArray> moduleTypes;
+    configSettings.setValue(EXFO_OSICS_MODULE_NAMES, QVariant::fromValue(moduleNames));
+    qDebug() << configSettings.value(EXFO_OSICS_MODULE_NAMES).value<QList<QByteArray>>();
+}
+
+void EXFO_OSICS_MAINFRAME::setupModuleTypesList(){
+
     for(int i = 0; i < EXFO_OSICS_NUM_SLOTS; i++){
         QByteArray present;
         moduleTypeAtSlotQuery(i + 1, present);
         if(present.toInt() == -1){
-            moduleTypes.append("EMPTY");
+            moduleNames.append("EMPTY");
         }
         else{
             QByteArray moduleType;
             typeOfModuleQuery(i + 1, moduleType);
-            moduleTypes.append(moduleType.split(':')[1]);
+            moduleNames.append(moduleType.split(':')[1]);
         }
     }
-
-    configSettings.setValue(EXFO_OSICS_MODULE_NAMES, QVariant::fromValue(moduleTypes));
-    qDebug() << configSettings.value(EXFO_OSICS_MODULE_NAMES).value<QList<QByteArray>>();
 }
 
+QMap<int, QVariant> EXFO_OSICS_MAINFRAME::getModuleSlotQVariantMap(){
+    return modules;
+}
+
+QVariant EXFO_OSICS_MAINFRAME::getModuleAtSlot(int slotNum){
+    return modules.value(slotNum);
+}
+
+QMainWindow* EXFO_OSICS_MAINFRAME::getWindowForModuleAtSlot(int slotNum){
+    QVariant module = modules.value(slotNum);
+    QMainWindow *configWindow = module.value<DefaultInstrument*>()->getConfigWindow();
+    return configWindow;
+}
+
+QList<QByteArray> EXFO_OSICS_MAINFRAME::getModuleTypeNames(){
+    return moduleNames;
+}
 

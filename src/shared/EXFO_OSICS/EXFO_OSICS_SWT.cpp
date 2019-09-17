@@ -182,14 +182,26 @@ void  EXFO_OSICS_SWT::getSignalChannel(int slotNum, QByteArray &response){
     emit signalSendCmdRsp(theInstrLoc, baseCmd, response);
 }
 
+
+
+void EXFO_OSICS_SWT::setSlotNum(int slotNum){
+    this->slotNum = slotNum;
+}
+
 void EXFO_OSICS_SWT::updateConfig(QSettings &configSettings){
     qDebug() << "swt updateConfig() " << theInstrLoc;
 
-    updateOperatingModeSettings(configSettings);
-    updateActiveChannelSettings(configSettings);
+    // start with full-band mode on to be able to get power/wavelength/frequency values
+    QByteArray fullBand = "ECL";
+    setAPCModuleOperatingMode(slotNum, fullBand);
+
     updatePowerSettings(configSettings);
     updateWavelengthSettings(configSettings);
     updateFrequencySettings(configSettings);
+
+    updateOperatingModeSettings(configSettings);
+    updateActiveChannelSettings(configSettings);
+
 }
 
 void EXFO_OSICS_SWT::applyConfigSettings(QSettings &configSettings){
@@ -230,6 +242,7 @@ void EXFO_OSICS_SWT::applyConfigSettings(QSettings &configSettings){
 
 void EXFO_OSICS_SWT::updateOperatingModeSettings(QSettings &configSettings)
 {
+    qDebug() << "updateOperatingModeSettings()";
     QByteArray operatingMode;
     getAPCModuleOperatingMode(slotNum, operatingMode);
 
@@ -241,6 +254,7 @@ void EXFO_OSICS_SWT::updateOperatingModeSettings(QSettings &configSettings)
 
 void EXFO_OSICS_SWT::updateActiveChannelSettings(QSettings &configSettings)
 {
+    qDebug() << "updateActiveChannelSettings()";
     QByteArray activeChannel;
     getChannelForSignalAPC(slotNum, activeChannel);
 
@@ -252,17 +266,25 @@ void EXFO_OSICS_SWT::updateActiveChannelSettings(QSettings &configSettings)
 
 void EXFO_OSICS_SWT::updatePowerSettings(QSettings &configSettings)
 {
+    qDebug() << "updatePowerSettings()";
     QByteArray power;
+
     outputPowerModuleQuery(slotNum, power);
 
-    // parse returned value
-    power = power.split('=')[1];
+    if(power.contains("Disabled")){
+        power = "Disabled";
+    }
+    else{
+        // parse returned value
+        power = power.split('=')[1];
+    }
 
     configSettings.setValue(EXFO_OSICS_SWT_POWER_SETTING, QVariant::fromValue(power));
 }
 
 void EXFO_OSICS_SWT::updateWavelengthSettings(QSettings &configSettings)
 {
+    qDebug() << "updateWavelengthSettings()";
     QByteArray wavelength;
     refWavelengthModuleQuery(slotNum, wavelength);
 
@@ -274,6 +296,7 @@ void EXFO_OSICS_SWT::updateWavelengthSettings(QSettings &configSettings)
 
 void EXFO_OSICS_SWT::updateFrequencySettings(QSettings &configSettings)
 {
+    qDebug() << "updateFrequencySettings()";
     QByteArray frequency;
     frequencyModuleQuery(slotNum, frequency);
 

@@ -12,12 +12,16 @@
 #include "Ando_AQ6331.h"
 #include <QObject>
 
+#include "DeviceTest.h"
+#include "DeviceTestFactory.h"
+
 Q_DECLARE_METATYPE(N7714A*)
 Q_DECLARE_METATYPE(KeysightPowerMeter*)
 Q_DECLARE_METATYPE(DefaultInstrument*)
 Q_DECLARE_METATYPE(PowerMeter*)
 Q_DECLARE_METATYPE(EXFO_OSICS_MAINFRAME*)
 Q_DECLARE_METATYPE(Ando_AQ6331*);
+Q_DECLARE_METATYPE(Bristol_428A*);
 
 namespace deviceType
 {
@@ -55,11 +59,13 @@ public slots:
      */
     void slotLookForDevices();
     void slotCreateDevice(QString type, QByteArray instrumentAddress, QByteArray instrumentIdentity);
-    void slotGetEXFOModuleQVariants(QList<ModuleConfigPair> &modules, QList<QByteArray> moduleTypes, QVariant &device);
-
+    void slotGetEXFOModuleQVariants(QMap <int, QVariant> &modules, QVariant &device);
+    void slotBeginTest(QString testTypeName);
+    void slotGetEXFOModuleConfigPairs(QVariant &device, QMap<int, ModuleConfigPair> &moduleConfigPairs);
 signals:
     void signalReturnDevicesFound(FoundInstr);
     void signalSettingsUpdated();
+    void signalSetupEXFOModules();
 
 private:
     VisaInterface theCommBus;               // common methods for talking to VISA devices

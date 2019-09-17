@@ -108,11 +108,35 @@ const QByteArray DEVICE_TYPES[] = {N7714A_DEVICE, N7745A_POWER_METER, EXFO_CHASS
 // Test type names
 const QByteArray N7714A_WAV_CYCLE_TEST = "N7714A Wavelength Cycle Test";
 const QByteArray OSICS_WAV_CYCLE_TEST = "EXFO OSICS Wavelength Cycle Test";
-const QByteArray TEST_TYPES[] = {N7714A_WAV_CYCLE_TEST, OSICS_WAV_CYCLE_TEST};
+const QByteArray EXFO_T100_ANDO_OSA_WAV_CYCLE_TEST = "EXFO T100 / ANDO OSA Wavelength Cycle Test";
+const QByteArray EXFO_T100_SWT_WAV_STEP_OSA_POWER_TEST = "EXFO T100 / SWT / OSA Wavelength Step Test";
+const QByteArray EXFO_T100_BRISTOL_WAV_STEP_TEST = "EXFO / T100 / Bristol / Wavelength Step Test";
+const QByteArray TEST_TYPES[] = {N7714A_WAV_CYCLE_TEST, OSICS_WAV_CYCLE_TEST, EXFO_T100_ANDO_OSA_WAV_CYCLE_TEST,
+                                 EXFO_T100_SWT_WAV_STEP_OSA_POWER_TEST, EXFO_T100_BRISTOL_WAV_STEP_TEST};
 
 // EXFO_OSICS_ATN Values
 const QByteArray EXFO_OSICS_ATN_MIN_OFFSET = "-10"; // defined in spec sheet/prog guide
 const QByteArray EXFO_OSICS_ATN_MAX_OFFSET = "10"; // defined in spec sheet/prog guide
+
+// EXFO_OSICS_SWT Values
+const QByteArray EXFO_OSICS_SWT_MIN_WAV_NM = "1250";
+const QByteArray EXFO_OSICS_SWT_MAX_WAV_NM = "1650";
+const QByteArray EXFO_OSICS_SWT_MIN_POWER_DBM = "-6.99";
+const QByteArray EXFO_OSICS_SWT_MAX_POWER_DBM = "3";
+
+// EXFO_OSICS_T100 Values
+const QByteArray EXFO_OSICS_T100_1310_MIN_WAV_NM = "1260";
+const QByteArray EXFO_OSICS_T100_1310_MAX_WAV_NM = "1360";
+const QByteArray EXFO_OSICS_T100_1415_MIN_WAV_NM = "1460";
+const QByteArray EXFO_OSICS_T100_1415_MAX_WAV_NM = "1470";
+const QByteArray EXFO_OSICS_T100_1520_MIN_WAV_NM = "1465";
+const QByteArray EXFO_OSICS_T100_1520_MAX_WAV_NM = "1575";
+const QByteArray EXFO_OSICS_T100_1550_MIN_WAV_NM = "1490";
+const QByteArray EXFO_OSICS_T100_1550_MAX_WAV_NM = "1610";
+const QByteArray EXFO_OSICS_T100_1575_MIN_WAV_NM = "1520";
+const QByteArray EXFO_OSICS_T100_1575_MAX_WAV_NM = "1630";
+const QByteArray EXFO_OSICS_T100_1620_MIN_WAV_NM = "1560";
+const QByteArray EXFO_OSICS_T100_1620_MAX_WAV_NM = "1680";
 
 // QSettings Key Values - General
 const QByteArray DEVICE_LOCATION = "Device Location";
@@ -172,7 +196,8 @@ const QByteArray EXFO_OSICS_ATN_MAX_ATTENUATION_2 = "EXFO OSICS ATN Second Max A
 const QByteArray EXFO_OSICS_ATN_REF_WAV_NUMBER = "EXFO OSICS ATN Reference Wavelength Number";
 const QByteArray EXFO_OSICS_ATN_REF_WAVELENGTH_1 = "EXFO OSICS ATN First Reference Wavelength";
 const QByteArray EXFO_OSICS_ATN_REF_WAVELENGTH_2 = "EXFO OSICS ATN Second Reference Wavelength";
-const QByteArray EXFO_OSICS_ATN_OFFSET = "EXFO OSICS ATN Offset";
+const QByteArray EXFO_OSICS_ATN_OFFSET_1 = "EXFO OSICS ATN First Offset";
+const QByteArray EXFO_OSICS_ATN_OFFSET_2 = "EXFO OSICS ATN Second Offset";
 
 // Math Constants
 const double SPEED_OF_LIGHT = 299792458;

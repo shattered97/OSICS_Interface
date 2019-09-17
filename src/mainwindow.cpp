@@ -11,6 +11,7 @@ MainWindow::MainWindow(QWidget *parent) :
     loadTestTypesList();
     loadDeviceTypesList();
 
+    QObject::connect(this, SIGNAL(signalBeginTest(QString)), orchestrator, SLOT(slotBeginTest(QString)));
     QObject::connect(this, SIGNAL(signalCreateDevice(QString, QByteArray, QByteArray)),
                      orchestrator, SLOT(slotCreateDevice(QString, QByteArray, QByteArray)));
 }
@@ -94,6 +95,8 @@ void MainWindow::on_testTypeComboBox_currentIndexChanged(int index)
 
 void MainWindow::on_addSelectedDeviceBtn_clicked()
 {
+    ui->addSelectedDeviceBtn->setEnabled(false);
+
     // copy over to selected devices list widget
     QByteArray instrumentInfo = ui->foundDevicesListWidget->currentItem()->text().toLatin1();
     ui->selectedDevicesListWidget->addItem(instrumentInfo);
@@ -108,13 +111,19 @@ void MainWindow::on_addSelectedDeviceBtn_clicked()
     emit signalCreateDevice(currentDeviceType, instrumentAddress, instrumentIdentity);
 
     QApplication::restoreOverrideCursor();
+    ui->addSelectedDeviceBtn->setEnabled(true);
 }
 
 void MainWindow::on_startTestPushButton_clicked()
 {
     // #TODO open test window
     // assuming power meter at [0], exfo at [1]
-    orchestrator->testOSACommands();
+//    orchestrator->testOSACommands();
+
+    // send signal with test type name from dropdown to Orchestrator
+    QString testTypeName = ui->testTypeComboBox->currentText();
+
+    emit signalBeginTest(testTypeName);
 }
 
 void MainWindow::on_selectedDevicesListWidget_itemDoubleClicked(QListWidgetItem *item)

@@ -72,6 +72,7 @@ public:
 
     void applyConfigSettings(QSettings &configSettings);
     void updateConfig(QSettings &configSettings);
+    void setSlotNum(int slotNum);
 
 private:
 

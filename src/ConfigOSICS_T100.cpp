@@ -14,6 +14,8 @@ ConfigOSICS_T100::ConfigOSICS_T100(QVariant &device, QWidget *parent) :
     settings = new QSettings(QSettings::IniFormat, QSettings::SystemScope, "Test Platform");
     settings->clear();
 
+    qDebug() << "CREATING T100 CONFIG WINDOW *******************************************";
+
 }
 
 ConfigOSICS_T100::~ConfigOSICS_T100()

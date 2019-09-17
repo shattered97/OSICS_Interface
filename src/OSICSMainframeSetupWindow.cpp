@@ -25,15 +25,22 @@ void OSICSMainframeSetupWindow::showEvent( QShowEvent* event )
     // initialize settings and signal to orchestrator to update them from device
     settings = new QSettings(QSettings::IniFormat, QSettings::SystemScope, "Test Platform");
     settings->clear();
+
+
+
     emit signalUpdateConfigSettings(device, *settings);
 }
 
 
 void OSICSMainframeSetupWindow::slotUpdateWindow(){
 
-    // connect slot to create module classes/windows
-    QObject::connect(this, SIGNAL(signalGetEXFOModuleQVariants(QList<ModuleConfigPair>&, QList<QByteArray>, QVariant&)),
-                     QObject::sender(), SLOT(slotGetEXFOModuleQVariants(QList<ModuleConfigPair>&, QList<QByteArray>, QVariant&)));
+    // if modules/config windows haven't been added for this window, connect w/ orchestrator and get them
+    if(moduleConfigPairs.size() == 0){
+        // connect signal to orchestrator to get modules and module windows
+        QObject::connect(this, SIGNAL(signalGetEXFOModuleConfigPairs(QVariant &, QMap<int, ModuleConfigPair> &)),
+                         QObject::sender(), SLOT(slotGetEXFOModuleConfigPairs(QVariant &, QMap<int, ModuleConfigPair> &)));
+        emit signalGetEXFOModuleConfigPairs(device, moduleConfigPairs);
+    }
 
     // store values from settings
     getValuesFromConfig();
@@ -44,11 +51,6 @@ void OSICSMainframeSetupWindow::slotUpdateWindow(){
     // disconnect signal
     QObject::disconnect(QObject::sender(), SIGNAL(signalSettingsUpdated()), this, SLOT(slotUpdateWindow()));
 
-    // if there are no modules in the QVariant modules list, signal to orchestrator to get them
-
-    if(modules.size() == 0 && numInstalledModules > 0){
-        emit signalGetEXFOModuleQVariants(modules, moduleNames, device);
-    }
 }
 
 
@@ -63,16 +65,6 @@ void OSICSMainframeSetupWindow::getValuesFromConfig(){
     moduleNames = settings->value(EXFO_OSICS_MODULE_NAMES).value<QList<QByteArray>>();
     qDebug() << moduleNames;
 
-
-
-    // slot names signal to orchestrator that we need a
-    // EXFO MAINFRAME* QVariant, each one needs a config window
-    // assigned so that we can call show() on it
-    // see if qt will like passing a qlist of qvariants over qsettings
-
-
-    // we will store on the backend the slot names (from QSettings) for display purposes
-    // we need a separate list not tied to QSettings? for the actual Qvariant device pointers
 }
 
 void OSICSMainframeSetupWindow::populateAllValues(){
@@ -102,16 +94,16 @@ void OSICSMainframeSetupWindow::populateModuleNames(){
             ui->configureButtonGroup->button(index)->setEnabled(false);
         }
     }
-    qDebug() << "num installed" << numInstalledModules;
 }
 
 
 void OSICSMainframeSetupWindow::on_configButton_clicked(int index){
     // QButton groups start at index -2 and decrease by 1
     index = index * -1 - 2;
-    qDebug() << index;
 
-    QVariant module = modules[index].first;
+    QVariant module = moduleConfigPairs.value(index + 1).first;
+    QMainWindow *configWindow = moduleConfigPairs.value(index + 1).second;
+
 
     // update settings (for mainframe, if any)
     emit signalUpdateConfigSettings(module, *settings);
@@ -119,13 +111,14 @@ void OSICSMainframeSetupWindow::on_configButton_clicked(int index){
     // connect the window to be shown with a slot that forwards apply/update
     // config settings to orchestrator
 
-    QObject::connect(modules[index].second, SIGNAL(signalApplyConfigSettings(QVariant &, QSettings &)),
+    QObject::connect(configWindow, SIGNAL(signalApplyConfigSettings(QVariant &, QSettings &)),
                      this, SLOT(slotForwardApplyConfigSettings(QVariant &, QSettings &)));
 
-    QObject::connect(modules[index].second, SIGNAL(signalUpdateConfigSettings(QVariant &, QSettings &)),
+    QObject::connect(configWindow, SIGNAL(signalUpdateConfigSettings(QVariant &, QSettings &)),
                      this, SLOT(slotForwardUpdateConfigSettings(QVariant &, QSettings &)));
 
-    modules[index].second->show();
+
+    configWindow->show();
 }
 
 

@@ -22,6 +22,7 @@ public:
     explicit ConfigOSICS_ATN(QVariant &device, QWidget *parent = nullptr);
     ~ConfigOSICS_ATN();
 
+    void populateDeviceInfo();
     void populateAttenuation();
     void populateMinAttenuation();
     void populateMaxAttenuation();
@@ -46,8 +47,6 @@ private slots:
 
     void on_saveChangesButton_clicked();
 
-    void on_wavelengthUnitComboBox_currentIndexChanged(const QString &arg1);
-
     void on_refWavelengthRadioButton1_clicked();
 
     void on_refWavelengthRadioButton2_clicked();
@@ -60,16 +59,18 @@ private:
     QString settingsFileName;
 
     int slotNum;
-
+    QByteArray moduleIdentity;
+    QByteArray moduleLocation;
     QByteArray attenuationSetting;
     QByteArray firstMinAttenuation;
     QByteArray firstMaxAttenuation;
     QByteArray secondMinAttenuation;
     QByteArray secondMaxAttenuation;
-    QByteArray refWavelengthNumber;
+    QByteArray refWavelengthNumber = "1";
     QByteArray firstRefWavelength;
     QByteArray secondRefWavelength;
-    QByteArray offset;
+    QByteArray firstOffset;
+    QByteArray secondOffset;
 
     void showEvent(QShowEvent* event);
     void getValuesFromConfig();

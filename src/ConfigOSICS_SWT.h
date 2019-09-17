@@ -28,7 +28,6 @@ public:
     void populateMaxPower();
     void populateOperatingMode();
 
-    void populateWavelengthUnit();
     void populateWavelength();
     void populateMinWavelength();
     void populateMaxWavelength();

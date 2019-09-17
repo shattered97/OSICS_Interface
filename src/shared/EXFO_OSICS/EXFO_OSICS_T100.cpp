@@ -139,6 +139,11 @@ void EXFO_OSICS_T100::outBNCPortSignalMonitoringQuery(int slotNum, QByteArray &r
 }
 
 
+
+void EXFO_OSICS_T100::setSlotNum(int slotNum){
+    this->slotNum = slotNum;
+}
+
 void EXFO_OSICS_T100::applyConfigSettings(QSettings &configSettings){
     qDebug() << "t100 applyConfigSettings()";
 }
@@ -179,12 +184,12 @@ void EXFO_OSICS_T100::updatePowerSettings(QSettings &configSettings){
     configSettings.setValue(EXFO_OSICS_T100_MAX_POWER, QVariant::fromValue(maxPower));
     configSettings.setValue(EXFO_OSICS_T100_LASER_STATE, QVariant::fromValue(laserState));
 
-    qDebug() << "*******************************************************************";
-    qDebug() << configSettings.value(EXFO_OSICS_T100_POWER).value<QByteArray>();
-    qDebug() << configSettings.value(EXFO_OSICS_T100_MIN_POWER).value<QByteArray>();
-    qDebug() << configSettings.value(EXFO_OSICS_T100_MAX_POWER).value<QByteArray>();
-    qDebug() << configSettings.value(EXFO_OSICS_T100_LASER_STATE).value<QByteArray>();
-    qDebug() << "*******************************************************************";
+//    qDebug() << "*******************************************************************";
+//    qDebug() << configSettings.value(EXFO_OSICS_T100_POWER).value<QByteArray>();
+//    qDebug() << configSettings.value(EXFO_OSICS_T100_MIN_POWER).value<QByteArray>();
+//    qDebug() << configSettings.value(EXFO_OSICS_T100_MAX_POWER).value<QByteArray>();
+//    qDebug() << configSettings.value(EXFO_OSICS_T100_LASER_STATE).value<QByteArray>();
+//    qDebug() << "*******************************************************************";
     configSettings.sync();
 }
 
@@ -206,11 +211,11 @@ void EXFO_OSICS_T100::updateWavelengthSettings(QSettings &configSettings){
     configSettings.setValue(EXFO_OSICS_T100_MIN_WAVELENGTH, QVariant::fromValue(minWavelength));
     configSettings.setValue(EXFO_OSICS_T100_MAX_WAVELENGTH, QVariant::fromValue(minWavelength));
 
-    qDebug() << "*******************************************************************";
-    qDebug() << configSettings.value(EXFO_OSICS_T100_WAVELENGTH).value<QByteArray>();
-    qDebug() << configSettings.value(EXFO_OSICS_T100_MIN_WAVELENGTH).value<QByteArray>();
-    qDebug() << configSettings.value(EXFO_OSICS_T100_MAX_WAVELENGTH).value<QByteArray>();
-    qDebug() << "*******************************************************************";
+//    qDebug() << "*******************************************************************";
+//    qDebug() << configSettings.value(EXFO_OSICS_T100_WAVELENGTH).value<QByteArray>();
+//    qDebug() << configSettings.value(EXFO_OSICS_T100_MIN_WAVELENGTH).value<QByteArray>();
+//    qDebug() << configSettings.value(EXFO_OSICS_T100_MAX_WAVELENGTH).value<QByteArray>();
+//    qDebug() << "*******************************************************************";
     configSettings.sync();
 }
 
@@ -231,10 +236,10 @@ void EXFO_OSICS_T100::updateFrequencySettings(QSettings &configSettings){
     configSettings.setValue(EXFO_OSICS_T100_MIN_FREQUENCY, QVariant::fromValue(minFrequency));
     configSettings.setValue(EXFO_OSICS_T100_MAX_FREQUENCY, QVariant::fromValue(maxFrequency));
 
-    qDebug() << "*******************************************************************";
-    qDebug() << configSettings.value(EXFO_OSICS_T100_FREQUENCY).value<QByteArray>();
-    qDebug() << configSettings.value(EXFO_OSICS_T100_MIN_FREQUENCY).value<QByteArray>();
-    qDebug() << configSettings.value(EXFO_OSICS_T100_MAX_FREQUENCY).value<QByteArray>();
-    qDebug() << "*******************************************************************";
+//    qDebug() << "*******************************************************************";
+//    qDebug() << configSettings.value(EXFO_OSICS_T100_FREQUENCY).value<QByteArray>();
+//    qDebug() << configSettings.value(EXFO_OSICS_T100_MIN_FREQUENCY).value<QByteArray>();
+//    qDebug() << configSettings.value(EXFO_OSICS_T100_MAX_FREQUENCY).value<QByteArray>();
+//    qDebug() << "*******************************************************************";
     configSettings.sync();
 }
