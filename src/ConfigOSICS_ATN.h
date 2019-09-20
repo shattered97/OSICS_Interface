@@ -57,7 +57,7 @@ private:
     QVariant device;
     QSettings *settings;
     QString settingsFileName;
-
+    bool windowConfigured = false;
     int slotNum;
     QByteArray moduleIdentity;
     QByteArray moduleLocation;
@@ -79,6 +79,15 @@ private:
 
     bool loadSettings();
     bool saveSettings();
+
+    void colorText(QLineEdit *textField, bool colored);
+    void colorDisplayFieldText();
+    void resetDisplayFieldColoredStatus();
+
+    bool attenuationDisplayTextColored = false;
+    bool attenuationOffsetDisplay1Colored = false;
+    bool attenuationOffsetDisplay2Colored = false;
+
 };
 
 #endif // CONFIGOSICS_ATN_H

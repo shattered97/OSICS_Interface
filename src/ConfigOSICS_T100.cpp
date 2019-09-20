@@ -14,7 +14,8 @@ ConfigOSICS_T100::ConfigOSICS_T100(QVariant &device, QWidget *parent) :
     settings = new QSettings(QSettings::IniFormat, QSettings::SystemScope, "Test Platform");
     settings->clear();
 
-    qDebug() << "CREATING T100 CONFIG WINDOW *******************************************";
+    minPower = EXFO_OSICS_T100_MIN_POWER_DBM;
+    maxPower = EXFO_OSICS_T100_MAX_POWER_DBM;
 
 }
 
@@ -26,17 +27,23 @@ ConfigOSICS_T100::~ConfigOSICS_T100()
 void ConfigOSICS_T100::showEvent(QShowEvent* event)
 {
     QWidget::showEvent(event);
+    if(!windowConfigured){
+        emit signalUpdateConfigSettings(device, *settings);
+    }
 
-    emit signalUpdateConfigSettings(device, *settings);
+    windowConfigured = true;
+
 }
 
 void ConfigOSICS_T100::slotUpdateWindow()
 {
-    qDebug() << "t100 slotUpdateWindow()";
     // clear text entry fields
     ui->laserWavelengthEdit->clear();
     ui->laserFrequencyEdit->clear();
     ui->laserOutputPowerEdit->clear();
+
+    // reset text fields
+    resetDisplayFieldColoredStatus();
 
     // store values from settings
     getValuesFromConfig();
@@ -50,35 +57,19 @@ void ConfigOSICS_T100::slotUpdateWindow()
 
 void ConfigOSICS_T100::getValuesFromConfig()
 {
-    qDebug() << "getValuesFromConfig() t100";
     powerSetting = settings->value(EXFO_OSICS_T100_POWER).value<QByteArray>();
-    qDebug() << powerSetting;
-    minPower = settings->value(EXFO_OSICS_T100_MIN_POWER).value<QByteArray>();
-    qDebug() << minPower;
-    maxPower = settings->value(EXFO_OSICS_T100_MAX_POWER).value<QByteArray>();
-    qDebug() << maxPower;
     laserState = settings->value(EXFO_OSICS_T100_LASER_STATE).value<QByteArray>();
-    qDebug() << laserState;
-
     wavelengthSetting = settings->value(EXFO_OSICS_T100_WAVELENGTH).value<QByteArray>();
-    qDebug() << wavelengthSetting;
     minWavelength = settings->value(EXFO_OSICS_T100_MIN_WAVELENGTH).value<QByteArray>();
-    qDebug() << minWavelength;
     maxWavelength = settings->value(EXFO_OSICS_T100_MAX_WAVELENGTH).value<QByteArray>();
-    qDebug() << maxWavelength;
-
     frequencySetting = settings->value(EXFO_OSICS_T100_FREQUENCY).value<QByteArray>();
-    qDebug() << frequencySetting;
     minFrequency = settings->value(EXFO_OSICS_T100_MIN_FREQUENCY).value<QByteArray>();
-    qDebug() << minFrequency;
     maxFrequency = settings->value(EXFO_OSICS_T100_MAX_FREQUENCY).value<QByteArray>();
-    qDebug() << maxFrequency;
 }
 
 
 void ConfigOSICS_T100::populateAllValues()
 {
-    qDebug() << "t100 populate all values()";
     // power values
     populateLaserOutputPowerUnit();
     populateLaserOutputPower();
@@ -87,7 +78,6 @@ void ConfigOSICS_T100::populateAllValues()
     populateLaserState();
 
     // wavelength values
-    populateLaserWavelengthUnit();
     populateLaserWavelength();
     populateLaserMinWavelength();
     populateLaserMaxWavelength();
@@ -97,7 +87,6 @@ void ConfigOSICS_T100::populateAllValues()
     populateLaserFrequency();
     populateLaserMinFrequency();
     populateLaserMaxFrequency();
-
 }
 
 // ********************************************* Laser Power ****************************************************
@@ -111,32 +100,41 @@ void ConfigOSICS_T100::populateLaserOutputPowerUnit(){
 }
 
 void ConfigOSICS_T100::populateLaserOutputPower(){
-    ui->laserOutputPowerDisplay->setText(QByteArray::number(powerSetting.toDouble()));
+    if(powerSetting == "Disabled"){
+        ui->laserOutputPowerDisplay->setText(powerSetting);
+    }
+    else{
+        double convertedPower = powerSetting.toDouble();
+        if(ui->powerUnitComboBox->currentText() == "Watt"){
+            convertedPower = ConversionUtilities::convertDBmToWatt(convertedPower);
+        }
+        ui->laserOutputPowerDisplay->setText(QByteArray::number(convertedPower));
+    }
 }
 
 void ConfigOSICS_T100::populateLaserMinPower(){
-    ui->laserMinPowerDisplay->setText(QByteArray::number(minPower.toDouble()));
+    double convertedMinPower = minPower.toDouble();
+    if(ui->powerUnitComboBox->currentText() == "Watt"){
+        convertedMinPower = ConversionUtilities::convertDBmToWatt(convertedMinPower);
+    }
+    ui->laserMinPowerDisplay->setText(QByteArray::number(convertedMinPower));
 }
 
 void ConfigOSICS_T100::populateLaserMaxPower(){
-    ui->laserMaxPowerDisplay->setText(QByteArray::number(maxPower.toDouble()));
+    double convertedMaxPower = maxPower.toDouble();
+    if(ui->powerUnitComboBox->currentText() == "Watt"){
+        convertedMaxPower = ConversionUtilities::convertDBmToWatt(convertedMaxPower);
+    }
+    ui->laserMaxPowerDisplay->setText(QByteArray::number(convertedMaxPower));
 }
 
 void ConfigOSICS_T100::populateLaserState(){
-    qDebug() << laserState;
-    ui->laserStateDisplay->setText(laserState);
+    ui->laserStateDisplay->setText(laserState.toUpper());
 }
 
 // ********************************************* Laser Wavelength ****************************************************
 
 
-void ConfigOSICS_T100::populateLaserWavelengthUnit(){
-    QByteArray unitText = ui->wavelengthUnitComboBox->currentText().toLatin1();
-    ui->wavelengthDisplayUnitLabel->setText(unitText);
-    ui->wavelengthEditUnitLabel->setText(unitText);
-    ui->minWavlengthUnitLabel->setText(unitText);
-    ui->maxWavelengthUnitLabel->setText(unitText);
-}
 void ConfigOSICS_T100::populateLaserWavelength(){
     ui->laserWavelengthDisplay->setText(QByteArray::number(wavelengthSetting.toDouble()));
 }
@@ -157,13 +155,34 @@ void ConfigOSICS_T100::populateLaserFrequencyUnit(){
     ui->maxFrequencyUnitLabel->setText(unitText);
 }
 void ConfigOSICS_T100::populateLaserFrequency(){
-    ui->laserFrequencyDisplay->setText(QByteArray::number(frequencySetting.toDouble()));
+    // frequency is stored as GHz
+    // convert to hz
+    QByteArray unit = ui->frequencyUnitComboBox->currentText().toLatin1();
+    double frequencyGHz = frequencySetting.toDouble();
+    double frequencyHz = ConversionUtilities::convertFrequencyToHz(frequencyGHz, "GHz");
+    double convertedFrequency = ConversionUtilities::convertFrequencyFromHz(frequencyHz, unit);
+
+    ui->laserFrequencyDisplay->setText(QByteArray::number(convertedFrequency));
 }
 void ConfigOSICS_T100::populateLaserMinFrequency(){
-    ui->minFrequencyDisplay->setText(QByteArray::number(minFrequency.toDouble()));
+    // frequency is stored as GHz
+    // convert to hz
+    QByteArray unit = ui->frequencyUnitComboBox->currentText().toLatin1();
+    double frequencyGHz = minFrequency.toDouble();
+    double frequencyHz = ConversionUtilities::convertFrequencyToHz(frequencyGHz, "GHz");
+    double convertedFrequency = ConversionUtilities::convertFrequencyFromHz(frequencyHz, unit);
+
+    ui->minFrequencyDisplay->setText(QByteArray::number(convertedFrequency));
 }
 void ConfigOSICS_T100::populateLaserMaxFrequency(){
-    ui->maxFrequencyDisplay->setText(QByteArray::number(maxFrequency.toDouble()));
+    // frequency is stored as GHz
+    // convert to hz
+    QByteArray unit = ui->frequencyUnitComboBox->currentText().toLatin1();
+    double frequencyGHz = maxFrequency.toDouble();
+    double frequencyHz = ConversionUtilities::convertFrequencyToHz(frequencyGHz, "GHz");
+    double convertedFrequency = ConversionUtilities::convertFrequencyFromHz(frequencyHz, unit);
+
+    ui->maxFrequencyDisplay->setText(QByteArray::number(convertedFrequency));
 }
 
 // ********************************************* UI Slots ****************************************************
@@ -181,7 +200,6 @@ void ConfigOSICS_T100::on_powerUnitComboBox_currentIndexChanged(int index)
 void ConfigOSICS_T100::on_wavelengthUnitComboBox_currentIndexChanged(int index)
 {
     // refresh displayed wavelength values
-    populateLaserWavelengthUnit();
     populateLaserWavelength();
     populateLaserMinWavelength();
     populateLaserMaxWavelength();
@@ -236,7 +254,7 @@ void ConfigOSICS_T100::on_laserOutputPowerEdit_editingFinished()
 
     if(isInputValueValid(powerValue, minPower, maxPower)){
         // convert to dBm if value is in Watt
-        double powDouble = powerSetting.toDouble();
+        double powDouble = powerValue.toDouble();
         QByteArray unit = ui->powerUnitComboBox->currentText().toLatin1();
         double converted = powDouble;
         if(unit == "Watt"){
@@ -246,8 +264,12 @@ void ConfigOSICS_T100::on_laserOutputPowerEdit_editingFinished()
 
         // update settings object
         settings->setValue(EXFO_OSICS_T100_POWER, QVariant::fromValue(powerSetting));
+        powerSettingColored = true;
         populateLaserOutputPower();
     }
+
+    colorDisplayFieldText();
+    ui->laserOutputPowerEdit->clearFocus();
 }
 
 void ConfigOSICS_T100::on_laserWavelengthEdit_editingFinished()
@@ -257,22 +279,25 @@ void ConfigOSICS_T100::on_laserWavelengthEdit_editingFinished()
     QByteArray maxWavelength = ui->maxWavelengthDisplay->text().toLatin1();
 
     if(isInputValueValid(wavelengthValue, minWavelength, maxWavelength)){
-        // wavelength is valid, insert into list
-        double wavDouble = wavelengthValue.toDouble();
-        QByteArray unit = ui->wavelengthUnitComboBox->currentText().toLatin1();
-        double converted = ConversionUtilities::convertWavelengthToMeter(wavDouble, unit);
-        wavelengthSetting = QByteArray::number(converted);
-
         // update the settings object
+        wavelengthSetting = wavelengthValue;
         settings->setValue(EXFO_OSICS_T100_WAVELENGTH, QVariant::fromValue(wavelengthSetting));
+        wavelengthSettingColored = true;
         populateLaserWavelength();
 
         // update frequency b/c the values are related
-        double frequency = ConversionUtilities::convertWavelengthToFrequency(converted);
-        frequencySetting = QByteArray::number(frequency);
+        double wavelengthM = ConversionUtilities::convertWavelengthToMeter(wavelengthSetting.toDouble(), "nm");
+        double frequencyHz = ConversionUtilities::convertWavelengthToFrequency(wavelengthM);
+        double frequencyGHz = ConversionUtilities::convertFrequencyFromHz(frequencyHz, "GHz");
+
+        frequencySetting = QByteArray::number(frequencyGHz);
         settings->setValue(EXFO_OSICS_T100_FREQUENCY, QVariant::fromValue(frequencySetting));
+        frequencySettingColored = true;
         populateLaserFrequency();
     }
+
+    colorDisplayFieldText();
+    ui->laserFrequencyEdit->clearFocus();
 }
 
 void ConfigOSICS_T100::on_laserFrequencyEdit_editingFinished()
@@ -282,38 +307,48 @@ void ConfigOSICS_T100::on_laserFrequencyEdit_editingFinished()
     QByteArray maxFrequencyValue = ui->maxFrequencyDisplay->text().toLatin1();
 
     if(isInputValueValid(frequencyValue, minFrequencyValue, maxFrequencyValue)){
-        // frequency is valid, insert into list
+        // convert frequency value to GHz to store
         double freqDouble = frequencyValue.toDouble();
         QByteArray unit = ui->frequencyUnitComboBox->currentText().toLatin1();
-        double converted = ConversionUtilities::convertFrequencyToHz(freqDouble, unit);
-        frequencySetting = QByteArray::number(converted);
+        double frequencyHz = ConversionUtilities::convertFrequencyToHz(freqDouble, unit);
+        double frequencyGHz = ConversionUtilities::convertFrequencyFromHz(frequencyHz, "GHz");
+
+        frequencySetting = QByteArray::number(frequencyGHz);
 
         // update the settings object
         settings->setValue(EXFO_OSICS_T100_FREQUENCY, QVariant::fromValue(frequencySetting));
+        // flag value for coloring
+        frequencySettingColored = true;
         populateLaserFrequency();
 
         // update wavelength b/c the values are related
-        double wavelength = ConversionUtilities::convertFrequencyToWavelength(converted);
-        wavelengthSetting = QByteArray::number(wavelength);
+        double wavelengthM = ConversionUtilities::convertFrequencyToWavelength(frequencyHz);
+        double wavelengthNm = ConversionUtilities::convertWavelengthFromMeter(wavelengthM, "nm");
+        wavelengthSetting = QByteArray::number(wavelengthNm);
         settings->setValue(EXFO_OSICS_T100_WAVELENGTH, QVariant::fromValue(wavelengthSetting));
+        wavelengthSettingColored = true;
         populateLaserWavelength();
-
     }
+    colorDisplayFieldText();
+    ui->laserFrequencyEdit->clearFocus();
 }
 
 void ConfigOSICS_T100::on_togglePowerButton_clicked()
 {
-    QByteArray state = ui->laserStateDisplay->text().toLatin1();
-    if(state == "Enabled"){
+    QByteArray state = ui->laserStateDisplay->text().toLatin1().trimmed();
+    qDebug() << state;
+    if(state == "ENABLED"){
         // change to off
-        laserState = "Disabled";
+        laserState = "DISABLED";
     }
-    else if(state == "Disabled"){
+    else if(state == "DISABLED"){
        // change to on
-        laserState = "Enabled";
+        laserState = "ENABLED";
     }
 
+    laserStateColored = true;
     settings->setValue(EXFO_OSICS_T100_LASER_STATE, QVariant::fromValue(laserState));
+    colorDisplayFieldText();
     populateLaserState();
 
 }
@@ -402,5 +437,30 @@ void ConfigOSICS_T100::on_saveSettingsButton_clicked()
     }
 }
 
+
+void ConfigOSICS_T100::colorText(QLineEdit *textField, bool colored){
+    if(colored){
+        textField->setStyleSheet("QLineEdit {color: rgb(0, 0, 255);}");
+    }
+    else{
+        textField->setStyleSheet("QLineEdit {color: rgb(0, 0, 0);}");
+    }
+}
+
+void ConfigOSICS_T100::colorDisplayFieldText(){
+    colorText(ui->laserOutputPowerDisplay, powerSettingColored);
+    colorText(ui->laserStateDisplay, laserStateColored);
+    colorText(ui->laserWavelengthDisplay, wavelengthSettingColored);
+    colorText(ui->laserFrequencyDisplay, frequencySettingColored);
+}
+
+void ConfigOSICS_T100::resetDisplayFieldColoredStatus(){
+    powerSettingColored = false;
+    laserStateColored = false;
+    wavelengthSettingColored = false;
+    frequencySettingColored = false;
+
+    colorDisplayFieldText();
+}
 
 

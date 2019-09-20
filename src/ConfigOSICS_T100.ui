@@ -148,7 +148,7 @@
      </property>
      <property name="geometry">
       <rect>
-       <x>470</x>
+       <x>520</x>
        <y>60</y>
        <width>211</width>
        <height>31</height>
@@ -161,7 +161,7 @@
      </property>
      <property name="geometry">
       <rect>
-       <x>190</x>
+       <x>240</x>
        <y>90</y>
        <width>211</width>
        <height>31</height>
@@ -171,7 +171,7 @@
     <widget class="QLabel" name="minPowerDisplayUnitLabel">
      <property name="geometry">
       <rect>
-       <x>410</x>
+       <x>460</x>
        <y>100</y>
        <width>61</width>
        <height>21</height>
@@ -197,7 +197,7 @@
     <widget class="QLabel" name="powerDisplayUnitLabel">
      <property name="geometry">
       <rect>
-       <x>410</x>
+       <x>460</x>
        <y>70</y>
        <width>61</width>
        <height>21</height>
@@ -226,7 +226,7 @@
      </property>
      <property name="geometry">
       <rect>
-       <x>190</x>
+       <x>240</x>
        <y>120</y>
        <width>211</width>
        <height>31</height>
@@ -252,7 +252,7 @@
     <widget class="QPushButton" name="togglePowerButton">
      <property name="geometry">
       <rect>
-       <x>470</x>
+       <x>520</x>
        <y>150</y>
        <width>211</width>
        <height>31</height>
@@ -278,7 +278,7 @@
     <widget class="QComboBox" name="powerUnitComboBox">
      <property name="geometry">
       <rect>
-       <x>190</x>
+       <x>240</x>
        <y>30</y>
        <width>111</width>
        <height>31</height>
@@ -301,7 +301,7 @@
      </property>
      <property name="geometry">
       <rect>
-       <x>190</x>
+       <x>240</x>
        <y>150</y>
        <width>211</width>
        <height>31</height>
@@ -327,7 +327,7 @@
      </property>
      <property name="geometry">
       <rect>
-       <x>190</x>
+       <x>240</x>
        <y>60</y>
        <width>211</width>
        <height>31</height>
@@ -340,7 +340,7 @@
     <widget class="QLabel" name="powerUnitEditLabel">
      <property name="geometry">
       <rect>
-       <x>690</x>
+       <x>740</x>
        <y>70</y>
        <width>81</width>
        <height>21</height>
@@ -353,7 +353,7 @@
     <widget class="QLabel" name="maxPowerDisplayUnitLabel">
      <property name="geometry">
       <rect>
-       <x>410</x>
+       <x>460</x>
        <y>130</y>
        <width>61</width>
        <height>21</height>
@@ -384,14 +384,14 @@
     <widget class="QLabel" name="wavelengthEditUnitLabel">
      <property name="geometry">
       <rect>
-       <x>690</x>
+       <x>740</x>
        <y>80</y>
        <width>81</width>
        <height>16</height>
       </rect>
      </property>
      <property name="text">
-      <string>(unit)</string>
+      <string>nm</string>
      </property>
     </widget>
     <widget class="QLineEdit" name="minWavelengthDisplay">
@@ -400,7 +400,7 @@
      </property>
      <property name="geometry">
       <rect>
-       <x>190</x>
+       <x>240</x>
        <y>100</y>
        <width>211</width>
        <height>31</height>
@@ -413,7 +413,7 @@
      </property>
      <property name="geometry">
       <rect>
-       <x>470</x>
+       <x>520</x>
        <y>70</y>
        <width>211</width>
        <height>31</height>
@@ -423,14 +423,14 @@
     <widget class="QLabel" name="maxWavelengthUnitLabel">
      <property name="geometry">
       <rect>
-       <x>410</x>
+       <x>460</x>
        <y>140</y>
        <width>51</width>
        <height>21</height>
       </rect>
      </property>
      <property name="text">
-      <string>(unit)</string>
+      <string>nm</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_11">
@@ -449,50 +449,15 @@
     <widget class="QLabel" name="wavelengthDisplayUnitLabel">
      <property name="geometry">
       <rect>
-       <x>410</x>
+       <x>460</x>
        <y>80</y>
        <width>31</width>
        <height>16</height>
       </rect>
      </property>
      <property name="text">
-      <string>(unit)</string>
+      <string>nm</string>
      </property>
-    </widget>
-    <widget class="QComboBox" name="wavelengthUnitComboBox">
-     <property name="geometry">
-      <rect>
-       <x>190</x>
-       <y>40</y>
-       <width>121</width>
-       <height>31</height>
-      </rect>
-     </property>
-     <item>
-      <property name="text">
-       <string>m</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>mm</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>um</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>nm</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>pm</string>
-      </property>
-     </item>
     </widget>
     <widget class="QLabel" name="label_10">
      <property name="geometry">
@@ -513,7 +478,7 @@
      </property>
      <property name="geometry">
       <rect>
-       <x>190</x>
+       <x>240</x>
        <y>130</y>
        <width>211</width>
        <height>31</height>
@@ -529,7 +494,7 @@
      </property>
      <property name="geometry">
       <rect>
-       <x>190</x>
+       <x>240</x>
        <y>70</y>
        <width>211</width>
        <height>31</height>
@@ -549,30 +514,17 @@
       <string>Laser Wavelength</string>
      </property>
     </widget>
-    <widget class="QLabel" name="label_9">
-     <property name="geometry">
-      <rect>
-       <x>30</x>
-       <y>40</y>
-       <width>181</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Laser Wavelength Unit</string>
-     </property>
-    </widget>
     <widget class="QLabel" name="minWavlengthUnitLabel">
      <property name="geometry">
       <rect>
-       <x>410</x>
+       <x>460</x>
        <y>110</y>
        <width>41</width>
        <height>21</height>
       </rect>
      </property>
      <property name="text">
-      <string>(unit)</string>
+      <string>nm</string>
      </property>
     </widget>
    </widget>
@@ -596,7 +548,7 @@
     <widget class="QLabel" name="frequencyEditUnitLabel">
      <property name="geometry">
       <rect>
-       <x>690</x>
+       <x>740</x>
        <y>70</y>
        <width>51</width>
        <height>21</height>
@@ -609,7 +561,7 @@
     <widget class="QLabel" name="minFrequencyUnitLabel">
      <property name="geometry">
       <rect>
-       <x>410</x>
+       <x>460</x>
        <y>100</y>
        <width>61</width>
        <height>21</height>
@@ -622,7 +574,7 @@
     <widget class="QLabel" name="laserFrequencyDisplayUnitLabel">
      <property name="geometry">
       <rect>
-       <x>410</x>
+       <x>460</x>
        <y>70</y>
        <width>51</width>
        <height>21</height>
@@ -651,7 +603,7 @@
      </property>
      <property name="geometry">
       <rect>
-       <x>190</x>
+       <x>240</x>
        <y>60</y>
        <width>211</width>
        <height>31</height>
@@ -664,7 +616,7 @@
     <widget class="QComboBox" name="frequencyUnitComboBox">
      <property name="geometry">
       <rect>
-       <x>190</x>
+       <x>240</x>
        <y>30</y>
        <width>121</width>
        <height>31</height>
@@ -702,7 +654,7 @@
      </property>
      <property name="geometry">
       <rect>
-       <x>470</x>
+       <x>520</x>
        <y>60</y>
        <width>211</width>
        <height>31</height>
@@ -738,7 +690,7 @@
     <widget class="QLabel" name="maxFrequencyUnitLabel">
      <property name="geometry">
       <rect>
-       <x>410</x>
+       <x>460</x>
        <y>130</y>
        <width>61</width>
        <height>21</height>
@@ -754,7 +706,7 @@
      </property>
      <property name="geometry">
       <rect>
-       <x>190</x>
+       <x>240</x>
        <y>90</y>
        <width>211</width>
        <height>31</height>
@@ -780,7 +732,7 @@
      </property>
      <property name="geometry">
       <rect>
-       <x>190</x>
+       <x>240</x>
        <y>120</y>
        <width>211</width>
        <height>31</height>

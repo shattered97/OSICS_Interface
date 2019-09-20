@@ -55,6 +55,7 @@ SOURCES += \
         shared/DefaultInstrument.cpp \
         shared/DeviceTest.cpp \
         shared/DeviceTestFactory.cpp \
+        shared/EXFO_T100_ATN_Power_Test.cpp \
         shared/EXFO_T100_Bristol_Wavelength_Step_Test.cpp \
         shared/EXFO_T100_SWT_OSA_WavelengthTest.cpp \
         shared/OSA_Wavelength_Step_Test.cpp \
@@ -90,6 +91,7 @@ HEADERS += \
         shared/DefaultInstrument.h \
         shared/DeviceTest.h \
         shared/DeviceTestFactory.h \
+        shared/EXFO_T100_ATN_Power_Test.h \
         shared/EXFO_T100_Bristol_Wavelength_Step_Test.h \
         shared/EXFO_T100_SWT_OSA_WavelengthTest.h \
         shared/OSA_Wavelength_Step_Test.h \

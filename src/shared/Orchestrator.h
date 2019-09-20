@@ -66,6 +66,7 @@ signals:
     void signalReturnDevicesFound(FoundInstr);
     void signalSettingsUpdated();
     void signalSetupEXFOModules();
+    void signalCreateErrorDialog(QByteArray errorMsg);
 
 private:
     VisaInterface theCommBus;               // common methods for talking to VISA devices

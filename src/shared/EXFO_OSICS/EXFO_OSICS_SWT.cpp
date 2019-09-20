@@ -191,24 +191,41 @@ void EXFO_OSICS_SWT::setSlotNum(int slotNum){
 void EXFO_OSICS_SWT::updateConfig(QSettings &configSettings){
     qDebug() << "swt updateConfig() " << theInstrLoc;
 
-    // start with full-band mode on to be able to get power/wavelength/frequency values
+    // get operating mode and store it
+    QByteArray opMode;
+    getAPCModuleOperatingMode(slotNum, opMode);
+
+    // change opMode to full-band mode to be able to get power/wavelength/frequency values
     QByteArray fullBand = "ECL";
     setAPCModuleOperatingMode(slotNum, fullBand);
+
+    // auto-detect T100 modules
+    autoDetectT100Modules(slotNum);
 
     updatePowerSettings(configSettings);
     updateWavelengthSettings(configSettings);
     updateFrequencySettings(configSettings);
-
-    updateOperatingModeSettings(configSettings);
     updateActiveChannelSettings(configSettings);
 
+    // return operating mode to original state
+    setAPCModuleOperatingMode(slotNum, opMode);
+    updateOperatingModeSettings(configSettings);
 }
 
 void EXFO_OSICS_SWT::applyConfigSettings(QSettings &configSettings){
-    qDebug() << "swt applyConfigSettings()";
+    qDebug() << "swt applyConfigSettings() >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>";
+
+    // apply output power state from settings
+    QByteArray outputStatus = configSettings.value(EXFO_OSICS_SWT_OUTPUT_STATUS).value<QByteArray>();
+    if(outputStatus == "ENABLED"){
+        enableModuleLaserCmd(slotNum);
+    }
+    else{
+        disableModuleLaserCmd(slotNum);
+    }
 
     // apply operating mode from settings
-    QByteArray operatingMode = configSettings.value(EXFO_OSICS_SWT_POWER_SETTING).value<QByteArray>();
+    QByteArray operatingMode = configSettings.value(EXFO_OSICS_SWT_OPMODE).value<QByteArray>();
     setAPCModuleOperatingMode(slotNum, operatingMode);
 
     // apply active channel from settings
@@ -220,6 +237,7 @@ void EXFO_OSICS_SWT::applyConfigSettings(QSettings &configSettings){
     setModulePowerUnitDBmCmd(slotNum);
     QByteArray power = configSettings.value(EXFO_OSICS_SWT_POWER_SETTING).value<QByteArray>();
     setModuleOutputPowerCmd(slotNum, power);
+    qDebug() << power;
 
     // apply wavelength from settings
     QByteArray wavelength = configSettings.value(EXFO_OSICS_SWT_WAVELENGTH_SETTING).value<QByteArray>();
@@ -267,19 +285,25 @@ void EXFO_OSICS_SWT::updateActiveChannelSettings(QSettings &configSettings)
 void EXFO_OSICS_SWT::updatePowerSettings(QSettings &configSettings)
 {
     qDebug() << "updatePowerSettings()";
-    QByteArray power;
 
+    QByteArray outputStatus;
+    laserStateModuleQuery(slotNum, outputStatus);
+    outputStatus = outputStatus.split(':')[1];
+    configSettings.setValue(EXFO_OSICS_SWT_OUTPUT_STATUS, QVariant::fromValue(outputStatus.trimmed().toUpper()));
+
+    QByteArray power;
     outputPowerModuleQuery(slotNum, power);
 
     if(power.contains("Disabled")){
-        power = "Disabled";
+        power = "DISABLED";
     }
     else{
         // parse returned value
         power = power.split('=')[1];
     }
 
-    configSettings.setValue(EXFO_OSICS_SWT_POWER_SETTING, QVariant::fromValue(power));
+    configSettings.setValue(EXFO_OSICS_SWT_POWER_SETTING, QVariant::fromValue(power.trimmed()));
+
 }
 
 void EXFO_OSICS_SWT::updateWavelengthSettings(QSettings &configSettings)
@@ -289,6 +313,7 @@ void EXFO_OSICS_SWT::updateWavelengthSettings(QSettings &configSettings)
     refWavelengthModuleQuery(slotNum, wavelength);
 
     // parse returned value
+    qDebug() << wavelength;
     wavelength = wavelength.split('=')[1];
 
     configSettings.setValue(EXFO_OSICS_SWT_WAVELENGTH_SETTING, QVariant::fromValue(wavelength));

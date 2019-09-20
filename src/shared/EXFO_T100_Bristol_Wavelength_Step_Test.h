@@ -19,9 +19,13 @@ public:
 
 
 private:
-    EXFO_OSICS_T100 *t100;
-    Bristol_428A *bristol;
-    PowerMeter *powerMeter;
+    EXFO_OSICS_T100 *t100 = nullptr;
+    int t100SlotNum = 1;
+
+    Bristol_428A *bristol = nullptr;
+
+    PowerMeter *powerMeter = nullptr;
+    int powerMeterSlotNum = 1;
 };
 
 #endif // EXFO_T100_BRISTOL_WAVELENGTH_STEP_TEST_H

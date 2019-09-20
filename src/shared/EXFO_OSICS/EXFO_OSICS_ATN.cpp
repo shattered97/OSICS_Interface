@@ -210,6 +210,13 @@ void EXFO_OSICS_ATN::updateOffsetSettings(QSettings &configSettings)
 void EXFO_OSICS_ATN::updateWavelengthSettings(QSettings &configSettings)
 {
     qDebug() << "updateWavelengthSettings()";
+
+    // set reference wavelength number
+    QByteArray refWavelength;
+    refWavelengthModuleQuery(slotNum, refWavelength);
+    refWavelength = refWavelength.split('=')[1];
+    configSettings.setValue(EXFO_OSICS_ATN_REF_WAV_NUMBER, refWavelength);
+
     // get reference wavelength for wavelength number 1
     QByteArray firstWavelength;
     moduleWavelengthNMQuery(slotNum, "1", firstWavelength);

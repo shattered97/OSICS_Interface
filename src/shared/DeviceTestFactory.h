@@ -5,6 +5,7 @@
 #include "OSA_Wavelength_Step_Test.h"
 #include "EXFO_T100_SWT_OSA_WavelengthTest.h"
 #include "EXFO_T100_Bristol_Wavelength_Step_Test.h"
+#include "EXFO_T100_ATN_Power_Test.h"
 
 class DeviceTestFactory : public QObject
 {

@@ -113,6 +113,7 @@ void Orchestrator::slotGetEXFOModuleQVariants(QMap<int, QVariant> &modules, QVar
             qDebug() << "t100 module";
             EXFO_OSICS_T100 *module = new EXFO_OSICS_T100(chassisIdentity, chassisAddress);
             module->setSlotNum(slotNum);
+            module->setT100MinMaxWavelengths(modTypes[i]);
             moduleVariant.setValue(module);
             modules.insert(slotNum, moduleVariant);
 
@@ -179,6 +180,7 @@ void Orchestrator::slotGetEXFOModuleConfigPairs(QVariant &device, QMap<int, Modu
         int slotNum = i + 1;
         if(moduleVariantMap.count(slotNum)){
             QVariant moduleVariant = exfo->getModuleAtSlot(slotNum);
+            qDebug() << "??????????????????? " << moduleVariant.typeName();
             QMainWindow *moduleWindow = exfo->getWindowForModuleAtSlot(slotNum);
             ModuleConfigPair modPair(moduleVariant, moduleWindow);
             moduleConfigPairs.insert(slotNum, modPair);
@@ -190,8 +192,9 @@ void Orchestrator::slotUpdateConfigSettings(QVariant &deviceVariant, QSettings &
     // because QVariant types are <type*> compare result of typeName()[:-1] with enum strings
     QString typeName = QString(deviceVariant.typeName());
     typeName.chop(1);
-
     qDebug() << "slotupdateconfigsettings()";
+    qDebug() << "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%" << typeName;
+
 
     if(typeName == "PowerMeter"){
         qDebug() << "QVariant interpreted as PowerMeter";
@@ -251,8 +254,8 @@ void Orchestrator::slotUpdateConfigSettings(QVariant &deviceVariant, QSettings &
 void Orchestrator::slotApplyConfigSettings(QVariant &deviceVariant, QSettings &configSettings){
     QString typeName = QString(deviceVariant.typeName());
     typeName.chop(1);
-
-    qDebug() << typeName;
+    qDebug() << "slotApplyConfigSettings()";
+    qDebug() << "***********************************************" << typeName;
     if(typeName == "PowerMeter"){
         qDebug() << "QVariant interpreted as PowerMeter";
         PowerMeter* device = deviceVariant.value<PowerMeter*>();
@@ -534,15 +537,28 @@ void Orchestrator::runOSATest(QByteArray filename, double startWav, double endWa
 }
 
 void Orchestrator::slotBeginTest(QString testTypeName){
-    // #TODO probably turn this into a factory
     // #TODO probably do enum for test types
+
     qDebug() << "in slotBeginTest()";
     DeviceTest *test = DeviceTestFactory::makeDeviceTest(testTypeName, selectedDevices);
 
-    qDebug() << "created DeviceTest from factory";
-    // call function to start test
-    test->runDeviceTest();
-
+    if(!test){
+        // signal to mainWindow to show error message
+        QByteArray invalidTestMsg = "Test not yet supported.";
+        emit signalCreateErrorDialog(invalidTestMsg);
+    }
+    else{
+        if(!test->areDevicesValidForTest()){
+            qDebug() << "not running test";
+            // don't run test and send error msg to mainwindow
+            QByteArray invalidDevicesMsg = "Combination of selected devices are not valid for the selected test.";
+            emit signalCreateErrorDialog(invalidDevicesMsg);
+        }
+        else{
+            // call function to start test
+            test->runDeviceTest();
+        }
+    }
 }
 
 

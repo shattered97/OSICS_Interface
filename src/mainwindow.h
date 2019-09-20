@@ -20,6 +20,9 @@ public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+public slots:
+    void slotCreateErrorDialog(QByteArray errorMsg);
+
 private slots:
 
     void on_searchForDevTypeBtn_clicked();
@@ -78,6 +81,8 @@ private:
      */
     void resetMainWindow();
 
+
+    bool hasDeviceBeenSelected(QByteArray deviceAddress);
 };
 
 #endif // MAINWINDOW_H

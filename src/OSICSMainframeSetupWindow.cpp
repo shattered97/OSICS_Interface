@@ -8,6 +8,10 @@ OSICSMainframeSetupWindow::OSICSMainframeSetupWindow(QVariant &device, QWidget *
     ui->setupUi(this);
     this->device = device;
 
+    // initialize settings
+    settings = new QSettings(QSettings::IniFormat, QSettings::SystemScope, "Test Platform");
+    settings->clear();
+
     // connect button group
     QObject::connect(ui->configureButtonGroup, SIGNAL(buttonClicked(int)), this, SLOT(on_configButton_clicked(int)));
 }
@@ -19,16 +23,14 @@ OSICSMainframeSetupWindow::~OSICSMainframeSetupWindow()
 
 void OSICSMainframeSetupWindow::showEvent( QShowEvent* event )
 {
-    qDebug() << "mainframe window displayed";
+
     QWidget::showEvent( event );
+    if(!windowConfigured){
+        emit signalUpdateConfigSettings(device, *settings);
+    }
 
-    // initialize settings and signal to orchestrator to update them from device
-    settings = new QSettings(QSettings::IniFormat, QSettings::SystemScope, "Test Platform");
-    settings->clear();
+    windowConfigured = true;
 
-
-
-    emit signalUpdateConfigSettings(device, *settings);
 }
 
 
@@ -82,7 +84,12 @@ void OSICSMainframeSetupWindow::populateModuleNames(){
     numInstalledModules = 0;
     for(int i = 0; i < EXFO_OSICS_NUM_SLOTS; i++){
         QLabel *label = new QLabel();
+        // set font
+        QFont font = label->font();
+        font.setPointSize(12);
+        label->setFont(font);
         label->setText(moduleNames[i]);
+        label->setAlignment(Qt::AlignCenter);
         ui->moduleNameLabelLayout->addWidget(label);
 
         if(moduleNames[i] != "EMPTY"){
@@ -102,23 +109,29 @@ void OSICSMainframeSetupWindow::on_configButton_clicked(int index){
     index = index * -1 - 2;
 
     QVariant module = moduleConfigPairs.value(index + 1).first;
+    qDebug() << "+++++++++++++++++++++++++++++++++++++++ " << module.typeName();
     QMainWindow *configWindow = moduleConfigPairs.value(index + 1).second;
 
 
     // update settings (for mainframe, if any)
-    emit signalUpdateConfigSettings(module, *settings);
+//    emit signalUpdateConfigSettings(module, *settings);
 
     // connect the window to be shown with a slot that forwards apply/update
     // config settings to orchestrator
 
-    QObject::connect(configWindow, SIGNAL(signalApplyConfigSettings(QVariant &, QSettings &)),
-                     this, SLOT(slotForwardApplyConfigSettings(QVariant &, QSettings &)));
+    //  we only want to carry out this connect() if the window hasn't been configured yet
+    if(!moduleConfiguredStatusList[index]){
+        QObject::connect(configWindow, SIGNAL(signalApplyConfigSettings(QVariant &, QSettings &)),
+                         this, SLOT(slotForwardApplyConfigSettings(QVariant &, QSettings &)));
 
-    QObject::connect(configWindow, SIGNAL(signalUpdateConfigSettings(QVariant &, QSettings &)),
-                     this, SLOT(slotForwardUpdateConfigSettings(QVariant &, QSettings &)));
-
-
+        QObject::connect(configWindow, SIGNAL(signalUpdateConfigSettings(QVariant &, QSettings &)),
+                         this, SLOT(slotForwardUpdateConfigSettings(QVariant &, QSettings &)));
+    }
+    else{
+        qDebug() << "############################################ not connecting again";
+    }
     configWindow->show();
+    moduleConfiguredStatusList[index] = true;
 }
 
 

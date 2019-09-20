@@ -1,49 +1,77 @@
 #include "EXFO_T100_Bristol_Wavelength_Step_Test.h"
 #include <QTime>
-EXFO_T100_Bristol_Wavelength_Step_Test::EXFO_T100_Bristol_Wavelength_Step_Test(QList<QVariant> &selectedDevices, QMainWindow &configWindow) : DeviceTest (selectedDevices, configWindow)
+EXFO_T100_Bristol_Wavelength_Step_Test::EXFO_T100_Bristol_Wavelength_Step_Test(QList<QVariant> &selectedDevices, QMainWindow &configWindow) :
+    DeviceTest (selectedDevices, configWindow)
 {
 
 }
 
 bool EXFO_T100_Bristol_Wavelength_Step_Test::areDevicesValidForTest(){
-    return true;
+    // we need to find the EXFO T100, Bristol, and optionally a PowerMeter.
+    bool t100Found = false;
+    bool bristolFound = false;
+    bool powerMeterFound = false;
+
+    // iterate through the selected devices
+    for(int i = 0; i < selectedDevices->size(); i++){
+        // get type name - (typeName() returns the type with '*' at the end)
+        QByteArray typeName = selectedDevices->at(i).typeName();
+        typeName.chop(1);
+        if(typeName == "EXFO_OSICS_MAINFRAME"){
+            // create exfo and find out if it has a T100
+            // *NOTE* for now we assume that only one T100 is plugged in or we use the first one we see
+            QVariant exfoVariant = selectedDevices->at(i);
+            EXFO_OSICS_MAINFRAME *exfo = exfoVariant.value<EXFO_OSICS_MAINFRAME*>();
+
+            QMap<int, QVariant> exfoModuleSlotQMap = exfo->getModuleSlotQVariantMap();
+            for(auto e: exfoModuleSlotQMap.keys()){
+                // get type of module
+                QByteArray moduleType = exfoModuleSlotQMap.value(e).typeName();
+                moduleType.chop(1);
+
+                if(moduleType == "EXFO_OSICS_T100"){
+                    // create T100 if it doesn't already exist (in the case where there are multiple T100s installed)
+                    if(t100 == nullptr){
+                        t100SlotNum = e;
+                        t100 = exfoModuleSlotQMap.value(e).value<EXFO_OSICS_T100*>();
+                        t100Found = true;
+                    }
+                }
+            }
+        }
+        else if(typeName == "Bristol_428A"){
+            QVariant bristolVariant = selectedDevices->at(i);
+            bristol = bristolVariant.value<Bristol_428A*>();
+            bristolFound = true;
+        }
+        else if(typeName == "PowerMeter"){
+            // *NOTE* for now we only use the first slot on a power meter.
+            powerMeterSlotNum = 1;
+            QVariant powerMeterVariant = selectedDevices->at(i);
+            powerMeter = powerMeterVariant.value<PowerMeter*>();
+            powerMeterFound = true;
+        }
+    }
+
+    bool success = (t100Found && bristolFound);
+    return success;
+
 }
 
 void EXFO_T100_Bristol_Wavelength_Step_Test::runDeviceTest(){
-
-
     qDebug() << "executing t100/bristol test";
-    QVariant exfoVariant = selectedDevices->at(0);
-    EXFO_OSICS_MAINFRAME *exfo = exfoVariant.value<EXFO_OSICS_MAINFRAME*>();
-
-    // #TODO programatically find t100
-    int t100SlotNum = 4;
-    t100 = exfo->getModuleAtSlot(t100SlotNum).value<EXFO_OSICS_T100*>();
-
-    QVariant bristolVariant = selectedDevices->at(1);
-    bristol = bristolVariant.value<Bristol_428A*>();
-    // test bristol commands
-    QByteArray wavelength;
-    bristol->measureWavelengthSingle(wavelength);
-    qDebug() << wavelength;
 
     QByteArray filename = "t100_1520_EO193300135_WAVSTEP_BRISTOL_1500_1575_SPLITTER_4_1.csv";
     double startWav = 1500;
     double endWav = 1575;
     double wavStep = 1;
 
-
-    if(selectedDevices->size() == 3){
-        int powerMeterSlotNum = 1;
-        QVariant powerMeterVariant = selectedDevices->at(2);
-        powerMeter = powerMeterVariant.value<PowerMeter*>();
-
+    if(powerMeter != nullptr){
         runTestLoopWithPowerMeter(filename, t100SlotNum, powerMeterSlotNum, startWav, endWav, wavStep);
     }
-    else if(selectedDevices->size() == 2){
+    else{
         runTestLoopBristolOnly(filename, t100SlotNum, startWav, endWav, wavStep);
     }
-
 }
 
 void EXFO_T100_Bristol_Wavelength_Step_Test::runTestLoopWithPowerMeter(QByteArray filename, int t100SlotNum, int powerMeterSlotNum, double startWav, double endWav, double wavStep){
@@ -162,6 +190,4 @@ void EXFO_T100_Bristol_Wavelength_Step_Test::runTestLoopBristolOnly(QByteArray f
 
         currentWav += wavStep;
     }
-
-
 }

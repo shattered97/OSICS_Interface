@@ -22,6 +22,7 @@ public:
     explicit ConfigOSICS_SWT(QVariant &device, QWidget *parent = nullptr);
     ~ConfigOSICS_SWT();
 
+    void populateOutputPowerStatus();
     void populatePowerUnit();
     void populatePower();
     void populateMinPower();
@@ -75,13 +76,15 @@ private slots:
 
     void on_frequencyEdit_editingFinished();
 
+    void on_toggleOutputButton_clicked();
+
 private:
     Ui::ConfigOSICS_SWT *ui;
 
     QVariant device;
     QSettings *settings;
     QString settingsFileName;
-
+    bool windowConfigured = false;
     int slotNum;
 
     QByteArray operatingMode;
@@ -89,6 +92,7 @@ private:
     QByteArray powerSetting;
     QByteArray wavelengthSetting;
     QByteArray frequencySetting;
+    QByteArray outputPowerStatus;
 
     void showEvent(QShowEvent* event);
     void getValuesFromConfig();

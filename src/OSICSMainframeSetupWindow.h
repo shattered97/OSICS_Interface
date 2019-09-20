@@ -37,13 +37,14 @@ private:
     QVariant device;
     QString settingsFileName;
     QSettings *settings;
-
+    bool windowConfigured = false;
     // device values
     int numInstalledModules = 0;
     QByteArray deviceIdentity;
     QByteArray deviceLocation;
     QList<QByteArray> moduleNames;
     QMap<int, ModuleConfigPair> moduleConfigPairs;
+    QList<bool> moduleConfiguredStatusList = {false, false, false, false, false, false, false, false};
 
     void populateAllValues();
     void getValuesFromConfig();

@@ -10,7 +10,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
     loadTestTypesList();
     loadDeviceTypesList();
-
+    QObject::connect(orchestrator, SIGNAL(signalCreateErrorDialog(QByteArray)),
+                     this, SLOT(slotCreateErrorDialog(QByteArray)));
     QObject::connect(this, SIGNAL(signalBeginTest(QString)), orchestrator, SLOT(slotBeginTest(QString)));
     QObject::connect(this, SIGNAL(signalCreateDevice(QString, QByteArray, QByteArray)),
                      orchestrator, SLOT(slotCreateDevice(QString, QByteArray, QByteArray)));
@@ -81,7 +82,7 @@ QList<QByteArray> MainWindow::resourcesQmapToQList(FoundInstr foundResources, QB
     for(auto e: foundResources){
         QByteArray deviceString = e.first + " " + e.second;
 
-        if(deviceString.contains(deviceType)){                               // Note: not a permanent method for matching instruments
+        if(deviceString.contains(deviceType)){
             convertedResourceInfo.append(e.first + " " + e.second.split('\n')[0]);
         }
     }
@@ -93,22 +94,50 @@ void MainWindow::on_testTypeComboBox_currentIndexChanged(int index)
     // #TODO implement test windows
 }
 
+bool MainWindow::hasDeviceBeenSelected(QByteArray deviceAddress){
+    // get device address
+    bool success = true;
+
+    // get list of addresses already selected
+
+    for(int i = 0; i < ui->selectedDevicesListWidget->count(); i++){
+        QByteArray selectedDeviceIDString = ui->selectedDevicesListWidget->item(i)->text().toLatin1();
+        QByteArray selectedDeviceAddress = selectedDeviceIDString.split(' ')[0];
+
+        if(selectedDeviceAddress == deviceAddress){
+            success = false;
+        }
+    }
+
+    return success;
+}
+
 void MainWindow::on_addSelectedDeviceBtn_clicked()
 {
     ui->addSelectedDeviceBtn->setEnabled(false);
 
-    // copy over to selected devices list widget
-    QByteArray instrumentInfo = ui->foundDevicesListWidget->currentItem()->text().toLatin1();
-    ui->selectedDevicesListWidget->addItem(instrumentInfo);
+    // check if device has already been added to list
+    QByteArray deviceAddress = ui->foundDevicesListWidget->selectedItems()[0]->text().split(' ')[0].toLatin1();
+    if(hasDeviceBeenSelected(deviceAddress)){
+        // copy over to selected devices list widget
+        QByteArray instrumentInfo = ui->foundDevicesListWidget->currentItem()->text().toLatin1();
+        ui->selectedDevicesListWidget->addItem(instrumentInfo);
 
-    // determine which device to create (#TODO possibly convert to factory in future)
-    QString currentDeviceType = ui->devicetypeComboBox->currentText();
-    qDebug() << "device type from combo " << currentDeviceType;
-    QByteArray instrumentAddress = instrumentInfo.split(' ')[0];
-    QByteArray instrumentIdentity = instrumentInfo.mid(instrumentInfo.indexOf(' ') + 1, instrumentInfo.size());
-    QApplication::setOverrideCursor(Qt::WaitCursor);
-    qDebug() << "addr/identity " << instrumentAddress << " " << instrumentIdentity;
-    emit signalCreateDevice(currentDeviceType, instrumentAddress, instrumentIdentity);
+        // determine which device to create (#TODO possibly convert to factory in future)
+        QString currentDeviceType = ui->devicetypeComboBox->currentText();
+        qDebug() << "device type from combo " << currentDeviceType;
+        QByteArray instrumentAddress = instrumentInfo.split(' ')[0];
+        QByteArray instrumentIdentity = instrumentInfo.mid(instrumentInfo.indexOf(' ') + 1, instrumentInfo.size());
+        QApplication::setOverrideCursor(Qt::WaitCursor);
+        qDebug() << "addr/identity " << instrumentAddress << " " << instrumentIdentity;
+        emit signalCreateDevice(currentDeviceType, instrumentAddress, instrumentIdentity);
+    }
+    else{
+        // create error dialog
+        QMessageBox msgBox;
+        msgBox.setText("This device has already been added to the \"Selected Devices\" list.");
+        msgBox.exec();
+    }
 
     QApplication::restoreOverrideCursor();
     ui->addSelectedDeviceBtn->setEnabled(true);
@@ -141,4 +170,12 @@ void MainWindow::on_selectedDevicesListWidget_itemDoubleClicked(QListWidgetItem 
     instrument->getConfigWindow()->show();
 
     QApplication::restoreOverrideCursor();
+}
+
+
+void MainWindow::slotCreateErrorDialog(QByteArray errorMsg){
+    qDebug() << "slotCreateErrorDialog";
+    QMessageBox msgBox;
+    msgBox.setText(errorMsg);
+    msgBox.exec();
 }

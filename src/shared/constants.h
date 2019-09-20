@@ -111,8 +111,10 @@ const QByteArray OSICS_WAV_CYCLE_TEST = "EXFO OSICS Wavelength Cycle Test";
 const QByteArray EXFO_T100_ANDO_OSA_WAV_CYCLE_TEST = "EXFO T100 / ANDO OSA Wavelength Cycle Test";
 const QByteArray EXFO_T100_SWT_WAV_STEP_OSA_POWER_TEST = "EXFO T100 / SWT / OSA Wavelength Step Test";
 const QByteArray EXFO_T100_BRISTOL_WAV_STEP_TEST = "EXFO / T100 / Bristol / Wavelength Step Test";
+const QByteArray EXFO_T100_ATN_POWER_TEST = "EXFO / T100 / ATN / Power Meter / Power Test";
 const QByteArray TEST_TYPES[] = {N7714A_WAV_CYCLE_TEST, OSICS_WAV_CYCLE_TEST, EXFO_T100_ANDO_OSA_WAV_CYCLE_TEST,
-                                 EXFO_T100_SWT_WAV_STEP_OSA_POWER_TEST, EXFO_T100_BRISTOL_WAV_STEP_TEST};
+                                 EXFO_T100_SWT_WAV_STEP_OSA_POWER_TEST, EXFO_T100_BRISTOL_WAV_STEP_TEST,
+                                 EXFO_T100_ATN_POWER_TEST};
 
 // EXFO_OSICS_ATN Values
 const QByteArray EXFO_OSICS_ATN_MIN_OFFSET = "-10"; // defined in spec sheet/prog guide
@@ -125,6 +127,8 @@ const QByteArray EXFO_OSICS_SWT_MIN_POWER_DBM = "-6.99";
 const QByteArray EXFO_OSICS_SWT_MAX_POWER_DBM = "3";
 
 // EXFO_OSICS_T100 Values
+const QByteArray EXFO_OSICS_T100_MIN_POWER_DBM = "-6.99";
+const QByteArray EXFO_OSICS_T100_MAX_POWER_DBM = "6";
 const QByteArray EXFO_OSICS_T100_1310_MIN_WAV_NM = "1260";
 const QByteArray EXFO_OSICS_T100_1310_MAX_WAV_NM = "1360";
 const QByteArray EXFO_OSICS_T100_1415_MIN_WAV_NM = "1460";
@@ -181,6 +185,7 @@ const QByteArray EXFO_OSICS_T100_MIN_FREQUENCY = "EXFO OSICS T100 Min Frequency"
 const QByteArray EXFO_OSICS_T100_MAX_FREQUENCY = "EXFO OSICS T100 Max Frequency";
 
 // QSettings Key Values - EXFO OSICS SWT
+const QByteArray EXFO_OSICS_SWT_OUTPUT_STATUS = "EXFO OSICS SWT Output Status";
 const QByteArray EXFO_OSICS_SWT_OPMODE = "EXFO OSICS SWT Operating Mode";
 const QByteArray EXFO_OSICS_SWT_ACTIVE_CHANNEL = "EXFO OSICS SWT Active Channel";
 const QByteArray EXFO_OSICS_SWT_POWER_SETTING = "EXFO OSICS SWT Power Setting";

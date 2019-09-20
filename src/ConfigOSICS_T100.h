@@ -27,7 +27,6 @@ public:
     void populateLaserMaxPower();
     void populateLaserState();
 
-    void populateLaserWavelengthUnit();
     void populateLaserWavelength();
     void populateLaserMinWavelength();
     void populateLaserMaxWavelength();
@@ -72,6 +71,8 @@ private:
     QVariant device;
     QSettings *settings;
     QString settingsFileName;
+    bool windowConfigured = false;
+
 
     int slotNum;
 
@@ -96,9 +97,14 @@ private:
     bool loadSettings();
     bool saveSettings();
 
-    void convertAndDisplayPower(QList<QByteArray> powerList, QLineEdit* displayField);
-    void convertAndDisplayWavelength(QList<QByteArray> wavelengthList, QLineEdit* displayField);
-    void convertAndDisplayFrequency(QList<QByteArray> wavelengthList, QLineEdit* displayField);
+    void colorText(QLineEdit *textField, bool colored);
+    void colorDisplayFieldText();
+    void resetDisplayFieldColoredStatus();
+
+    bool powerSettingColored = false;
+    bool laserStateColored = false;
+    bool wavelengthSettingColored = false;
+    bool frequencySettingColored = false;
 
 
 

@@ -22,8 +22,12 @@ ConfigOSICS_ATN::~ConfigOSICS_ATN()
 void ConfigOSICS_ATN::showEvent(QShowEvent* event)
 {
     QWidget::showEvent(event);
+    if(!windowConfigured){
+        emit signalUpdateConfigSettings(device, *settings);
+    }
 
-    emit signalUpdateConfigSettings(device, *settings);
+    windowConfigured = true;
+
 }
 
 void ConfigOSICS_ATN::slotUpdateWindow()
@@ -32,6 +36,9 @@ void ConfigOSICS_ATN::slotUpdateWindow()
     // clear text entry fields
     ui->attenuationEdit->clear();
     ui->attenuationOffsetEdit->clear();
+
+    // reset text fields
+    resetDisplayFieldColoredStatus();
 
     // store values from settings
     getValuesFromConfig();
@@ -55,24 +62,11 @@ void ConfigOSICS_ATN::getValuesFromConfig()
     secondMinAttenuation = settings->value(EXFO_OSICS_ATN_MIN_ATTENUATION_2).value<QByteArray>();
     secondMaxAttenuation = settings->value(EXFO_OSICS_ATN_MAX_ATTENUATION_2).value<QByteArray>();
     refWavelengthNumber = settings->value(EXFO_OSICS_ATN_REF_WAV_NUMBER).value<QByteArray>();
-
     firstRefWavelength = settings->value(EXFO_OSICS_ATN_REF_WAVELENGTH_1).value<QByteArray>();
     secondRefWavelength = settings->value(EXFO_OSICS_ATN_REF_WAVELENGTH_2).value<QByteArray>();
     firstOffset = settings->value(EXFO_OSICS_ATN_OFFSET_1).value<QByteArray>();
     secondOffset = settings->value(EXFO_OSICS_ATN_OFFSET_2).value<QByteArray>();
 
-    qDebug() << "*******************************************************";
-    qDebug() << attenuationSetting;
-    qDebug() << firstMinAttenuation;
-    qDebug() << firstMaxAttenuation;
-    qDebug() << secondMinAttenuation;
-    qDebug() << secondMaxAttenuation;
-    qDebug() << refWavelengthNumber;
-    qDebug() << firstRefWavelength;
-    qDebug() << secondRefWavelength;
-    qDebug() << firstOffset;
-    qDebug() << secondOffset;
-    qDebug() << "*******************************************************";
 }
 
 void ConfigOSICS_ATN::populateAllValues()
@@ -201,8 +195,10 @@ void ConfigOSICS_ATN::on_attenuationEdit_editingFinished()
     if(isInputValueValid(enteredAtten, firstMinAttenuation, firstMaxAttenuation)){
         attenuationSetting = enteredAtten;
         settings->setValue(EXFO_OSICS_ATN_ATTENUATION, QVariant::fromValue(attenuationSetting));
+        attenuationDisplayTextColored = true;
     }
 
+    colorDisplayFieldText();
     ui->attenuationEdit->clearFocus();
 }
 
@@ -213,13 +209,16 @@ void ConfigOSICS_ATN::on_attenuationOffsetEdit_editingFinished()
         QByteArray offset = enteredOffset;
         if(refWavelengthNumber.toInt() == 1){
             settings->setValue(EXFO_OSICS_ATN_OFFSET_1, QVariant::fromValue(offset));
+            attenuationOffsetDisplay1Colored = true;
         }
 
         else{
             settings->setValue(EXFO_OSICS_ATN_OFFSET_2, QVariant::fromValue(offset));
+            attenuationOffsetDisplay2Colored = true;
         }
     }
 
+    colorDisplayFieldText();
     ui->attenuationOffsetEdit->clearFocus();
 }
 
@@ -281,6 +280,12 @@ void ConfigOSICS_ATN::on_saveChangesButton_clicked()
 void ConfigOSICS_ATN::on_refWavelengthRadioButton1_clicked()
 {
     refWavelengthNumber = "1";
+    settings->setValue(EXFO_OSICS_ATN_REF_WAV_NUMBER, QVariant::fromValue(refWavelengthNumber));
+    // change newly selected color to blue and remove color from other radio button
+    ui->refWavelengthRadioButton1->setStyleSheet("QRadioButton {color: rgb(0, 0, 255);}");
+    ui->refWavelengthRadioButton2->setStyleSheet("QRadioButton {color: rgb(0, 0, 0);}");
+
+    colorDisplayFieldText();
     populateAllValues();
 
 }
@@ -288,5 +293,42 @@ void ConfigOSICS_ATN::on_refWavelengthRadioButton1_clicked()
 void ConfigOSICS_ATN::on_refWavelengthRadioButton2_clicked()
 {
     refWavelengthNumber = "2";
+    settings->setValue(EXFO_OSICS_ATN_REF_WAV_NUMBER, QVariant::fromValue(refWavelengthNumber));
+    // change newly selected color to blue and remove color from other radio button
+    ui->refWavelengthRadioButton2->setStyleSheet("QRadioButton {color: rgb(0, 0, 255);}");
+    ui->refWavelengthRadioButton1->setStyleSheet("QRadioButton {color: rgb(0, 0, 0);}");
+    colorDisplayFieldText();
     populateAllValues();
+}
+
+void ConfigOSICS_ATN::colorText(QLineEdit *textField, bool colored){
+    if(colored){
+        textField->setStyleSheet("QLineEdit {color: rgb(0, 0, 255);}");
+    }
+    else{
+        textField->setStyleSheet("QLineEdit {color: rgb(0, 0, 0);}");
+    }
+}
+
+void ConfigOSICS_ATN::colorDisplayFieldText(){
+    colorText(ui->attenuationDisplay, attenuationDisplayTextColored);
+
+    // set color based on reference wavelength selected
+    if(refWavelengthNumber == "1"){
+        colorText(ui->attenuationOffsetDisplay, attenuationOffsetDisplay1Colored);
+    }
+    else{
+        colorText(ui->attenuationOffsetDisplay, attenuationOffsetDisplay2Colored);
+    }
+}
+
+void ConfigOSICS_ATN::resetDisplayFieldColoredStatus(){
+    attenuationDisplayTextColored = false;
+    attenuationOffsetDisplay1Colored = false;
+    attenuationOffsetDisplay2Colored = false;
+
+    ui->refWavelengthRadioButton1->setStyleSheet("QRadioButton {color: rgb(0, 0, 0);}");
+    ui->refWavelengthRadioButton2->setStyleSheet("QRadioButton {color: rgb(0, 0, 0);}");
+
+    colorDisplayFieldText();
 }

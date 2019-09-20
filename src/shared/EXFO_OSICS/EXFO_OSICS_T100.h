@@ -161,6 +161,7 @@ public:
     void updateConfig(QSettings &configSettings);
 
     void setSlotNum(int slotNum);
+    void setT100MinMaxWavelengths(QByteArray t100Type);
 
 private:
 
@@ -175,6 +176,10 @@ private:
     void updatePowerSettings(QSettings &configSettings);
     void updateWavelengthSettings(QSettings &configSettings);
     void updateFrequencySettings(QSettings &configSettings);
+
+
+    QByteArray minWavelength;
+    QByteArray maxWavelength;
 };
 
 #endif // EXFO_OSICS_T100_H
