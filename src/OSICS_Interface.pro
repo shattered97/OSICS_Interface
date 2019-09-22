@@ -15,12 +15,15 @@ win32: LIBS += "C:/Program Files (x86)/IVI Foundation/VISA/WinNT/lib/msc/visa32.
 
 INCLUDEPATH += "C:/Program Files/IVI Foundation/VISA/Win64/Include" \
                 Windows \
+                Device_Tests \
+                Device_Config_Windows \
                 shared \
-                EXFO_OSICS \
-                shared/Keysight_N7714A \
-                shared/ANDO_AQ6331 \
-                shared/Bristol_428A \
-                shared/Power_Meters
+                shared/Devices \
+                shared/Devices/EXFO_OSICS \
+                shared/Devices/Keysight_N7714A \
+                shared/Devices/ANDO_AQ6331 \
+                shared/Devices/Bristol_428A \
+                shared/Devices/Power_Meters
 
 DEPENDPATH += "C:/Program Files/IVI Foundation/VISA/Win64/Include"
 
@@ -39,91 +42,82 @@ DEFINES += QT_DEPRECATED_WARNINGS
 CONFIG += c++11
 
 SOURCES += \
-        ConfigOSICS_ATN.cpp \
-        ConfigOSICS_SWT.cpp \
-        ConfigOSICS_T100.cpp \
-        OSICSMainframeSetupWindow.cpp \
-        confign7714awindow.cpp \
-        configpowermeter.cpp \
-        defaultconfigwindow.cpp \
-        devicesetupwindow.cpp \
-        graphwindow.cpp \
         main.cpp \
         mainwindow.cpp \
-        shared/Bristol_428A/Bristol_428A.cpp \
+        Device_Config_Windows/confign7714awindow.cpp \
+        Device_Config_Windows/ConfigOSICS_ATN.cpp \
+        Device_Config_Windows/ConfigOSICS_SWT.cpp \
+        Device_Config_Windows/ConfigOSICS_T100.cpp \
+        Device_Config_Windows/configpowermeter.cpp \
+        Device_Config_Windows/OSICSMainframeSetupWindow.cpp \
+        Device_Tests/DeviceTest.cpp \
+        Device_Tests/DeviceTestFactory.cpp \
+        Device_Tests/EXFO_T100_ATN_Power_Test.cpp \
+        Device_Tests/EXFO_T100_Bristol_Wavelength_Step_Test.cpp \
+        Device_Tests/EXFO_T100_SWT_OSA_WavelengthTest.cpp \
+        Device_Tests/OSA_Wavelength_Step_Test.cpp \
+        Device_Tests/testsetupwindow.cpp \
         shared/ConversionUtilities.cpp \
-        shared/DefaultInstrument.cpp \
-        shared/DeviceTest.cpp \
-        shared/DeviceTestFactory.cpp \
-        shared/EXFO_T100_ATN_Power_Test.cpp \
-        shared/EXFO_T100_Bristol_Wavelength_Step_Test.cpp \
-        shared/EXFO_T100_SWT_OSA_WavelengthTest.cpp \
-        shared/OSA_Wavelength_Step_Test.cpp \
-        shared/Orchestrator.cpp \
-        shared/Power_Meters/PowerMeterFactory.cpp \
-        shared/VisaInterface.cpp \
         shared/Logging.cpp \
-        shared/EXFO_OSICS/EXFO_OSICS_ATN.cpp \
-        shared/EXFO_OSICS/EXFO_OSICS_MAINFRAME.cpp \
-        shared/EXFO_OSICS/EXFO_OSICS_SWT.cpp \
-        shared/EXFO_OSICS/EXFO_OSICS_T100.cpp \
-        shared/Keysight_N7714A/N7714A.cpp \
-        shared/Ando_AQ6331/Ando_AQ6331.cpp \
-        shared/Power_Meters/KeysightPowerMeter.cpp \
-        shared/Power_Meters/PowerMeter.cpp \
+        shared/Orchestrator.cpp \
+        shared/VisaInterface.cpp \
         shared/WindowFactory.cpp \
-        testsetupwindow.cpp
+        shared/Devices/DefaultInstrument.cpp \
+        shared/Devices/Ando_AQ6331/Ando_AQ6331.cpp \
+        shared/Devices/Bristol_428A/Bristol_428A.cpp \
+        shared/Devices/EXFO_OSICS/EXFO_OSICS_ATN.cpp \
+        shared/Devices/EXFO_OSICS/EXFO_OSICS_MAINFRAME.cpp \
+        shared/Devices/EXFO_OSICS/EXFO_OSICS_SWT.cpp \
+        shared/Devices/EXFO_OSICS/EXFO_OSICS_T100.cpp \
+        shared/Devices/Keysight_N7714A/N7714A.cpp \
+        shared/Devices/Power_Meters/KeysightPowerMeter.cpp \
+        shared/Devices/Power_Meters/PowerMeter.cpp \
+        shared/Devices/Power_Meters/PowerMeterFactory.cpp
 
 
 HEADERS += \
-        ConfigOSICS_ATN.h \
-        ConfigOSICS_SWT.h \
-        ConfigOSICS_T100.h \
-        OSICSMainframeSetupWindow.h \
-        confign7714awindow.h \
-        configpowermeter.h \
-        defaultconfigwindow.h \
-        devicesetupwindow.h \
-        graphwindow.h \
         mainwindow.h \
-        shared/Bristol_428A/Bristol_428A.h \
-        shared/ConversionUtilities.h \
-        shared/DefaultInstrument.h \
-        shared/DeviceTest.h \
-        shared/DeviceTestFactory.h \
-        shared/EXFO_T100_ATN_Power_Test.h \
-        shared/EXFO_T100_Bristol_Wavelength_Step_Test.h \
-        shared/EXFO_T100_SWT_OSA_WavelengthTest.h \
-        shared/OSA_Wavelength_Step_Test.h \
-        shared/Orchestrator.h \
-        shared/Power_Meters/PowerMeterFactory.h \
-        shared/VisaInterface.h \
-        shared/Logging.h \
-        shared/WindowFactory.h \
+        Device_Config_Windows/confign7714awindow.h \
+        Device_Config_Windows/ConfigOSICS_ATN.h \
+        Device_Config_Windows/ConfigOSICS_SWT.h \
+        Device_Config_Windows/ConfigOSICS_T100.h \
+        Device_Config_Windows/configpowermeter.h \
+        Device_Config_Windows/OSICSMainframeSetupWindow.h \
+        Device_Tests/DeviceTest.h \
+        Device_Tests/DeviceTestFactory.h \
+        Device_Tests/EXFO_T100_ATN_Power_Test.h \
+        Device_Tests/EXFO_T100_Bristol_Wavelength_Step_Test.h \
+        Device_Tests/EXFO_T100_SWT_OSA_WavelengthTest.h \
+        Device_Tests/OSA_Wavelength_Step_Test.h \
+        Device_Tests/testsetupwindow.h \
         shared/constants.h \
-        shared/EXFO_OSICS/EXFO_OSICS_ATN.h \
-        shared/EXFO_OSICS/EXFO_OSICS_MAINFRAME.h \
-        shared/EXFO_OSICS/EXFO_OSICS_SWT.h \
-        shared/EXFO_OSICS/EXFO_OSICS_T100.h \
-        shared/Keysight_N7714A/N7714A.h \
-        shared/Ando_AQ6331/Ando_AQ6331.h \
-        shared/Power_Meters/PowerMeter.h \
-        shared/Power_Meters/KeysightPowerMeter.h \
-        testsetupwindow.h
+        shared/ConversionUtilities.h \
+        shared/Logging.h \
+        shared/Orchestrator.h \
+        shared/VisaInterface.h \
+        shared/WindowFactory.h \
+        shared/Devices/DefaultInstrument.h \
+        shared/Devices/Ando_AQ6331/Ando_AQ6331.h \
+        shared/Devices/Bristol_428A/Bristol_428A.h \
+        shared/Devices/EXFO_OSICS/EXFO_OSICS_ATN.h \
+        shared/Devices/EXFO_OSICS/EXFO_OSICS_MAINFRAME.h \
+        shared/Devices/EXFO_OSICS/EXFO_OSICS_SWT.h \
+        shared/Devices/EXFO_OSICS/EXFO_OSICS_T100.h \
+        shared/Devices/Keysight_N7714A/N7714A.h \
+        shared/Devices/Power_Meters/KeysightPowerMeter.h \
+        shared/Devices/Power_Meters/PowerMeter.h \
+        shared/Devices/Power_Meters/PowerMeterFactory.h
 
 
 FORMS += \
-        ConfigOSICS_ATN.ui \
-        ConfigOSICS_SWT.ui \
-        ConfigOSICS_T100.ui \
-        OSICSMainframeSetupWindow.ui \
-        confign7714awindow.ui \
-        configpowermeter.ui \
-        defaultconfigwindow.ui \
-        devicesetupwindow.ui \
-        graphwindow.ui \
         mainwindow.ui \
-        testsetupwindow.ui
+        Device_Config_windows/confign7714awindow.ui \
+        Device_Config_windows/ConfigOSICS_ATN.ui \
+        Device_Config_windows/ConfigOSICS_SWT.ui \
+        Device_Config_windows/ConfigOSICS_T100.ui \
+        Device_Config_windows/configpowermeter.ui \
+        Device_Config_windows/OSICSMainframeSetupWindow.ui \
+        Device_Tests/testsetupwindow.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

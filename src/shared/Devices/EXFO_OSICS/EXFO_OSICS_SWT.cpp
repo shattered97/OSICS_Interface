@@ -314,7 +314,10 @@ void EXFO_OSICS_SWT::updateWavelengthSettings(QSettings &configSettings)
 
     // parse returned value
     qDebug() << wavelength;
-    wavelength = wavelength.split('=')[1];
+
+    // if there is no laser input, you can't read the wavelength
+    if(wavelength != "")
+        wavelength = wavelength.split('=')[1];
 
     configSettings.setValue(EXFO_OSICS_SWT_WAVELENGTH_SETTING, QVariant::fromValue(wavelength));
 }
@@ -325,8 +328,9 @@ void EXFO_OSICS_SWT::updateFrequencySettings(QSettings &configSettings)
     QByteArray frequency;
     frequencyModuleQuery(slotNum, frequency);
 
-    // parse returned value
-    frequency = frequency.split('=')[1];
+    // if there is no laser input, you can't read the frequency
+    if(frequency != "")
+        frequency = frequency.split('=')[1];
 
     configSettings.setValue(EXFO_OSICS_SWT_FREQUENCY_SETTING, QVariant::fromValue(frequency));
 }

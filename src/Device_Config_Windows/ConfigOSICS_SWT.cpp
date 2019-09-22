@@ -27,7 +27,17 @@ void ConfigOSICS_SWT::showEvent(QShowEvent* event)
         emit signalUpdateConfigSettings(device, *settings);
     }
 
-    windowConfigured = true;
+    if(wavelengthSetting == ""){
+        QMessageBox msgBox;
+        msgBox.setText("No optical input to switch module.");
+        msgBox.exec();
+        this->close();
+    }
+    else{
+        windowConfigured = true;
+    }
+
+
 
 
 }
