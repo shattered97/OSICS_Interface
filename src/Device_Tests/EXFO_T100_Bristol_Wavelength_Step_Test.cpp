@@ -7,7 +7,7 @@ EXFO_T100_Bristol_Wavelength_Step_Test::EXFO_T100_Bristol_Wavelength_Step_Test(Q
 }
 
 bool EXFO_T100_Bristol_Wavelength_Step_Test::areDevicesValidForTest(){
-    // we need to find the EXFO T100, Bristol, and optionally a PowerMeter.
+    // we need to find the EXFO T100, SWT Bristol Wavemeter, and a PowerMeter.
     bool t100Found = false;
     bool bristolFound = false;
     bool powerMeterFound = false;
@@ -67,14 +67,14 @@ void EXFO_T100_Bristol_Wavelength_Step_Test::runDeviceTest(){
     double wavStep = 1;
 
     if(powerMeter != nullptr){
-        runTestLoopWithPowerMeter(filename, t100SlotNum, powerMeterSlotNum, startWav, endWav, wavStep);
+        runTestLoopWithPowerMeter(filename, startWav, endWav, wavStep);
     }
     else{
-        runTestLoopBristolOnly(filename, t100SlotNum, startWav, endWav, wavStep);
+        runTestLoopBristolOnly(filename, startWav, endWav, wavStep);
     }
 }
 
-void EXFO_T100_Bristol_Wavelength_Step_Test::runTestLoopWithPowerMeter(QByteArray filename, int t100SlotNum, int powerMeterSlotNum, double startWav, double endWav, double wavStep){
+void EXFO_T100_Bristol_Wavelength_Step_Test::runTestLoopWithPowerMeter(QByteArray filename, double startWav, double endWav, double wavStep){
     // init output file
     QFile file(filename);
     file.open(QIODevice::ReadWrite);
@@ -94,14 +94,24 @@ void EXFO_T100_Bristol_Wavelength_Step_Test::runTestLoopWithPowerMeter(QByteArra
     QByteArray powerToSet = ("0");
     t100->setModuleOutputPowerCmd(t100SlotNum, powerToSet);
 
+    // wait for values to adjust
+    QTime timer = QTime::currentTime().addSecs(5);
+    while(QTime::currentTime() < timer){
+        // do nothing
+    }
+
     double currentWav = startWav;
     while(currentWav <= endWav){
         // set wavelength on t100
         QByteArray wavelengthToSet = QByteArray::number(currentWav);
         t100->setRefWavelengthModuleCmd(t100SlotNum, wavelengthToSet);
 
-        // wait for wavelength to adjust
-        QTime timer = QTime::currentTime().addSecs(4);
+        // set wavelength on power meter
+        QByteArray wavUnit = "nm";
+        powerMeter->setWavelength(powerMeterSlotNum, wavelengthToSet, wavUnit);
+
+       // wait for wavelength to adjust
+        QTime timer = QTime::currentTime().addSecs(5);
         while(QTime::currentTime() < timer){
             // do nothing
         }
@@ -136,7 +146,7 @@ void EXFO_T100_Bristol_Wavelength_Step_Test::runTestLoopWithPowerMeter(QByteArra
 }
 
 
-void EXFO_T100_Bristol_Wavelength_Step_Test::runTestLoopBristolOnly(QByteArray filename, int t100SlotNum, double startWav, double endWav, double wavStep)
+void EXFO_T100_Bristol_Wavelength_Step_Test::runTestLoopBristolOnly(QByteArray filename, double startWav, double endWav, double wavStep)
 {
     // init output file
     QFile file(filename);
@@ -147,7 +157,7 @@ void EXFO_T100_Bristol_Wavelength_Step_Test::runTestLoopBristolOnly(QByteArray f
     stream << "BRISTOL WAVELENGTH,";
     stream << "BRISTOL POWER" << endl;
 
-    //set starting wavelength
+    //set starting wavelength (t100)
     QByteArray wavelengthToSet = QByteArray::number(startWav);
     t100->setRefWavelengthModuleCmd(t100SlotNum, wavelengthToSet);
 
@@ -156,14 +166,21 @@ void EXFO_T100_Bristol_Wavelength_Step_Test::runTestLoopBristolOnly(QByteArray f
     QByteArray powerToSet = ("0");
     t100->setModuleOutputPowerCmd(t100SlotNum, powerToSet);
 
+    // wait for values to adjust
+    QTime timer = QTime::currentTime().addSecs(5);
+    while(QTime::currentTime() < timer){
+        // do nothing
+    }
+
     double currentWav = startWav;
     while(currentWav <= endWav){
+
         // set wavelength on t100
         QByteArray wavelengthToSet = QByteArray::number(currentWav);
         t100->setRefWavelengthModuleCmd(t100SlotNum, wavelengthToSet);
 
         // wait for wavelength to adjust
-        QTime timer = QTime::currentTime().addSecs(4);
+        QTime timer = QTime::currentTime().addSecs(5);
         while(QTime::currentTime() < timer){
             // do nothing
         }

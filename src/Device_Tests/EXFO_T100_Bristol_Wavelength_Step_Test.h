@@ -14,8 +14,8 @@ public:
 
     bool areDevicesValidForTest();
     void runDeviceTest();
-    void runTestLoopBristolOnly(QByteArray filename, int t100slotNum, double startWav, double endWav, double wavStep);
-    void runTestLoopWithPowerMeter(QByteArray filename, int t100slotNum, int powerMeterSlotNum, double startWav, double endWav, double wavStep);
+    void runTestLoopBristolOnly(QByteArray filename, double startWav, double endWav, double wavStep);
+    void runTestLoopWithPowerMeter(QByteArray filename, double startWav, double endWav, double wavStep);
 
 
 private:
