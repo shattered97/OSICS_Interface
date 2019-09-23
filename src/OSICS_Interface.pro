@@ -42,6 +42,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 CONFIG += c++11
 
 SOURCES += \
+        Device_Tests/EXFO_T100_SWT_PM_WM_Test.cpp \
         main.cpp \
         mainwindow.cpp \
         Device_Config_Windows/confign7714awindow.cpp \
@@ -76,6 +77,7 @@ SOURCES += \
 
 
 HEADERS += \
+        Device_Tests/EXFO_T100_SWT_PM_WM_Test.h \
         mainwindow.h \
         Device_Config_Windows/confign7714awindow.h \
         Device_Config_Windows/ConfigOSICS_ATN.h \
