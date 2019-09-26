@@ -2,6 +2,7 @@
 #include <QTime>
 #include "ConversionUtilities.h"
 
+
 EXFO_T100_PM_Power_Step_Test::EXFO_T100_PM_Power_Step_Test(QList<QVariant> &selectedDevices, QMainWindow &configWindow) :
     DeviceTest (selectedDevices, configWindow)
 {
@@ -53,20 +54,43 @@ bool EXFO_T100_PM_Power_Step_Test::areDevicesValidForTest(){
     bool success = (t100Found && powerMeterFound);
     return success;
 }
+
+QByteArray EXFO_T100_PM_Power_Step_Test::constructOutputFilename(){
+
+    // construct filename
+    QByteArray identityInfo;
+    t100->identificationModuleQuery(t100SlotNum, identityInfo);
+
+    // the serial number is the third item when comma-separated, the module type is the second item
+    QByteArray serialNumber = identityInfo.split(',')[2];
+    QByteArray moduleType = identityInfo.split(',')[1];
+    QByteArray testName = "power_step";
+    QByteArray timestamp = QDateTime::currentDateTime().toString("ddMMyyyy-hhmmss").toLatin1();
+
+    QStringList filenameElements = {serialNumber, moduleType, testName, timestamp};
+    QByteArray filename = filenameElements.join('_').toLatin1();
+    QByteArray extension = ".csv";
+    filename.append(extension);
+
+    return filename;
+}
+
 void EXFO_T100_PM_Power_Step_Test::runDeviceTest(){
+
+    // construct filename
+    QByteArray filename = constructOutputFilename();
+
+    runTestLoop(filename, startPower, endPower, powerStep, wavelength);
 
 }
 
-
 void EXFO_T100_PM_Power_Step_Test::runTestLoop(QByteArray filename, double startPow,
                                                double endPow, double powStep, double wavelength){
-    // init output file
-    QFile file(filename);
-    file.open(QIODevice::ReadWrite);
-    QTextStream stream(&file);
-    stream << "T100 WAVELENGTH,";
-    stream << "T100 POWER,";
-    stream << "POWER METER READING" << endl;
+    // add .csv header to test data
+    testData.append("T100 WAVELENGTH,");
+    testData.append("T100 POWER,");
+    testData.append("POWER METER READING");
+    testData.append("\n");
 
     // set wavelength (t100)
     QByteArray wavelengthToSet = QByteArray::number(wavelength);
@@ -100,7 +124,7 @@ void EXFO_T100_PM_Power_Step_Test::runTestLoop(QByteArray filename, double start
         t100->setModuleOutputPowerCmd(t100SlotNum, powerToSet);
 
         // wait for power to adjust
-        QTime timer = QTime::currentTime().addSecs(1);
+        QTime timer = QTime::currentTime().addSecs(2);
         while(QTime::currentTime() < timer){
             // do nothing
         }
@@ -108,19 +132,22 @@ void EXFO_T100_PM_Power_Step_Test::runTestLoop(QByteArray filename, double start
         // write wavelength
         QByteArray t100Wavelength;
         t100->refWavelengthModuleQuery(t100SlotNum, t100Wavelength);
-        stream << t100Wavelength.split('=')[1].toDouble() << ",";
+        testData.append(QByteArray::number(t100Wavelength.split('=')[1].toDouble()).append(","));
 
         // write power
         QByteArray t100Power;
         t100->outputPowerModuleQuery(t100SlotNum, t100Power);
-        stream << t100Power.split('=')[1].toDouble() << ",";
+        testData.append(QByteArray::number(t100Power.split('=')[1].toDouble()).append(","));
 
         // write power reading
         QByteArray powerReading;
         powerMeter->measurePower(powerMeterSlotNum, powerReading);
         // convert and write out
         double convertedPower = ConversionUtilities::convertWattToDBm(powerReading.trimmed().toDouble());
-        stream << convertedPower << endl;
+        testData.append(QByteArray::number(convertedPower));
+
+        // end data line
+        testData.append("\n");
 
         currentPow += powStep;
     }
@@ -129,6 +156,25 @@ void EXFO_T100_PM_Power_Step_Test::runTestLoop(QByteArray filename, double start
     t100->disableModuleLaserCmd(t100SlotNum);
 
 
+    // write file contents
+    writeTestDataToFile(filename);
+
     qDebug() << "================================= COMPLETE ===================================";
 
+}
+
+void EXFO_T100_PM_Power_Step_Test::writeTestDataToFile(QByteArray filename){
+    if(testData.size() > 0){
+
+        // init output file
+        QFile file(filename);
+        file.open(QIODevice::ReadWrite);
+        QTextStream stream(&file);
+
+        for( auto e : testData ){
+            stream << e;
+        }
+
+        file.close();
+    }
 }

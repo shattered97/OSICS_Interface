@@ -11,13 +11,15 @@
 
 class EXFO_T100_SWT_PM_WM_Test : public DeviceTest
 {
-    Q_OBJECT
+    Q_OBJECT    
 public:
     EXFO_T100_SWT_PM_WM_Test(QList<QVariant> &selectedDevices, QMainWindow &configWindow);
 
     bool areDevicesValidForTest();
     void runDeviceTest();
-    void runTestLoop(QByteArray filename, double startWav, double endWav, double wavStep, double power, int switchNum);
+    void runTestLoopWithWavemeter(QByteArray filename, double startWav, double endWav, double wavStep, double power);
+    void runTestLoopPowerMeterOnly(QByteArray filename, double startWav, double endWav, double wavStep, double power);
+
 
 
 private:
@@ -31,6 +33,17 @@ private:
 
     PowerMeter *powerMeter = nullptr;
     int powerMeterSlotNum = 1;
+
+    double startWav = 1465;
+    double endWav = 1575;
+    // #TODO convert back to 1
+    double wavStep = 10;
+    double power = 0;
+
+    QByteArray constructOutputFilename();
+    void writeTestDataToFile(QByteArray filename);
+    QList<QString> testData;
+
 
 };
 

@@ -15,9 +15,7 @@ public:
 
     bool areDevicesValidForTest();
     void runDeviceTest();
-    void runTestLoop(QByteArray filename, double startPower, double endPower, double powerStep,
-                     double startWav, double endWav, double wavStep,
-                     double startAtn, double endAtn, double atnStep);
+    void runTestLoop(QByteArray filename, double power, double wavelength, double startAtn, double endAtn, double atnStep);
 
 private:
     EXFO_OSICS_T100 *t100 = nullptr;

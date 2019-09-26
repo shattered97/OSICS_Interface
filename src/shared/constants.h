@@ -112,9 +112,11 @@ const QByteArray EXFO_T100_ANDO_OSA_WAV_CYCLE_TEST = "EXFO T100 / ANDO OSA Wavel
 const QByteArray EXFO_T100_SWT_WAV_STEP_OSA_POWER_TEST = "EXFO T100 / SWT / OSA Wavelength Step Test";
 const QByteArray EXFO_T100_BRISTOL_WAV_STEP_TEST = "EXFO / T100 / Bristol / Wavelength Step Test";
 const QByteArray EXFO_T100_ATN_POWER_TEST = "EXFO / T100 / ATN / Power Meter / Power Test";
+const QByteArray EXFO_T100_SWT_PM_WM_TEST = "EXFO / T100 / SWT / Bristol / Wavelength Step Test";
+const QByteArray EXFO_T100_PM_POWER_STEP_TEST = "EXFO / T100 / Power Meter / Power Step Test";
 const QByteArray TEST_TYPES[] = {N7714A_WAV_CYCLE_TEST, OSICS_WAV_CYCLE_TEST, EXFO_T100_ANDO_OSA_WAV_CYCLE_TEST,
                                  EXFO_T100_SWT_WAV_STEP_OSA_POWER_TEST, EXFO_T100_BRISTOL_WAV_STEP_TEST,
-                                 EXFO_T100_ATN_POWER_TEST};
+                                 EXFO_T100_ATN_POWER_TEST, EXFO_T100_SWT_PM_WM_TEST, EXFO_T100_PM_POWER_STEP_TEST};
 
 // EXFO_OSICS_ATN Values
 const QByteArray EXFO_OSICS_ATN_MIN_OFFSET = "-10"; // defined in spec sheet/prog guide

@@ -63,8 +63,33 @@ bool EXFO_T100_SWT_PM_WM_Test::areDevicesValidForTest(){
         }
     }
 
-    bool success = (t100Found && swtFound && bristolFound && powerMeterFound);
+    bool success = (t100Found && swtFound && powerMeterFound);
     return success;
+}
+
+QByteArray EXFO_T100_SWT_PM_WM_Test::constructOutputFilename(){
+    // get active channel number
+    QByteArray activeChannelNum;
+    swt->getChannelForSignalAPC(swtSlotNum, activeChannelNum);
+    activeChannelNum = activeChannelNum.split('=')[1].trimmed();
+
+    // construct filename
+    QByteArray identityInfo;
+    swt->identificationModuleQuery(swtSlotNum, identityInfo);
+
+    // the serial number is the third item when comma-separated, the module type is the second item
+    QByteArray serialNumber = identityInfo.split(',')[2];
+    QByteArray moduleType = identityInfo.split(',')[1];
+    QByteArray testName = "wavelength_step";
+    QByteArray timestamp = QDateTime::currentDateTime().toString("ddMMyyyy-hhmmss").toLatin1();
+
+
+    QStringList filenameElements = {serialNumber, moduleType, activeChannelNum, testName, timestamp};
+    QByteArray filename = filenameElements.join('_').toLatin1();
+    QByteArray extension = ".csv";
+    filename.append(extension);
+
+    return filename;
 }
 
 void EXFO_T100_SWT_PM_WM_Test::runDeviceTest(){
@@ -74,139 +99,51 @@ void EXFO_T100_SWT_PM_WM_Test::runDeviceTest(){
     QByteArray fullBandMode = "ECL";
     swt->setAPCModuleOperatingMode(swtSlotNum, fullBandMode);
 
-// ***********************************************************************************
+    QByteArray filename = constructOutputFilename();
+    qDebug() << filename;
 
-    QByteArray filename = "t100_1520_EO193400135_swt_ch1_wavstep_1.csv";
-    double startWav = 1465;
-    double endWav = 1575;
-    double wavStep = 1;
-    double power = 0;
-    int switchNum = 1;
+    if(bristol != nullptr){
+        runTestLoopWithWavemeter(filename, startWav, endWav, wavStep, power);
+    }
+    else{
+        runTestLoopPowerMeterOnly(filename, startWav, endWav, wavStep, power);
+    }
 
-//    QByteArray filename = "t100_1520_EO193400135_swt_ch1_wavstep_2.csv";
-//    double startWav = 1465;
-//    double endWav = 1575;
-//    double wavStep = 1;
-//    double power = 0;
-//    int switchNum = 2;
 
-//    QByteArray filename = "t100_1520_EO193400135_swt_ch1_wavstep_3.csv";
-//    double startWav = 1465;
-//    double endWav = 1575;
-//    double wavStep = 1;
-//    double power = 0;
-//    int switchNum = 3;
-
-//    QByteArray filename = "t100_1520_EO193400135_swt_ch1_wavstep_4.csv";
-//    double startWav = 1465;
-//    double endWav = 1575;
-//    double wavStep = 1;
-//    double power = 0;
-//    int switchNum = 4;
-
-// ***********************************************************************************
-
-//    QByteArray filename = "t100_1520_EO193300135_swt_ch1_wavstep_1.csv";
-//    double startWav = 1465;
-//    double endWav = 1575;
-//    double wavStep = 1;
-//    double power = 0;
-//    int switchNum = 1;
-
-//    QByteArray filename = "t100_1520_EO193300135_swt_ch1_wavstep_2.csv";
-//    double startWav = 1465;
-//    double endWav = 1575;
-//    double wavStep = 1;
-//    double power = 0;
-//    int switchNum = 2;
-
-//    QByteArray filename = "t100_1520_EO193300135_swt_ch1_wavstep_3.csv";
-//    double startWav = 1465;
-//    double endWav = 1575;
-//    double wavStep = 1;
-//    double power = 0;
-//    int switchNum = 3;
-
-//    QByteArray filename = "t100_1520_EO193300135_swt_ch1_wavstep_4.csv";
-//    double startWav = 1465;
-//    double endWav = 1575;
-//    double wavStep = 1;
-//    double power = 0;
-//    int switchNum = 4;
-
-// ***********************************************************************************
-//    QByteArray filename = "t100_1520_EO193000335_swt_ch1_wavstep_1.csv";
-//    double startWav = 1465;
-//    double endWav = 1575;
-//    double wavStep = 1;
-//    double power = 0;
-//    int switchNum = 1;
-
-//    QByteArray filename = "t100_1520_EO193000335_swt_ch1_wavstep_2.csv";
-//    double startWav = 1465;
-//    double endWav = 1575;
-//    double wavStep = 1;
-//    double power = 0;
-//    int switchNum = 2;
-
-//    QByteArray filename = "t100_1520_EO193000335_swt_ch1_wavstep_3.csv";
-//    double startWav = 1465;
-//    double endWav = 1575;
-//    double wavStep = 1;
-//    double power = 0;
-//    int switchNum = 3;
-
-//    QByteArray filename = "t100_1520_EO193000335_swt_ch1_wavstep_4.csv";
-//    double startWav = 1465;
-//    double endWav = 1575;
-//    double wavStep = 1;
-//    double power = 0;
-//    int switchNum = 4;
-
-// ***********************************************************************************
-
-//    QByteArray filename = "t100_1520_EO193400235_swt_ch1_wavstep_1.csv";
-//    double startWav = 1465;
-//    double endWav = 1575;
-//    double wavStep = 1;
-//    double power = 0;
-//    int switchNum = 1;
-
-//    QByteArray filename = "t100_1520_EO193400235_swt_ch1_wavstep_2.csv";
-//    double startWav = 1465;
-//    double endWav = 1575;
-//    double wavStep = 1;
-//    double power = 0;
-//    int switchNum = 2;
-
-//    QByteArray filename = "t100_1520_EO193400235_swt_ch1_wavstep_3.csv";
-//    double startWav = 1465;
-//    double endWav = 1575;
-//    double wavStep = 1;
-//    double power = 0;
-//    int switchNum = 3;
-
-//    QByteArray filename = "t100_1520_EO193400235_swt_ch1_wavstep_4.csv";
-//    double startWav = 1465;
-//    double endWav = 1575;
-//    double wavStep = 1;
-//    double power = 0;
-//    int switchNum = 4;
-
-    runTestLoop(filename, startWav, endWav, wavStep, power, switchNum);
 }
 
-void EXFO_T100_SWT_PM_WM_Test::runTestLoop(QByteArray filename, double startWav, double endWav, double wavStep, double power, int switchNum){
+void EXFO_T100_SWT_PM_WM_Test::runTestLoopPowerMeterOnly(QByteArray filename, double startWav, double endWav, double wavStep, double power){
 
-    // init output file
-    QFile file(filename);
-    file.open(QIODevice::ReadWrite);
-    QTextStream stream(&file);
-    stream << "SWITCH CHANNEL,";
-    stream << "T100 POWER,";
-    stream << "T100 WAVELENGTH,";
-    stream << "BRISTOL WAVELENGTH,";
-    stream << "POWER METER POWER" << endl;
+    // add .csv header to test data
+    testData.append("SWITCH CHANNEL,");
+    testData.append("T100 POWER,");
+    testData.append("T100 WAVELENGTH,");
+    testData.append("POWER METER POWER");
+    testData.append("\n");
+
+    // enable laser and switch output
+    t100->enableModuleLaserCmd(t100SlotNum);
+    t100->setModulePowerUnitDBmCmd(t100SlotNum);
+    swt->enableModuleLaserCmd(swtSlotNum);
+    swt->setModulePowerUnitDBmCmd(swtSlotNum);
+
+    // set laser power
+    QByteArray powerToSet = QByteArray::number(power);
+    t100->setModuleOutputPowerCmd(t100SlotNum, powerToSet);
+    // set swich output power
+    swt->setModuleOutputPowerCmd(swtSlotNum, powerToSet);
+
+    // int starting wavelength
+    QByteArray startWavToSet = QByteArray::number(startWav);
+    t100->setRefWavelengthModuleCmd(t100SlotNum, startWavToSet);
+    QByteArray wavUnit = "nm";
+    powerMeter->setWavelength(powerMeterSlotNum, startWavToSet, wavUnit);
+
+    // wait for adjustments
+    QTime timer = QTime::currentTime().addSecs(3);
+    while(QTime::currentTime() < timer){
+        // do nothing
+    }
 
     double currentWav = startWav;
     while(currentWav <= endWav){
@@ -214,12 +151,12 @@ void EXFO_T100_SWT_PM_WM_Test::runTestLoop(QByteArray filename, double startWav,
         // get active switch channel
         QByteArray channel;
         swt->getChannelForSignalAPC(swtSlotNum, channel);
-        stream << channel.split('=')[1].trimmed() << ",";
+        testData.append(channel.split('=')[1].trimmed().append(','));
 
         // get t100 output power
         QByteArray t100Power;
         t100->outputPowerModuleQuery(t100SlotNum, t100Power);
-        stream << t100Power.split('=')[1].toDouble() << ",";
+        testData.append(QByteArray::number(t100Power.split('=')[1].toDouble()).append(','));
 
         // set t100 wavelength
         QByteArray wavToSet = QByteArray::number(currentWav);
@@ -228,6 +165,9 @@ void EXFO_T100_SWT_PM_WM_Test::runTestLoop(QByteArray filename, double startWav,
         // set power meter wavelength
         QByteArray wavUnit = "nm";
         powerMeter->setWavelength(powerMeterSlotNum, wavToSet, wavUnit);
+
+        // set switch wavelength
+        swt->setRefWavelengthModuleCmd(swtSlotNum, wavToSet);
 
         // wait for adjustments
         QTime timer = QTime::currentTime().addSecs(3);
@@ -238,23 +178,128 @@ void EXFO_T100_SWT_PM_WM_Test::runTestLoop(QByteArray filename, double startWav,
         // write current t100 wavelength
         QByteArray t100Wav;
         t100->refWavelengthModuleQuery(t100SlotNum, t100Wav);
-        stream << t100Wav.split('=')[1].toDouble() << ",";
-
-        // write wavemeter wavelength
-        QByteArray bristolWav;
-        bristol->measureWavelengthSingle(bristolWav);
-        stream << bristolWav.trimmed() << ",";
+        testData.append(QByteArray::number(t100Wav.split('=')[1].toDouble()).append(','));
 
         // write power meter reading
         QByteArray powerReading;
         powerMeter->measurePower(powerMeterSlotNum, powerReading);
         // convert and write out
         double convertedPower = ConversionUtilities::convertWattToDBm(powerReading.trimmed().toDouble());
-        stream << convertedPower << endl;
+        testData.append(QByteArray::number(convertedPower));
 
+        // end data line
+        testData.append("\n");
 
         currentWav += wavStep;
     }
 
+    // shut off laser
+    t100->disableModuleLaserCmd(t100SlotNum);
 
+    // write file contents
+    writeTestDataToFile(filename);
+
+    qDebug() << "================================= COMPLETE ===================================";
+}
+
+void EXFO_T100_SWT_PM_WM_Test::runTestLoopWithWavemeter(QByteArray filename, double startWav, double endWav, double wavStep, double power){
+
+    // add .csv header to test data
+    testData.append("SWITCH CHANNEL,");
+    testData.append("T100 POWER,");
+    testData.append("T100 WAVELENGTH,");
+    testData.append("BRISTOL WAVELENGTH,");
+    testData.append("POWER METER POWER");
+    testData.append("\n");
+
+    // enable laser
+    t100->enableModuleLaserCmd(t100SlotNum);
+
+    // int starting wavelength
+    QByteArray startWavToSet = QByteArray::number(startWav);
+    t100->setRefWavelengthModuleCmd(t100SlotNum, startWavToSet);
+
+    // wait for adjustments
+    QTime timer = QTime::currentTime().addSecs(3);
+    while(QTime::currentTime() < timer){
+        // do nothing
+    }
+
+    double currentWav = startWav;
+    while(currentWav <= endWav){
+
+        // get active switch channel
+        QByteArray channel;
+        swt->getChannelForSignalAPC(swtSlotNum, channel);
+        testData.append(channel.split('=')[1].trimmed().append(','));
+
+        // get t100 output power
+        QByteArray t100Power;
+        t100->outputPowerModuleQuery(t100SlotNum, t100Power);
+        testData.append(QByteArray::number(t100Power.split('=')[1].toDouble()).append(','));
+
+        // set t100 wavelength
+        QByteArray wavToSet = QByteArray::number(currentWav);
+        t100->setRefWavelengthModuleCmd(t100SlotNum, wavToSet);
+
+        // set power meter wavelength
+        QByteArray wavUnit = "nm";
+        powerMeter->setWavelength(powerMeterSlotNum, wavToSet, wavUnit);
+
+        // set switch wavelength
+        swt->setRefWavelengthModuleCmd(swtSlotNum, wavToSet);
+
+        // wait for adjustments
+        QTime timer = QTime::currentTime().addSecs(3);
+        while(QTime::currentTime() < timer){
+            // do nothing
+        }
+
+        // write current t100 wavelength
+        QByteArray t100Wav;
+        t100->refWavelengthModuleQuery(t100SlotNum, t100Wav);
+        testData.append(QByteArray::number(t100Wav.split('=')[1].toDouble()).append(','));
+
+
+        // write wavemeter wavelength
+        QByteArray bristolWav;
+        bristol->measureWavelengthSingle(bristolWav);
+        testData.append(bristolWav.trimmed().append(','));
+
+        // write power meter reading
+        QByteArray powerReading;
+        powerMeter->measurePower(powerMeterSlotNum, powerReading);
+        // convert and write out
+        double convertedPower = ConversionUtilities::convertWattToDBm(powerReading.trimmed().toDouble());
+        testData.append(QByteArray::number(convertedPower));
+
+        // end data line
+        testData.append("\n");
+
+        currentWav += wavStep;
+    }
+
+    // shut off laser
+    t100->disableModuleLaserCmd(t100SlotNum);
+
+    // write file contents
+    writeTestDataToFile(filename);
+
+    qDebug() << "================================= COMPLETE ===================================";
+}
+
+void EXFO_T100_SWT_PM_WM_Test::writeTestDataToFile(QByteArray filename){
+    if(testData.size() > 0){
+
+        // init output file
+        QFile file(filename);
+        file.open(QIODevice::ReadWrite);
+        QTextStream stream(&file);
+
+        for( auto e : testData ){
+            stream << e;
+        }
+
+        file.close();
+    }
 }

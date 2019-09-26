@@ -22,6 +22,16 @@ private:
 
     PowerMeter *powerMeter = nullptr;
     int powerMeterSlotNum = 1;
+
+
+    double startPower = 0;
+    double endPower = 10;
+    double powerStep = 0.1;
+    double wavelength = 1520;
+
+    QByteArray constructOutputFilename();
+    void writeTestDataToFile(QByteArray filename);
+    QList<QString> testData;
 };
 
 #endif // EXFO_T100_PM_POWER_STEP_TEST_H

@@ -30,6 +30,16 @@ DeviceTest *DeviceTestFactory::makeDeviceTest(QString deviceTypeName, QList<QVar
         EXFO_T100_ATN_Power_Test *test = new EXFO_T100_ATN_Power_Test(selectedDevices, *testWindow);
         return test;
     }
+    else if(deviceTypeName == EXFO_T100_SWT_PM_WM_TEST){
+        QMainWindow *testWindow = new QMainWindow();
+        EXFO_T100_SWT_PM_WM_Test *test = new EXFO_T100_SWT_PM_WM_Test(selectedDevices, *testWindow);
+        return test;
+    }
+    else if(deviceTypeName == EXFO_T100_PM_POWER_STEP_TEST){
+        QMainWindow *testWindow = new QMainWindow();
+        EXFO_T100_PM_Power_Step_Test *test = new  EXFO_T100_PM_Power_Step_Test(selectedDevices, *testWindow);
+        return test;
+    }
     else{
         qDebug() << "device test type not recognized";
         // #TODO handle null

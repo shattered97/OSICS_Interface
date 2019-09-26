@@ -61,10 +61,27 @@ bool EXFO_T100_Bristol_Wavelength_Step_Test::areDevicesValidForTest(){
 void EXFO_T100_Bristol_Wavelength_Step_Test::runDeviceTest(){
     qDebug() << "executing t100/bristol test";
 
-    QByteArray filename = "t100_1520_EO193300135_WAVSTEP_BRISTOL_1500_1575_SPLITTER_4_1.csv";
-    double startWav = 1500;
+//    QByteArray filename = "t100_EO193500135_wav_step";
+//    double startWav = 1465;
+//    double endWav = 1575;
+//    double wavStep = 0.1;
+
+//    QByteArray filename = "t100_EO193400235_wav_step";
+//    double startWav = 1465;
+//    double endWav = 1575;
+//    double wavStep = 0.1;
+
+//    QByteArray filename = "t100_EO193400135_wav_step";
+//    double startWav = 1465;
+//    double endWav = 1575;
+//    double wavStep = 0.1;
+
+    QByteArray filename = "t100_EO193300135_wav_step";
+    double startWav = 1465;
     double endWav = 1575;
-    double wavStep = 1;
+    double wavStep = 0.1;
+
+
 
     if(powerMeter != nullptr){
         runTestLoopWithPowerMeter(filename, startWav, endWav, wavStep);
@@ -88,6 +105,9 @@ void EXFO_T100_Bristol_Wavelength_Step_Test::runTestLoopWithPowerMeter(QByteArra
     //set starting wavelength
     QByteArray wavelengthToSet = QByteArray::number(startWav);
     t100->setRefWavelengthModuleCmd(t100SlotNum, wavelengthToSet);
+
+    // enable laser
+    t100->enableModuleLaserCmd(t100SlotNum);
 
     // set power values
     t100->setModulePowerUnitDBmCmd(t100SlotNum);
@@ -143,6 +163,9 @@ void EXFO_T100_Bristol_Wavelength_Step_Test::runTestLoopWithPowerMeter(QByteArra
 
         currentWav += wavStep;
     }
+
+    // enable laser
+    t100->disableModuleLaserCmd(t100SlotNum);
 }
 
 
@@ -160,6 +183,9 @@ void EXFO_T100_Bristol_Wavelength_Step_Test::runTestLoopBristolOnly(QByteArray f
     //set starting wavelength (t100)
     QByteArray wavelengthToSet = QByteArray::number(startWav);
     t100->setRefWavelengthModuleCmd(t100SlotNum, wavelengthToSet);
+
+    // enable laser
+    t100->enableModuleLaserCmd(t100SlotNum);
 
     // set power values
     t100->setModulePowerUnitDBmCmd(t100SlotNum);
@@ -207,4 +233,7 @@ void EXFO_T100_Bristol_Wavelength_Step_Test::runTestLoopBristolOnly(QByteArray f
 
         currentWav += wavStep;
     }
+
+    // enable laser
+    t100->disableModuleLaserCmd(t100SlotNum);
 }
