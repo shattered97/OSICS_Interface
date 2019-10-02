@@ -21,7 +21,7 @@ public:
     virtual int getNumPowerMeterChannels() = 0;
     virtual QList<QByteArray> formatPowerUnits(QByteArray rawUnits, int numChannels) = 0;
     virtual QList<QByteArray> parseBinaryBlockPowerReadings(QByteArray binaryBlock, int numBytesPerValue) = 0;
-
+    virtual void getPowerReadingOnAllChannels(QList<QByteArray> &readings) = 0;
     virtual void updateConfig(QSettings &) = 0;
     virtual void applyConfigSettings(QSettings &) = 0;
 

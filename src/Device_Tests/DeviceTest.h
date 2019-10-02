@@ -16,6 +16,15 @@ public:
 
     QList<QVariant> *selectedDevices;
     QMainWindow *configWindow;
+
+    void setWindowConfigureable(bool status);
+    bool isWindowConfigureable();
+
+private:
+    bool windowConfigureable = false;
+
+
+
 };
 
 #endif // DEVICETEST_H

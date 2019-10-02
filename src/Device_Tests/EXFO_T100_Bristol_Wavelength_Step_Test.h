@@ -17,6 +17,10 @@ public:
     void runTestLoopBristolOnly(QByteArray filename, double startWav, double endWav, double wavStep);
     void runTestLoopWithPowerMeter(QByteArray filename, double startWav, double endWav, double wavStep);
 
+    void setStartWavelength(double startWav);
+    void setEndWavelength(double endWav);
+    void setWavelengthStep(double wavStep);
+    void setPowerMeterSlotNum(int slotNum);
 
 private:
     EXFO_OSICS_T100 *t100 = nullptr;
@@ -26,6 +30,14 @@ private:
 
     PowerMeter *powerMeter = nullptr;
     int powerMeterSlotNum = 1;
+
+    double startWav = 1465;
+    double endWav = 1575;
+    double wavStep = 50; // change back to 0.1
+
+    QByteArray constructOutputFilename();
+    void writeTestDataToFile(QByteArray filename);
+    QList<QString> testData;
 };
 
 #endif // EXFO_T100_BRISTOL_WAVELENGTH_STEP_TEST_H

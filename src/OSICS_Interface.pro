@@ -43,7 +43,12 @@ CONFIG += c++11
 
 SOURCES += \
         Device_Tests/EXFO_T100_SWT_PM_WM_Test.cpp \
+        Device_Tests/WavStepWithPowerMonitoringTest.cpp \
+        Device_Tests/exfo_operationaltest_t100_swt_atn.cpp \
+        Device_Tests/exfo_operationaltest_t100_swt_atn_window.cpp \
         Device_Tests/exfo_t100_pm_power_step_test.cpp \
+        Device_Tests/powermeterpollingworker.cpp \
+        Device_Tests/wavstep_power_monitoring_test_window.cpp \
         main.cpp \
         mainwindow.cpp \
         Device_Config_Windows/confign7714awindow.cpp \
@@ -58,7 +63,6 @@ SOURCES += \
         Device_Tests/EXFO_T100_Bristol_Wavelength_Step_Test.cpp \
         Device_Tests/EXFO_T100_SWT_OSA_WavelengthTest.cpp \
         Device_Tests/OSA_Wavelength_Step_Test.cpp \
-        Device_Tests/testsetupwindow.cpp \
         shared/ConversionUtilities.cpp \
         shared/Logging.cpp \
         shared/Orchestrator.cpp \
@@ -79,7 +83,11 @@ SOURCES += \
 
 HEADERS += \
         Device_Tests/EXFO_T100_SWT_PM_WM_Test.h \
+        Device_Tests/exfo_operationaltest_t100_swt_atn.h \
+        Device_Tests/exfo_operationaltest_t100_swt_atn_window.h \
         Device_Tests/exfo_t100_pm_power_step_test.h \
+        Device_Tests/powermeterpollingworker.h \
+        Device_Tests/wavstep_power_monitoring_test_window.h \
         mainwindow.h \
         Device_Config_Windows/confign7714awindow.h \
         Device_Config_Windows/ConfigOSICS_ATN.h \
@@ -93,7 +101,7 @@ HEADERS += \
         Device_Tests/EXFO_T100_Bristol_Wavelength_Step_Test.h \
         Device_Tests/EXFO_T100_SWT_OSA_WavelengthTest.h \
         Device_Tests/OSA_Wavelength_Step_Test.h \
-        Device_Tests/testsetupwindow.h \
+        Device_Tests/WavStepWithPowerMonitoringTest.h \
         shared/constants.h \
         shared/ConversionUtilities.h \
         shared/Logging.h \
@@ -114,16 +122,20 @@ HEADERS += \
 
 
 FORMS += \
+        Device_Tests/exfo_operationaltest_t100_swt_atn_window.ui \
+        Device_Tests/wavstep_power_monitoring_test_window.ui \
         mainwindow.ui \
         Device_Config_windows/confign7714awindow.ui \
         Device_Config_windows/ConfigOSICS_ATN.ui \
         Device_Config_windows/ConfigOSICS_SWT.ui \
         Device_Config_windows/ConfigOSICS_T100.ui \
         Device_Config_windows/configpowermeter.ui \
-        Device_Config_windows/OSICSMainframeSetupWindow.ui \
-        Device_Tests/testsetupwindow.ui
+        Device_Config_windows/OSICSMainframeSetupWindow.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
+
+RESOURCES += \
+    devicetestimages.qrc

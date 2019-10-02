@@ -114,9 +114,21 @@ const QByteArray EXFO_T100_BRISTOL_WAV_STEP_TEST = "EXFO / T100 / Bristol / Wave
 const QByteArray EXFO_T100_ATN_POWER_TEST = "EXFO / T100 / ATN / Power Meter / Power Test";
 const QByteArray EXFO_T100_SWT_PM_WM_TEST = "EXFO / T100 / SWT / Bristol / Wavelength Step Test";
 const QByteArray EXFO_T100_PM_POWER_STEP_TEST = "EXFO / T100 / Power Meter / Power Step Test";
+const QByteArray EXFO_OPERATIONAL_TEST_T100_SWT_ATN = "EXFO SWT / T100 / ATN / Operational Test";
+const QByteArray WAV_STEP_TEST_WITH_POWER_MONITORING_TEST = "Wavelength Step Test with Power Monitoring (EXFO T100)";
+
 const QByteArray TEST_TYPES[] = {N7714A_WAV_CYCLE_TEST, OSICS_WAV_CYCLE_TEST, EXFO_T100_ANDO_OSA_WAV_CYCLE_TEST,
                                  EXFO_T100_SWT_WAV_STEP_OSA_POWER_TEST, EXFO_T100_BRISTOL_WAV_STEP_TEST,
-                                 EXFO_T100_ATN_POWER_TEST, EXFO_T100_SWT_PM_WM_TEST, EXFO_T100_PM_POWER_STEP_TEST};
+                                 EXFO_T100_ATN_POWER_TEST, EXFO_T100_SWT_PM_WM_TEST, EXFO_T100_PM_POWER_STEP_TEST,
+                                 EXFO_OPERATIONAL_TEST_T100_SWT_ATN, WAV_STEP_TEST_WITH_POWER_MONITORING_TEST};
+// Wavelength Step Test With Power Monitoring Settings
+const QByteArray WAV_STEP_TEST_CSV_FILENAME = "Wav Step Test .csv Filename";
+const QByteArray WAV_STEP_TEST_GRAPH_FILENAME = "Wav Step Test Graph Filename";
+const QByteArray WAV_STEP_TEST_START_WAVELENGTH = "Wav Step Test Start Wavelength";
+const QByteArray WAV_STEP_TEST_END_WAVELENGTH = "Wav Step Test End Wavelength";
+const QByteArray WAV_STEP_TEST_WAV_STEP_SIZE = "Wav Step Test Step Size";
+const QByteArray WAV_STEP_TEST_DWELL_SECONDS = "Wav Step Test Dwell in Seconds";
+const QByteArray WAV_STEP_TEST_SWT_CHANNELS_TO_T100 = "Wav Step Test SWT Channels to T100 Map";
 
 // EXFO_OSICS_ATN Values
 const QByteArray EXFO_OSICS_ATN_MIN_OFFSET = "-10"; // defined in spec sheet/prog guide
@@ -127,13 +139,14 @@ const QByteArray EXFO_OSICS_SWT_MIN_WAV_NM = "1250";
 const QByteArray EXFO_OSICS_SWT_MAX_WAV_NM = "1650";
 const QByteArray EXFO_OSICS_SWT_MIN_POWER_DBM = "-6.99";
 const QByteArray EXFO_OSICS_SWT_MAX_POWER_DBM = "3";
+const QByteArray EXFO_OSICS_SWT_NUM_CHANNELS = "4";
 
 // EXFO_OSICS_T100 Values
 const QByteArray EXFO_OSICS_T100_MIN_POWER_DBM = "-6.99";
 const QByteArray EXFO_OSICS_T100_MAX_POWER_DBM = "6";
 const QByteArray EXFO_OSICS_T100_1310_MIN_WAV_NM = "1260";
 const QByteArray EXFO_OSICS_T100_1310_MAX_WAV_NM = "1360";
-const QByteArray EXFO_OSICS_T100_1415_MIN_WAV_NM = "1460";
+const QByteArray EXFO_OSICS_T100_1415_MIN_WAV_NM = "1360";
 const QByteArray EXFO_OSICS_T100_1415_MAX_WAV_NM = "1470";
 const QByteArray EXFO_OSICS_T100_1520_MIN_WAV_NM = "1465";
 const QByteArray EXFO_OSICS_T100_1520_MAX_WAV_NM = "1575";

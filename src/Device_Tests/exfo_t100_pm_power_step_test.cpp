@@ -27,6 +27,7 @@ bool EXFO_T100_PM_Power_Step_Test::areDevicesValidForTest(){
             EXFO_OSICS_MAINFRAME *exfo = exfoVariant.value<EXFO_OSICS_MAINFRAME*>();
 
             QMap<int, QVariant> exfoModuleSlotQMap = exfo->getModuleSlotQVariantMap();
+            qDebug() << exfoModuleSlotQMap;
             for(auto e: exfoModuleSlotQMap.keys()){
                 // get type of module
                 QByteArray moduleType = exfoModuleSlotQMap.value(e).typeName();
@@ -56,11 +57,11 @@ bool EXFO_T100_PM_Power_Step_Test::areDevicesValidForTest(){
 }
 
 QByteArray EXFO_T100_PM_Power_Step_Test::constructOutputFilename(){
-
+    qDebug() << "in constructOutputFilename()";
     // construct filename
     QByteArray identityInfo;
     t100->identificationModuleQuery(t100SlotNum, identityInfo);
-
+    qDebug() << identityInfo;
     // the serial number is the third item when comma-separated, the module type is the second item
     QByteArray serialNumber = identityInfo.split(',')[2];
     QByteArray moduleType = identityInfo.split(',')[1];
@@ -76,12 +77,12 @@ QByteArray EXFO_T100_PM_Power_Step_Test::constructOutputFilename(){
 }
 
 void EXFO_T100_PM_Power_Step_Test::runDeviceTest(){
-
+    qDebug() << "runDeviceTest() in powerMeterStepTestT100";
     // construct filename
     QByteArray filename = constructOutputFilename();
-
+    qDebug() << "constructed filename";
     runTestLoop(filename, startPower, endPower, powerStep, wavelength);
-
+    qDebug() << "finished running test loop";
 }
 
 void EXFO_T100_PM_Power_Step_Test::runTestLoop(QByteArray filename, double startPow,
@@ -177,4 +178,20 @@ void EXFO_T100_PM_Power_Step_Test::writeTestDataToFile(QByteArray filename){
 
         file.close();
     }
+}
+
+void EXFO_T100_PM_Power_Step_Test::setStartPower(double startPower){
+    this->startPower = startPower;
+}
+void EXFO_T100_PM_Power_Step_Test::setEndPower(double endPower){
+    this->endPower = endPower;
+}
+void EXFO_T100_PM_Power_Step_Test::setPowerStep(double powerStep){
+    this->powerStep = powerStep;
+}
+void EXFO_T100_PM_Power_Step_Test::setWavelength(double wavelength){
+    this->wavelength = wavelength;
+}
+void EXFO_T100_PM_Power_Step_Test::setPowerMeterSlotNum(int slotNum){
+    this->powerMeterSlotNum = slotNum;
 }

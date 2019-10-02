@@ -58,30 +58,47 @@ bool EXFO_T100_Bristol_Wavelength_Step_Test::areDevicesValidForTest(){
 
 }
 
+void EXFO_T100_Bristol_Wavelength_Step_Test::writeTestDataToFile(QByteArray filename){
+    if(testData.size() > 0){
+
+        // init output file
+        QFile file(filename);
+        file.open(QIODevice::ReadWrite);
+        QTextStream stream(&file);
+
+        for( auto e : testData ){
+            stream << e;
+        }
+
+        file.close();
+    }
+}
+
+QByteArray EXFO_T100_Bristol_Wavelength_Step_Test::constructOutputFilename(){
+
+    //construct filename
+    QByteArray identityInfo;
+    t100->identificationModuleQuery(t100SlotNum, identityInfo);
+
+    // the serial number is the third item when comma-separated, the module type is the second item
+    QByteArray serialNumber = identityInfo.split(',')[2];
+    QByteArray moduleType = identityInfo.split(',')[1];
+    QByteArray testName = "Bristol_Wavemeter_wavelength_step";
+    QByteArray timestamp = QDateTime::currentDateTime().toString("ddMMyyyy-hhmmss").toLatin1();
+
+    QStringList filenameElements = {serialNumber, moduleType, testName, timestamp};
+    QByteArray filename = filenameElements.join('_').toLatin1();
+    QByteArray extension = ".csv";
+    filename.append(extension);
+
+    return filename;
+
+}
+
 void EXFO_T100_Bristol_Wavelength_Step_Test::runDeviceTest(){
     qDebug() << "executing t100/bristol test";
 
-//    QByteArray filename = "t100_EO193500135_wav_step";
-//    double startWav = 1465;
-//    double endWav = 1575;
-//    double wavStep = 0.1;
-
-//    QByteArray filename = "t100_EO193400235_wav_step";
-//    double startWav = 1465;
-//    double endWav = 1575;
-//    double wavStep = 0.1;
-
-//    QByteArray filename = "t100_EO193400135_wav_step";
-//    double startWav = 1465;
-//    double endWav = 1575;
-//    double wavStep = 0.1;
-
-    QByteArray filename = "t100_EO193300135_wav_step";
-    double startWav = 1465;
-    double endWav = 1575;
-    double wavStep = 0.1;
-
-
+    QByteArray filename = constructOutputFilename();
 
     if(powerMeter != nullptr){
         runTestLoopWithPowerMeter(filename, startWav, endWav, wavStep);
@@ -92,15 +109,14 @@ void EXFO_T100_Bristol_Wavelength_Step_Test::runDeviceTest(){
 }
 
 void EXFO_T100_Bristol_Wavelength_Step_Test::runTestLoopWithPowerMeter(QByteArray filename, double startWav, double endWav, double wavStep){
-    // init output file
-    QFile file(filename);
-    file.open(QIODevice::ReadWrite);
-    QTextStream stream(&file);
-    stream << "T100 WAVELENGTH,";
-    stream << "T100 POWER,";
-    stream << "BRISTOL WAVELENGTH,";
-    stream << "BRISTOL POWER,";
-    stream << "POWER METER POWER" << endl;
+
+    // add .csv header
+    testData.append("T100 WAVELENGTH,");
+    testData.append("T100 POWER,");
+    testData.append("BRISTOL WAVELENGTH,");
+    testData.append("BRISTOL POWER,");
+    testData.append("POWER METER POWER");
+    testData.append("\n");
 
     //set starting wavelength
     QByteArray wavelengthToSet = QByteArray::number(startWav);
@@ -139,46 +155,53 @@ void EXFO_T100_Bristol_Wavelength_Step_Test::runTestLoopWithPowerMeter(QByteArra
         // get wavelength reported by t100
         QByteArray t100Wavelength;
         t100->refWavelengthModuleQuery(t100SlotNum, t100Wavelength);
-        stream << t100Wavelength.split('=')[1].toDouble() << ",";
+        testData.append(QByteArray::number(t100Wavelength.split('=')[1].toDouble()).append(','));
 
         // get output power of t100
         QByteArray t100Power;
         t100->outputPowerModuleQuery(t100SlotNum, t100Power);
-        stream << t100Power.split('=')[1].toDouble() << ",";
+        testData.append(QByteArray::number(t100Power.split('=')[1].toDouble()).append(','));
 
         // get wavelength reported by wavemeter
         QByteArray bristolWavelength;
         bristol->measureWavelengthSingle(bristolWavelength);
-        stream << bristolWavelength.trimmed() << ",";
+        testData.append(bristolWavelength.trimmed().append(','));
 
         // get power reported by wavemeter
         QByteArray bristolPower;
         bristol->measurePowerSingle(bristolPower);
-        stream << bristolPower.trimmed() << ",";
+        testData.append(bristolPower.trimmed().append(','));
 
         // get power reported by powerMeter
         QByteArray powerMeterReading;
         powerMeter->measurePower(powerMeterSlotNum, powerMeterReading);
-        stream << powerMeterReading.trimmed() << endl;
+        testData.append(powerMeterReading.trimmed());
+
+        // end data line
+        testData.append("\n");
 
         currentWav += wavStep;
     }
 
     // enable laser
     t100->disableModuleLaserCmd(t100SlotNum);
+
+    // write file contents
+    writeTestDataToFile(filename);
+
+    qDebug() << "================================= COMPLETE ===================================";
+
 }
 
 
 void EXFO_T100_Bristol_Wavelength_Step_Test::runTestLoopBristolOnly(QByteArray filename, double startWav, double endWav, double wavStep)
 {
-    // init output file
-    QFile file(filename);
-    file.open(QIODevice::ReadWrite);
-    QTextStream stream(&file);
-    stream << "T100 WAVELENGTH,";
-    stream << "T100 POWER,";
-    stream << "BRISTOL WAVELENGTH,";
-    stream << "BRISTOL POWER" << endl;
+    // add .csv header
+    testData.append("T100 WAVELENGTH,");
+    testData.append("T100 POWER,");
+    testData.append("BRISTOL WAVELENGTH,");
+    testData.append("BRISTOL POWER");
+    testData.append("\n");
 
     //set starting wavelength (t100)
     QByteArray wavelengthToSet = QByteArray::number(startWav);
@@ -214,26 +237,49 @@ void EXFO_T100_Bristol_Wavelength_Step_Test::runTestLoopBristolOnly(QByteArray f
         // get wavelength reported by t100
         QByteArray t100Wavelength;
         t100->refWavelengthModuleQuery(t100SlotNum, t100Wavelength);
-        stream << t100Wavelength.split('=')[1].toDouble() << ",";
+        testData.append(QByteArray::number(t100Wavelength.split('=')[1].toDouble()).append(','));
 
         // get output power of t100
         QByteArray t100Power;
         t100->outputPowerModuleQuery(t100SlotNum, t100Power);
-        stream << t100Power.split('=')[1].toDouble() << ",";
+        testData.append(QByteArray::number(t100Power.split('=')[1].toDouble()).append(','));
 
         // get wavelength reported by wavemeter
         QByteArray bristolWavelength;
         bristol->measureWavelengthSingle(bristolWavelength);
-        stream << bristolWavelength.trimmed() << ",";
+        testData.append(bristolWavelength.trimmed().append(','));
 
         // get power reported by wavemeter
         QByteArray bristolPower;
         bristol->measurePowerSingle(bristolPower);
-        stream << bristolPower.trimmed() << endl;
+        testData.append(bristolPower.trimmed().append(','));
 
         currentWav += wavStep;
     }
 
-    // enable laser
+    // disable laser
     t100->disableModuleLaserCmd(t100SlotNum);
+
+    // write file contents
+    writeTestDataToFile(filename);
+
+    qDebug() << "================================= COMPLETE ===================================";
+
+}
+
+
+void EXFO_T100_Bristol_Wavelength_Step_Test::setStartWavelength(double startWav){
+    this->startWav = startWav;
+}
+
+void EXFO_T100_Bristol_Wavelength_Step_Test::setEndWavelength(double endWav){
+    this->endWav = endWav;
+}
+
+void EXFO_T100_Bristol_Wavelength_Step_Test::setWavelengthStep(double wavStep){
+    this->wavStep = wavStep;
+}
+
+void EXFO_T100_Bristol_Wavelength_Step_Test::setPowerMeterSlotNum(int slotNum){
+    this->powerMeterSlotNum = slotNum;
 }

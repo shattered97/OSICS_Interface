@@ -40,6 +40,18 @@ DeviceTest *DeviceTestFactory::makeDeviceTest(QString deviceTypeName, QList<QVar
         EXFO_T100_PM_Power_Step_Test *test = new  EXFO_T100_PM_Power_Step_Test(selectedDevices, *testWindow);
         return test;
     }
+    else if(deviceTypeName == EXFO_OPERATIONAL_TEST_T100_SWT_ATN){
+        EXFO_OperationalTest_T100_SWT_ATN_Window *testWindow = new EXFO_OperationalTest_T100_SWT_ATN_Window();
+        EXFO_OperationalTest_T100_SWT_ATN *test = new EXFO_OperationalTest_T100_SWT_ATN(selectedDevices, *testWindow);
+        test->setWindowConfigureable(true);
+        return test;
+    }
+    else if(deviceTypeName == WAV_STEP_TEST_WITH_POWER_MONITORING_TEST){
+        WavStep_Power_Monitoring_Test_Window *testWindow = new WavStep_Power_Monitoring_Test_Window();
+        WavStepWithPowerMonitoringTest *test = new WavStepWithPowerMonitoringTest(selectedDevices, *testWindow);
+        test->setWindowConfigureable(true);
+        return test;
+    }
     else{
         qDebug() << "device test type not recognized";
         // #TODO handle null

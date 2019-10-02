@@ -16,6 +16,12 @@ public:
     void runDeviceTest();
     void runTestLoop(QByteArray filename, double startPow, double endPow, double powStep, double wavelength);
 
+    void setStartPower(double startPower);
+    void setEndPower(double endPower);
+    void setPowerStep(double powerStep);
+    void setWavelength(double wavelength);
+    void setPowerMeterSlotNum(int slotNum);
+
 private:
     EXFO_OSICS_T100 *t100 = nullptr;
     int t100SlotNum = 1;
@@ -26,7 +32,7 @@ private:
 
     double startPower = 0;
     double endPower = 10;
-    double powerStep = 0.1;
+    double powerStep = 5; // change back to 0.1
     double wavelength = 1520;
 
     QByteArray constructOutputFilename();

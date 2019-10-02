@@ -34,6 +34,20 @@ void EXFO_OSICS_T100::setT100MinMaxWavelengths(QByteArray t100Type){
     }
 }
 
+double EXFO_OSICS_T100::getT100MinWavelength(){
+    double minWavDouble = minWavelength.toDouble();
+    return minWavDouble;
+}
+
+double EXFO_OSICS_T100::getT100MaxWavelength(){
+    double maxWavDouble = maxWavelength.toDouble();
+    return maxWavDouble;
+}
+
+int EXFO_OSICS_T100::getSlotNum(){
+    return slotNum;
+}
+
 // ********* Diode-Current Setting Commands **********
 
 // CH#:I?

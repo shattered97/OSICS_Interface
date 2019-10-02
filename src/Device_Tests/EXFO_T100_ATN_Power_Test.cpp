@@ -62,11 +62,50 @@ bool EXFO_T100_ATN_Power_Test::areDevicesValidForTest(){
     return success;
 }
 
+
+
+void EXFO_T100_ATN_Power_Test::writeTestDataToFile(QByteArray filename){
+    if(testData.size() > 0){
+
+        // init output file
+        QFile file(filename);
+        file.open(QIODevice::ReadWrite);
+        QTextStream stream(&file);
+
+        for( auto e : testData ){
+            stream << e;
+        }
+
+        file.close();
+    }
+}
+
+QByteArray EXFO_T100_ATN_Power_Test::constructOutputFilename(){
+
+    //construct filename
+    QByteArray identityInfo;
+    atn->identificationModuleQuery(atnSlotNum, identityInfo);
+
+    // the serial number is the third item when comma-separated, the module type is the second item
+    QByteArray serialNumber = identityInfo.split(',')[2];
+    QByteArray moduleType = identityInfo.split(',')[1];
+    QByteArray testName = "power_step";
+    QByteArray timestamp = QDateTime::currentDateTime().toString("ddMMyyyy-hhmmss").toLatin1();
+
+    QStringList filenameElements = {serialNumber, moduleType, testName, timestamp};
+    QByteArray filename = filenameElements.join('_').toLatin1();
+    QByteArray extension = ".csv";
+    filename.append(extension);
+
+    return filename;
+}
+
 void EXFO_T100_ATN_Power_Test::runDeviceTest(){
     qDebug() << "executing t100/atn/powermeter test";
 
+    QByteArray filename = constructOutputFilename();
 
-    // get min attenuation
+    // get min and max attenuation
     QByteArray minMaxAtten;
     atn->moduleAttenuationMinMaxQuery(atnSlotNum, "2", minMaxAtten);
 
@@ -77,113 +116,19 @@ void EXFO_T100_ATN_Power_Test::runDeviceTest(){
     double startAtn = minAttenRaw.toDouble();
     double endAtn = maxAttenRaw.toDouble();
 
-
-//    QByteArray filename = "t100_1520_E0193000335_ATN_RANGE_POWER_STEP_TEST_01.csv";
-//    double atnStep = 0.1;
-//    double power = 0;
-//    double wavelength = 1465;
-
-
-//    QByteArray filename = "t100_1520_1575_E0193000335_ATN_RANGE_POWER_STEP_TEST_01.csv";
-//    double atnStep = 0.1;
-//    double power = 0;
-//    double wavelength = 1575;
-
-//    QByteArray filename = "t100_1520_1520_E0193000335_ATN_RANGE_POWER_STEP_TEST_01.csv";
-//    double atnStep = 0.1;
-//    double power = 0;
-//    double wavelength = 1520;
-
-
-//    QByteArray filename = "t100_1520_1575_E0193400235_ATN_RANGE_POWER_STEP_TEST_01.csv";
-//    double atnStep = 0.1;
-//    double power = 0;
-//    double wavelength = 1575;
-
-//    QByteArray filename = "t100_1520_1465_E0193400235_ATN_RANGE_POWER_STEP_TEST_01.csv";
-//    double atnStep = 0.1;
-//    double power = 0;
-//    double wavelength = 1465;
-
-//    QByteArray filename = "t100_1520_1520_E0193400235_ATN_RANGE_POWER_STEP_TEST_01.csv";
-//    double atnStep = 0.1;
-//    double power = 0;
-//    double wavelength = 1520;
-
-//    runTestLoop(filename, power, wavelength, startAtn, endAtn, atnStep);
-// ********************************************************************
-//    QByteArray filename = "t100_1520_1465_E0193300135_ATN_RANGE_POWER_STEP_TEST_01.csv";
-//    double atnStep = 0.1;
-//    double power = 0;
-//    double wavelength = 1465;
-//    runTestLoop(filename, power, wavelength, startAtn, endAtn, atnStep);
-
-//    filename = "t100_1520_1520_E0193300135_ATN_RANGE_POWER_STEP_TEST_01.csv";
-//    atnStep = 0.1;
-//    power = 0;
-//    wavelength = 1520;
-//    runTestLoop(filename, power, wavelength, startAtn, endAtn, atnStep);
-
-//    filename = "t100_1520_1575_E0193300135_ATN_RANGE_POWER_STEP_TEST_01.csv";
-//    atnStep = 0.1;
-//    power = 0;
-//    wavelength = 1575;
-//    runTestLoop(filename, power, wavelength, startAtn, endAtn, atnStep);
-
-//// **********************************************************************
-
-//    QByteArray filename = "t100_E0193500135_1465_atn_test.csv";
-//    double atnStep = 0.1;
-//    double power = 0;
-//    double wavelength = 1465;
-//    runTestLoop(filename, power, wavelength, startAtn, endAtn, atnStep);
-
-//    filename = "t100_E0193500135_1520_atn_test.csv";
-//    atnStep = 0.1;
-//    power = 0;
-//    wavelength = 1520;
-//    runTestLoop(filename, power, wavelength, startAtn, endAtn, atnStep);
-
-//    filename = "t100_E0193500135_1575_atn_test.csv";
-//    atnStep = 0.1;
-//    power = 0;
-//    wavelength = 1575;
-//    runTestLoop(filename, power, wavelength, startAtn, endAtn, atnStep);
-
-
-    // **********************************************************************
-
-        QByteArray filename = "t100_E0193400135_1465_atn_test.csv";
-        double atnStep = 0.1;
-        double power = 0;
-        double wavelength = 1465;
-        runTestLoop(filename, power, wavelength, startAtn, endAtn, atnStep);
-
-        filename = "t100_E0193400135_1520_atn_test.csv";
-        atnStep = 0.1;
-        power = 0;
-        wavelength = 1520;
-        runTestLoop(filename, power, wavelength, startAtn, endAtn, atnStep);
-
-        filename = "t100_E0193400135_1575_atn_test.csv";
-        atnStep = 0.1;
-        power = 0;
-        wavelength = 1575;
-        runTestLoop(filename, power, wavelength, startAtn, endAtn, atnStep);
+    runTestLoop(filename, power, startWav, endWav, wavStep, startAtn, endAtn, atnStep);
 }
 
-void EXFO_T100_ATN_Power_Test::runTestLoop(QByteArray filename, double power, double wavelength,
-                                           double startAtn, double endAtn, double atnStep){
-
-    // init output file
-    QFile file(filename);
-    file.open(QIODevice::ReadWrite);
-    QTextStream stream(&file);
-    stream << "ATTENUATION,";
-    stream << "T100 POWER,";
-    stream << "T100 WAVELENGTH,";
-    stream << "PM WAVELENGTH,";
-    stream << "POWER METER POWER" << endl;
+void EXFO_T100_ATN_Power_Test::runTestLoop(QByteArray filename, double power, double startWav,
+                                           double endWav, double wavStep, double startAtn,
+                                           double endAtn, double atnStep){
+    // add .csv header to test data
+    testData.append("ATTENUATION,");
+    testData.append("T100 POWER,");
+    testData.append("T100 WAVELENGTH,");
+    testData.append("PM WAVELENGTH,");
+    testData.append("POWER METER POWER");
+    testData.append("\n");
 
     // init ATN
     QByteArray atnToSet = QByteArray::number(startAtn);
@@ -198,7 +143,7 @@ void EXFO_T100_ATN_Power_Test::runTestLoop(QByteArray filename, double power, do
     t100->setModuleOutputPowerCmd(t100SlotNum, powerToSet);
 
     // init T100 wavelength
-    QByteArray wavToSet = QByteArray::number(wavelength);
+    QByteArray wavToSet = QByteArray::number(startWav);
     t100->setRefWavelengthModuleCmd(t100SlotNum, wavToSet);
 
     // init wavelength on power meter
@@ -211,35 +156,17 @@ void EXFO_T100_ATN_Power_Test::runTestLoop(QByteArray filename, double power, do
         // do nothing
     }
 
-    // start attenuation loop
-    double currentAtten = startAtn;
-    while(currentAtten <= endAtn){
+    // start wavelength loop
+    double currentWav = startWav;
+    while(currentWav <= endWav){
 
-        // setAttenuation
-        atnToSet = QByteArray::number(currentAtten);
-        atn->setModuleAttenuationCmd(atnSlotNum, atnToSet);
+        // init T100 wavelength
+        QByteArray wavToSet = QByteArray::number(startWav);
+        t100->setRefWavelengthModuleCmd(t100SlotNum, wavToSet);
 
-        // write current atteuation;
-        QByteArray attenuation;
-        atn->moduleAttenuationQuery(atnSlotNum, attenuation);
-        stream << attenuation.split('=')[1].toDouble() << ",";
-
-        // write current output power
-        QByteArray t100Power;
-        t100->outputPowerModuleQuery(t100SlotNum, t100Power);
-        stream << t100Power.split('=')[1].toDouble() << ",";
-
-        // write current wavelength
-        QByteArray t100Wav;
-        t100->refWavelengthModuleQuery(t100SlotNum, t100Wav);
-        stream << t100Wav.split('=')[1].toDouble() << ",";
-
-        // write wavelength set on power meter
-        QByteArray powerMeterWav;
-        powerMeter->queryWavelength(powerMeterSlotNum, powerMeterWav);
+        // init wavelength on power meter
         QByteArray unit = "nm";
-        double convertedWav = ConversionUtilities::convertWavelengthFromMeter(powerMeterWav.toDouble(), unit);
-        stream << convertedWav << ",";
+        powerMeter->setWavelength(powerMeterSlotNum, wavToSet, unit);
 
         // wait for adjustments
         QTime timer = QTime::currentTime().addSecs(1);
@@ -247,17 +174,86 @@ void EXFO_T100_ATN_Power_Test::runTestLoop(QByteArray filename, double power, do
             // do nothing
         }
 
-        // power reading
-        QByteArray powerReading;
-        powerMeter->measurePower(powerMeterSlotNum, powerReading);
-        // convert and write out
-        double convertedPower = ConversionUtilities::convertWattToDBm(powerReading.trimmed().toDouble());
-        stream << convertedPower << endl;
+        // start attenuation loop
+        double currentAtten = startAtn;
+        while(currentAtten <= endAtn){
 
-        currentAtten += atnStep;
+            // setAttenuation
+            atnToSet = QByteArray::number(currentAtten);
+            atn->setModuleAttenuationCmd(atnSlotNum, atnToSet);
 
+            // write current atteuation;
+            QByteArray attenuation;
+            atn->moduleAttenuationQuery(atnSlotNum, attenuation);
+            testData.append(QByteArray::number(attenuation.split('=')[1].toDouble()).append(','));
+
+            // write current output power
+            QByteArray t100Power;
+            t100->outputPowerModuleQuery(t100SlotNum, t100Power);
+            testData.append(QByteArray::number(t100Power.split('=')[1].toDouble()).append(','));
+
+            // write current wavelength
+            QByteArray t100Wav;
+            t100->refWavelengthModuleQuery(t100SlotNum, t100Wav);
+            testData.append(QByteArray::number(t100Wav.split('=')[1].toDouble()).append(','));
+
+            // write wavelength set on power meter
+            QByteArray powerMeterWav;
+            powerMeter->queryWavelength(powerMeterSlotNum, powerMeterWav);
+            QByteArray unit = "nm";
+            double convertedWav = ConversionUtilities::convertWavelengthFromMeter(powerMeterWav.toDouble(), unit);
+            testData.append(QByteArray::number(convertedWav).append(','));
+
+
+            // wait for adjustments
+            QTime timer = QTime::currentTime().addSecs(1);
+            while(QTime::currentTime() < timer){
+                // do nothing
+            }
+
+            // power reading
+            QByteArray powerReading;
+            powerMeter->measurePower(powerMeterSlotNum, powerReading);
+            // convert and write out
+            double convertedPower = ConversionUtilities::convertWattToDBm(powerReading.trimmed().toDouble());
+            testData.append(QByteArray::number(convertedPower).append(','));
+
+            currentAtten += atnStep;
+        }
+        currentWav += wavStep;
     }
 
+    // shut off laser
     t100->disableModuleLaserCmd(t100SlotNum);
-    qDebug() << "COMPLETED";
+
+    // write file contents
+    writeTestDataToFile(filename);
+
+    qDebug() << "================================= COMPLETE ===================================";
+
 }
+
+void EXFO_T100_ATN_Power_Test::setAttenuationStep(double atnStep){
+    this->atnStep = atnStep;
+}
+
+void EXFO_T100_ATN_Power_Test::setPower(double power){
+    this->power = power;
+}
+
+void EXFO_T100_ATN_Power_Test::setStartWavelength(double startWav){
+    this->startWav = startWav;
+}
+
+void EXFO_T100_ATN_Power_Test::setEndWavelength(double endWav){
+    this->endWav = endWav;
+}
+
+void EXFO_T100_ATN_Power_Test::setWavStep(double wavStep){
+    this->wavStep = wavStep;
+}
+
+void EXFO_T100_ATN_Power_Test::setPowerMeterSlotNum(int slotNum){
+    this->powerMeterSlotNum = slotNum;
+}
+

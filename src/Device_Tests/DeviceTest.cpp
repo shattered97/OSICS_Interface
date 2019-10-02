@@ -5,3 +5,12 @@ DeviceTest::DeviceTest(QList<QVariant> &selectedDevices, QMainWindow &configWind
     this->selectedDevices = &selectedDevices;
     this->configWindow = &configWindow;
 }
+
+
+void DeviceTest::setWindowConfigureable(bool status){
+    windowConfigureable = status;
+}
+
+bool DeviceTest::isWindowConfigureable(){
+    return windowConfigureable;
+}

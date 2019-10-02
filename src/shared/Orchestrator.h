@@ -11,6 +11,7 @@
 #include "EXFO_OSICS/EXFO_OSICS_T100.h"
 #include "Ando_AQ6331.h"
 #include <QObject>
+#include <QMetaType>
 
 #include "DeviceTest.h"
 #include "DeviceTestFactory.h"
@@ -39,19 +40,6 @@ public:
 
     QVariant getDeviceAtIndex(int index);
 
-    // ******** testing only ***********
-    void testOSACommands();
-    void runOSATest(QByteArray filename, double startWav, double endWav, double wavStep, QByteArray span, int slotNum);
-    void characterizeT100Power();
-    void runT100CharacterizationExperiment(QString filename,
-                                                         int slotNum,
-                                                         double startPower,
-                                                         double endPower,
-                                                         double powerStep,
-                                                         double startWav,
-                                                         double endWav,
-                                                         double wavStep);
-
 public slots:
 
     /**
@@ -77,8 +65,8 @@ private:
     bool checkOperationComplete(ViSession instrSession, QByteArray instrAddress, int timeout = DEFAULT_COMMAND_TIMEOUT_MS);
 
 private slots:
-    void slotSendCmdRsp(QByteArray instrAddress, QByteArray &command, QByteArray &response);
-    void slotSendCmdNoRsp(QByteArray instrAddress, QByteArray &command);
+    void slotSendCmdRsp(QByteArray instrAddress, QByteArray *command, QByteArray *response);
+    void slotSendCmdNoRsp(QByteArray instrAddress, QByteArray *command);
     void slotUpdateConfigSettings(QVariant &device, QSettings &configSettings);
     void slotApplyConfigSettings(QVariant &device, QSettings &configSettings);
 };

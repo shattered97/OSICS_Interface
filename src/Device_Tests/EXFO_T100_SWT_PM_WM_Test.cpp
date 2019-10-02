@@ -95,24 +95,28 @@ QByteArray EXFO_T100_SWT_PM_WM_Test::constructOutputFilename(){
 void EXFO_T100_SWT_PM_WM_Test::runDeviceTest(){
 
     // init switch
-    swt->autoDetectT100Modules(swtSlotNum);
     QByteArray fullBandMode = "ECL";
     swt->setAPCModuleOperatingMode(swtSlotNum, fullBandMode);
+    swt->autoDetectT100Modules(swtSlotNum);
+
+    // set active channel
+    QByteArray channel = QByteArray::number(activeChannel);
+    swt->selectChannelForSignalAPC(swtSlotNum, channel);
 
     QByteArray filename = constructOutputFilename();
     qDebug() << filename;
 
     if(bristol != nullptr){
-        runTestLoopWithWavemeter(filename, startWav, endWav, wavStep, power);
+        runTestLoopWithWavemeter(filename, activeChannel, startWav, endWav, wavStep, power);
     }
     else{
-        runTestLoopPowerMeterOnly(filename, startWav, endWav, wavStep, power);
+        runTestLoopPowerMeterOnly(filename, activeChannel, startWav, endWav, wavStep, power);
     }
 
 
 }
 
-void EXFO_T100_SWT_PM_WM_Test::runTestLoopPowerMeterOnly(QByteArray filename, double startWav, double endWav, double wavStep, double power){
+void EXFO_T100_SWT_PM_WM_Test::runTestLoopPowerMeterOnly(QByteArray filename, int activeChannel, double startWav, double endWav, double wavStep, double power){
 
     // add .csv header to test data
     testData.append("SWITCH CHANNEL,");
@@ -126,6 +130,8 @@ void EXFO_T100_SWT_PM_WM_Test::runTestLoopPowerMeterOnly(QByteArray filename, do
     t100->setModulePowerUnitDBmCmd(t100SlotNum);
     swt->enableModuleLaserCmd(swtSlotNum);
     swt->setModulePowerUnitDBmCmd(swtSlotNum);
+
+
 
     // set laser power
     QByteArray powerToSet = QByteArray::number(power);
@@ -144,6 +150,8 @@ void EXFO_T100_SWT_PM_WM_Test::runTestLoopPowerMeterOnly(QByteArray filename, do
     while(QTime::currentTime() < timer){
         // do nothing
     }
+
+
 
     double currentWav = startWav;
     while(currentWav <= endWav){
@@ -202,7 +210,7 @@ void EXFO_T100_SWT_PM_WM_Test::runTestLoopPowerMeterOnly(QByteArray filename, do
     qDebug() << "================================= COMPLETE ===================================";
 }
 
-void EXFO_T100_SWT_PM_WM_Test::runTestLoopWithWavemeter(QByteArray filename, double startWav, double endWav, double wavStep, double power){
+void EXFO_T100_SWT_PM_WM_Test::runTestLoopWithWavemeter(QByteArray filename, int activeChannel, double startWav, double endWav, double wavStep, double power){
 
     // add .csv header to test data
     testData.append("SWITCH CHANNEL,");
@@ -214,6 +222,11 @@ void EXFO_T100_SWT_PM_WM_Test::runTestLoopWithWavemeter(QByteArray filename, dou
 
     // enable laser
     t100->enableModuleLaserCmd(t100SlotNum);
+
+    // set laser power
+    t100->setModulePowerUnitDBmCmd(t100SlotNum);
+    QByteArray powerToSet = QByteArray::number(power);
+    t100->setModuleOutputPowerCmd(t100SlotNum, powerToSet);
 
     // int starting wavelength
     QByteArray startWavToSet = QByteArray::number(startWav);
@@ -302,4 +315,23 @@ void EXFO_T100_SWT_PM_WM_Test::writeTestDataToFile(QByteArray filename){
 
         file.close();
     }
+}
+
+void EXFO_T100_SWT_PM_WM_Test::setStartWavelength(double startWav){
+    this->startWav = startWav;
+}
+void EXFO_T100_SWT_PM_WM_Test::setEndWavelength(double endWav){
+    this->endWav = endWav;
+}
+void EXFO_T100_SWT_PM_WM_Test::setWavelengthStep(double stepSize){
+    this->wavStep = stepSize;
+}
+void EXFO_T100_SWT_PM_WM_Test::setPower(double power){
+    this->power = power;
+}
+void EXFO_T100_SWT_PM_WM_Test::setPowerMeterSlotNum(int slotNum){
+    this->powerMeterSlotNum = slotNum;
+}
+void EXFO_T100_SWT_PM_WM_Test::setActiveChannel(int channel){
+    this->activeChannel = channel;
 }

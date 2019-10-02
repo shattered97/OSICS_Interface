@@ -162,7 +162,9 @@ public:
 
     void setSlotNum(int slotNum);
     void setT100MinMaxWavelengths(QByteArray t100Type);
-
+    double getT100MinWavelength();
+    double getT100MaxWavelength();
+    int getSlotNum();
 private:
 
     // identity of instrument (manufacturer, model num, etc.)
@@ -176,7 +178,6 @@ private:
     void updatePowerSettings(QSettings &configSettings);
     void updateWavelengthSettings(QSettings &configSettings);
     void updateFrequencySettings(QSettings &configSettings);
-
 
     QByteArray minWavelength;
     QByteArray maxWavelength;

@@ -69,8 +69,9 @@ void KeysightPowerMeter::setWavelength(int window, QByteArray &value, QByteArray
 
 void KeysightPowerMeter::getAllPowerReadings(QByteArray &response){
     QByteArray baseCmd = "read:pow:all?\n";
-
+    qDebug() << baseCmd;
     emit signalSendCmdRsp(theInstrLoc, baseCmd, response);
+    qDebug() << "???";
 }
 
 void KeysightPowerMeter::getAllPowerUnits(QByteArray & response){
@@ -91,6 +92,21 @@ int KeysightPowerMeter::getNumPowerMeterChannels(){
     int numChannels = response.split(',').size() - 1;
 
     return numChannels;
+}
+
+void KeysightPowerMeter::getPowerReadingOnAllChannels(QList<QByteArray> &readings){
+    qDebug() << "getPowerReadingOnAllChannels()";
+    readings.clear();
+
+    // query for raw text block of readings
+    QByteArray rawReadings = "";
+    getAllPowerReadings(rawReadings);
+
+    // format block and convert to list
+    readings = parseBinaryBlockPowerReadings(rawReadings, 4);
+
+    qDebug() << readings;
+
 }
 
 QList<QByteArray> KeysightPowerMeter::formatPowerUnits(QByteArray rawUnits, int numChannels){

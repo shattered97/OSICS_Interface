@@ -17,10 +17,15 @@ public:
 
     bool areDevicesValidForTest();
     void runDeviceTest();
-    void runTestLoopWithWavemeter(QByteArray filename, double startWav, double endWav, double wavStep, double power);
-    void runTestLoopPowerMeterOnly(QByteArray filename, double startWav, double endWav, double wavStep, double power);
+    void runTestLoopWithWavemeter(QByteArray filename, int activeChannel, double startWav, double endWav, double wavStep, double power);
+    void runTestLoopPowerMeterOnly(QByteArray filename, int activeChannel, double startWav, double endWav, double wavStep, double power);
 
-
+    void setStartWavelength(double startWav);
+    void setEndWavelength(double endWav);
+    void setWavelengthStep(double stepSize);
+    void setPower(double power);
+    void setPowerMeterSlotNum(int slotNum);
+    void setActiveChannel(int channelNum);
 
 private:
     EXFO_OSICS_T100 *t100 = nullptr;
@@ -28,6 +33,7 @@ private:
 
     EXFO_OSICS_SWT *swt = nullptr;
     int swtSlotNum = 1;
+    int activeChannel = 1;
 
     Bristol_428A *bristol = nullptr;
 
@@ -36,8 +42,7 @@ private:
 
     double startWav = 1465;
     double endWav = 1575;
-    // #TODO convert back to 1
-    double wavStep = 10;
+    double wavStep = 50; // change back to 1
     double power = 0;
 
     QByteArray constructOutputFilename();

@@ -9,7 +9,7 @@ ConfigOSICS_ATN::ConfigOSICS_ATN(QVariant &device, QWidget *parent) :
     this->device = device;
     slotNum = 1;
 
-    // initialize settings and signal to orchestrator to update them from device
+    // initialize settings
     settings = new QSettings(QSettings::IniFormat, QSettings::SystemScope, "Test Platform");
     settings->clear();
 }
