@@ -16,15 +16,34 @@ WavStepWithPowerMonitoringTest::WavStepWithPowerMonitoringTest(QList<QVariant> &
     QObject::connect(&configWindow, SIGNAL(signalGetPowerMeterDisplayPairs(QList<QPair<QByteArray, int>> &)),
                      this, SLOT(slotGetPowerMeterDisplayPairs(QList<QPair<QByteArray, int>> &)));
     QObject::connect(&configWindow, SIGNAL(signalPollForPowerMeterReadings()), this, SLOT(slotPollForPowerMeterReadings()));
+
+    QObject::connect(this, SIGNAL(signalDisplayPowerReadings(QByteArray, QList<QByteArray>)),
+                     &configWindow, SLOT(slotDisplayPowerReadings(QByteArray, QList<QByteArray>)));
+
+}
+
+void WavStepWithPowerMonitoringTest::slotSendPowerReadingCommand(PowerMeter *powerMeter){
+    QList<QByteArray> readings;
+    powerMeter->getPowerReadingOnAllChannels(readings);
+    qDebug() << readings;
+
+    // signal to window to display power (send identity and readings list)
+    emit signalDisplayPowerReadings(powerMeter->getInstrIdentity(), readings);
+
 }
 
 void WavStepWithPowerMonitoringTest::slotPollForPowerMeterReadings(){
     // # TODO one worker for each power meter
     qDebug() << "slotPollForPowerMeterReadings()";
 
+
     for(auto e : powerMeters){
         QThread *workerThread = new QThread;
         PowerMeterPollingWorker *worker = new PowerMeterPollingWorker(e);
+
+        QObject::connect(worker, SIGNAL(signalSendPowerReadingCommand(PowerMeter *)),
+                         this, SLOT(slotSendPowerReadingCommand(PowerMeter *)));
+
         worker->moveToThread(workerThread);
 
         connect(worker, SIGNAL(finished()), workerThread, SLOT(quit()));

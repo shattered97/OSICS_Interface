@@ -67,8 +67,8 @@ public:
     void updateConfig(QSettings &configSettings);
 
 signals:
-    void signalSendCmdRsp(QByteArray instrAddress, QByteArray &command, QByteArray &response);
-    void signalSendCmdNoRsp(QByteArray instrAddress, QByteArray &command);
+    void signalSendCmdRsp(QByteArray instrAddress, QByteArray command, QByteArray *response);
+    void signalSendCmdNoRsp(QByteArray instrAddress, QByteArray command);
 
 
 private:

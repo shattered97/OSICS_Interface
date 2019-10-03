@@ -28,9 +28,6 @@ public:
     void updatePowerSettings(QSettings &configSettings);
     void updateWavelengthSettings(QSettings &configSettings);
     void applyConfigSettings(QSettings &configSettings);
-signals:
-//    void signalSendCmdRsp(QByteArray instrAddress, QByteArray &command, QByteArray &response);
-//    void signalSendCmdNoRsp(QByteArray instrAddress, QByteArray &command);
 
 private:
     QByteArray theIdentity;                 // identity of instrument (manufacturer, model num, etc.)

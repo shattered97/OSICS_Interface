@@ -52,10 +52,10 @@ void Orchestrator::slotCreateDevice(QString type, QByteArray instrumentAddress, 
         EXFO_OSICS_MAINFRAME *device = new EXFO_OSICS_MAINFRAME(instrumentIdentity, instrumentAddress);
 
         // connecting signals for sending commands here so we can query for installed modules
-        QObject::connect(device, SIGNAL(signalSendCmdRsp(QByteArray, QByteArray&, QByteArray&)),
-                         this, SLOT(slotSendCmdRsp(QByteArray, QByteArray &, QByteArray &)));
-        QObject::connect(device, SIGNAL(signalSendCmdNoRsp(QByteArray, QByteArray&)),
-                         this, SLOT(slotSendCmdNoRsp(QByteArray, QByteArray &)));
+        QObject::connect(device, SIGNAL(signalSendCmdRsp(QByteArray, QByteArray, QByteArray *)),
+                         this, SLOT(slotSendCmdRsp(QByteArray, QByteArray, QByteArray *)));
+        QObject::connect(device, SIGNAL(signalSendCmdNoRsp(QByteArray, QByteArray)),
+                         this, SLOT(slotSendCmdNoRsp(QByteArray, QByteArray)));
 
         QObject::connect(this, SIGNAL(signalSetupEXFOModules()), device, SLOT(slotSetupEXFOModules()));
         emit signalSetupEXFOModules();
@@ -81,10 +81,10 @@ void Orchestrator::slotCreateDevice(QString type, QByteArray instrumentAddress, 
     DefaultInstrument *device = deviceVariant.value<DefaultInstrument*>();
     device->setConfigWindow(configWindow);
 
-    QObject::connect(device, SIGNAL(signalSendCmdRsp(QByteArray, QByteArray&, QByteArray&)),
-                     this, SLOT(slotSendCmdRsp(QByteArray, QByteArray &, QByteArray &)));
-    QObject::connect(device, SIGNAL(signalSendCmdNoRsp(QByteArray, QByteArray&)),
-                     this, SLOT(slotSendCmdNoRsp(QByteArray, QByteArray &)));
+    QObject::connect(device, SIGNAL(signalSendCmdRsp(QByteArray, QByteArray, QByteArray *)),
+                     this, SLOT(slotSendCmdRsp(QByteArray, QByteArray, QByteArray *)));
+    QObject::connect(device, SIGNAL(signalSendCmdNoRsp(QByteArray, QByteArray)),
+                     this, SLOT(slotSendCmdNoRsp(QByteArray, QByteArray)));
 
     QObject::connect(configWindow, SIGNAL(signalUpdateConfigSettings(QVariant &, QSettings &)),
                      this, SLOT(slotUpdateConfigSettings(QVariant &, QSettings &)));
@@ -117,10 +117,10 @@ void Orchestrator::slotGetEXFOModuleQVariants(QMap<int, QVariant> &modules, QVar
             moduleVariant.setValue(module);
             modules.insert(slotNum, moduleVariant);
 
-            QObject::connect(module, SIGNAL(signalSendCmdRsp(QByteArray, QByteArray&, QByteArray&)),
-                             this, SLOT(slotSendCmdRsp(QByteArray, QByteArray &, QByteArray &)));
-            QObject::connect(module, SIGNAL(signalSendCmdNoRsp(QByteArray, QByteArray&)),
-                             this, SLOT(slotSendCmdNoRsp(QByteArray, QByteArray &)));
+            QObject::connect(module, SIGNAL(signalSendCmdRsp(QByteArray, QByteArray, QByteArray *)),
+                             this, SLOT(slotSendCmdRsp(QByteArray, QByteArray, QByteArray *)));
+            QObject::connect(module, SIGNAL(signalSendCmdNoRsp(QByteArray, QByteArray)),
+                             this, SLOT(slotSendCmdNoRsp(QByteArray, QByteArray)));
 
             // create window
             QMainWindow *configWindow = WindowFactory::makeWindow(modTypes[i], moduleVariant);
@@ -133,10 +133,10 @@ void Orchestrator::slotGetEXFOModuleQVariants(QMap<int, QVariant> &modules, QVar
             moduleVariant.setValue(module);
             modules.insert(slotNum, moduleVariant);
 
-            QObject::connect(module, SIGNAL(signalSendCmdRsp(QByteArray, QByteArray&, QByteArray&)),
-                             this, SLOT(slotSendCmdRsp(QByteArray, QByteArray &, QByteArray &)));
-            QObject::connect(module, SIGNAL(signalSendCmdNoRsp(QByteArray, QByteArray&)),
-                             this, SLOT(slotSendCmdNoRsp(QByteArray, QByteArray &)));
+            QObject::connect(module, SIGNAL(signalSendCmdRsp(QByteArray, QByteArray, QByteArray *)),
+                             this, SLOT(slotSendCmdRsp(QByteArray, QByteArray, QByteArray *)));
+            QObject::connect(module, SIGNAL(signalSendCmdNoRsp(QByteArray, QByteArray)),
+                             this, SLOT(slotSendCmdNoRsp(QByteArray, QByteArray)));
 
             // create window
             QMainWindow *configWindow = WindowFactory::makeWindow(modTypes[i], moduleVariant);
@@ -149,10 +149,10 @@ void Orchestrator::slotGetEXFOModuleQVariants(QMap<int, QVariant> &modules, QVar
             moduleVariant.setValue(module);
             modules.insert(slotNum, moduleVariant);
 
-            QObject::connect(module, SIGNAL(signalSendCmdRsp(QByteArray, QByteArray&, QByteArray&)),
-                             this, SLOT(slotSendCmdRsp(QByteArray, QByteArray &, QByteArray &)));
-            QObject::connect(module, SIGNAL(signalSendCmdNoRsp(QByteArray, QByteArray&)),
-                             this, SLOT(slotSendCmdNoRsp(QByteArray, QByteArray &)));
+            QObject::connect(module, SIGNAL(signalSendCmdRsp(QByteArray, QByteArray, QByteArray *)),
+                             this, SLOT(slotSendCmdRsp(QByteArray, QByteArray, QByteArray *)));
+            QObject::connect(module, SIGNAL(signalSendCmdNoRsp(QByteArray, QByteArray)),
+                             this, SLOT(slotSendCmdNoRsp(QByteArray, QByteArray)));
 
             // create window
             QMainWindow *configWindow = WindowFactory::makeWindow(modTypes[i], moduleVariant);
@@ -305,8 +305,8 @@ void Orchestrator::slotApplyConfigSettings(QVariant &deviceVariant, QSettings &c
     }
 }
 
-void Orchestrator::slotSendCmdNoRsp(QByteArray instrAddress, QByteArray *command){
-    qDebug() << QObject::sender();
+void Orchestrator::slotSendCmdNoRsp(QByteArray instrAddress, QByteArray command){
+
     qDebug() << "Sent command: " << command;
     bool success = true;
 
@@ -339,8 +339,8 @@ void Orchestrator::slotSendCmdNoRsp(QByteArray instrAddress, QByteArray *command
     // #TODO SIGNAL QMESSAGEBOX IF UNSUCCESSFUL
 }
 
-void Orchestrator::slotSendCmdRsp(QByteArray instrAddress, QByteArray *command, QByteArray *response){
-    qDebug() << QObject::sender();
+void Orchestrator::slotSendCmdRsp(QByteArray instrAddress, QByteArray command, QByteArray *response){
+
     qDebug() << "Command sent: " << command;
     bool success = true;
 
@@ -348,7 +348,7 @@ void Orchestrator::slotSendCmdRsp(QByteArray instrAddress, QByteArray *command, 
 
     // open session
     ViStatus sessionStatus = theCommBus.openInstrSession(defaultSession, instrAddress, instrSession);
-
+    qDebug() << "opened session to instrument";
     if(sessionStatus < VI_SUCCESS){
         success = false;
         qDebug() << "Opening session failed.  status: " << sessionStatus;
@@ -366,14 +366,15 @@ void Orchestrator::slotSendCmdRsp(QByteArray instrAddress, QByteArray *command, 
             }
             else{
                 ViUInt32 rtnSize;
-                status = theCommBus.readCmd(instrSession, instrAddress, response, rtnSize);
+
+                status = theCommBus.readCmd(instrSession, instrAddress, *response, rtnSize);
 
                 if(status < VI_SUCCESS){
                     qDebug() << QString("Reading response failed: %1").arg(status);
                     success = false;
                 }
                 else{
-                    qDebug() << "Response: " << response;
+                    qDebug() << "Response: " << *response;
                 }
             }
 

@@ -19,6 +19,7 @@ public:
 
 signals:
    void signalUpdateMinMaxWavelength(double minWav, double maxWav);
+   void signalDisplayPowerReadings(QByteArray powerMeterIdentity, QList<QByteArray> readings);
 
 public slots:
     void slotBeginTest(QSettings *settings);
@@ -26,6 +27,7 @@ public slots:
     void slotSwitchMapChanged(QMap<int, QByteArray> swtChannelToT100Map);
     void slotGetPowerMeterDisplayPairs(QList<QPair<QByteArray, int>> &powerMeterDisplayPairs);
     void slotPollForPowerMeterReadings();
+    void slotSendPowerReadingCommand(PowerMeter *powerMeter);
 
 private:
 

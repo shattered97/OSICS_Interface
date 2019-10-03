@@ -20,11 +20,11 @@ void Bristol_428A::setMediumAir(){
 void Bristol_428A::measureWavelengthSingle(QByteArray &wavelength)
 {
     QByteArray baseCmd = ":MEAS:SCAL:WAV?\n";
-    emit signalSendCmdRsp(theInstrLoc, baseCmd, wavelength);
+    emit signalSendCmdRsp(theInstrLoc, baseCmd, &wavelength);
 }
 
 void Bristol_428A::measurePowerSingle(QByteArray &power)
 {
     QByteArray baseCmd = ":MEAS:SCAL:POW?\n";
-    emit signalSendCmdRsp(theInstrLoc, baseCmd, power);
+    emit signalSendCmdRsp(theInstrLoc, baseCmd, &power);
 }

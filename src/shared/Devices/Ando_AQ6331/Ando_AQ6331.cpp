@@ -30,24 +30,25 @@ void Ando_AQ6331::setResolution(QByteArray &resolution)
 {
     QByteArray baseCmd = "RESLN\n";
     baseCmd.insert(baseCmd.indexOf('\n'), resolution);
+    emit signalSendCmdNoRsp(theInstrLoc, baseCmd);
 }
 
 void Ando_AQ6331::getCenterWavelength(QByteArray &wavelength)
 {
     QByteArray baseCmd = "CTRWL?\n";
-    emit signalSendCmdRsp(theInstrLoc, baseCmd, wavelength);
+    emit signalSendCmdRsp(theInstrLoc, baseCmd, &wavelength);
 }
 
 void Ando_AQ6331::getSpan(QByteArray &span)
 {
     QByteArray baseCmd = "SPAN?\n";
-    emit signalSendCmdRsp(theInstrLoc, baseCmd, span);
+    emit signalSendCmdRsp(theInstrLoc, baseCmd, &span);
 }
 
 void Ando_AQ6331::getPeakDataFromTrace(QByteArray &wavelength, QByteArray &power){
     QByteArray wavTraceCmd = "WDATA\n";
     QByteArray wavTraceDataRaw;
-    emit signalSendCmdRsp(theInstrLoc, wavTraceCmd, wavTraceDataRaw);
+    emit signalSendCmdRsp(theInstrLoc, wavTraceCmd, &wavTraceDataRaw);
     // parse raw data into list
 
     QList<QByteArray> wavDataList = wavTraceDataRaw.trimmed().split(',');
@@ -58,7 +59,7 @@ void Ando_AQ6331::getPeakDataFromTrace(QByteArray &wavelength, QByteArray &power
 
     QByteArray powTraceCmd = "LDATA\n";
     QByteArray powerTraceDataRaw;
-    emit signalSendCmdRsp(theInstrLoc, powTraceCmd, powerTraceDataRaw);
+    emit signalSendCmdRsp(theInstrLoc, powTraceCmd, &powerTraceDataRaw);
 
     QList<QByteArray> powDataList = powerTraceDataRaw.trimmed().split(',');
     int numPowDataPoints = powDataList[0].toInt();
@@ -85,7 +86,7 @@ void Ando_AQ6331::getPeakDataFromTrace(QByteArray &wavelength, QByteArray &power
 void Ando_AQ6331::getResolution(QByteArray &resolution)
 {
     QByteArray baseCmd = "RESLN?\n";
-    emit signalSendCmdRsp(theInstrLoc, baseCmd, resolution);
+    emit signalSendCmdRsp(theInstrLoc, baseCmd, &resolution);
 }
 
 

@@ -65,8 +65,8 @@ private:
     bool checkOperationComplete(ViSession instrSession, QByteArray instrAddress, int timeout = DEFAULT_COMMAND_TIMEOUT_MS);
 
 private slots:
-    void slotSendCmdRsp(QByteArray instrAddress, QByteArray *command, QByteArray *response);
-    void slotSendCmdNoRsp(QByteArray instrAddress, QByteArray *command);
+    void slotSendCmdRsp(QByteArray instrAddress, QByteArray command, QByteArray *response);
+    void slotSendCmdNoRsp(QByteArray instrAddress, QByteArray command);
     void slotUpdateConfigSettings(QVariant &device, QSettings &configSettings);
     void slotApplyConfigSettings(QVariant &device, QSettings &configSettings);
 };

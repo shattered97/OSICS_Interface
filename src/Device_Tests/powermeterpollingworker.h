@@ -13,6 +13,7 @@ public:
 
 signals:
     void finished();
+    void signalSendPowerReadingCommand(PowerMeter *powerMeter);
 
 public slots:
     void slotPollPowerMeter();

@@ -26,7 +26,7 @@ void EXFO_OSICS_ATN::moduleAttenuationQuery(int slotNum, QByteArray &response){
 
      insertSlotNum(baseCmd, slotNum);
 
-     emit signalSendCmdRsp(theInstrLoc, baseCmd, response);
+     emit signalSendCmdRsp(theInstrLoc, baseCmd, &response);
 }
 
 void EXFO_OSICS_ATN::moduleAttenuationMinMaxQuery(int slotNum, QByteArray wavelengthNum, QByteArray &response){
@@ -39,7 +39,7 @@ void EXFO_OSICS_ATN::moduleAttenuationMinMaxQuery(int slotNum, QByteArray wavele
     insertSlotNum(baseCmd, slotNum);
     appendParamToCmdWithSpace(baseCmd, wavelengthNum);
 
-    emit signalSendCmdRsp(theInstrLoc, baseCmd, response);
+    emit signalSendCmdRsp(theInstrLoc, baseCmd, &response);
 }
 
 void EXFO_OSICS_ATN::moduleWavelengthNMQuery(int slotNum, QByteArray wavelengthNum, QByteArray &response){
@@ -52,7 +52,7 @@ void EXFO_OSICS_ATN::moduleWavelengthNMQuery(int slotNum, QByteArray wavelengthN
     insertSlotNum(baseCmd, slotNum);
     appendParamToCmdWithSpace(baseCmd, wavelengthNum);
 
-    emit signalSendCmdRsp(theInstrLoc, baseCmd, response);
+    emit signalSendCmdRsp(theInstrLoc, baseCmd, &response);
 }
 
 void EXFO_OSICS_ATN::moduleAttenuationOffsetCmd(int slotNum, QByteArray wavelengthNum, QByteArray offsetVal){
@@ -80,7 +80,7 @@ void EXFO_OSICS_ATN::moduleAttenuationOffsetQuery(int slotNum, QByteArray wavele
      insertSlotNum(baseCmd, slotNum);
      appendParamToCmdWithSpace(baseCmd, wavelengthNum);
 
-     emit signalSendCmdRsp(theInstrLoc, baseCmd, response);
+     emit signalSendCmdRsp(theInstrLoc, baseCmd, &response);
 }
 
 void EXFO_OSICS_ATN::setSlotNum(int slotNum){

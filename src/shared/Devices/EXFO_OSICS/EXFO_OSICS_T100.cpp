@@ -55,7 +55,7 @@ void EXFO_OSICS_T100::diodeCurrentLevelModuleQuery(int slotNum, QByteArray &resp
     QByteArray baseCmd = "CH#:I?\n";
     insertSlotNum(baseCmd, slotNum);
 
-    emit signalSendCmdRsp(theInstrLoc, baseCmd, response);
+    emit signalSendCmdRsp(theInstrLoc, baseCmd, &response);
 }
 
 // CH#:IMAX?
@@ -63,7 +63,7 @@ void EXFO_OSICS_T100::diodeMaxCurrentModuleQuery(int slotNum, QByteArray &respon
     QByteArray baseCmd = "CH#:IMAX?\n";
     insertSlotNum(baseCmd, slotNum);
 
-    emit signalSendCmdRsp(theInstrLoc, baseCmd, response);
+    emit signalSendCmdRsp(theInstrLoc, baseCmd, &response);
 }
 
 // ********* Calibration Control Commands *********
@@ -82,7 +82,7 @@ void EXFO_OSICS_T100::modFrequencyModuleQuery(int slotNum, QByteArray &response)
     QByteArray baseCmd = "CH#:MOD_F?\n";
     insertSlotNum(baseCmd, slotNum);
 
-    emit signalSendCmdRsp(theInstrLoc, baseCmd, response);
+    emit signalSendCmdRsp(theInstrLoc, baseCmd, &response);
 }
 
 // CH#:WAVEREF
@@ -116,7 +116,7 @@ void EXFO_OSICS_T100::firstCalibrationWavelengthQuery(int slotNum, QByteArray &r
     QByteArray baseCmd = "CH#:LCAL1?\n";
     insertSlotNum(baseCmd, slotNum);
 
-    emit signalSendCmdRsp(theInstrLoc, baseCmd, response);
+    emit signalSendCmdRsp(theInstrLoc, baseCmd, &response);
 }
 
 // CH#:LCAL2?
@@ -124,7 +124,7 @@ void EXFO_OSICS_T100::secondCalibrationWavelengthQuery(int slotNum, QByteArray &
     QByteArray baseCmd = "CH#:LCAL2?\n";
     insertSlotNum(baseCmd, slotNum);
 
-    emit signalSendCmdRsp(theInstrLoc, baseCmd, response);
+    emit signalSendCmdRsp(theInstrLoc, baseCmd, &response);
 }
 
 // CH#:PCAL1=
@@ -150,7 +150,7 @@ void EXFO_OSICS_T100::firstCalibrationPowerQuery(int slotNum, QByteArray &respon
     QByteArray baseCmd = "CH#:PCAL1?\n";
     insertSlotNum(baseCmd, slotNum);
     qDebug() << "emitting signal for: " << theInstrLoc;
-    emit signalSendCmdRsp(theInstrLoc, baseCmd, response);
+    emit signalSendCmdRsp(theInstrLoc, baseCmd, &response);
 }
 
 // CH#:PCAL2?
@@ -158,7 +158,7 @@ void EXFO_OSICS_T100::secondCalibrationPowerQuery(int slotNum, QByteArray &respo
     QByteArray baseCmd = "CH#:PCAL2?\n";
     insertSlotNum(baseCmd, slotNum);
 
-    emit signalSendCmdRsp(theInstrLoc, baseCmd, response);
+    emit signalSendCmdRsp(theInstrLoc, baseCmd, &response);
 }
 
 // ********* Module Parameter-Monitoring Commands *********
@@ -177,7 +177,7 @@ void EXFO_OSICS_T100::outBNCPortSignalMonitoringQuery(int slotNum, QByteArray &r
     QByteArray baseCmd = "CH#:AOUT?\n";
     insertSlotNum(baseCmd, slotNum);
 
-    emit signalSendCmdRsp(theInstrLoc, baseCmd, response);
+    emit signalSendCmdRsp(theInstrLoc, baseCmd, &response);
 }
 
 

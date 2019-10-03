@@ -28,7 +28,7 @@ void  EXFO_OSICS_SWT::getAPCModuleOperatingMode(int slotNum, QByteArray &respons
     QByteArray baseCmd = "CH#:MODE?\n";
     insertSlotNum(baseCmd, slotNum);
 
-    emit signalSendCmdRsp(theInstrLoc, baseCmd, response);
+    emit signalSendCmdRsp(theInstrLoc, baseCmd, &response);
 }
 
 void  EXFO_OSICS_SWT::autoDetectT100Modules(int slotNum){
@@ -63,7 +63,7 @@ void  EXFO_OSICS_SWT::getChannelForSignalAPC(int slotNum, QByteArray &response){
     QByteArray baseCmd = "CH#:CLOSE?\n";
     insertSlotNum(baseCmd, slotNum);
 
-    emit signalSendCmdRsp(theInstrLoc, baseCmd, response);
+    emit signalSendCmdRsp(theInstrLoc, baseCmd, &response);
 }
 
 void  EXFO_OSICS_SWT::shutSingleShutter(int slotNum){
@@ -96,7 +96,7 @@ void  EXFO_OSICS_SWT::getSingleShutterState(int slotNum, QByteArray &response){
     QByteArray baseCmd = "CH#:SHUT?\n";
     insertSlotNum(baseCmd, slotNum);
 
-    emit signalSendCmdRsp(theInstrLoc, baseCmd, response);
+    emit signalSendCmdRsp(theInstrLoc, baseCmd, &response);
 }
 
 void  EXFO_OSICS_SWT::openCloseShutters(int slotNum, QByteArray &shutterAB, QByteArray &shutter12){
@@ -122,7 +122,7 @@ void  EXFO_OSICS_SWT::getMultipleShutterState(int slotNum, QByteArray &response)
     QByteArray baseCmd = "CH#:SHUTMODE?\n";
     insertSlotNum(baseCmd, slotNum);
 
-    emit signalSendCmdRsp(theInstrLoc, baseCmd, response);
+    emit signalSendCmdRsp(theInstrLoc, baseCmd, &response);
 }
 
 void  EXFO_OSICS_SWT::setSwitchModeBar(int slotNum){
@@ -155,7 +155,7 @@ void  EXFO_OSICS_SWT::getSwitchMode(int slotNum, QByteArray &response){
     QByteArray baseCmd = "CH#:BAR?\n";
     insertSlotNum(baseCmd, slotNum);
 
-    emit signalSendCmdRsp(theInstrLoc, baseCmd, response);
+    emit signalSendCmdRsp(theInstrLoc, baseCmd, &response);
 }
 
 void  EXFO_OSICS_SWT::selectSignalChannel(int slotNum, QByteArray &channel){
@@ -179,7 +179,7 @@ void  EXFO_OSICS_SWT::getSignalChannel(int slotNum, QByteArray &response){
     QByteArray baseCmd = "CH#:CH?\n";
     insertSlotNum(baseCmd, slotNum);
 
-    emit signalSendCmdRsp(theInstrLoc, baseCmd, response);
+    emit signalSendCmdRsp(theInstrLoc, baseCmd, &response);
 }
 
 

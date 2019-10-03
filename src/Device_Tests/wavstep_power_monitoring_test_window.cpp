@@ -1,5 +1,6 @@
 #include "wavstep_power_monitoring_test_window.h"
 #include "ui_wavstep_power_monitoring_test_window.h"
+#include "ConversionUtilities.h"
 
 WavStep_Power_Monitoring_Test_Window::WavStep_Power_Monitoring_Test_Window(QWidget *parent) :
     QMainWindow(parent),
@@ -25,6 +26,32 @@ void WavStep_Power_Monitoring_Test_Window::showEvent(QShowEvent* event){
     populatePowerMeterListWidget();
 
     emit signalPollForPowerMeterReadings();
+}
+
+void WavStep_Power_Monitoring_Test_Window::slotDisplayPowerReadings(QByteArray powerMeterIdentity, QList<QByteArray> readings){
+
+
+    for(int i = 0; i < readings.size(); i++){
+        // find row index based on identity and channel (i - 1)
+        int rowCount = ui->powerMeterTable->rowCount();
+        int rowIndex = 0;
+
+        for(int j = 0; j < rowCount; j++){
+
+            QByteArray identityInRow = ui->powerMeterTable->item(j, 0)->text().toLatin1();
+            int channelNum = ui->powerMeterTable->item(j, 1)->text().toInt();
+
+            if(identityInRow == powerMeterIdentity && channelNum == i + 1){
+                rowIndex = j;
+            }
+        }
+        // make cell to display power meter reading
+        QTableWidgetItem *powerReadingCell = new QTableWidgetItem;
+        ui->powerMeterTable->setItem(rowIndex, 3, powerReadingCell);
+
+        double readingInDBm = ConversionUtilities::convertWattToDBm(readings[i].toDouble());
+        powerReadingCell->setText(QByteArray::number(readingInDBm));
+    }
 }
 
 void WavStep_Power_Monitoring_Test_Window::populatePowerMeterListWidget(){

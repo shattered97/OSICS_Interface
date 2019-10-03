@@ -25,7 +25,7 @@ void DefaultInstrument::querySTB(QByteArray &response){
 
     QByteArray command = QUERY_STB;
 
-    emit signalSendCmdRsp(theInstrLoc, command, response);
+    emit signalSendCmdRsp(theInstrLoc, command, &response);
 }
 
 void DefaultInstrument::execESE(char registerVal){
@@ -48,7 +48,7 @@ void DefaultInstrument::queryESE(QByteArray &response){
 
     QByteArray command = QUERY_ESE;
 
-    emit signalSendCmdRsp(theInstrLoc, command, response);
+    emit signalSendCmdRsp(theInstrLoc, command, &response);
 }
 
 void DefaultInstrument::queryESR(QByteArray &response){
@@ -58,7 +58,7 @@ void DefaultInstrument::queryESR(QByteArray &response){
 
     QByteArray command = QUERY_ESR;
 
-    emit signalSendCmdRsp(theInstrLoc, command, response);
+    emit signalSendCmdRsp(theInstrLoc, command, &response);
 }
 
 void DefaultInstrument::execOPC(){
@@ -78,7 +78,7 @@ void DefaultInstrument::queryOPC(QByteArray &response){
 
     QByteArray command = QUERY_OPC;
 
-    emit signalSendCmdRsp(theInstrLoc, command, response);
+    emit signalSendCmdRsp(theInstrLoc, command, &response);
 }
 
 void DefaultInstrument::execCLS(){
@@ -108,7 +108,7 @@ void DefaultInstrument::queryTST(QByteArray &response){
 
     QByteArray command = QUERY_TST;
 
-    emit signalSendCmdRsp(theInstrLoc, command, response);
+    emit signalSendCmdRsp(theInstrLoc, command, &response);
 }
 
 void DefaultInstrument::queryOPT(QByteArray &response){
@@ -118,7 +118,7 @@ void DefaultInstrument::queryOPT(QByteArray &response){
 
     QByteArray command = QUERY_OPT;
 
-    emit signalSendCmdRsp(theInstrLoc, command, response);
+    emit signalSendCmdRsp(theInstrLoc, command, &response);
 }
 
 void DefaultInstrument::execWAI(){
@@ -138,7 +138,7 @@ void DefaultInstrument::queryIDN(QByteArray &response){
 
     QByteArray command = QUERY_IDN;
 
-    emit signalSendCmdRsp(theInstrLoc, command, response);
+    emit signalSendCmdRsp(theInstrLoc, command, &response);
 }
 
 QMainWindow * DefaultInstrument::getConfigWindow(){

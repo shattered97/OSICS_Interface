@@ -32,6 +32,7 @@ signals:
 
 public slots:
     void slotUpdateMinMaxWavelength(double minWav, double maxWav);
+    void slotDisplayPowerReadings(QByteArray powerMeterIdentity, QList<QByteArray> readings);
 
 private slots:
 
