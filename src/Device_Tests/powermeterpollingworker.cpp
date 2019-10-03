@@ -1,4 +1,5 @@
 #include "powermeterpollingworker.h"
+#include <QTimer>
 
 PowerMeterPollingWorker::PowerMeterPollingWorker(PowerMeter *powerMeter, QObject *parent ) : QObject(parent)
 {
@@ -8,13 +9,8 @@ PowerMeterPollingWorker::PowerMeterPollingWorker(PowerMeter *powerMeter, QObject
 void PowerMeterPollingWorker::slotPollPowerMeter(){
     qDebug() << "slotPollPowerMeter()";
 
-    // query power meter for power reading over all channels
-//    QList<QByteArray> readings;
-//    powerMeter->getPowerReadingOnAllChannels(readings);
-//    qDebug() << "printing readings...";
-//    qDebug() << readings;
-
     for(;;){
+       QThread::msleep(1000);
        emit signalSendPowerReadingCommand(powerMeter);
     }
 

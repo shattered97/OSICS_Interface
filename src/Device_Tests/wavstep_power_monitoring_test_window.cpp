@@ -1,6 +1,7 @@
 #include "wavstep_power_monitoring_test_window.h"
 #include "ui_wavstep_power_monitoring_test_window.h"
 #include "ConversionUtilities.h"
+#include <QCheckBox>
 
 WavStep_Power_Monitoring_Test_Window::WavStep_Power_Monitoring_Test_Window(QWidget *parent) :
     QMainWindow(parent),
@@ -27,6 +28,8 @@ void WavStep_Power_Monitoring_Test_Window::showEvent(QShowEvent* event){
 
     emit signalPollForPowerMeterReadings();
 }
+
+
 
 void WavStep_Power_Monitoring_Test_Window::slotDisplayPowerReadings(QByteArray powerMeterIdentity, QList<QByteArray> readings){
 
@@ -59,7 +62,7 @@ void WavStep_Power_Monitoring_Test_Window::populatePowerMeterListWidget(){
 
     // signal to test class to get QList of power meter name, channel number pairs
     emit signalGetPowerMeterDisplayPairs(powerMeterDisplayPairs);
-    qDebug() << powerMeterDisplayPairs;
+
     if(powerMeterDisplayPairs.size() > 0){
         for(int i = 0; i < powerMeterDisplayPairs.size(); i++){
             ui->powerMeterTable->insertRow(i);
@@ -71,13 +74,23 @@ void WavStep_Power_Monitoring_Test_Window::populatePowerMeterListWidget(){
 
             // create cell for power meter channel num
             QTableWidgetItem *channelCell = new QTableWidgetItem;
+            channelCell->setTextAlignment(Qt::AlignCenter);
             ui->powerMeterTable->setItem(i, 1, channelCell);
             channelCell->setText(QByteArray::number(powerMeterDisplayPairs[i].second));
-            // #TODO checkboxes or buttons for graphing
+
+            // create checkboxes for graphing
+            QWidget *checkBox = new QCheckBox();
+            ui->powerMeterTable->setCellWidget(i, 2, checkBox);
 
         }
     }
 }
+
+void WavStep_Power_Monitoring_Test_Window::on_openGraphWindowButton_clicked()
+{
+    emit signalShowGraphWindow();
+}
+
 
 void WavStep_Power_Monitoring_Test_Window::populateSwtChannelToT100Map(){
     swtChannelToT100Map.clear();
@@ -96,20 +109,52 @@ void WavStep_Power_Monitoring_Test_Window::on_beginTestPB_clicked()
         msgBox.exec();
     }
     else{
+
+        // create graph window
+        QList<QByteArray> seriesNames = getSeriesNames();
+        qDebug() << "SERIES NAMES FROM WINDOW: " << seriesNames;
+
         updateSettings();
+
+        qDebug() << "emitting signalBeginTest()";
         emit signalBeginTest(settings);
+
+        ui->beginTestPB->setEnabled(false);
+        ui->openGraphWindowButton->setEnabled(true);
     }
+
+}
+
+QList<QByteArray> WavStep_Power_Monitoring_Test_Window::getSeriesNames(){
+    // see which checkboxes are selected
+    seriesNames.clear();
+    int rowCount = ui->powerMeterTable->rowCount();
+    qDebug() << "row count: " << rowCount;
+    for(int i = 0; i < rowCount; i++){
+        QCheckBox *checkBox = qobject_cast<QCheckBox*>(ui->powerMeterTable->cellWidget(i, 2));
+        if(checkBox->isChecked()){
+            QByteArray identity = ui->powerMeterTable->item(i, 0)->text().toLatin1();
+            QByteArray channel = " Channel " + ui->powerMeterTable->item(i,1)->text().toLatin1();
+            QByteArray seriesName =  identity + channel;
+            qDebug() << "adding name " << seriesName;
+            seriesNames.append(seriesName);
+        }
+    }
+    return seriesNames;
 }
 
 void WavStep_Power_Monitoring_Test_Window::updateSettings()
 {
+    qDebug() << "setting config values";
     settings->setValue(WAV_STEP_TEST_CSV_FILENAME, QVariant::fromValue(ui->csvLocDisplay->text()));
     settings->setValue(WAV_STEP_TEST_GRAPH_FILENAME, QVariant::fromValue(ui->graphLocDisplay->text()));
     settings->setValue(WAV_STEP_TEST_START_WAVELENGTH, QVariant::fromValue(ui->startWavLineEdit->text()));
     settings->setValue(WAV_STEP_TEST_END_WAVELENGTH, QVariant::fromValue(ui->startWavLineEdit->text()));
     settings->setValue(WAV_STEP_TEST_WAV_STEP_SIZE, QVariant::fromValue(ui->endWavLineEdit->text()));
     settings->setValue(WAV_STEP_TEST_DWELL_SECONDS, QVariant::fromValue(ui->dwellLineEdit->text()));
-    settings->setValue(WAV_STEP_TEST_SWT_CHANNELS_TO_T100, QVariant::fromValue(swtChannelToT100Map));
+//    settings->setValue(WAV_STEP_TEST_SWT_CHANNELS_TO_T100, QVariant::fromValue(swtChannelToT100Map));
+    settings->setValue(WAV_STEP_TEST_CHANNELS_TO_GRAPH, QVariant::fromValue(seriesNames));
+    qDebug() << "done setting config values";
 }
 
 void WavStep_Power_Monitoring_Test_Window::populateSwitchChannelSelectionDropdowns()
@@ -146,7 +191,6 @@ void WavStep_Power_Monitoring_Test_Window::handleSwitchDropdownAction(QComboBox 
         msgBox.exec();
         dropdown->setCurrentIndex(0);
     }
-    qDebug() << selectionValid;
 
     // if all dropdowns are <none> set flag t100SelectedForSwitch to false
     if(ui->swtChannel1ComboBox->currentText() != "<None>" || ui->swtChannel2ComboBox->currentText() != "<None>" ||
@@ -157,7 +201,6 @@ void WavStep_Power_Monitoring_Test_Window::handleSwitchDropdownAction(QComboBox 
         t100SelectedForSwitch = false;
     }
 
-    qDebug() << swtChannelToT100Map;
 
     emit signalSwitchMapChanged(swtChannelToT100Map);
 }
@@ -348,39 +391,22 @@ void WavStep_Power_Monitoring_Test_Window::calculateTestRuntime(){
 double WavStep_Power_Monitoring_Test_Window::convertDwellToSeconds(double dwell){
     double convertedDwell = dwell;
     if(ui->dwellSRadioButton->isChecked()){
-        qDebug() << "dwellsradioButton";
         convertedDwell = dwell;
     }
     else if(ui->dwellMsecRadioButton->isChecked()){
-        qDebug() << "dwellmsecradioButton";
         convertedDwell = dwell / 1000;
     }
     else if(ui->dwellMinRadioButton->isChecked()){
-        qDebug() << "dwellminradioButton";
         convertedDwell = dwell * 60;
     }
-    qDebug() << dwell << " to " << convertedDwell;
     return convertedDwell;
 }
 
-void WavStep_Power_Monitoring_Test_Window::convertAndDisplayDwellTime(){
-
-//    if(ui->dwellSRadioButton->isClicked()){
-
-//    }
-//    else if(ui->dwellMsecRadioButton->isClicked()){
-
-//    }
-//    if(ui->dwellMinRadioButton->isClicked()){
-
-//    }
-}
 
 void WavStep_Power_Monitoring_Test_Window::on_dwellMinRadioButton_clicked()
 {
 
     double displayDwell = dwellTimeInSeconds / 60;
-    qDebug() << dwellTimeInSeconds << " to " << displayDwell;
     if(dwellTimeInSeconds >= 0){
         ui->dwellLineEdit->setText(QByteArray::number(displayDwell));
     }
@@ -397,8 +423,8 @@ void WavStep_Power_Monitoring_Test_Window::on_dwellSRadioButton_clicked()
 void WavStep_Power_Monitoring_Test_Window::on_dwellMsecRadioButton_clicked()
 {
     double displayDwell = dwellTimeInSeconds * 1000;
-    qDebug() << dwellTimeInSeconds << " to " << displayDwell;
     if(dwellTimeInSeconds >= 0){
         ui->dwellLineEdit->setText(QByteArray::number(displayDwell));
     }
 }
+

@@ -7,6 +7,7 @@
 #include "EXFO_OSICS_ATN.h"
 #include "PowerMeter.h"
 #include "powermeterpollingworker.h"
+#include "wavstep_power_monitoring_graph_window.h"
 
 class WavStepWithPowerMonitoringTest : public DeviceTest
 {
@@ -20,6 +21,7 @@ public:
 signals:
    void signalUpdateMinMaxWavelength(double minWav, double maxWav);
    void signalDisplayPowerReadings(QByteArray powerMeterIdentity, QList<QByteArray> readings);
+   void signalGraphPowerMeterReadings(WavStepPowerTestData);
 
 public slots:
     void slotBeginTest(QSettings *settings);
@@ -28,6 +30,9 @@ public slots:
     void slotGetPowerMeterDisplayPairs(QList<QPair<QByteArray, int>> &powerMeterDisplayPairs);
     void slotPollForPowerMeterReadings();
     void slotSendPowerReadingCommand(PowerMeter *powerMeter);
+    void slotShowGraphWindow();
+    void prepareOutputDataMap();
+
 
 private:
 
@@ -50,6 +55,7 @@ private:
     int atnSlotNum = 1;
 
     QSettings *settings;
+    QList<PowerMeterPollingWorker *> workers;
 
     // test values
     QByteArray csvFilename = "";
@@ -60,12 +66,24 @@ private:
     double dwellSeconds = 0.0;
     double estimatedTime = 0.0;
 
+    QElapsedTimer timer;
+    WavStepPowerTestData allData;
+    int readingCount = 0;
+    int maxCountBeforeWrite = 10;
+
+    QList<QByteArray> powerMeterChannelNames;
+
+    bool testStarted = false;
     double calculateMinWavelength();
     double calculateMaxWavelength();
 
+    WavStep_Power_Monitoring_Graph_Window *graphWindow;
+    void getTestValuesFromSettings();
     void populateAssignedModules(QMap<int, QByteArray> swtChannelToT100Map);
-
-
+    QList<QByteArray> channelsToGraph;
+    
+    void setupTestOperations();
+    
 
 };
 

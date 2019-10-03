@@ -8,6 +8,7 @@
 #include <QSettings>
 #include <QDateTime>
 #include "constants.h"
+#include "wavstep_power_monitoring_graph_window.h"
 
 
 namespace Ui {
@@ -29,6 +30,7 @@ signals:
     void signalGetPowerMeterDisplayPairs(QList<QPair<QByteArray, int>> &powerMeterDisplayPairs);
     void signalSwitchMapChanged(QMap<int, QByteArray> swtChannelToT100Map);
     void signalPollForPowerMeterReadings();
+    void signalShowGraphWindow();
 
 public slots:
     void slotUpdateMinMaxWavelength(double minWav, double maxWav);
@@ -60,6 +62,8 @@ private slots:
 
     void on_dwellMsecRadioButton_clicked();
 
+    void on_openGraphWindowButton_clicked();
+
 private:
     Ui::WavStep_Power_Monitoring_Test_Window *ui;
 
@@ -73,13 +77,16 @@ private:
     QList<QPair<QByteArray, int>> powerMeterDisplayPairs;
     double dwellTimeInSeconds = 0;
 
+    WavStep_Power_Monitoring_Graph_Window *graphWindow;
+
     bool isInputValueValid(QByteArray inputValue);
     void handleWavelengthErrorCases(QLineEdit *lineEdit);
 
     void calculateTestRuntime();
     double convertDwellToSeconds(double dwell);
-    void convertAndDisplayDwellTime();
     void populatePowerMeterListWidget();
+    QList<QByteArray> seriesNames;
+    QList<QByteArray> getSeriesNames();
 
 };
 

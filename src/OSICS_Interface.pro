@@ -5,6 +5,7 @@
 #-------------------------------------------------
 
 QT       += core gui
+QT += charts
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -48,6 +49,7 @@ SOURCES += \
         Device_Tests/exfo_operationaltest_t100_swt_atn_window.cpp \
         Device_Tests/exfo_t100_pm_power_step_test.cpp \
         Device_Tests/powermeterpollingworker.cpp \
+        Device_Tests/wavstep_power_monitoring_graph_window.cpp \
         Device_Tests/wavstep_power_monitoring_test_window.cpp \
         main.cpp \
         mainwindow.cpp \
@@ -87,6 +89,7 @@ HEADERS += \
         Device_Tests/exfo_operationaltest_t100_swt_atn_window.h \
         Device_Tests/exfo_t100_pm_power_step_test.h \
         Device_Tests/powermeterpollingworker.h \
+        Device_Tests/wavstep_power_monitoring_graph_window.h \
         Device_Tests/wavstep_power_monitoring_test_window.h \
         mainwindow.h \
         Device_Config_Windows/confign7714awindow.h \
@@ -123,6 +126,7 @@ HEADERS += \
 
 FORMS += \
         Device_Tests/exfo_operationaltest_t100_swt_atn_window.ui \
+        Device_Tests/wavstep_power_monitoring_graph_window.ui \
         Device_Tests/wavstep_power_monitoring_test_window.ui \
         mainwindow.ui \
         Device_Config_windows/confign7714awindow.ui \

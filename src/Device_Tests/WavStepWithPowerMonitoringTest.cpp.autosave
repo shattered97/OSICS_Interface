@@ -145,10 +145,19 @@ bool WavStepWithPowerMonitoringTest::areDevicesValidForTest(){
 }
 
 void WavStepWithPowerMonitoringTest::runDeviceTest(){
+    
+    // perform setup operations
+    setupTestOperations();
+    
+    
     // start timer
     timer.start();
     testStarted = true;
 
+}
+
+void WavStepWithPowerMonitoringTest::setupTestOperations(){
+    
 }
 
 void WavStepWithPowerMonitoringTest::slotGetT100DisplayNames(QList<QByteArray> &displayNames){

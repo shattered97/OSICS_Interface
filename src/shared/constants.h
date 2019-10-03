@@ -23,6 +23,9 @@ typedef QMap<InstrData, PowerReading> PowerReadingData;
 // QPair<module variant, configWindow>
 typedef QPair<QVariant, QMainWindow*> ModuleConfigPair;
 
+// series name, list of data points (time, power)
+typedef QMap<QByteArray, QList<QPair<QByteArray, QByteArray>>*> WavStepPowerTestData;
+
 //Logging Constansts
 const QString LOG_FILE_PATH  = QDir::currentPath();  //Same dir as exe
 const QString LOG_FILE       = "OSICS_LOG.txt";
@@ -121,6 +124,8 @@ const QByteArray TEST_TYPES[] = {N7714A_WAV_CYCLE_TEST, OSICS_WAV_CYCLE_TEST, EX
                                  EXFO_T100_SWT_WAV_STEP_OSA_POWER_TEST, EXFO_T100_BRISTOL_WAV_STEP_TEST,
                                  EXFO_T100_ATN_POWER_TEST, EXFO_T100_SWT_PM_WM_TEST, EXFO_T100_PM_POWER_STEP_TEST,
                                  EXFO_OPERATIONAL_TEST_T100_SWT_ATN, WAV_STEP_TEST_WITH_POWER_MONITORING_TEST};
+
+
 // Wavelength Step Test With Power Monitoring Settings
 const QByteArray WAV_STEP_TEST_CSV_FILENAME = "Wav Step Test .csv Filename";
 const QByteArray WAV_STEP_TEST_GRAPH_FILENAME = "Wav Step Test Graph Filename";
@@ -129,6 +134,7 @@ const QByteArray WAV_STEP_TEST_END_WAVELENGTH = "Wav Step Test End Wavelength";
 const QByteArray WAV_STEP_TEST_WAV_STEP_SIZE = "Wav Step Test Step Size";
 const QByteArray WAV_STEP_TEST_DWELL_SECONDS = "Wav Step Test Dwell in Seconds";
 const QByteArray WAV_STEP_TEST_SWT_CHANNELS_TO_T100 = "Wav Step Test SWT Channels to T100 Map";
+const QByteArray WAV_STEP_TEST_CHANNELS_TO_GRAPH = "Wav Step Test Channels To Graph";
 
 // EXFO_OSICS_ATN Values
 const QByteArray EXFO_OSICS_ATN_MIN_OFFSET = "-10"; // defined in spec sheet/prog guide
