@@ -10,7 +10,7 @@ void PowerMeterPollingWorker::slotPollPowerMeter(){
     qDebug() << "slotPollPowerMeter()";
 
     for(;;){
-       QThread::msleep(1000);
+       QThread::msleep(5000);
        emit signalSendPowerReadingCommand(powerMeter);
     }
 

@@ -88,6 +88,8 @@ private:
     QList<QByteArray> seriesNames;
     QList<QByteArray> getSeriesNames();
 
+    bool areAllFieldsCompleted();
+
 };
 
 #endif // WAVSTEP_POWER_MONITORING_TEST_WINDOW_H

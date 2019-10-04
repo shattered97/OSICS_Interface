@@ -43,9 +43,6 @@ void WavStepWithPowerMonitoringTest::slotSendPowerReadingCommand(PowerMeter *pow
             qDebug() << dataPoint;
             qDebug() << allData.keys().size();
             allData.value(seriesName)->append(dataPoint);
-            qDebug() << "made list pointer from series name key";
-            qDebug() << "able to append data point";
-
 
         }
         readingCount += 1;
@@ -145,10 +142,19 @@ bool WavStepWithPowerMonitoringTest::areDevicesValidForTest(){
 }
 
 void WavStepWithPowerMonitoringTest::runDeviceTest(){
+    
+    // perform setup operations
+    setupTestOperations();
+    
+    
     // start timer
     timer.start();
     testStarted = true;
 
+}
+
+void WavStepWithPowerMonitoringTest::setupTestOperations(){
+    
 }
 
 void WavStepWithPowerMonitoringTest::slotGetT100DisplayNames(QList<QByteArray> &displayNames){
@@ -201,7 +207,7 @@ double WavStepWithPowerMonitoringTest::calculateMaxWavelength(){
 }
 
 void WavStepWithPowerMonitoringTest::slotSwitchMapChanged(QMap<int, QByteArray> swtChannelToT100Map){
-
+    this->swtChannelToT100Map = swtChannelToT100Map;
 
     // populate list of assigned modules
     populateAssignedModules(swtChannelToT100Map);
@@ -225,6 +231,7 @@ void WavStepWithPowerMonitoringTest::populateAssignedModules(QMap<int, QByteArra
             int switchChannel = e;
             QPair<EXFO_OSICS_T100*, int> pair = {t100Modules.at(t100SlotNum - 1).first, switchChannel};
             assignedT100Modules.append(pair);
+
         }
 
     }
@@ -240,6 +247,9 @@ void WavStepWithPowerMonitoringTest::slotBeginTest(QSettings *settings){
     this->settings = settings;
     getTestValuesFromSettings();
 
+    qDebug() << "&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&";
+    qDebug() << assignedT100Modules.size();
+    queueT100sForTest();
     prepareOutputDataMap();
 
     // create graph window
@@ -249,15 +259,109 @@ void WavStepWithPowerMonitoringTest::slotBeginTest(QSettings *settings){
     runDeviceTest();
 }
 
+void WavStepWithPowerMonitoringTest::executeTestStep(EXFO_OSICS_T100 *t100Module, QByteArray wavelengthToSet, double dwellTimeInMs){
+
+    // set wavelength on t100
+    int t100SlotNum = t100Module->getSlotNum();
+    t100Module->setRefWavelengthModuleCmd(t100SlotNum, wavelengthToSet);
+
+    // we will need to know which t100 we are operating on at th time
+
+
+    // set wavelength on power meter(s)
+    for(auto powerMeter : powerMeters){
+        int numChannels = powerMeter->getNumPowerMeterChannels();
+        for(int i = 1; i <= numChannels; i++){
+            QByteArray channelNum = QByteArray::number(i);
+            QByteArray unit = "nm";
+            powerMeter->setWavelength(i, wavelengthToSet, unit);
+        }
+    }
+
+    // wait for amount specified by dwell time
+    QElapsedTimer dwellTimer;
+    dwellTimer.start();
+    if(dwellTimer.elapsed() < dwellTimeInMs){
+       // wait
+    }
+
+}
+
+void WavStepWithPowerMonitoringTest::queueT100sForTest(){
+
+    qDebug() << "===========================================================================";
+    QList<QPair<EXFO_OSICS_T100*, QPair<double, double>>> t100TestQueue;
+
+    double currentStartWav = startWav;
+    double currentStopWav = endWav;
+    qDebug() << "current start wav: " << currentStartWav;
+    qDebug() << "current end wav: " << currentStopWav;
+
+    while(currentStartWav < currentStopWav){
+        qDebug() << currentStartWav;
+        bool matchFound = false;
+        qDebug() << "///////////////////////////////////////////////";
+        for(auto e : assignedT100Modules){
+            if(!matchFound){
+                qDebug() << "********************";
+                qDebug() << "slotnum of module: " << e.first->getSlotNum();
+                double t100MinWav = e.first->getT100MinWavelength();
+                double t100MaxWav = e.first->getT100MaxWavelength();
+
+                qDebug() << "min/max wav: " << t100MinWav << " " << t100MaxWav;
+                double moduleStartWav = currentStartWav;
+                double moduleStopWav = currentStopWav;
+
+                qDebug() << "is " << currentStartWav <<  " >= " << t100MinWav << " and <= " << t100MaxWav;
+
+                if(currentStartWav >= t100MinWav && currentStartWav <= t100MaxWav){
+                    matchFound = true;
+                    moduleStartWav = currentStartWav;
+
+                    if(currentStopWav <= t100MaxWav){
+                        // we can stop testing at this module because we can reach the end wavelength
+                        moduleStopWav = currentStopWav;
+                    }
+                    else{
+                        // the stop wavelength for this module is it's max wavelength
+                        moduleStopWav = t100MaxWav;
+                    }
+
+                    QPair<EXFO_OSICS_T100*, QPair<double, double>> queuePair = {e.first, {moduleStartWav, moduleStartWav}};
+                    t100TestQueue.append(queuePair);
+                    qDebug() << "Test Pair added: < " << e.first->getSlotNum() << " , < " << QByteArray::number(moduleStartWav) << " , " << QByteArray::number(moduleStopWav) << " >";
+
+                    currentStartWav = moduleStopWav + 0.01;
+                    qDebug() << "new current startWav = " << currentStartWav;
+                }
+            }
+            else{
+                qDebug() << "skipping laser at slotNum : " << e.first->getSlotNum() << " because we already found a match";
+            }
+
+        }
+        if(!matchFound){
+
+            qDebug() << "increasing search criteria by " << wavStepSize;
+            // increase search criteria by the step size and try again
+            currentStartWav += wavStepSize;
+        }
+        qDebug() << "currentStartWav < currentStopWav?" << currentStartWav << " " << currentStopWav;
+    }
+
+    qDebug() << "=======================================================================";
+}
+
 
 void WavStepWithPowerMonitoringTest::getTestValuesFromSettings(){
-    qDebug() << "!!! " << "getTestValuesFromSettings()";
+
     csvFilename = settings->value(WAV_STEP_TEST_CSV_FILENAME).value<QByteArray>();
     graphFilename = settings->value(WAV_STEP_TEST_GRAPH_FILENAME).value<QByteArray>();
     startWav = settings->value(WAV_STEP_TEST_START_WAVELENGTH).value<double>();
     endWav = settings->value(WAV_STEP_TEST_END_WAVELENGTH).value<double>();
     wavStepSize = settings->value(WAV_STEP_TEST_WAV_STEP_SIZE).value<double>();
     dwellSeconds = settings->value(WAV_STEP_TEST_DWELL_SECONDS).value<double>();
+    swtChannelToT100Map = settings->value(WAV_STEP_TEST_SWT_CHANNELS_TO_T100).value<QMap<int, QByteArray>>();
     channelsToGraph = settings->value(WAV_STEP_TEST_CHANNELS_TO_GRAPH).value<QList<QByteArray>>();
     qDebug() << "channels to graph: " << channelsToGraph;
 

@@ -12,6 +12,8 @@ WavStep_Power_Monitoring_Test_Window::WavStep_Power_Monitoring_Test_Window(QWidg
     // initialize settings
     settings = new QSettings(QSettings::IniFormat, QSettings::SystemScope, "Test Platform");
     settings->clear();
+
+    qRegisterMetaTypeStreamOperators<QMap<int, QByteArray>>("swtChannelToT100Map");
 }
 
 WavStep_Power_Monitoring_Test_Window::~WavStep_Power_Monitoring_Test_Window()
@@ -100,6 +102,10 @@ void WavStep_Power_Monitoring_Test_Window::populateSwtChannelToT100Map(){
     swtChannelToT100Map.insert(4, ui->swtChannel4ComboBox->currentText().toLatin1());
 }
 
+bool WavStep_Power_Monitoring_Test_Window::areAllFieldsCompleted(){
+    return(ui->dwellLineEdit->text().isEmpty() || ui->stepSizeLineEdit->text().isEmpty() || ui->startWavLineEdit->text().isEmpty() || ui->endWavLineEdit->text().isEmpty());
+}
+
 void WavStep_Power_Monitoring_Test_Window::on_beginTestPB_clicked()
 {
     // if there is no t100 selected for any SWT slot, error message
@@ -108,8 +114,7 @@ void WavStep_Power_Monitoring_Test_Window::on_beginTestPB_clicked()
         msgBox.setText("No T100 modules selected for switch channels.");
         msgBox.exec();
     }
-    else{
-
+    else if(areAllFieldsCompleted()){
         // create graph window
         QList<QByteArray> seriesNames = getSeriesNames();
         qDebug() << "SERIES NAMES FROM WINDOW: " << seriesNames;
@@ -149,12 +154,12 @@ void WavStep_Power_Monitoring_Test_Window::updateSettings()
     settings->setValue(WAV_STEP_TEST_CSV_FILENAME, QVariant::fromValue(ui->csvLocDisplay->text()));
     settings->setValue(WAV_STEP_TEST_GRAPH_FILENAME, QVariant::fromValue(ui->graphLocDisplay->text()));
     settings->setValue(WAV_STEP_TEST_START_WAVELENGTH, QVariant::fromValue(ui->startWavLineEdit->text()));
-    settings->setValue(WAV_STEP_TEST_END_WAVELENGTH, QVariant::fromValue(ui->startWavLineEdit->text()));
+    settings->setValue(WAV_STEP_TEST_END_WAVELENGTH, QVariant::fromValue(ui->endWavLineEdit->text()));
     settings->setValue(WAV_STEP_TEST_WAV_STEP_SIZE, QVariant::fromValue(ui->endWavLineEdit->text()));
     settings->setValue(WAV_STEP_TEST_DWELL_SECONDS, QVariant::fromValue(ui->dwellLineEdit->text()));
-//    settings->setValue(WAV_STEP_TEST_SWT_CHANNELS_TO_T100, QVariant::fromValue(swtChannelToT100Map));
+    settings->setValue(WAV_STEP_TEST_SWT_CHANNELS_TO_T100, QVariant::fromValue(swtChannelToT100Map));
     settings->setValue(WAV_STEP_TEST_CHANNELS_TO_GRAPH, QVariant::fromValue(seriesNames));
-    qDebug() << "done setting config values";
+
 }
 
 void WavStep_Power_Monitoring_Test_Window::populateSwitchChannelSelectionDropdowns()

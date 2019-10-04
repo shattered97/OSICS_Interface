@@ -73,6 +73,9 @@ private:
 
     QList<QByteArray> powerMeterChannelNames;
 
+
+    QMap<int, QByteArray> swtChannelToT100Map;
+
     bool testStarted = false;
     double calculateMinWavelength();
     double calculateMaxWavelength();
@@ -83,8 +86,8 @@ private:
     QList<QByteArray> channelsToGraph;
     
     void setupTestOperations();
-    
-
+    void executeTestStep(EXFO_OSICS_T100 *t100Module, QByteArray wavelengthToSet, double dwellTimeInMs);
+    void queueT100sForTest();
 };
 
 #endif // WAVSTEPWITHPOWERMONITORINGTEST_H
