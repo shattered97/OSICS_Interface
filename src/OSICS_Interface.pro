@@ -51,6 +51,7 @@ SOURCES += \
         Device_Tests/powermeterpollingworker.cpp \
         Device_Tests/wavstep_power_monitoring_graph_window.cpp \
         Device_Tests/wavstep_power_monitoring_test_window.cpp \
+        Device_Tests/wavstep_power_monitoring_test_worker.cpp \
         main.cpp \
         mainwindow.cpp \
         Device_Config_Windows/confign7714awindow.cpp \
@@ -91,6 +92,7 @@ HEADERS += \
         Device_Tests/powermeterpollingworker.h \
         Device_Tests/wavstep_power_monitoring_graph_window.h \
         Device_Tests/wavstep_power_monitoring_test_window.h \
+        Device_Tests/wavstep_power_monitoring_test_worker.h \
         mainwindow.h \
         Device_Config_Windows/confign7714awindow.h \
         Device_Config_Windows/ConfigOSICS_ATN.h \

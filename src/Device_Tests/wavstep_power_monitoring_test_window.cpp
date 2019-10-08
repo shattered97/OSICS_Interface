@@ -103,7 +103,25 @@ void WavStep_Power_Monitoring_Test_Window::populateSwtChannelToT100Map(){
 }
 
 bool WavStep_Power_Monitoring_Test_Window::areAllFieldsCompleted(){
-    return(ui->dwellLineEdit->text().isEmpty() || ui->stepSizeLineEdit->text().isEmpty() || ui->startWavLineEdit->text().isEmpty() || ui->endWavLineEdit->text().isEmpty());
+    bool success = true;
+
+    bool dwellEmpty = ui->dwellLineEdit->text().isEmpty();
+    qDebug() << dwellEmpty;
+    bool stepSizeEmpty = ui->stepSizeLineEdit->text().isEmpty();
+    qDebug() << stepSizeEmpty;
+    bool startWavEmpty = ui->startWavLineEdit->text().isEmpty();
+    qDebug() << startWavEmpty;
+    bool endWavEmpty = ui->endWavLineEdit->text().isEmpty();
+    qDebug() << endWavEmpty;
+
+    if(dwellEmpty || stepSizeEmpty || startWavEmpty || endWavEmpty){
+        QMessageBox msgBox;
+        msgBox.setText("Make sure all fields for start/end wavelength, dwell and step size are complete.");
+        msgBox.exec();
+        success = false;
+    }
+
+    return success;
 }
 
 void WavStep_Power_Monitoring_Test_Window::on_beginTestPB_clicked()
@@ -114,18 +132,32 @@ void WavStep_Power_Monitoring_Test_Window::on_beginTestPB_clicked()
         msgBox.setText("No T100 modules selected for switch channels.");
         msgBox.exec();
     }
+    // if a file hasn't been chosen for data output, error message
+    if(ui->csvLocDisplay->text().isEmpty()){
+        QMessageBox msgBox;
+        msgBox.setText("Choose output .csv file for test data.");
+        msgBox.exec();
+    }
     else if(areAllFieldsCompleted()){
         // create graph window
         QList<QByteArray> seriesNames = getSeriesNames();
-        qDebug() << "SERIES NAMES FROM WINDOW: " << seriesNames;
 
-        updateSettings();
+        if(seriesNames.size() <= 0){
+            QMessageBox msgBox;
+            msgBox.setText("Select at least one series to graph.");
+            msgBox.exec();
+        }
+        else{
+            ui->beginTestPB->setEnabled(false);
+            ui->openGraphWindowButton->setEnabled(true);
 
-        qDebug() << "emitting signalBeginTest()";
-        emit signalBeginTest(settings);
+            updateSettings();
 
-        ui->beginTestPB->setEnabled(false);
-        ui->openGraphWindowButton->setEnabled(true);
+            emit signalBeginTest(settings);
+
+        }
+
+
     }
 
 }
@@ -155,7 +187,7 @@ void WavStep_Power_Monitoring_Test_Window::updateSettings()
     settings->setValue(WAV_STEP_TEST_GRAPH_FILENAME, QVariant::fromValue(ui->graphLocDisplay->text()));
     settings->setValue(WAV_STEP_TEST_START_WAVELENGTH, QVariant::fromValue(ui->startWavLineEdit->text()));
     settings->setValue(WAV_STEP_TEST_END_WAVELENGTH, QVariant::fromValue(ui->endWavLineEdit->text()));
-    settings->setValue(WAV_STEP_TEST_WAV_STEP_SIZE, QVariant::fromValue(ui->endWavLineEdit->text()));
+    settings->setValue(WAV_STEP_TEST_WAV_STEP_SIZE, QVariant::fromValue(ui->stepSizeLineEdit->text()));
     settings->setValue(WAV_STEP_TEST_DWELL_SECONDS, QVariant::fromValue(ui->dwellLineEdit->text()));
     settings->setValue(WAV_STEP_TEST_SWT_CHANNELS_TO_T100, QVariant::fromValue(swtChannelToT100Map));
     settings->setValue(WAV_STEP_TEST_CHANNELS_TO_GRAPH, QVariant::fromValue(seriesNames));
@@ -433,3 +465,22 @@ void WavStep_Power_Monitoring_Test_Window::on_dwellMsecRadioButton_clicked()
     }
 }
 
+
+void WavStep_Power_Monitoring_Test_Window::on_selectCsvLocButton_clicked()
+{
+    QString fileName = QFileDialog::getSaveFileName(this,
+            tr("Save Output .csv File"), "",
+            tr("Data (*.csv);;All Files (*)"));
+
+    if (!fileName.isEmpty()){
+        QFile file(fileName);
+        if(!file.open(QIODevice::Append)){
+            QMessageBox::information(this, tr("Can't open file"), file.errorString());
+        }
+        else{
+            QByteArray outputCsvFilename = file.fileName().toLatin1();
+            ui->csvLocDisplay->setText(outputCsvFilename);
+            file.close();
+        }
+    }
+}

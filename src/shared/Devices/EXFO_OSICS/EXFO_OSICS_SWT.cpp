@@ -188,6 +188,10 @@ void EXFO_OSICS_SWT::setSlotNum(int slotNum){
     this->slotNum = slotNum;
 }
 
+int EXFO_OSICS_SWT::getSlotNum(){
+    return slotNum;
+}
+
 void EXFO_OSICS_SWT::updateConfig(QSettings &configSettings){
     qDebug() << "swt updateConfig() " << theInstrLoc;
 

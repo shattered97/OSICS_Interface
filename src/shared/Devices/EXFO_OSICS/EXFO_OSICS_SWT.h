@@ -150,7 +150,7 @@ public:
     void applyConfigSettings(QSettings &configSettings);
     void updateConfig(QSettings &configSettings);
     void setSlotNum(int slotNum);
-
+    int getSlotNum();
 private:
 
     // identity of instrument (manufacturer, model num, etc.)

@@ -99,7 +99,7 @@
      <rect>
       <x>210</x>
       <y>630</y>
-      <width>571</width>
+      <width>501</width>
       <height>41</height>
      </rect>
     </property>
@@ -118,9 +118,9 @@
     </property>
     <property name="geometry">
      <rect>
-      <x>820</x>
+      <x>870</x>
       <y>630</y>
-      <width>191</width>
+      <width>141</width>
       <height>41</height>
      </rect>
     </property>
@@ -180,7 +180,7 @@
      <rect>
       <x>210</x>
       <y>680</y>
-      <width>571</width>
+      <width>501</width>
       <height>41</height>
      </rect>
     </property>
@@ -766,9 +766,9 @@
     </property>
     <property name="geometry">
      <rect>
-      <x>820</x>
+      <x>870</x>
       <y>680</y>
-      <width>191</width>
+      <width>141</width>
       <height>41</height>
      </rect>
     </property>
@@ -779,6 +779,54 @@
     </property>
     <property name="text">
      <string>Display Graph</string>
+    </property>
+    <property name="checkable">
+     <bool>false</bool>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="selectGraphLocButton">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>710</x>
+      <y>630</y>
+      <width>101</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>14</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>Select</string>
+    </property>
+    <property name="checkable">
+     <bool>false</bool>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="selectCsvLocButton">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>710</x>
+      <y>680</y>
+      <width>101</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>14</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>Select</string>
     </property>
     <property name="checkable">
      <bool>false</bool>
@@ -795,6 +843,8 @@
    <zorder>groupBox_2</zorder>
    <zorder>groupBox_3</zorder>
    <zorder>openGraphWindowButton</zorder>
+   <zorder>selectGraphLocButton</zorder>
+   <zorder>selectCsvLocButton</zorder>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">

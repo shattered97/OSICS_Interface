@@ -25,13 +25,12 @@ void WavStep_Power_Monitoring_Graph_Window::slotGraphPowerMeterReadings(WavStepP
 
     // match each series name
     for(auto e : seriesNames){
-        qDebug() << "*************** " << allData.value(e)->size();
 
         // make new graph series
         QtCharts::QLineSeries *series = new QtCharts::QLineSeries();
         series->setName(e);
         for(auto dataPoint : *allData.value(e)){
-            qDebug() << dataPoint;
+
             double powerInDBm = ConversionUtilities::convertWattToDBm(dataPoint.second.toDouble());
             series->append(dataPoint.first.toDouble(),  powerInDBm);
         }

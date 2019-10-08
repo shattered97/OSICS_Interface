@@ -340,7 +340,8 @@ void Orchestrator::slotSendCmdNoRsp(QByteArray instrAddress, QByteArray command)
 }
 
 void Orchestrator::slotSendCmdRsp(QByteArray instrAddress, QByteArray command, QByteArray *response){
-
+    qDebug() << "address: ";
+    qDebug() << "= " << response;
     qDebug() << "Command sent: " << command;
     bool success = true;
 
@@ -348,16 +349,18 @@ void Orchestrator::slotSendCmdRsp(QByteArray instrAddress, QByteArray command, Q
 
     // open session
     ViStatus sessionStatus = theCommBus.openInstrSession(defaultSession, instrAddress, instrSession);
-    qDebug() << "opened session to instrument";
+
     if(sessionStatus < VI_SUCCESS){
         success = false;
         qDebug() << "Opening session failed.  status: " << sessionStatus;
     }
     else{
+        qDebug() << "session to instrument opened successfully";
 
         // check if instrument is done processing previous commands
         checkOperationComplete(instrSession, instrAddress);
 
+        qDebug() << "operation complete.";
         ViUInt32 writeCount;
         ViStatus status = theCommBus.sendCmd(instrSession, instrAddress, command, writeCount);
             if(status < VI_SUCCESS){

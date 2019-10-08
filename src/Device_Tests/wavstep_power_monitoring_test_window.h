@@ -9,6 +9,7 @@
 #include <QDateTime>
 #include "constants.h"
 #include "wavstep_power_monitoring_graph_window.h"
+#include <QFileDialog>
 
 
 namespace Ui {
@@ -63,6 +64,8 @@ private slots:
     void on_dwellMsecRadioButton_clicked();
 
     void on_openGraphWindowButton_clicked();
+
+    void on_selectCsvLocButton_clicked();
 
 private:
     Ui::WavStep_Power_Monitoring_Test_Window *ui;
