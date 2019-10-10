@@ -31,7 +31,7 @@ public:
      * @param response Response from instrument - ENABLED | DISABLED
      * @return true if command was successful
      */
-    void laserStateMainframeQuery(QByteArray &response);
+    QByteArray laserStateMainframeQuery();
 
     /**
      * @brief setMainframeSpectralUnitGHzCmd Sets the frequency in GHz as the spectral unit on OSICS system
@@ -53,7 +53,7 @@ public:
      * @param response Response from instrument - 0 (spectral unit is nm) | 1 (spectral unit is GHz)
      * @return true if command was successful
      */
-    void spectralUnitMainframeQuery(QByteArray &response);
+    QByteArray spectralUnitMainframeQuery();
 
     /**
      * @brief setMainframePowerUnitDBmCmd Sets dBm as the power unit on all modules
@@ -75,7 +75,7 @@ public:
      * @param response Response from instrument - 0 (power is in dBm) | 1 (power is in mW)
      * @return true if command was successful
      */
-    void powerUnitMainframeQuery(QByteArray &response);
+    QByteArray powerUnitMainframeQuery();
 
     /**
      * @brief setMainframeOutputPowerCmd Sets the optical output power of all modules to the same value
@@ -83,7 +83,7 @@ public:
      * @param power Output power to set (in mW or dBm depending on set unit)
      * @return true if command was successful
      */
-    void setMainframeOutputPowerCmd(QByteArray &power);
+    void setMainframeOutputPowerCmd(QByteArray power);
 
     /**
      * @brief outputPowerMainframeQuery Returns the optical output power value set for the modules
@@ -91,7 +91,7 @@ public:
      * @param response Response from instrument - Value set by the P= command (not the power of installed modules)
      * @return true if command was successful
      */
-    void outputPowerMainframeQuery(QByteArray &response);
+    QByteArray outputPowerMainframeQuery();
 
     /**
      * @brief setMainframeModSrcTypeCmd Sets the type of modulation source of the OSICS mainframe
@@ -99,7 +99,7 @@ public:
      * @param modSrc Type of modulation source - INT (internal) | EXT (external)
      * @return true if command was successful
      */
-    void setMainframeModSrcTypeCmd(QByteArray &modSrc);
+    void setMainframeModSrcTypeCmd(QByteArray modSrc);
 
     /**
      * @brief modSrcTypeMainframeQuery Returns the type of digital (TTL) modulation source on the system
@@ -107,7 +107,7 @@ public:
      * @param response Response from instrument - INT (internal) | EXT (external)
      * @return true if command was successful
      */
-    void modSrcTypeMainframeQuery(QByteArray &response);
+    QByteArray modSrcTypeMainframeQuery();
 
     /**
      * @brief setMainframeFrequencyQuery Sets the frequency of the OSICS internal TTL modulation source
@@ -115,7 +115,7 @@ public:
      * @param frequency Frequency in Hz in the range 123 Hz to 1000000 Hz (1MHz)
      * @return true if command was successful
      */
-    void setMainframeFrequencyQuery(QByteArray &frequency);
+    void setMainframeFrequencyQuery(QByteArray frequency);
 
     /**
      * @brief frequencyMainframeQuery Returns the frequency of the OSICS internal digital modulation source in Hz
@@ -123,7 +123,7 @@ public:
      * @param response Response from instrument - frequency in Hz of internal digital modulation source
      * @return true if command was successful
      */
-    void frequencyMainframeQuery(QByteArray &response);
+    QByteArray frequencyMainframeQuery();
 
     /**
      * @brief saveManframeConfigCmd Saves the current OSICS Mainframe and module config settings to selected memory
@@ -131,7 +131,7 @@ public:
      * @param configMemory Memory location to store - STARTUP | A | B | C | D
      * @return true if command was successful
      */
-    void saveManframeConfigCmd(QByteArray &configMemory);
+    void saveManframeConfigCmd(QByteArray configMemory);
 
     /**
      * @brief recallMainframeConfigCmd Loads the selected configuration type
@@ -139,7 +139,7 @@ public:
      * @param configMemory Memory location to select - DEFAULT | STARTUP | A | B | C | D
      * @return true if command was successful
      */
-    void recallMainframeConfigCmd(QByteArray &configMemory);
+    void recallMainframeConfigCmd(QByteArray configMemory);
 
     /**
      * @brief remoteInterlockMainframeQuery Returns the current state of the remote interlock mode
@@ -147,7 +147,7 @@ public:
      * @param response Response from instrument - 0 (interlock off) | 1 (interlock on)
      * @return true if command was successful
      */
-    void remoteInterlockMainframeQuery(QByteArray &response);
+    QByteArray remoteInterlockMainframeQuery();
 
     /**
      * @brief moduleTypeAtSlotQuery Returns the type of OSICS module installed in channel-slot number #
@@ -157,7 +157,7 @@ public:
      *        -1 (empty) | 1 (T100) | 2 (DFB/SLD) | 7 (SWT) | 8 (ATN/BKR) | 10 (TLS)
      * @return true if command was successful
      */
-    void moduleTypeAtSlotQuery(int slotNum, QByteArray &response);
+    QByteArray moduleTypeAtSlotQuery(int slotNum);
 
 
     // ************************* Shared Module Commands - Optical-Output Control *********************************
@@ -185,7 +185,7 @@ public:
      * @param response Response from instrument - ENABLED | DISABLED
      * @return true if command was successful
      */
-    void laserStateModuleQuery(int slotNum, QByteArray &response);
+    QByteArray laserStateModuleQuery(int slotNum);
 
 
     // **************************** Shared Module Commands - Unit Selection ***********************************
@@ -214,7 +214,7 @@ public:
      * @param response Response from instrument - 0 (unit is GHz) | 1 (unit is nm)
      * @return true if command was successful
      */
-    void spectralUnitModuleQuery(int slotNum, QByteArray &response);
+    QByteArray spectralUnitModuleQuery(int slotNum);
 
     /**
      * @brief setModulePowerUnitDBmCmd Sets dBm as the power unit of the module
@@ -239,7 +239,7 @@ public:
      * @param response Response from instrument - 0 (unit is dBm) | 1 (unit is mW)
      * @return true if command was successful
      */
-    void powerUnitModuleQuery(int slotNum, QByteArray &response);
+    QByteArray powerUnitModuleQuery(int slotNum);
 
 
     // ************************************* Shared Module Commands - Output Power Setting ************************************
@@ -252,7 +252,7 @@ public:
      * @param power
      * @return 
      */
-    void setModuleOutputPowerCmd(int slotNum, QByteArray &power);
+    void setModuleOutputPowerCmd(int slotNum, QByteArray power);
 
     // CH#:P?
     /**
@@ -262,7 +262,7 @@ public:
      * @param response
      * @return 
      */
-    void outputPowerModuleQuery(int slotNum, QByteArray &response);
+    QByteArray outputPowerModuleQuery(int slotNum);
 
     // CH#:LIMIT?
     /**
@@ -272,7 +272,7 @@ public:
      * @param response Response from instrument - 0 (power is reached) | 1 (power not reached)
      * @return true if command was successful
      */
-    void outputPowerReachedQuery(int slotNum, QByteArray &response);
+    QByteArray outputPowerReachedQuery(int slotNum);
 
 
     // *******************  Shared Module Commands - Optical Emission Wavelength/Frequency Setting **************************
@@ -283,7 +283,7 @@ public:
      * @param wavelength Wavelength in nm to set
      * @return true if command was successful
      */
-    void setEmissionWavelengthModuleQuery(int slotNum, QByteArray &wavelength);
+    void setEmissionWavelengthModuleQuery(int slotNum, QByteArray wavelength);
 
     /**
      * @brief emissionWavelengthModuleCmd Returns the emission wavelenth of the module in nm
@@ -292,7 +292,7 @@ public:
      * @param response Response from instrument - emission wavelength in nm
      * @return true if command was successful
      */
-    void emissionWavelengthModuleCmd(int slotNum, QByteArray &response);
+    QByteArray emissionWavelengthModuleCmd(int slotNum);
 
     /**
      * @brief setRefWavelengthModuleCmd Sets the reference wavelength to one of two factory calibrations
@@ -301,7 +301,7 @@ public:
      * @param wavelengthNum Either 1 (first wavelength value) or 2 (second wavelength value)
      * @return true if command was successful
      */
-    void setRefWavelengthModuleCmd(int slotNum, QByteArray &wavelengthNum);
+    void setRefWavelengthModuleCmd(int slotNum, QByteArray wavelengthNum);
 
     /**
      * @brief refWavelengthModuleQuery Returns the number of the wavelength used (1 or 2)
@@ -310,7 +310,7 @@ public:
      * @param response Response from instrument - Either 1 | 2
      * @return true if command was successful
      */
-    void refWavelengthModuleQuery(int slotNum, QByteArray &response);
+    QByteArray refWavelengthModuleQuery(int slotNum);
 
     /**
      * @brief setFrequencyModuleCmd Sets the emission frequency of the module in GHz
@@ -319,7 +319,7 @@ public:
      * @param frequency Frequency to set on module
      * @return true if command was successful
      */
-    void setFrequencyModuleCmd(int slotNum, QByteArray &frequency);
+    void setFrequencyModuleCmd(int slotNum, QByteArray frequency);
 
     /**
      * @brief frequencyModuleQuery Returns the emission frequency of the module in GHz
@@ -328,7 +328,7 @@ public:
      * @param response Response from instrument - the emission frequency in GHz
      * @return true if command was successful
      */
-    void frequencyModuleQuery(int slotNum, QByteArray &response);
+    QByteArray frequencyModuleQuery(int slotNum);
 
     /**
      * @brief enableCoherenceControlCmd Enables/disables the Coherence Control function
@@ -337,7 +337,7 @@ public:
      * @param setting OFF (disable function) | ON (enable function)
      * @return true if command was successful
      */
-    void enableCoherenceControlCmd(int slotNum, QByteArray &setting);
+    void enableCoherenceControlCmd(int slotNum, QByteArray setting);
 
     /**
      * @brief coherenceControlEnabledQuery Returns the state of the Coherence Control function (0 or 1)
@@ -346,7 +346,7 @@ public:
      * @param response Response from instrument - 0 (coherence control off) | 1 (coherence control on)
      * @return true if command was successful
      */
-    void coherenceControlEnabledQuery(int slotNum, QByteArray &response);
+    QByteArray coherenceControlEnabledQuery(int slotNum);
 
     /**
      * @brief enableAutoPeakFindControlCmd Enables/disables the Auto-peak Find function
@@ -355,7 +355,7 @@ public:
      * @param setting OFF (disable function | ON (enable function)
      * @return true if command was successful
      */
-    void enableAutoPeakFindControlCmd(int slotNum, QByteArray &setting);
+    void enableAutoPeakFindControlCmd(int slotNum, QByteArray setting);
 
     /**
      * @brief autoPeakFindControlQuery Returns the state of the Auto-peak Find function (0 or 1)
@@ -364,7 +364,7 @@ public:
      * @param response Response from instrument - 0 (function is off) | 1 (function is on)
      * @return true if command was successful
      */
-    void autoPeakFindControlQuery(int slotNum, QByteArray &response);
+    QByteArray autoPeakFindControlQuery(int slotNum);
 
 
     // ****************************** Shared Module Commands - Modulation Control *******************************
@@ -376,7 +376,7 @@ public:
      * @param setting OFF (digital modulation is off) | ON (digital modulation on) | ON_INV (reversed digital modulation)
      * @return true if command was successful
      */
-    void setModuleModulationCtrlCmd(int slotNum, QByteArray &setting);
+    void setModuleModulationCtrlCmd(int slotNum, QByteArray setting);
 
     /**
      * @brief moduleModulationCtrlQuery Returns the selected modulation activation state
@@ -385,7 +385,7 @@ public:
      * @param response Response from instrument - Either OFF | ON | ON_INV
      * @return true if command was successful
      */
-    void moduleModulationCtrlQuery(int slotNum, QByteArray &response);
+    QByteArray moduleModulationCtrlQuery(int slotNum);
 
     /**
      * @brief setModuleModulationSrcCmd Sets the type of modulation source of the module
@@ -394,7 +394,7 @@ public:
      * @param setting Either MAIN to set to mainframe or INT to set to internal
      * @return true if command was successful
      */
-    void setModuleModulationSrcCmd(int slotNum, QByteArray &setting);
+    void setModuleModulationSrcCmd(int slotNum, QByteArray setting);
 
     /**
      * @brief moduleModulationSrcQuery Returns the selected modulation source
@@ -403,7 +403,7 @@ public:
      * @param response Response from instrument - Either INT | MAIN
      * @return
      */
-    void moduleModulationSrcQuery(int slotNum, QByteArray &response);
+    QByteArray moduleModulationSrcQuery(int slotNum);
 
 
     // ************************ Shared Module Commands - Module System-Version Info ****************************
@@ -415,7 +415,7 @@ public:
      * @param response Response from instrument - the software version of the module
      * @return true if command was successful
      */
-    void softwareVersionModuleQuery(int slotNum, QByteArray &response);
+    QByteArray softwareVersionModuleQuery(int slotNum);
 
     /**
      * @brief identificationModuleQuery Returns info about the module (company name, module, serial num, software version)
@@ -424,7 +424,7 @@ public:
      * @param response Response from instrument - company name, module, serian num, software version)
      * @return true if command was successful
      */
-    void identificationModuleQuery(int slotNum, QByteArray &response);
+    QByteArray identificationModuleQuery(int slotNum);
 
     /**
      * @brief typeOfModuleQuery Returns info about the module's type, version and options.
@@ -433,7 +433,7 @@ public:
      * @param response Response from instrument - module type, version, options
      * @return true if command was successful
      */
-    void typeOfModuleQuery(int slotNum, QByteArray &response);
+    QByteArray typeOfModuleQuery(int slotNum);
 
 
     // *********** Functions for Applying/Updating Config Settings **********
@@ -461,21 +461,21 @@ protected:
      * @param command Command to modify
      * @param param Param to append to command
      */
-    void appendParamToCmdWithSpace(QByteArray &command, QByteArray param);
+    QByteArray appendParamToCmdWithSpace(QByteArray command, QByteArray param);
 
     /**
      * @brief appendParamToCmdNoSpace Appends a parameter to the end of a command with no space characters.
      * @param command Command to modify
      * @param param Param to append to command
      */
-    void appendParamToCmdNoSpace(QByteArray &command, QByteArray param);
+    QByteArray appendParamToCmdNoSpace(QByteArray command, QByteArray param);
 
     /**
      * @brief insertSlotNum Inserts the slot number of a device to a base command.
      * @param command Command to modify
      * @param slotNum Slot number to insert into command
      */
-    void insertSlotNum(QByteArray &command, int slotNum);
+    QByteArray insertSlotNum(QByteArray command, int slotNum);
 
 
 private:

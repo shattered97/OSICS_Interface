@@ -208,7 +208,7 @@ ViStatus VisaInterface::queryInstrument(QByteArray &instrAddr, ViSession &instrS
     InstrData firstInstr;
 
     //Ask the Instrument Identity
-    theStatus = sendCmd(instrSess, instrAddr, IDENTITY, rtnSize);
+    theStatus = sendCmd(instrSess, instrAddr, IDENTITY);
 
     QString command(IDENTITY);  //Convert to string
 
@@ -221,8 +221,7 @@ ViStatus VisaInterface::queryInstrument(QByteArray &instrAddr, ViSession &instrS
     {
         //Asked for Identity so lets read it
         QByteArray rsp;
-
-        theStatus = readCmd(instrSess, instrAddr, rsp, rtnSize);
+        theStatus = readCmd(instrSess, instrAddr, &rsp);
 
         QString responseFromCommand(rsp);  //Convert to string
 
@@ -244,11 +243,12 @@ ViStatus VisaInterface::queryInstrument(QByteArray &instrAddr, ViSession &instrS
     return theStatus;
 }
 
-ViStatus VisaInterface::sendCmd(ViSession &instrSession, QByteArray instrAddr, QByteArray scpiCmd, ViUInt32 &writeCount)
+ViStatus VisaInterface::sendCmd(ViSession &instrSession, QByteArray instrAddr, QByteArray scpiCmd)
 {
     ViChar buffer[VISA_MAX_BUFFER_SEND_SIZE];
     strcpy_s(buffer, scpiCmd);
 
+    ViUInt32 writeCount = 0;
     theStatus = viWrite(instrSession, (ViBuf)buffer, (ViUInt32)strlen(buffer), &writeCount);
 
     logger->logInstrSendCmd(instrAddr, theStatus, scpiCmd, __LINE__);
@@ -261,27 +261,36 @@ ViStatus VisaInterface::sendCmd(ViSession &instrSession, QByteArray instrAddr, Q
     return theStatus;
 }
 
-ViStatus VisaInterface::readCmd(ViSession &instrSession, QByteArray instrAddr, QByteArray &response, ViUInt32 &retCount)
+ViStatus VisaInterface::readCmd(ViSession &instrSession, QByteArray instrAddr, QByteArray *response)
 {
-    unsigned char buffer[VISA_MAX_BUFFER_READ_SIZE];
+    if(response){
+        qDebug() << "address of response in readCmd() " << response;
+        unsigned char buffer[VISA_MAX_BUFFER_READ_SIZE];
+        ViUInt32 retCount = 0;
+        theStatus = viRead(instrSession, buffer, VISA_MAX_BUFFER_READ_SIZE, &retCount);
 
-    theStatus = viRead(instrSession, buffer, VISA_MAX_BUFFER_READ_SIZE, &retCount);
+        *response = QByteArray(reinterpret_cast<char*>(buffer), retCount);
 
-    charArrayToByteArray(buffer, response, retCount);
+        QByteArray rsp = *response;
+        qDebug() << "buffer to qbytearray: " << rsp;
 
-    logger->logInstrReadCmd(instrAddr, theStatus, response, __LINE__);
+        logger->logInstrReadCmd(instrAddr, theStatus, *response, __LINE__);
 
-    if(theStatus < VI_SUCCESS)
-    {
-        logger->logEntry("Error reading response from device", __LINE__);
+        if(theStatus < VI_SUCCESS)
+        {
+            logger->logEntry("Error reading response from device", __LINE__);
+        }
+        else
+        {
+            logger->logEntry(QString("%1 Bytes Read:  %2").arg(retCount), __LINE__);
+        }
+
+        return theStatus;
     }
-    else
-    {
-        logger->logEntry(QString("%1 Bytes Read:  %2").arg(retCount), __LINE__);
-//        charArrayToByteArray(buffer, response, retCount);
+    else{
+        return -1;
     }
 
-    return theStatus;
 }
 
 ViStatus VisaInterface::closeSession(ViSession &sessionToClose)
@@ -296,19 +305,19 @@ ViStatus VisaInterface::closeSession(ViSession &sessionToClose)
 //************************************* Helper Functions *******************************************
 
 
-void VisaInterface::charArrayToByteArray(unsigned char (&charArray)[VISA_MAX_BUFFER_READ_SIZE], QByteArray &byteArray, ViUInt32 size)
+void VisaInterface::charArrayToByteArray(unsigned char (*charArray)[VISA_MAX_BUFFER_READ_SIZE], QByteArray *byteArray, ViUInt32 size)
 {
     for(ViUInt32 i = 0; i < size; i++ )
     {
-        byteArray.append(static_cast<char>(charArray[i]));
+        byteArray->append(static_cast<char>(*(charArray[i])));
     }
 }
 
-void VisaInterface::byteArrayToCharArray(char (&charArray)[VISA_MAX_BUFFER_SEND_SIZE], QByteArray &byteArray)
+void VisaInterface::byteArrayToCharArray(char (*charArray)[VISA_MAX_BUFFER_SEND_SIZE], QByteArray *byteArray)
 {
-    for(ViInt32 i = 0; i < byteArray.size(); i++)
+    for(ViInt32 i = 0; i < byteArray->size(); i++)
     {
-        charArray[i] = byteArray.at(i);
+        (*charArray)[i] = byteArray->at(i);
     }
 
 }

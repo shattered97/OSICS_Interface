@@ -51,133 +51,141 @@ int EXFO_OSICS_T100::getSlotNum(){
 // ********* Diode-Current Setting Commands **********
 
 // CH#:I?
-void EXFO_OSICS_T100::diodeCurrentLevelModuleQuery(int slotNum, QByteArray &response){
+QByteArray EXFO_OSICS_T100::diodeCurrentLevelModuleQuery(int slotNum){
     QByteArray baseCmd = "CH#:I?\n";
-    insertSlotNum(baseCmd, slotNum);
-
+    baseCmd = insertSlotNum(baseCmd, slotNum);
+    QByteArray response = "";
     emit signalSendCmdRsp(theInstrLoc, baseCmd, &response);
+    return response;
 }
 
 // CH#:IMAX?
-void EXFO_OSICS_T100::diodeMaxCurrentModuleQuery(int slotNum, QByteArray &response){
+QByteArray EXFO_OSICS_T100::diodeMaxCurrentModuleQuery(int slotNum){
     QByteArray baseCmd = "CH#:IMAX?\n";
-    insertSlotNum(baseCmd, slotNum);
-
+    baseCmd = insertSlotNum(baseCmd, slotNum);
+    QByteArray response = "";
     emit signalSendCmdRsp(theInstrLoc, baseCmd, &response);
+    return response;
 }
 
 // ********* Calibration Control Commands *********
 
 // CH#:MOD_F=
-void EXFO_OSICS_T100::setModFrequencyModuleCmd(int slotNum, QByteArray &frequency){
+void EXFO_OSICS_T100::setModFrequencyModuleCmd(int slotNum, QByteArray frequency){
     QByteArray baseCmd = "CH#:MOD_F=\n";
-    insertSlotNum(baseCmd, slotNum);
-    appendParamToCmdNoSpace(baseCmd, frequency);
+    baseCmd = insertSlotNum(baseCmd, slotNum);
+    baseCmd = appendParamToCmdNoSpace(baseCmd, frequency);
 
     emit signalSendCmdNoRsp(theInstrLoc, baseCmd);
 }
 
 // CH#:MOD_F?
-void EXFO_OSICS_T100::modFrequencyModuleQuery(int slotNum, QByteArray &response){
+QByteArray EXFO_OSICS_T100::modFrequencyModuleQuery(int slotNum){
     QByteArray baseCmd = "CH#:MOD_F?\n";
-    insertSlotNum(baseCmd, slotNum);
-
+    baseCmd = insertSlotNum(baseCmd, slotNum);
+    QByteArray response = "";
     emit signalSendCmdRsp(theInstrLoc, baseCmd, &response);
+    return response;
 }
 
 // CH#:WAVEREF
 void EXFO_OSICS_T100::runWavelengthRefProcedureCmd(int slotNum){
     QByteArray baseCmd = "CH#:WAVEREF\n";
-    insertSlotNum(baseCmd, slotNum);
+    baseCmd = insertSlotNum(baseCmd, slotNum);
 
     emit signalSendCmdNoRsp(theInstrLoc, baseCmd);
 }
 
 // CH#:LCAL1=
-void EXFO_OSICS_T100::setFirstCalibrationWavelengthCmd(int slotNum, QByteArray &wavelength){
+void EXFO_OSICS_T100::setFirstCalibrationWavelengthCmd(int slotNum, QByteArray wavelength){
     QByteArray baseCmd = "CH#:LCAL1=\n";
-    insertSlotNum(baseCmd, slotNum);
-    appendParamToCmdNoSpace(baseCmd, wavelength);
+    baseCmd = insertSlotNum(baseCmd, slotNum);
+    baseCmd = appendParamToCmdNoSpace(baseCmd, wavelength);
 
     emit signalSendCmdNoRsp(theInstrLoc, baseCmd);
 }
 
 // CH#:LCAL2=
-void EXFO_OSICS_T100::setSecondCalibrationWavelengthCmd(int slotNum, QByteArray &wavelength){
+void EXFO_OSICS_T100::setSecondCalibrationWavelengthCmd(int slotNum, QByteArray wavelength){
     QByteArray baseCmd = "CH#:LCAL2=\n";
-    insertSlotNum(baseCmd, slotNum);
-    appendParamToCmdNoSpace(baseCmd, wavelength);
-
+    baseCmd = insertSlotNum(baseCmd, slotNum);
+    baseCmd = appendParamToCmdNoSpace(baseCmd, wavelength);
     emit signalSendCmdNoRsp(theInstrLoc, baseCmd);
 }
 
 // CH#:LCAL1?
-void EXFO_OSICS_T100::firstCalibrationWavelengthQuery(int slotNum, QByteArray &response){
+QByteArray EXFO_OSICS_T100::firstCalibrationWavelengthQuery(int slotNum){
     QByteArray baseCmd = "CH#:LCAL1?\n";
-    insertSlotNum(baseCmd, slotNum);
-
+    baseCmd = insertSlotNum(baseCmd, slotNum);
+    QByteArray response = "";
     emit signalSendCmdRsp(theInstrLoc, baseCmd, &response);
+    return response;
 }
 
 // CH#:LCAL2?
-void EXFO_OSICS_T100::secondCalibrationWavelengthQuery(int slotNum, QByteArray &response){
+QByteArray EXFO_OSICS_T100::secondCalibrationWavelengthQuery(int slotNum){
     QByteArray baseCmd = "CH#:LCAL2?\n";
-    insertSlotNum(baseCmd, slotNum);
-
+    baseCmd = insertSlotNum(baseCmd, slotNum);
+    QByteArray response = "";
     emit signalSendCmdRsp(theInstrLoc, baseCmd, &response);
+    return response;
 }
 
 // CH#:PCAL1=
-void EXFO_OSICS_T100::setFirstCalibrationPowerCmd(int slotNum, QByteArray &power){
+void EXFO_OSICS_T100::setFirstCalibrationPowerCmd(int slotNum, QByteArray power){
     QByteArray baseCmd = "CH#:PCAL1=\n";
-    insertSlotNum(baseCmd, slotNum);
-    appendParamToCmdNoSpace(baseCmd, power);
+    baseCmd = insertSlotNum(baseCmd, slotNum);
+    baseCmd = appendParamToCmdNoSpace(baseCmd, power);
 
     emit signalSendCmdNoRsp(theInstrLoc, baseCmd);
 }
 
 // CH#PCAL2=
-void EXFO_OSICS_T100::setSecondCalibrationPowerCmd(int slotNum, QByteArray &power){
+void EXFO_OSICS_T100::setSecondCalibrationPowerCmd(int slotNum, QByteArray power){
     QByteArray baseCmd = "CH#PCAL2=\n";
-    insertSlotNum(baseCmd, slotNum);
-    appendParamToCmdNoSpace(baseCmd, power);
+    baseCmd = insertSlotNum(baseCmd, slotNum);
+    baseCmd = appendParamToCmdNoSpace(baseCmd, power);
 
     emit signalSendCmdNoRsp(theInstrLoc, baseCmd);
 }
 
 // CH#:PCAL1?
-void EXFO_OSICS_T100::firstCalibrationPowerQuery(int slotNum, QByteArray &response){
+QByteArray EXFO_OSICS_T100::firstCalibrationPowerQuery(int slotNum){
     QByteArray baseCmd = "CH#:PCAL1?\n";
-    insertSlotNum(baseCmd, slotNum);
-    qDebug() << "emitting signal for: " << theInstrLoc;
+    baseCmd = insertSlotNum(baseCmd, slotNum);
+
+    QByteArray response = "";
     emit signalSendCmdRsp(theInstrLoc, baseCmd, &response);
+    return response;
 }
 
 // CH#:PCAL2?
-void EXFO_OSICS_T100::secondCalibrationPowerQuery(int slotNum, QByteArray &response){
+QByteArray EXFO_OSICS_T100::secondCalibrationPowerQuery(int slotNum){
     QByteArray baseCmd = "CH#:PCAL2?\n";
-    insertSlotNum(baseCmd, slotNum);
-
+    baseCmd = insertSlotNum(baseCmd, slotNum);
+    QByteArray response = "";
     emit signalSendCmdRsp(theInstrLoc, baseCmd, &response);
+    return response;
 }
 
 // ********* Module Parameter-Monitoring Commands *********
 
 // CH#:AOUT
-void EXFO_OSICS_T100::assignOutBNCPortToSignalCmd(int slotNum, QByteArray &signalType){
+void EXFO_OSICS_T100::assignOutBNCPortToSignalCmd(int slotNum, QByteArray signalType){
     QByteArray baseCmd = "CH#:AOUT\n";
-    insertSlotNum(baseCmd, slotNum);
-    appendParamToCmdWithSpace(baseCmd, signalType);
+    baseCmd = insertSlotNum(baseCmd, slotNum);
+    baseCmd = appendParamToCmdWithSpace(baseCmd, signalType);
 
     emit signalSendCmdNoRsp(theInstrLoc, baseCmd);
 }
 
 // CH#:AOUT?
-void EXFO_OSICS_T100::outBNCPortSignalMonitoringQuery(int slotNum, QByteArray &response){
+QByteArray EXFO_OSICS_T100::outBNCPortSignalMonitoringQuery(int slotNum){
     QByteArray baseCmd = "CH#:AOUT?\n";
-    insertSlotNum(baseCmd, slotNum);
-
+    baseCmd = insertSlotNum(baseCmd, slotNum);
+    QByteArray response = "";
     emit signalSendCmdRsp(theInstrLoc, baseCmd, &response);
+    return response;
 }
 
 
@@ -220,11 +228,8 @@ void EXFO_OSICS_T100::updateConfig(QSettings &configSettings){
 
 void EXFO_OSICS_T100::updatePowerSettings(QSettings &configSettings){
 
-    QByteArray power;
-    QByteArray laserState;
-
-    outputPowerModuleQuery(slotNum, power);
-    laserStateModuleQuery(slotNum, laserState);
+    QByteArray power = outputPowerModuleQuery(slotNum);
+    QByteArray laserState = laserStateModuleQuery(slotNum);
 
     // parse returned value
     power = power.split(':')[1].trimmed();
@@ -242,9 +247,7 @@ void EXFO_OSICS_T100::updatePowerSettings(QSettings &configSettings){
 }
 
 void EXFO_OSICS_T100::updateWavelengthSettings(QSettings &configSettings){
-    QByteArray wavelength;
-
-    refWavelengthModuleQuery(slotNum, wavelength);
+    QByteArray wavelength = refWavelengthModuleQuery(slotNum);
 
     // parse returned strings
     wavelength = wavelength.split('=')[1];
@@ -258,9 +261,7 @@ void EXFO_OSICS_T100::updateWavelengthSettings(QSettings &configSettings){
 }
 
 void EXFO_OSICS_T100::updateFrequencySettings(QSettings &configSettings){
-    QByteArray frequency;
-
-    frequencyModuleQuery(slotNum, frequency);
+    QByteArray frequency = frequencyModuleQuery(slotNum);
 
     // get min/max frequencies by converting min/max wavelengths
     // min frequency from max wavelength and vice versa

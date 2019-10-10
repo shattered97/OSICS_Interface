@@ -18,7 +18,7 @@ public:
      * @param mode Operating mode - SWT (Switch mode) | ECL (Full-band mode)
      * @return true if command was successful
      */
-    void setAPCModuleOperatingMode(int slotNum, QByteArray &mode);
+    void setAPCModuleOperatingMode(int slotNum, QByteArray mode);
 
     /**
      * @brief getAPCModuleOperatinGMode Returns the operating mode of the SWT-APC module
@@ -27,7 +27,7 @@ public:
      * @param response Response from instrument - SWT (Switch mode) | ECL (Full-band mode)
      * @return true if command was successful
      */
-    void getAPCModuleOperatingMode(int slotNum, QByteArray &response);
+    QByteArray getAPCModuleOperatingMode(int slotNum);
 
     /**
      * @brief autoDetectT100Modules Automatically detects connected T100 modules (only available in Full-band mode)
@@ -44,7 +44,7 @@ public:
      * @param channelNum Channel number to activate in the range 1-4
      * @return true if command was successful
      */
-    void selectChannelForSignalAPC(int slotNum, QByteArray &channelNum);
+    void selectChannelForSignalAPC(int slotNum, QByteArray channelNum);
 
     /**
      * @brief getChannelForSignalAPC Returns the active channel through which the signal is directed
@@ -53,7 +53,7 @@ public:
      * @param response Active channel number 1-4
      * @return true if command was successful
      */
-    void getChannelForSignalAPC(int slotNum, QByteArray &response);
+    QByteArray getChannelForSignalAPC(int slotNum);
 
 
     // ********************************** SWT Commands *************************************
@@ -81,7 +81,7 @@ public:
      * @param response Response from instrument - TRUE (shutter is shut) | FALSE (shutter is open)
      * @return true if command was successful
      */
-    void getSingleShutterState(int slotNum, QByteArray &response);
+    QByteArray getSingleShutterState(int slotNum);
 
     /**
      * @brief openCloseShutters Opens or closes A-B and/or 1-2 shutters on the SWT 2x(1x1)
@@ -91,7 +91,7 @@ public:
      * @param shutter12 Output mode of the 1-2 shutter - 0 (closes shutter) | 1 (opens shutter)
      * @return true if command was successful
      */
-    void openCloseShutters(int slotNum, QByteArray &shutterAB, QByteArray &shutter12);
+    void openCloseShutters(int slotNum, QByteArray shutterAB, QByteArray shutter12);
 
     /**
      * @brief getMultipleShutterState Returns the output power mode of the A-B and 1-2 shutters on SWT 2x(1x1)
@@ -100,7 +100,7 @@ public:
      * @param response Response from instrument - Output format: "CH#:SHUTMODE 0|1 0|1"
      * @return true if command was successful
      */
-    void getMultipleShutterState(int slotNum, QByteArray &response);
+    QByteArray getMultipleShutterState(int slotNum);
 
     /**
      * @brief setSwitchModeBar Sets the switch output mode to Bar (A linked to 1, B liked to 2)
@@ -125,7 +125,7 @@ public:
      * @param response Response from instrument - TRUE (switch set to Bar) | FALSE (switch set to cross)
      * @return true if command was successful
      */
-    void getSwitchMode(int slotNum, QByteArray &response);
+    QByteArray getSwitchMode(int slotNum);
 
     /**
      * @brief selectSignalChannel Selects the channel through which the signal is directed (SWT 1x2 and SWT 1x4)
@@ -134,7 +134,7 @@ public:
      * @param channel Channel number (1-2 or 1-4 depending on module)
      * @return true if command was successful
      */
-    void selectSignalChannel(int slotNum, QByteArray &channel);
+    void selectSignalChannel(int slotNum, QByteArray channel);
 
     /**
      * @brief getSignalChannel Returns the active channel through which the signal is directed (SWT 1x2, SWT 1x4)
@@ -143,7 +143,7 @@ public:
      * @param response Response from instrument - channel number (1-4)
      * @return true if command was successful
      */
-    void getSignalChannel(int slotNum, QByteArray &response);
+    QByteArray getSignalChannel(int slotNum);
 
 // *********** Functions for Applying/Updating Config Settings **********
 

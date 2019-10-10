@@ -1,4 +1,5 @@
 #include "KeysightPowerMeter.h"
+#include <QMetaObject>
 Q_DECLARE_METATYPE(QList<int>)
 KeysightPowerMeter::KeysightPowerMeter(QByteArray theIdentity, QByteArray theInstrLoc) : PowerMeter(theIdentity, theInstrLoc)
 {
@@ -10,12 +11,13 @@ KeysightPowerMeter::~KeysightPowerMeter()
 {
 }
 
-void KeysightPowerMeter::measurePower(int window, QByteArray &response){
+QByteArray KeysightPowerMeter::measurePower(int window){
 
     QByteArray baseCmd = "read:pow?";
     baseCmd.insert(baseCmd.indexOf(':'),  QByteArray::number(window));
-
+    QByteArray response = "";
     emit signalSendCmdRsp(theInstrLoc, baseCmd, &response);
+    return response;
 }
 
 void KeysightPowerMeter::setPowerUnit(int window, QByteArray unit){
@@ -37,28 +39,32 @@ void KeysightPowerMeter::setPowerUnit(int window, QByteArray unit){
     emit signalSendCmdNoRsp(theInstrLoc, baseCmd);
 }
 
-void KeysightPowerMeter::getPowerUnit(int window, QByteArray &response){
+QByteArray KeysightPowerMeter::getPowerUnit(int window){
     QByteArray baseCmd = "sens:pow:unit?\n";
     baseCmd.insert(baseCmd.indexOf(':'), QByteArray::number(window));
-
+    QByteArray response = "";
     emit signalSendCmdRsp(theInstrLoc, baseCmd, &response);
+    return response;
 }
 
-void KeysightPowerMeter::testCommand(QByteArray cmd, QByteArray &response)
+QByteArray KeysightPowerMeter::testCommand(QByteArray cmd)
 {
+    QByteArray response = "";
     emit signalSendCmdRsp(theInstrLoc, cmd, &response);
+    return response;
 }
 
-void KeysightPowerMeter::queryWavelength(int window, QByteArray &response, QByteArray value){
+QByteArray KeysightPowerMeter::queryWavelength(int window, QByteArray value){
     QByteArray baseCmd = "sens:pow:wav?\n";
     baseCmd.insert(baseCmd.indexOf(':'), QByteArray::number(window));
 
     baseCmd.insert(baseCmd.indexOf('\n'), " " + value);
-
+    QByteArray response = "";
     emit signalSendCmdRsp(theInstrLoc, baseCmd, &response);
+    return response;
 }
 
-void KeysightPowerMeter::setWavelength(int window, QByteArray &value, QByteArray &unit){
+void KeysightPowerMeter::setWavelength(int window, QByteArray value, QByteArray unit){
     QByteArray baseCmd = "sens:pow:wav\n";
     baseCmd.insert(baseCmd.indexOf(':'), QByteArray::number(window));
     baseCmd.insert(baseCmd.indexOf('\n'), " " + value + unit);
@@ -67,24 +73,34 @@ void KeysightPowerMeter::setWavelength(int window, QByteArray &value, QByteArray
 }
 
 
-void KeysightPowerMeter::getAllPowerReadings(QByteArray &response){
+QByteArray KeysightPowerMeter::getAllPowerReadings(){
     QByteArray baseCmd = "read:pow:all?\n";
+    QByteArray response = "";
+    qDebug() << "address of respone in getAllPowerReadings() " << &response;
     emit signalSendCmdRsp(theInstrLoc, baseCmd, &response);
+    while(response == ""){
+        // wait
+    }
+    qDebug() << response;
+    return response;
 }
 
-void KeysightPowerMeter::getAllPowerUnits(QByteArray & response){
+QByteArray KeysightPowerMeter::getAllPowerUnits(){
     QByteArray baseCmd = "sens:pow:unit:all:csv?\n";
-
+    QByteArray response = "";
     emit signalSendCmdRsp(theInstrLoc, baseCmd, &response);
+    return response;
 }
 
 int KeysightPowerMeter::getNumPowerMeterChannels(){
     // use the command to read all power units (response is easy to parse)
     QByteArray baseCmd = "sens:pow:unit:all:csv?\n";
 
-    QByteArray response;
+    QByteArray response = "";
     emit signalSendCmdRsp(theInstrLoc, baseCmd, &response);
-
+    while(response == ""){
+        // wait
+    }
     // Response format: "1,1,1,1,1,1,1,1,\x00\n"
     // Count the number of tokens separated by ',' minus 1 for <END>\n
     int numChannels = response.split(',').size() - 1;
@@ -92,19 +108,16 @@ int KeysightPowerMeter::getNumPowerMeterChannels(){
     return numChannels;
 }
 
-void KeysightPowerMeter::getPowerReadingOnAllChannels(QList<QByteArray> &readings){
+QList<QByteArray> KeysightPowerMeter::getPowerReadingOnAllChannels(){
     qDebug() << "getPowerReadingOnAllChannels()";
-    readings.clear();
 
     // query for raw text block of readings
-    QByteArray rawReadings;
-    getAllPowerReadings(rawReadings);
-
+    QByteArray rawReadings = getAllPowerReadings();
+    qDebug() << rawReadings;
     // format block and convert to list
-    readings = parseBinaryBlockPowerReadings(rawReadings, 4);
+    QList<QByteArray> readings = parseBinaryBlockPowerReadings(rawReadings, 4);
 
-    qDebug() << "readings " << readings;
-
+    return readings;
 }
 
 QList<QByteArray> KeysightPowerMeter::formatPowerUnits(QByteArray rawUnits, int numChannels){
@@ -180,8 +193,7 @@ void KeysightPowerMeter::updateConfig(QSettings &configSettings)
 void KeysightPowerMeter::updatePowerSettings(QSettings &configSettings)
 {
     // query device for power readings
-    QByteArray rawPowerReadings;
-    getAllPowerReadings(rawPowerReadings);
+    QByteArray rawPowerReadings = getAllPowerReadings();
     QList<QByteArray> powerReadings = parseBinaryBlockPowerReadings(rawPowerReadings, 4);
 
     // save power readings to settings
@@ -205,8 +217,7 @@ void KeysightPowerMeter::updateWavelengthSettings(QSettings &configSettings){
     // query for min wavelengths
     QList<QByteArray> minWavelengths;
     for(int i = 1; i <= numSlots; i++){
-        QByteArray wavelength;
-        queryWavelength(i, wavelength, "MIN");
+        QByteArray wavelength = queryWavelength(i, "MIN");
         minWavelengths.append(QByteArray::number(wavelength.toDouble()));
     }
 
@@ -216,8 +227,7 @@ void KeysightPowerMeter::updateWavelengthSettings(QSettings &configSettings){
     // query for max wavelengths
     QList<QByteArray> maxWavelengths;
     for(int i = 1; i <= numSlots; i++){
-        QByteArray wavelength;
-        queryWavelength(i, wavelength, "MAX");
+        QByteArray wavelength = queryWavelength(i, "MAX");
         maxWavelengths.append(QByteArray::number(wavelength.toDouble()));
     }
 

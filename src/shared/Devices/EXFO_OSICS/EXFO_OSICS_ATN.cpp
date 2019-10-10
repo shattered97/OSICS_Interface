@@ -6,53 +6,61 @@ EXFO_OSICS_ATN::EXFO_OSICS_ATN(QByteArray theIdentity, QByteArray theInstrLoc) :
     this->theInstrLoc = theInstrLoc;
 }
 
-void EXFO_OSICS_ATN::setModuleAttenuationCmd(int slotNum, QByteArray &attenuation){
+void EXFO_OSICS_ATN::setModuleAttenuationCmd(int slotNum, QByteArray attenuation){
     // Command: "CH#:ATN\n"
     // Params: 0 < slotnum <= 8
     // Response: None
      QByteArray baseCmd = "CH#:ATN\n";
-     insertSlotNum(baseCmd, slotNum);
-     appendParamToCmdWithSpace(baseCmd, attenuation);
+     baseCmd = insertSlotNum(baseCmd, slotNum);
+     baseCmd = appendParamToCmdWithSpace(baseCmd, attenuation);
 
      emit signalSendCmdNoRsp(theInstrLoc, baseCmd);
 }
 
-void EXFO_OSICS_ATN::moduleAttenuationQuery(int slotNum, QByteArray &response){
+QByteArray EXFO_OSICS_ATN::moduleAttenuationQuery(int slotNum){
     // Command: "CH#:ATN?\n";
     // Params: 0 < slotnum <= 8
     // Response: CH#:ATN=xx.xx
 
     QByteArray baseCmd = "CH#:ATN?\n";
 
-     insertSlotNum(baseCmd, slotNum);
-
+     baseCmd = insertSlotNum(baseCmd, slotNum);
+     QByteArray response = "";
      emit signalSendCmdRsp(theInstrLoc, baseCmd, &response);
+
+     return response;
 }
 
-void EXFO_OSICS_ATN::moduleAttenuationMinMaxQuery(int slotNum, QByteArray wavelengthNum, QByteArray &response){
+QByteArray EXFO_OSICS_ATN::moduleAttenuationMinMaxQuery(int slotNum, QByteArray wavelengthNum){
     // Command: "CH#:ATN_MIN_MAX?\n"
     // Params: 0 < slotnum <= 8
     //         wavelengthNum = 1 (first wavelength of factory calibration) OR wavelengthNum = 2 (second wl of factory calibration)
     // Response: CH#:ATN_MIN_MAX=+<minimum value>+<maximum value>
 
     QByteArray baseCmd = "CH#:ATN_MIN_MAX?\n";
-    insertSlotNum(baseCmd, slotNum);
-    appendParamToCmdWithSpace(baseCmd, wavelengthNum);
+    baseCmd = insertSlotNum(baseCmd, slotNum);
+    baseCmd = appendParamToCmdWithSpace(baseCmd, wavelengthNum);
 
+    QByteArray response = "";
     emit signalSendCmdRsp(theInstrLoc, baseCmd, &response);
+
+    return response;
 }
 
-void EXFO_OSICS_ATN::moduleWavelengthNMQuery(int slotNum, QByteArray wavelengthNum, QByteArray &response){
+QByteArray EXFO_OSICS_ATN::moduleWavelengthNMQuery(int slotNum, QByteArray wavelengthNum){
     // Command: "CH#:LREF?\n"
     // Params: 0 < slotnum <= 8
     //         wavelengthNum = 1 (first wavelength of factory calibration) OR wavelengthNum = 2 (second wl of factory calibration)
     // Response: CH#:L(1|2)=<wavelength value>
 
     QByteArray baseCmd = "CH#:LREF?\n";
-    insertSlotNum(baseCmd, slotNum);
-    appendParamToCmdWithSpace(baseCmd, wavelengthNum);
+    baseCmd = insertSlotNum(baseCmd, slotNum);
+    baseCmd = appendParamToCmdWithSpace(baseCmd, wavelengthNum);
 
+    QByteArray response = "";
     emit signalSendCmdRsp(theInstrLoc, baseCmd, &response);
+
+    return response;
 }
 
 void EXFO_OSICS_ATN::moduleAttenuationOffsetCmd(int slotNum, QByteArray wavelengthNum, QByteArray offsetVal){
@@ -63,24 +71,27 @@ void EXFO_OSICS_ATN::moduleAttenuationOffsetCmd(int slotNum, QByteArray waveleng
     // Response: None
 
     QByteArray baseCmd = "CH#:OFFSET\n";
-    insertSlotNum(baseCmd, slotNum);
-    appendParamToCmdWithSpace(baseCmd, wavelengthNum);
-    appendParamToCmdWithSpace(baseCmd, offsetVal);
+    baseCmd = insertSlotNum(baseCmd, slotNum);
+    baseCmd = appendParamToCmdWithSpace(baseCmd, wavelengthNum);
+    baseCmd = appendParamToCmdWithSpace(baseCmd, offsetVal);
 
     emit signalSendCmdNoRsp(theInstrLoc, baseCmd);
 }
 
-void EXFO_OSICS_ATN::moduleAttenuationOffsetQuery(int slotNum, QByteArray wavelengthNum, QByteArray &response){
+QByteArray EXFO_OSICS_ATN::moduleAttenuationOffsetQuery(int slotNum, QByteArray wavelengthNum){
     // Command: "CH#:OFFSET\n"
     // Params: 0 < slotnum <= 8
     //         wavelengthNum = 1 (first wavelength of factory calibration) OR wavelengthNum = 2 (second wl of factory calibration)
     // Response: CH#:OFFSET(1:2)=+xx.xx
 
     QByteArray baseCmd = "CH#:OFFSET?\n";
-     insertSlotNum(baseCmd, slotNum);
-     appendParamToCmdWithSpace(baseCmd, wavelengthNum);
+     baseCmd = insertSlotNum(baseCmd, slotNum);
+     baseCmd = appendParamToCmdWithSpace(baseCmd, wavelengthNum);
 
+     QByteArray response = "";
      emit signalSendCmdRsp(theInstrLoc, baseCmd, &response);
+
+     return response;
 }
 
 void EXFO_OSICS_ATN::setSlotNum(int slotNum){
@@ -158,20 +169,17 @@ void EXFO_OSICS_ATN::updateAttenuationSettings(QSettings &configSettings)
 {
     qDebug() << "updateAttenuationSettings()";
     // get attenuation value / parse returned value
-    QByteArray attenuation;
-    moduleAttenuationQuery(slotNum, attenuation);
+    QByteArray attenuation = moduleAttenuationQuery(slotNum);
     attenuation = attenuation.split('=')[1];
     configSettings.setValue(EXFO_OSICS_ATN_ATTENUATION, attenuation);
 
     // get reference wavelength number (1 | 2)
-    QByteArray refWavelengthNumber;
-    refWavelengthModuleQuery(slotNum, refWavelengthNumber);
+    QByteArray refWavelengthNumber = refWavelengthModuleQuery(slotNum);
     refWavelengthNumber = refWavelengthNumber.split('=')[1];
     configSettings.setValue(EXFO_OSICS_ATN_REF_WAV_NUMBER, refWavelengthNumber);
 
     // get min/max attenuation for wavelength number 1
-    QByteArray minAndMaxAtten1;
-    moduleAttenuationMinMaxQuery(slotNum, "1", minAndMaxAtten1);
+    QByteArray minAndMaxAtten1 = moduleAttenuationMinMaxQuery(slotNum, "1");
     minAndMaxAtten1 = minAndMaxAtten1.split('=')[1];
     QByteArray minAttenuation1;
     QByteArray maxAttenuation1;
@@ -181,8 +189,7 @@ void EXFO_OSICS_ATN::updateAttenuationSettings(QSettings &configSettings)
     configSettings.setValue(EXFO_OSICS_ATN_MAX_ATTENUATION_1, maxAttenuation1);
 
     // get min/max attenuation for wavelength number 2
-    QByteArray minAndMaxAtten2;
-    moduleAttenuationMinMaxQuery(slotNum, "2", minAndMaxAtten2);
+    QByteArray minAndMaxAtten2 = moduleAttenuationMinMaxQuery(slotNum, "2");
     minAndMaxAtten2 = minAndMaxAtten2.split('=')[1];
     QByteArray minAttenuation2;
     QByteArray maxAttenuation2;
@@ -195,14 +202,12 @@ void EXFO_OSICS_ATN::updateOffsetSettings(QSettings &configSettings)
 {
     qDebug() << "updateOffsetSettings()";
     // get offset for wavelength number 1
-    QByteArray firstOffset;
-    moduleAttenuationOffsetQuery(slotNum, "1", firstOffset);
+    QByteArray firstOffset = moduleAttenuationOffsetQuery(slotNum, "1");
     firstOffset = firstOffset.split('=')[1];
     configSettings.setValue(EXFO_OSICS_ATN_OFFSET_1, firstOffset);
 
     // get offset for wavelength number 2
-    QByteArray secondOffset;
-    moduleAttenuationOffsetQuery(slotNum, "2", secondOffset);
+    QByteArray secondOffset = moduleAttenuationOffsetQuery(slotNum, "2");
     secondOffset = secondOffset.split('=')[1];
     configSettings.setValue(EXFO_OSICS_ATN_OFFSET_2, secondOffset);
 }
@@ -212,20 +217,17 @@ void EXFO_OSICS_ATN::updateWavelengthSettings(QSettings &configSettings)
     qDebug() << "updateWavelengthSettings()";
 
     // set reference wavelength number
-    QByteArray refWavelength;
-    refWavelengthModuleQuery(slotNum, refWavelength);
+    QByteArray refWavelength = refWavelengthModuleQuery(slotNum);
     refWavelength = refWavelength.split('=')[1];
     configSettings.setValue(EXFO_OSICS_ATN_REF_WAV_NUMBER, refWavelength);
 
     // get reference wavelength for wavelength number 1
-    QByteArray firstWavelength;
-    moduleWavelengthNMQuery(slotNum, "1", firstWavelength);
+    QByteArray firstWavelength = moduleWavelengthNMQuery(slotNum, "1");
     firstWavelength = firstWavelength.split('=')[1];
     configSettings.setValue(EXFO_OSICS_ATN_REF_WAVELENGTH_1, firstWavelength);
 
     // get reference wavelength for wavelength number 2
-    QByteArray secondWavelength;
-    moduleWavelengthNMQuery(slotNum, "2", secondWavelength);
+    QByteArray secondWavelength = moduleWavelengthNMQuery(slotNum, "2");
     secondWavelength = secondWavelength.split('=')[1];
     configSettings.setValue(EXFO_OSICS_ATN_REF_WAVELENGTH_2, secondWavelength);
 }

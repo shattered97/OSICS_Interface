@@ -11,17 +11,17 @@ class PowerMeter : public DefaultInstrument
 public:
     PowerMeter(QByteArray theIdentity, QByteArray theInstrLoc);
 
-    virtual void measurePower(int window, QByteArray &response) = 0;
+    virtual QByteArray measurePower(int window) = 0;
     virtual void setPowerUnit(int window, QByteArray unit) = 0;
-    virtual void getPowerUnit(int window, QByteArray &response) = 0;
-    virtual void getAllPowerUnits(QByteArray & response) = 0;
-    virtual void queryWavelength(int window, QByteArray &response, QByteArray value="") = 0;
-    virtual void setWavelength(int window, QByteArray &value, QByteArray &unit) = 0;
-    virtual void testCommand(QByteArray cmd, QByteArray &response) = 0;
+    virtual QByteArray getPowerUnit(int window) = 0;
+    virtual QByteArray getAllPowerUnits() = 0;
+    virtual QByteArray queryWavelength(int window, QByteArray value="") = 0;
+    virtual void setWavelength(int window, QByteArray value, QByteArray unit) = 0;
+    virtual QByteArray testCommand(QByteArray cmd) = 0;
     virtual int getNumPowerMeterChannels() = 0;
     virtual QList<QByteArray> formatPowerUnits(QByteArray rawUnits, int numChannels) = 0;
     virtual QList<QByteArray> parseBinaryBlockPowerReadings(QByteArray binaryBlock, int numBytesPerValue) = 0;
-    virtual void getPowerReadingOnAllChannels(QList<QByteArray> &readings) = 0;
+    virtual QList<QByteArray> getPowerReadingOnAllChannels() = 0;
     virtual void updateConfig(QSettings &) = 0;
     virtual void applyConfigSettings(QSettings &) = 0;
 

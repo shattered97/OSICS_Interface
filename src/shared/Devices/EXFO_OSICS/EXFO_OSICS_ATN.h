@@ -16,7 +16,7 @@ public:
      * @param attenuation Total attenuation value to set
      * @return true if command was successful
      */
-    void setModuleAttenuationCmd(int slotNum, QByteArray &attenuation);
+    void setModuleAttenuationCmd(int slotNum, QByteArray attenuation);
 
     /**
      * @brief moduleAttenuationQuery Returns the value of the attenuation in dB.
@@ -25,7 +25,7 @@ public:
      * @param response Response from the instrument - attenuation value in dB
      * @return true if command was successful
      */
-    void moduleAttenuationQuery(int slotNum, QByteArray &response);
+    QByteArray moduleAttenuationQuery(int slotNum);
 
     /**
      * @brief moduleAttenuationMinMaxQuery Returns the min and max attenuation in dB for the given wavelength number.
@@ -35,7 +35,7 @@ public:
      * @param response Response from the instrument - min and max attenuation
      * @return true if command was successful
      */
-    void moduleAttenuationMinMaxQuery(int slotNum, QByteArray wavelengthNum, QByteArray &response);
+    QByteArray moduleAttenuationMinMaxQuery(int slotNum, QByteArray wavelengthNum);
 
     /**
      * @brief moduleWavelengthNMQuery Returns the wavelength in nm for the given wavelength number
@@ -45,7 +45,7 @@ public:
      * @param response Response from the instrument - wavelength value in nm for specified wavelength number
      * @return true if command was successful
      */
-    void moduleWavelengthNMQuery(int slotNum, QByteArray wavelengthNum, QByteArray &response);
+    QByteArray moduleWavelengthNMQuery(int slotNum, QByteArray wavelengthNum);
 
     /**
      * @brief moduleAttenuationOffsetCmd Sets the attenuation offset for the given wavelength number.
@@ -65,7 +65,7 @@ public:
      * @param response Response from the instrument - the offset value in dB
      * @return true if command was successful
      */
-    void moduleAttenuationOffsetQuery(int slotNum, QByteArray wavelengthNum, QByteArray &response);
+    QByteArray moduleAttenuationOffsetQuery(int slotNum, QByteArray wavelengthNum);
 
 
 // *********** Functions for Applying/Updating Config Settings **********

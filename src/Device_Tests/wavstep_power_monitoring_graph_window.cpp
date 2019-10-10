@@ -13,10 +13,13 @@ WavStep_Power_Monitoring_Graph_Window::WavStep_Power_Monitoring_Graph_Window(QLi
     ui->setupUi(this);
     this->seriesNames = seriesNames;
 
+
 }
 
 WavStep_Power_Monitoring_Graph_Window::~WavStep_Power_Monitoring_Graph_Window()
 {
+    // signal to the test class --> power power meter polling worker to emit finished()
+    emit signalStopWorkerThreads();
     delete ui;
 }
 
@@ -37,6 +40,9 @@ void WavStep_Power_Monitoring_Graph_Window::slotGraphPowerMeterReadings(WavStepP
 
         chart->addSeries(series);
         chart->createDefaultAxes();
+        chart->axes(Qt::Horizontal).first()->setTitleText("Test Runtime (s)");
+        chart->axes(Qt::Vertical).first()->setTitleText("Power Reading (dBm)");
+        chart->legend()->setAlignment(Qt::AlignRight);
         chart->legend()->setVisible(true);
         QtCharts::QChartView *chartView = new QtCharts::QChartView(chart);
         this->setCentralWidget(chartView);

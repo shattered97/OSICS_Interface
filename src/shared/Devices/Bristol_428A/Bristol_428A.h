@@ -11,8 +11,8 @@ public:
 
     void setMediumVaccum();
     void setMediumAir();
-    void measureWavelengthSingle(QByteArray &wavelength);
-    void measurePowerSingle(QByteArray &power);
+    QByteArray measureWavelengthSingle();
+    QByteArray measurePowerSingle();
 
 private:
     QByteArray theIdentity;                 // identity of instrument (manufacturer, model num, etc.)

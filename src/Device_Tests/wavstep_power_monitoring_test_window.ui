@@ -91,27 +91,6 @@
      </property>
     </column>
    </widget>
-   <widget class="QLineEdit" name="graphLocDisplay">
-    <property name="enabled">
-     <bool>false</bool>
-    </property>
-    <property name="geometry">
-     <rect>
-      <x>210</x>
-      <y>630</y>
-      <width>501</width>
-      <height>41</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>12</pointsize>
-     </font>
-    </property>
-    <property name="text">
-     <string/>
-    </property>
-   </widget>
    <widget class="QPushButton" name="beginTestPB">
     <property name="enabled">
      <bool>true</bool>
@@ -134,24 +113,6 @@
     </property>
     <property name="checkable">
      <bool>false</bool>
-    </property>
-   </widget>
-   <widget class="QLabel" name="graphLocLabel">
-    <property name="geometry">
-     <rect>
-      <x>20</x>
-      <y>630</y>
-      <width>261</width>
-      <height>41</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>12</pointsize>
-     </font>
-    </property>
-    <property name="text">
-     <string>Location of Graph Image:</string>
     </property>
    </widget>
    <widget class="QLabel" name="csvLocLabel">
@@ -784,30 +745,6 @@
      <bool>false</bool>
     </property>
    </widget>
-   <widget class="QPushButton" name="selectGraphLocButton">
-    <property name="enabled">
-     <bool>true</bool>
-    </property>
-    <property name="geometry">
-     <rect>
-      <x>710</x>
-      <y>630</y>
-      <width>101</width>
-      <height>41</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>14</pointsize>
-     </font>
-    </property>
-    <property name="text">
-     <string>Select</string>
-    </property>
-    <property name="checkable">
-     <bool>false</bool>
-    </property>
-   </widget>
    <widget class="QPushButton" name="selectCsvLocButton">
     <property name="enabled">
      <bool>true</bool>
@@ -832,19 +769,57 @@
      <bool>false</bool>
     </property>
    </widget>
+   <widget class="QLineEdit" name="pmReadingRefreshRateEdit">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>210</x>
+      <y>620</y>
+      <width>91</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>12</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>1</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="pmRefreshLabel">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>620</y>
+      <width>211</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>12</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>Graph Refresh Speed (s)</string>
+    </property>
+   </widget>
    <zorder>groupBox</zorder>
    <zorder>testIDLabel</zorder>
    <zorder>powerMeterTable</zorder>
-   <zorder>graphLocDisplay</zorder>
    <zorder>beginTestPB</zorder>
-   <zorder>graphLocLabel</zorder>
    <zorder>csvLocLabel</zorder>
    <zorder>csvLocDisplay</zorder>
    <zorder>groupBox_2</zorder>
    <zorder>groupBox_3</zorder>
    <zorder>openGraphWindowButton</zorder>
-   <zorder>selectGraphLocButton</zorder>
    <zorder>selectCsvLocButton</zorder>
+   <zorder>pmReadingRefreshRateEdit</zorder>
+   <zorder>pmRefreshLabel</zorder>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">

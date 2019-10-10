@@ -7,28 +7,29 @@ EXFO_OSICS_SWT::EXFO_OSICS_SWT(QByteArray theIdentity, QByteArray theInstrLoc) :
     this->theInstrLoc = theInstrLoc;
 }
 
-void EXFO_OSICS_SWT::setAPCModuleOperatingMode(int slotNum, QByteArray &mode){
+void EXFO_OSICS_SWT::setAPCModuleOperatingMode(int slotNum, QByteArray mode){
     // Command: "CH#:MODE\n"
     // Params: 0 < slotnum <= 8
     //         mode = SWT (module set to Switch mode) OR mode = ECL (module set to Full-band mode)
     // Response: None
 
     QByteArray baseCmd = "CH#:MODE\n";
-    insertSlotNum(baseCmd, slotNum);
-    appendParamToCmdWithSpace(baseCmd, mode);
+    baseCmd = insertSlotNum(baseCmd, slotNum);
+    baseCmd = appendParamToCmdWithSpace(baseCmd, mode);
 
     emit signalSendCmdNoRsp(theInstrLoc, baseCmd);
 }
 
-void  EXFO_OSICS_SWT::getAPCModuleOperatingMode(int slotNum, QByteArray &response){
+QByteArray EXFO_OSICS_SWT::getAPCModuleOperatingMode(int slotNum){
     // Command: "CH#:MODE?\n"
     // Params: 0 < slotnum <= 8
     // Response: CH#:MODE=SWT (module is in Switch mode) OR CH#:MODE=ECL (module is in Full-band mode)
 
     QByteArray baseCmd = "CH#:MODE?\n";
-    insertSlotNum(baseCmd, slotNum);
-
+    baseCmd = insertSlotNum(baseCmd, slotNum);
+    QByteArray response = "";
     emit signalSendCmdRsp(theInstrLoc, baseCmd, &response);
+    return response;
 }
 
 void  EXFO_OSICS_SWT::autoDetectT100Modules(int slotNum){
@@ -37,33 +38,34 @@ void  EXFO_OSICS_SWT::autoDetectT100Modules(int slotNum){
     // Response: None
 
     QByteArray baseCmd = "CH#:ACFG\n";
-    insertSlotNum(baseCmd, slotNum);
+    baseCmd = insertSlotNum(baseCmd, slotNum);
 
     emit signalSendCmdNoRsp(theInstrLoc, baseCmd);
 }
 
-void  EXFO_OSICS_SWT::selectChannelForSignalAPC(int slotNum, QByteArray &channelNum){
+void  EXFO_OSICS_SWT::selectChannelForSignalAPC(int slotNum, QByteArray channelNum){
     // Command: "CH#:CLOSE=\n"
     // Params: 0 < slotnum <= 8
     //         1 <= channelNum <= 4 (channel number to activate)
     // Response: None
 
     QByteArray baseCmd = "CH#:CLOSE=\n";
-    insertSlotNum(baseCmd, slotNum);
-    appendParamToCmdNoSpace(baseCmd, channelNum);
+    baseCmd = insertSlotNum(baseCmd, slotNum);
+    baseCmd = appendParamToCmdNoSpace(baseCmd, channelNum);
 
     emit signalSendCmdNoRsp(theInstrLoc, baseCmd);
 }
 
-void  EXFO_OSICS_SWT::getChannelForSignalAPC(int slotNum, QByteArray &response){
+QByteArray  EXFO_OSICS_SWT::getChannelForSignalAPC(int slotNum){
     // Command: "CH#:CLOSE?\n"
     // Params: 0 < slotnum <= 8
     // Response: CH#:CLOSE=<channel number>
 
     QByteArray baseCmd = "CH#:CLOSE?\n";
-    insertSlotNum(baseCmd, slotNum);
-
+    baseCmd = insertSlotNum(baseCmd, slotNum);
+    QByteArray response = "";
     emit signalSendCmdRsp(theInstrLoc, baseCmd, &response);
+    return response;
 }
 
 void  EXFO_OSICS_SWT::shutSingleShutter(int slotNum){
@@ -72,7 +74,7 @@ void  EXFO_OSICS_SWT::shutSingleShutter(int slotNum){
     // Response: None
 
     QByteArray baseCmd = "CH#:SHUT\n";
-    insertSlotNum(baseCmd, slotNum);
+    baseCmd = insertSlotNum(baseCmd, slotNum);
 
     emit signalSendCmdNoRsp(theInstrLoc, baseCmd);
 }
@@ -83,23 +85,24 @@ void  EXFO_OSICS_SWT::openSingleShutter(int slotNum){
     // Response: None
 
     QByteArray baseCmd = "CH#:OPEN\n";
-    insertSlotNum(baseCmd, slotNum);
+    baseCmd = insertSlotNum(baseCmd, slotNum);
 
     emit signalSendCmdNoRsp(theInstrLoc, baseCmd);
 }
 
-void  EXFO_OSICS_SWT::getSingleShutterState(int slotNum, QByteArray &response){
+QByteArray  EXFO_OSICS_SWT::getSingleShutterState(int slotNum){
     // Command: "CH#:SHUT?\n"
     // Params: 0 < slotnum <= 8
     // Response: CH#:SHUT=TRUE OR CH#:SHUT=FALSE
 
     QByteArray baseCmd = "CH#:SHUT?\n";
-    insertSlotNum(baseCmd, slotNum);
-
+    baseCmd = insertSlotNum(baseCmd, slotNum);
+    QByteArray response = "";
     emit signalSendCmdRsp(theInstrLoc, baseCmd, &response);
+    return response;
 }
 
-void  EXFO_OSICS_SWT::openCloseShutters(int slotNum, QByteArray &shutterAB, QByteArray &shutter12){
+void  EXFO_OSICS_SWT::openCloseShutters(int slotNum, QByteArray shutterAB, QByteArray shutter12){
     // Command: "CH#:SHUTMODE\n"
     // Params: 0 < slotnum <= 8
     //         shutterAB = 0 (closes the A-B shutter) OR shutterAB = 1 (opens the A-B shutter)
@@ -107,22 +110,23 @@ void  EXFO_OSICS_SWT::openCloseShutters(int slotNum, QByteArray &shutterAB, QByt
     // Response: None
 
     QByteArray baseCmd = "CH#:SHUTMODE\n";
-    insertSlotNum(baseCmd, slotNum);
-    appendParamToCmdWithSpace(baseCmd, shutterAB);
-    appendParamToCmdWithSpace(baseCmd, shutter12);
+    baseCmd = insertSlotNum(baseCmd, slotNum);
+    baseCmd = appendParamToCmdWithSpace(baseCmd, shutterAB);
+    baseCmd = appendParamToCmdWithSpace(baseCmd, shutter12);
 
     emit signalSendCmdNoRsp(theInstrLoc, baseCmd);
 }
 
-void  EXFO_OSICS_SWT::getMultipleShutterState(int slotNum, QByteArray &response){
+QByteArray  EXFO_OSICS_SWT::getMultipleShutterState(int slotNum){
     // Command: "CH#:SHUTMODE?\n"
     // Params: 0 < slotnum <= 8
     // Response: CH#:SHUTMODE 0|1 0|1
 
     QByteArray baseCmd = "CH#:SHUTMODE?\n";
-    insertSlotNum(baseCmd, slotNum);
-
+    baseCmd = insertSlotNum(baseCmd, slotNum);
+    QByteArray response = "";
     emit signalSendCmdRsp(theInstrLoc, baseCmd, &response);
+    return response;
 }
 
 void  EXFO_OSICS_SWT::setSwitchModeBar(int slotNum){
@@ -131,7 +135,7 @@ void  EXFO_OSICS_SWT::setSwitchModeBar(int slotNum){
     // Response: None
 
     QByteArray baseCmd = "CH#:BAR\n";
-    insertSlotNum(baseCmd, slotNum);
+    baseCmd = insertSlotNum(baseCmd, slotNum);
 
     emit signalSendCmdNoRsp(theInstrLoc, baseCmd);
 }
@@ -142,44 +146,46 @@ void  EXFO_OSICS_SWT::setSwitchModeCross(int slotNum){
     // Response: None
 
     QByteArray baseCmd = "CH#:CROSS\n";
-    insertSlotNum(baseCmd, slotNum);
+    baseCmd = insertSlotNum(baseCmd, slotNum);
 
     emit signalSendCmdNoRsp(theInstrLoc, baseCmd);
 }
 
-void  EXFO_OSICS_SWT::getSwitchMode(int slotNum, QByteArray &response){
+QByteArray  EXFO_OSICS_SWT::getSwitchMode(int slotNum){
     // Command: "CH#:BAR?\n"
     // Params: 0 < slotnum <= 8
     // Response: CH#:BAR=TRUE (switch is set to Bar) OR CH#:BAR=FALSE (switch is set to Cross)
 
     QByteArray baseCmd = "CH#:BAR?\n";
-    insertSlotNum(baseCmd, slotNum);
-
+    baseCmd = insertSlotNum(baseCmd, slotNum);
+    QByteArray response = "";
     emit signalSendCmdRsp(theInstrLoc, baseCmd, &response);
+    return response;
 }
 
-void  EXFO_OSICS_SWT::selectSignalChannel(int slotNum, QByteArray &channel){
+void  EXFO_OSICS_SWT::selectSignalChannel(int slotNum, QByteArray channel){
     // Command: "CH#:CH\n"
     // Params: 0 < slotnum <= 8
     //         1 <= channel <= 2 OR 1 <= channel <= 4 (depends on model)
     // Response: None
 
     QByteArray baseCmd = "CH#:CH\n";
-    insertSlotNum(baseCmd, slotNum);
-    appendParamToCmdWithSpace(baseCmd, channel);
+    baseCmd = insertSlotNum(baseCmd, slotNum);
+    baseCmd = appendParamToCmdWithSpace(baseCmd, channel);
 
     emit signalSendCmdNoRsp(theInstrLoc, baseCmd);
 }
 
-void  EXFO_OSICS_SWT::getSignalChannel(int slotNum, QByteArray &response){
+QByteArray  EXFO_OSICS_SWT::getSignalChannel(int slotNum){
     // Command: "CH#:CH?\n"
     // Params: 0 < slotnum <= 8
     // Response: CH#:CH=<channel number>
 
     QByteArray baseCmd = "CH#:CH?\n";
-    insertSlotNum(baseCmd, slotNum);
-
+    baseCmd = insertSlotNum(baseCmd, slotNum);
+    QByteArray response = "";
     emit signalSendCmdRsp(theInstrLoc, baseCmd, &response);
+    return response;
 }
 
 
@@ -196,8 +202,7 @@ void EXFO_OSICS_SWT::updateConfig(QSettings &configSettings){
     qDebug() << "swt updateConfig() " << theInstrLoc;
 
     // get operating mode and store it
-    QByteArray opMode;
-    getAPCModuleOperatingMode(slotNum, opMode);
+    QByteArray opMode = getAPCModuleOperatingMode(slotNum);
 
     // change opMode to full-band mode to be able to get power/wavelength/frequency values
     QByteArray fullBand = "ECL";
@@ -265,8 +270,7 @@ void EXFO_OSICS_SWT::applyConfigSettings(QSettings &configSettings){
 void EXFO_OSICS_SWT::updateOperatingModeSettings(QSettings &configSettings)
 {
     qDebug() << "updateOperatingModeSettings()";
-    QByteArray operatingMode;
-    getAPCModuleOperatingMode(slotNum, operatingMode);
+    QByteArray operatingMode = getAPCModuleOperatingMode(slotNum);
 
     // parse returned value
     operatingMode = operatingMode.split('=')[1];
@@ -277,8 +281,7 @@ void EXFO_OSICS_SWT::updateOperatingModeSettings(QSettings &configSettings)
 void EXFO_OSICS_SWT::updateActiveChannelSettings(QSettings &configSettings)
 {
     qDebug() << "updateActiveChannelSettings()";
-    QByteArray activeChannel;
-    getChannelForSignalAPC(slotNum, activeChannel);
+    QByteArray activeChannel = getChannelForSignalAPC(slotNum);
 
     // parse returned value
     activeChannel = activeChannel.split('=')[1];
@@ -290,13 +293,11 @@ void EXFO_OSICS_SWT::updatePowerSettings(QSettings &configSettings)
 {
     qDebug() << "updatePowerSettings()";
 
-    QByteArray outputStatus;
-    laserStateModuleQuery(slotNum, outputStatus);
+    QByteArray outputStatus = laserStateModuleQuery(slotNum);
     outputStatus = outputStatus.split(':')[1];
     configSettings.setValue(EXFO_OSICS_SWT_OUTPUT_STATUS, QVariant::fromValue(outputStatus.trimmed().toUpper()));
 
-    QByteArray power;
-    outputPowerModuleQuery(slotNum, power);
+    QByteArray power = outputPowerModuleQuery(slotNum);
 
     if(power.contains("Disabled")){
         power = "DISABLED";
@@ -313,8 +314,7 @@ void EXFO_OSICS_SWT::updatePowerSettings(QSettings &configSettings)
 void EXFO_OSICS_SWT::updateWavelengthSettings(QSettings &configSettings)
 {
     qDebug() << "updateWavelengthSettings()";
-    QByteArray wavelength;
-    refWavelengthModuleQuery(slotNum, wavelength);
+    QByteArray wavelength = refWavelengthModuleQuery(slotNum);
 
     // parse returned value
     qDebug() << wavelength;
@@ -329,8 +329,7 @@ void EXFO_OSICS_SWT::updateWavelengthSettings(QSettings &configSettings)
 void EXFO_OSICS_SWT::updateFrequencySettings(QSettings &configSettings)
 {
     qDebug() << "updateFrequencySettings()";
-    QByteArray frequency;
-    frequencyModuleQuery(slotNum, frequency);
+    QByteArray frequency = frequencyModuleQuery(slotNum);
 
     // if there is no laser input, you can't read the frequency
     if(frequency != "")

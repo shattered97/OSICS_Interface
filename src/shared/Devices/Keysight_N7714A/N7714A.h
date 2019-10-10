@@ -10,31 +10,31 @@ class N7714A : public DefaultInstrument
 public:
     N7714A(QByteArray theIdentity, QByteArray theInstrLoc);
 
-    void queryPowerUnit(int module, QByteArray &response);
+    QByteArray queryPowerUnit(int module);
 
     void execPowerUnit(int module, QByteArray unit="");
 
-    void queryPowerStatus(int module, QByteArray &response);
+    QByteArray queryPowerStatus(int module);
 
     void execPowerOnModule(int module);
 
     void execPowerOffModule(int module);
 
-    void queryPowerLevel(int module, QByteArray &response, QByteArray value="");
+    QByteArray queryPowerLevel(int module, QByteArray value="");
 
     void execPowerLevel(int module, QByteArray value, QByteArray unit="");
 
-    void queryWavelength(int module, QByteArray &response, QByteArray value="");
+    QByteArray queryWavelength(int module, QByteArray value="");
 
     void execWavelength(int module, QByteArray value, QByteArray unit="");
 
-    void queryFrequency(int module, QByteArray &response, QByteArray value="");
+    QByteArray queryFrequency(int module, QByteArray value="");
 
     void execFrequency(int module, QByteArray value, QByteArray unit="");
 
-    void testCommand(QByteArray cmd, QByteArray &response);
+    QByteArray testCommand(QByteArray cmd);
 
-    void queryAutoWavMode(int module, QByteArray &response);
+    QByteArray queryAutoWavMode(int module);
 
     void turnOnAutoWavMode(int module);
 
@@ -42,10 +42,6 @@ public:
 
     void applyConfigSettings(QSettings &configSettings);
 
-
-//signals:
-//    void signalSendCmdRsp(QByteArray instrAddress, QByteArray *command, QByteArray *response);
-//    void signalSendCmdNoRsp(QByteArray instrAddress, QByteArray *command);
 
 private:
     QByteArray theIdentity;                 // identity of instrument (manufacturer, model num, etc.)

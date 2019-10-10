@@ -1,70 +1,70 @@
 #include "wavstep_power_monitoring_test_worker.h"
 
-WavStep_Power_Monitoring_Test_Worker::WavStep_Power_Monitoring_Test_Worker(TestData testData, QMutex *powerMeterLock, QObject *parent) : QObject(parent)
+WavStep_Power_Monitoring_Test_Worker::WavStep_Power_Monitoring_Test_Worker(TestData testData, QObject *parent) : QObject(parent)
 {
     this->testData = testData;
-    this->powerMeterLock = powerMeterLock;
+
 }
 
 void WavStep_Power_Monitoring_Test_Worker::runTest(){
-    qDebug() << "@@@@@@@@@@@@@@@@@@@ in test worker runTest() method";
-//    powerMeterLock->lock();
 
-//    int channels = testData.powerMeter->getNumPowerMeterChannels();
-//    qDebug() <<  "num channels (in worker)?? "<< channels;
+    for(auto testParams : testData.testParamsForT100){
+        executeTestOnT100Module(testParams);
+    }
 
-//    powerMeterLock->unlock();
+    emit finished();
 
-
-    // open switch channel
-    int swtSlotNum = testData.swtModule->getSlotNum();
-
-
-    QByteArray switchChannelToOpen = QByteArray::number(testData.swtChannel);
-    testData.swtModule->selectChannelForSignalAPC(swtSlotNum, switchChannelToOpen);
-    qDebug() << "opened switch channel";
-
-    // try to use rsp command with another resource
-    QByteArray channel;
-    testData.swtModule->getChannelForSignalAPC(swtSlotNum, channel);
-
-
-
-//    double currentWavelength = testData.startWav;
-//    while(currentWavelength <= testData.endWav){
-//        executeTestStep(currentWavelength);
-//        currentWavelength += testData.stepSize;
-//    }
 }
 
-void WavStep_Power_Monitoring_Test_Worker::executeTestStep(double currentWavelength){
+void WavStep_Power_Monitoring_Test_Worker::executeTestOnT100Module(TestParamsForT100 testParams){
+
+    int t100SlotNum = testParams.t100Module->getSlotNum();
+
+    // set initial wavelength on t100
+    QByteArray wavelengthToSet = QByteArray::number(testParams.startWav);
+    testParams.t100Module->setRefWavelengthModuleCmd(t100SlotNum, wavelengthToSet);
+
+    // enable laser output for this t100 module
+    testParams.t100Module->enableModuleLaserCmd(t100SlotNum);
+
+    double currentWavelength = testParams.startWav;
+    while(currentWavelength <= testParams.endWav){
+        executeTestStep(currentWavelength, testParams);
+        currentWavelength += testData.stepSize;
+    }
+
+}
+
+
+void WavStep_Power_Monitoring_Test_Worker::executeTestStep(double currentWavelength, TestParamsForT100 testParams){
+
+    QByteArray wavelengthToSet = QByteArray::number(currentWavelength);
+    int t100SlotNum = testParams.t100Module->getSlotNum();
 
     // set wavelength on t100
-    QByteArray wavelengthToSet = QByteArray::number(currentWavelength);
-    int t100SlotNum = testData.t100Module->getSlotNum();
-    testData.t100Module->setRefWavelengthModuleCmd(t100SlotNum, wavelengthToSet);
-    qDebug() << "set wavelength on t100";
+    testParams.t100Module->setRefWavelengthModuleCmd(t100SlotNum, wavelengthToSet);
 
-
-//    for(auto powerMeter : testData.powerMeter){
-//        int numChannels = powerMeter->getNumPowerMeterChannels();
-//        qDebug() << "num chanels: " << numChannels;
-//        for(int i = 1; i <= numChannels; i++){
-//            QByteArray channelNum = QByteArray::number(i);
-//            QByteArray unit = "nm";
-//            powerMeter->setWavelength(i, wavelengthToSet, unit);
-//            qDebug() << "set wavelength on power meter channel";
-//        }
-//    }
-
+    // set wavelength on power meters
+    setWavelengthOnPowerMeters(wavelengthToSet);
 
     // wait for amount specified by dwell time
-    QElapsedTimer dwellTimer;
-    dwellTimer.start();
-    while(dwellTimer.elapsed() < testData.dwellInMs){
-       // wait
-    }
+    qDebug() << "waiting for : " << testData.dwellInMs << " ms";
+    QThread::msleep(testData.dwellInMs);
+
 
     qDebug() << "returning from test step";
 
+}
+
+void WavStep_Power_Monitoring_Test_Worker::setWavelengthOnPowerMeters(QByteArray wavelength){
+    for(auto powerMeter : testData.powerMeters){
+        int numChannels = powerMeter->getNumPowerMeterChannels();
+        qDebug() << "num chanels: " << numChannels;
+        for(int i = 1; i <= numChannels; i++){
+            QByteArray channelNum = QByteArray::number(i);
+            QByteArray unit = "nm";
+            powerMeter->setWavelength(i, wavelength, unit);
+            qDebug() << "set wavelength on power meter channel";
+        }
+    }
 }

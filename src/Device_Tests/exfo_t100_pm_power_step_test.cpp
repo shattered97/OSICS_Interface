@@ -59,8 +59,7 @@ bool EXFO_T100_PM_Power_Step_Test::areDevicesValidForTest(){
 QByteArray EXFO_T100_PM_Power_Step_Test::constructOutputFilename(){
     qDebug() << "in constructOutputFilename()";
     // construct filename
-    QByteArray identityInfo;
-    t100->identificationModuleQuery(t100SlotNum, identityInfo);
+    QByteArray identityInfo = t100->identificationModuleQuery(t100SlotNum);
     qDebug() << identityInfo;
     // the serial number is the third item when comma-separated, the module type is the second item
     QByteArray serialNumber = identityInfo.split(',')[2];
@@ -131,18 +130,15 @@ void EXFO_T100_PM_Power_Step_Test::runTestLoop(QByteArray filename, double start
         }
 
         // write wavelength
-        QByteArray t100Wavelength;
-        t100->refWavelengthModuleQuery(t100SlotNum, t100Wavelength);
+        QByteArray t100Wavelength = t100->refWavelengthModuleQuery(t100SlotNum);
         testData.append(QByteArray::number(t100Wavelength.split('=')[1].toDouble()).append(","));
 
         // write power
-        QByteArray t100Power;
-        t100->outputPowerModuleQuery(t100SlotNum, t100Power);
+        QByteArray t100Power = t100->outputPowerModuleQuery(t100SlotNum);
         testData.append(QByteArray::number(t100Power.split('=')[1].toDouble()).append(","));
 
         // write power reading
-        QByteArray powerReading;
-        powerMeter->measurePower(powerMeterSlotNum, powerReading);
+        QByteArray powerReading = powerMeter->measurePower(powerMeterSlotNum);
         // convert and write out
         double convertedPower = ConversionUtilities::convertWattToDBm(powerReading.trimmed().toDouble());
         testData.append(QByteArray::number(convertedPower));

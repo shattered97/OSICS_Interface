@@ -9,7 +9,9 @@
 #include "powermeterpollingworker.h"
 #include "wavstep_power_monitoring_graph_window.h"
 #include "wavstep_power_monitoring_test_worker.h"
-#include <QMutex>;
+#include <QMutex>
+
+Q_DECLARE_METATYPE(PowerReadings)
 
 class WavStepWithPowerMonitoringTest : public DeviceTest
 {
@@ -32,9 +34,11 @@ public slots:
     void slotSwitchMapChanged(QMap<int, QByteArray> swtChannelToT100Map);
     void slotGetPowerMeterDisplayPairs(QList<QPair<QByteArray, int>> &powerMeterDisplayPairs);
     void slotPollForPowerMeterReadings();
-    void slotSendPowerReadingCommand(PowerMeter *powerMeter);
+    void slotSendPowerReadings(PowerReadings readingsForPowerMeter);
     void slotShowGraphWindow();
     void prepareOutputDataMap();
+    void slotWrapUpTest();
+
 
 private:
 
@@ -58,10 +62,10 @@ private:
 
     QSettings *settings;
     QList<PowerMeterPollingWorker *> workers;
-
+    TestData testData;
     // test values
     QByteArray csvFilename = "";
-    QByteArray graphFilename = "";
+
     double startWav = 0.0;
     double endWav = 0.0;
     double wavStepSize = 0.0;
@@ -75,9 +79,6 @@ private:
 
     QList<QByteArray> powerMeterChannelNames;
 
-    QList<QPair<EXFO_OSICS_T100*, QPair<double, double>>> t100TestQueue;
-    QMap<int, QByteArray> swtChannelToT100Map;
-
     bool testStarted = false;
     double calculateMinWavelength();
     double calculateMaxWavelength();
@@ -88,11 +89,11 @@ private:
     QList<QByteArray> channelsToGraph;
     
     QMutex *powerMeterLock;
+    QMap<int, QByteArray> swtChannelToT100Map;
 
-    void setupTestOperations();
-    void queueT100sForTest();
+    QList<TestParamsForT100> createTestParamsForT100();
     void writeToCsv();
-    void testQueuedModule(EXFO_OSICS_T100 *t100Module, double moduleMinWav, double moduleMaxWav);
+
 };
 
 #endif // WAVSTEPWITHPOWERMONITORINGTEST_H

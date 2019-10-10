@@ -34,31 +34,31 @@ public:
 
     // ********************** Common SCPI Commands **********************
 
-    void querySTB(QByteArray &response);
+    QByteArray querySTB();
 
     void execESE(char registerVal);
 
-    void queryESE(QByteArray &response);
+    QByteArray queryESE();
 
-    void querySRE(QByteArray &response);
+    QByteArray querySRE();
 
-    void queryESR(QByteArray &response);
+    QByteArray queryESR();
 
     void execOPC();
 
-    void queryOPC(QByteArray &response);
+    QByteArray queryOPC();
 
     void execCLS();
 
     void execRST();
 
-    void queryTST(QByteArray &response);
+    QByteArray queryTST();
 
-    void queryOPT(QByteArray &response);
+    QByteArray queryOPT();
 
     void execWAI();
 
-    void queryIDN(QByteArray &response);
+    QByteArray queryIDN();
 
     void setConfigWindow(QMainWindow *configwindow);
 

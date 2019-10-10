@@ -4,17 +4,23 @@
 #include <QObject>
 #include <QThread>
 #include "PowerMeter.h"
-#include <QMutex>
+
+typedef struct PowerReadings{
+    PowerMeter* powerMeter;
+    QList<QByteArray> powerReadings;
+} PowerReadings;
+
+
 
 class PowerMeterPollingWorker : public QObject
 {
     Q_OBJECT
 public:
-    PowerMeterPollingWorker(PowerMeter *powerMeter, QMutex *powerMeterLock, QObject *parent = 0);
+    PowerMeterPollingWorker(PowerMeter *powerMeter, QObject *parent = 0);
 
 signals:
     void finished();
-    void signalSendPowerReadingCommand(PowerMeter *powerMeter);
+    void signalSendPowerReadings(PowerReadings readingsForPowerMeter);
 
 public slots:
     void slotPollPowerMeter();
@@ -22,8 +28,7 @@ public slots:
 
 private:
     PowerMeter *powerMeter;
-    QMutex *powerMeterLock;
-
+    bool continuePolling = true;
 };
 
 #endif // POWERMETERPOLLINGWORKER_H

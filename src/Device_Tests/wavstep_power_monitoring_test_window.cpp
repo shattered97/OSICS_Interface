@@ -184,7 +184,6 @@ void WavStep_Power_Monitoring_Test_Window::updateSettings()
 {
     qDebug() << "setting config values";
     settings->setValue(WAV_STEP_TEST_CSV_FILENAME, QVariant::fromValue(ui->csvLocDisplay->text()));
-    settings->setValue(WAV_STEP_TEST_GRAPH_FILENAME, QVariant::fromValue(ui->graphLocDisplay->text()));
     settings->setValue(WAV_STEP_TEST_START_WAVELENGTH, QVariant::fromValue(ui->startWavLineEdit->text()));
     settings->setValue(WAV_STEP_TEST_END_WAVELENGTH, QVariant::fromValue(ui->endWavLineEdit->text()));
     settings->setValue(WAV_STEP_TEST_WAV_STEP_SIZE, QVariant::fromValue(ui->stepSizeLineEdit->text()));
@@ -483,4 +482,9 @@ void WavStep_Power_Monitoring_Test_Window::on_selectCsvLocButton_clicked()
             file.close();
         }
     }
+}
+
+void WavStep_Power_Monitoring_Test_Window::on_pmReadingRefreshRateEdit_editingFinished()
+{
+    // #TODO pass into wavelength test worker
 }

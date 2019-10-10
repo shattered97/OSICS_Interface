@@ -67,6 +67,8 @@ private slots:
 
     void on_selectCsvLocButton_clicked();
 
+    void on_pmReadingRefreshRateEdit_editingFinished();
+
 private:
     Ui::WavStep_Power_Monitoring_Test_Window *ui;
 

@@ -6,6 +6,7 @@
 Orchestrator::Orchestrator()
 {
     theCommBus.createDefaultRM(defaultSession);
+    communicationLock = new QMutex();
 }
 
 Orchestrator::~Orchestrator()
@@ -53,9 +54,9 @@ void Orchestrator::slotCreateDevice(QString type, QByteArray instrumentAddress, 
 
         // connecting signals for sending commands here so we can query for installed modules
         QObject::connect(device, SIGNAL(signalSendCmdRsp(QByteArray, QByteArray, QByteArray *)),
-                         this, SLOT(slotSendCmdRsp(QByteArray, QByteArray, QByteArray *)));
+                         this, SLOT(slotSendCmdRsp(QByteArray, QByteArray, QByteArray *)), Qt::AutoConnection);
         QObject::connect(device, SIGNAL(signalSendCmdNoRsp(QByteArray, QByteArray)),
-                         this, SLOT(slotSendCmdNoRsp(QByteArray, QByteArray)));
+                         this, SLOT(slotSendCmdNoRsp(QByteArray, QByteArray)), Qt::AutoConnection);
 
         QObject::connect(this, SIGNAL(signalSetupEXFOModules()), device, SLOT(slotSetupEXFOModules()));
         emit signalSetupEXFOModules();
@@ -82,9 +83,9 @@ void Orchestrator::slotCreateDevice(QString type, QByteArray instrumentAddress, 
     device->setConfigWindow(configWindow);
 
     QObject::connect(device, SIGNAL(signalSendCmdRsp(QByteArray, QByteArray, QByteArray *)),
-                     this, SLOT(slotSendCmdRsp(QByteArray, QByteArray, QByteArray *)));
+                     this, SLOT(slotSendCmdRsp(QByteArray, QByteArray, QByteArray *)), Qt::AutoConnection);
     QObject::connect(device, SIGNAL(signalSendCmdNoRsp(QByteArray, QByteArray)),
-                     this, SLOT(slotSendCmdNoRsp(QByteArray, QByteArray)));
+                     this, SLOT(slotSendCmdNoRsp(QByteArray, QByteArray)), Qt::AutoConnection);
 
     QObject::connect(configWindow, SIGNAL(signalUpdateConfigSettings(QVariant &, QSettings &)),
                      this, SLOT(slotUpdateConfigSettings(QVariant &, QSettings &)));
@@ -162,8 +163,6 @@ void Orchestrator::slotGetEXFOModuleQVariants(QMap<int, QVariant> &modules, QVar
             // #TODO slot is either empty or module is not supported (error msg)
         }
 
-
-        DefaultInstrument *module = moduleVariant.value<DefaultInstrument*>();
 
     }
 
@@ -306,7 +305,7 @@ void Orchestrator::slotApplyConfigSettings(QVariant &deviceVariant, QSettings &c
 }
 
 void Orchestrator::slotSendCmdNoRsp(QByteArray instrAddress, QByteArray command){
-
+    communicationLock->lock();
     qDebug() << "Sent command: " << command;
     bool success = true;
 
@@ -321,8 +320,7 @@ void Orchestrator::slotSendCmdNoRsp(QByteArray instrAddress, QByteArray command)
     else{
         checkOperationComplete(instrSession, instrAddress);
 
-        ViUInt32 writeCount;
-        ViStatus status = theCommBus.sendCmd(instrSession, instrAddress, command, writeCount);
+        ViStatus status = theCommBus.sendCmd(instrSession, instrAddress, command);
 
         if(status < VI_SUCCESS){
             success = false;
@@ -335,58 +333,60 @@ void Orchestrator::slotSendCmdNoRsp(QByteArray instrAddress, QByteArray command)
         theCommBus.closeSession(instrSession);
 
     }
-
     // #TODO SIGNAL QMESSAGEBOX IF UNSUCCESSFUL
+    communicationLock->unlock();
+
+
 }
 
 void Orchestrator::slotSendCmdRsp(QByteArray instrAddress, QByteArray command, QByteArray *response){
-    qDebug() << "address: ";
-    qDebug() << "= " << response;
-    qDebug() << "Command sent: " << command;
-    bool success = true;
+    communicationLock->lock();
+    if(response){
+        QByteArray tempResponse = "";
 
-    ViSession instrSession;
+        qDebug() << "SENDER <<<<<<<<<<<<<<< " << QObject::sender();
+        qDebug() << "Command sent: " << command;
+        bool success = true;
 
-    // open session
-    ViStatus sessionStatus = theCommBus.openInstrSession(defaultSession, instrAddress, instrSession);
+        ViSession instrSession;
 
-    if(sessionStatus < VI_SUCCESS){
-        success = false;
-        qDebug() << "Opening session failed.  status: " << sessionStatus;
-    }
-    else{
-        qDebug() << "session to instrument opened successfully";
+        // open session
+        ViStatus sessionStatus = theCommBus.openInstrSession(defaultSession, instrAddress, instrSession);
 
-        // check if instrument is done processing previous commands
-        checkOperationComplete(instrSession, instrAddress);
+        if(sessionStatus < VI_SUCCESS){
+            success = false;
+            qDebug() << "Opening session failed.  status: " << sessionStatus;
+        }
+        else{
+            qDebug() << "session to instrument opened successfully";
 
-        qDebug() << "operation complete.";
-        ViUInt32 writeCount;
-        ViStatus status = theCommBus.sendCmd(instrSession, instrAddress, command, writeCount);
-            if(status < VI_SUCCESS){
-                qDebug() << QString("Query failed: %1").arg(status);
-                status = false;
-            }
-            else{
-                ViUInt32 rtnSize;
+            // check if instrument is done processing previous commands
+            checkOperationComplete(instrSession, instrAddress);
 
-                status = theCommBus.readCmd(instrSession, instrAddress, *response, rtnSize);
-
+            qDebug() << "operation complete.";
+            ViStatus status = theCommBus.sendCmd(instrSession, instrAddress, command);
                 if(status < VI_SUCCESS){
-                    qDebug() << QString("Reading response failed: %1").arg(status);
-                    success = false;
+                    qDebug() << QString("Query failed: %1").arg(status);
+                    status = false;
                 }
                 else{
-                    qDebug() << "Response: " << *response;
+                    status = theCommBus.readCmd(instrSession, instrAddress, &tempResponse);
+
+                    if(status < VI_SUCCESS){
+                        qDebug() << QString("Reading response failed: %1").arg(status);
+                        success = false;
+                    }
+                    else{
+                        qDebug() << "Response: " << *tempResponse;
+                    }
                 }
-            }
 
-        // close session
-        theCommBus.closeSession(instrSession);
-
+            // close session
+            theCommBus.closeSession(instrSession);
+            *response = tempResponse;
+        }
     }
-
-    // #TODO SIGNAL QMESSAGEBOX IF UNSUCCESSFUL
+    communicationLock->unlock();
 }
 
 bool Orchestrator::checkOperationComplete(ViSession instrSession, QByteArray instrAddress, int timeout){
@@ -400,12 +400,10 @@ bool Orchestrator::checkOperationComplete(ViSession instrSession, QByteArray ins
     while(timer.elapsed() < timeout && complete == 0){
         complete = 0;
 
-        ViUInt32 writeCount;
-        theCommBus.sendCmd(instrSession, instrAddress, QUERY_OPC, writeCount);
+        theCommBus.sendCmd(instrSession, instrAddress, QUERY_OPC);
 
-        QByteArray response;
-        ViUInt32 rtnSize;
-        theCommBus.readCmd(instrSession, instrAddress, response, rtnSize);
+        QByteArray response = "";
+        theCommBus.readCmd(instrSession, instrAddress, &response);
 
         complete = response[0];
     }

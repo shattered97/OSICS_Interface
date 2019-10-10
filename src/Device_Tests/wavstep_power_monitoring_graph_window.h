@@ -18,6 +18,8 @@ public:
     explicit WavStep_Power_Monitoring_Graph_Window(QList<QByteArray> seriesNames, QWidget *parent = nullptr);
     ~WavStep_Power_Monitoring_Graph_Window();
 
+signals:
+    void signalStopWorkerThreads();
 public slots:
     void slotGraphPowerMeterReadings(WavStepPowerTestData allData);
 

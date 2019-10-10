@@ -14,14 +14,14 @@ public:
     void applyConfigSettings(QSettings &configSettings);
 
     void runSingleSweep();
-    void setCenterWavelength(QByteArray &wavelength);
-    void setSpan(QByteArray &span);
-    void setResolution(QByteArray &resolution);
+    void setCenterWavelength(QByteArray wavelength);
+    void setSpan(QByteArray span);
+    void setResolution(QByteArray resolution);
 
-    void getCenterWavelength(QByteArray &wavelength);
-    void getSpan(QByteArray &span);
-    void getPeakDataFromTrace(QByteArray &wavelength, QByteArray &power);
-    void getResolution(QByteArray &resolution);
+    QByteArray getCenterWavelength();
+    QByteArray getSpan();
+    QPair <QByteArray, QByteArray> getPeakDataFromTrace(QByteArray wavelength, QByteArray power);
+    QByteArray getResolution();
 
 private:
     QByteArray theIdentity;                 // identity of instrument (manufacturer, model num, etc.)

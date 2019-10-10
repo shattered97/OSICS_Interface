@@ -60,8 +60,7 @@ bool EXFO_T100_SWT_OSA_WavelengthTest::areDevicesValidForTest(){
 
 QByteArray EXFO_T100_SWT_OSA_WavelengthTest::constructOutputFilename(){
     // construct filename
-    QByteArray identityInfo;
-    swt->identificationModuleQuery(swtSlotNum, identityInfo);
+    QByteArray identityInfo = swt->identificationModuleQuery(swtSlotNum);
 
     // the serial number is the third item when comma-separated, the module type is the second item
     QByteArray serialNumber = identityInfo.split(',')[2];
@@ -136,26 +135,22 @@ void EXFO_T100_SWT_OSA_WavelengthTest::runTestLoop(QByteArray filename, int t100
         t100->setRefWavelengthModuleCmd(t100SlotNum, wavelengthToSet);
 
         // get wavelength reported by t100
-        QByteArray t100Wavelength;
-        t100->refWavelengthModuleQuery(t100SlotNum, t100Wavelength);
+        QByteArray t100Wavelength = t100->refWavelengthModuleQuery(t100SlotNum);
         testData.append(QByteArray::number(t100Wavelength.split('=')[1].toDouble()).append(','));
 
         // set wavelength on swt
         swt->setRefWavelengthModuleCmd(swtSlotNum, wavelengthToSet);
 
         // get wavelength reported by swt
-        QByteArray swtWavelength;
-        swt->refWavelengthModuleQuery(swtSlotNum, swtWavelength);
+        QByteArray swtWavelength = swt->refWavelengthModuleQuery(swtSlotNum);
         testData.append(QByteArray::number(swtWavelength.split('=')[1].toDouble()).append(','));
 
         // get output power of t100
-        QByteArray t100Power;
-        t100->outputPowerModuleQuery(t100SlotNum, t100Power);
+        QByteArray t100Power = t100->outputPowerModuleQuery(t100SlotNum);
         testData.append(QByteArray::number(t100Power.split('=')[1].toDouble()).append(','));
 
         // get power of SWT
-        QByteArray swtPower;
-        swt->outputPowerModuleQuery(swtSlotNum, swtPower);
+        QByteArray swtPower = swt->outputPowerModuleQuery(swtSlotNum);
         testData.append(QByteArray::number(swtPower.split('=')[1].toDouble()));
 
         // end data line

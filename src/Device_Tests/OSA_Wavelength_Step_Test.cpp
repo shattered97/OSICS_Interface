@@ -55,8 +55,7 @@ bool OSA_Wavelength_Step_Test::areDevicesValidForTest(){
 
 QByteArray OSA_Wavelength_Step_Test::constructOutputFilename(){
     // construct filename
-    QByteArray identityInfo;
-    t100->identificationModuleQuery(t100SlotNum, identityInfo);
+    QByteArray identityInfo = t100->identificationModuleQuery(t100SlotNum);
 
     // the serial number is the third item when comma-separated, the module type is the second item
     QByteArray serialNumber = identityInfo.split(',')[2];

@@ -6,26 +6,30 @@
 #include <EXFO_OSICS_T100.h>
 #include <PowerMeter.h>
 #include <EXFO_OSICS_SWT.h>
-#include <QMutexLocker>
-#include <QMutex>
 
 
-typedef struct TestData{
+typedef struct TestParamsForT100{
     EXFO_OSICS_T100 *t100Module;
-    EXFO_OSICS_SWT *swtModule;
     int swtChannel;
-    PowerMeter* powerMeter;
     double startWav;
     double endWav;
+} TestParamsForT100;
+
+typedef struct TestData{
+    EXFO_OSICS_SWT *swtModule;
+    QList<PowerMeter*> powerMeters;
+    QList<TestParamsForT100> testParamsForT100;
     double dwellInMs;
     double stepSize;
 } TestData;
+
+
 
 class WavStep_Power_Monitoring_Test_Worker : public QObject
 {
     Q_OBJECT
 public:
-    WavStep_Power_Monitoring_Test_Worker(TestData testData, QMutex *powerMeterLock, QObject *parent = 0);
+    WavStep_Power_Monitoring_Test_Worker(TestData testData, QObject *parent = 0);
 
 signals:
     void finished();
@@ -35,8 +39,9 @@ public slots:
 
 private:
     TestData testData;
-    QMutex *powerMeterLock;
-    void executeTestStep(double currentWavelength);
+    void executeTestOnT100Module(TestParamsForT100 testParams);
+    void executeTestStep(double currentWavelength, TestParamsForT100 testParams);
+    void setWavelengthOnPowerMeters(QByteArray wavelength);
 };
 
 #endif // WAVSTEP_POWER_MONITORING_TEST_WORKER_H

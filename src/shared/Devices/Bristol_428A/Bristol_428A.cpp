@@ -17,14 +17,18 @@ void Bristol_428A::setMediumAir(){
     emit signalSendCmdNoRsp(theInstrLoc, baseCmd);
 }
 
-void Bristol_428A::measureWavelengthSingle(QByteArray &wavelength)
+QByteArray Bristol_428A::measureWavelengthSingle()
 {
     QByteArray baseCmd = ":MEAS:SCAL:WAV?\n";
-    emit signalSendCmdRsp(theInstrLoc, baseCmd, &wavelength);
+    QByteArray response = "";
+    emit signalSendCmdRsp(theInstrLoc, baseCmd, &response);
+    return response;
 }
 
-void Bristol_428A::measurePowerSingle(QByteArray &power)
+QByteArray Bristol_428A::measurePowerSingle()
 {
     QByteArray baseCmd = ":MEAS:SCAL:POW?\n";
-    emit signalSendCmdRsp(theInstrLoc, baseCmd, &power);
+    QByteArray response = "";
+    emit signalSendCmdRsp(theInstrLoc, baseCmd, &response);
+    return response;
 }

@@ -18,14 +18,16 @@ QByteArray DefaultInstrument::getInstrLocation()
     return theInstrLoc;
 }
 
-void DefaultInstrument::querySTB(QByteArray &response){
+QByteArray DefaultInstrument::querySTB(){
     // Command "*STB?\n"
     // Response: "+4\n+4\n"
     // Format: 16-bit signed int
 
     QByteArray command = QUERY_STB;
-
+    QByteArray response = "";
     emit signalSendCmdRsp(theInstrLoc, command, &response);
+
+    return response;
 }
 
 void DefaultInstrument::execESE(char registerVal){
@@ -41,24 +43,28 @@ void DefaultInstrument::execESE(char registerVal){
     emit signalSendCmdNoRsp(theInstrLoc, command);
 }
 
-void DefaultInstrument::queryESE(QByteArray &response){
+QByteArray DefaultInstrument::queryESE(){
     // Command "*ESE?\n"
     // Response: "+4\n+4\n"
     // Format: 16-bit signed int
 
     QByteArray command = QUERY_ESE;
-
+    QByteArray response = "";
     emit signalSendCmdRsp(theInstrLoc, command, &response);
+
+    return response;
 }
 
-void DefaultInstrument::queryESR(QByteArray &response){
+QByteArray DefaultInstrument::queryESR(){
     // Command "*ESR?\n"
     // Response: "+1\n+1\n"
     // Format: 16-bit signed int
 
     QByteArray command = QUERY_ESR;
-
+    QByteArray response = "";
     emit signalSendCmdRsp(theInstrLoc, command, &response);
+
+    return response;
 }
 
 void DefaultInstrument::execOPC(){
@@ -71,14 +77,16 @@ void DefaultInstrument::execOPC(){
     emit signalSendCmdNoRsp(theInstrLoc, command);
 }
 
-void DefaultInstrument::queryOPC(QByteArray &response){
+QByteArray DefaultInstrument::queryOPC(){
     // Command "*OPC?\n"
     // Response: "1\n1\n"
     // Format: 0 or 1
 
     QByteArray command = QUERY_OPC;
-
+    QByteArray response = "";
     emit signalSendCmdRsp(theInstrLoc, command, &response);
+
+    return response;
 }
 
 void DefaultInstrument::execCLS(){
@@ -101,24 +109,28 @@ void DefaultInstrument::execRST(){
     emit signalSendCmdNoRsp(theInstrLoc, command);
 }
 
-void DefaultInstrument::queryTST(QByteArray &response){
+QByteArray DefaultInstrument::queryTST(){
     // Command "*TST?\n"
     // Response: "1\n1\n"
     // Format: 32-bit signed int
 
     QByteArray command = QUERY_TST;
-
+    QByteArray response = "";
     emit signalSendCmdRsp(theInstrLoc, command, &response);
+
+    return response;
 }
 
-void DefaultInstrument::queryOPT(QByteArray &response){
+QByteArray DefaultInstrument::queryOPT(){
     // Command "*OPT?\n"
     // Response: "N7752A,  ,  ,  \nN7752A,  ,  ,  \n"
     // Format: Comma-separated part numbers of installed options. Two spaces if slot is empty.
 
     QByteArray command = QUERY_OPT;
-
+    QByteArray response = "";
     emit signalSendCmdRsp(theInstrLoc, command, &response);
+
+    return response;
 }
 
 void DefaultInstrument::execWAI(){
@@ -131,14 +143,16 @@ void DefaultInstrument::execWAI(){
     emit signalSendCmdNoRsp(theInstrLoc, command);
 }
 
-void DefaultInstrument::queryIDN(QByteArray &response){
+QByteArray DefaultInstrument::queryIDN(){
     // Command "*IDN?\n"
     // Response: "Agilent Technologies, N7714A, MY50701231, 1.13.1\nAgilent Technologies, N7714A, MY50701231, 1.13.1\n"
     // Format: Instrument identification
 
     QByteArray command = QUERY_IDN;
-
+    QByteArray response = "";
     emit signalSendCmdRsp(theInstrLoc, command, &response);
+
+    return response;
 }
 
 QMainWindow * DefaultInstrument::getConfigWindow(){

@@ -83,8 +83,7 @@ void EXFO_T100_ATN_Power_Test::writeTestDataToFile(QByteArray filename){
 QByteArray EXFO_T100_ATN_Power_Test::constructOutputFilename(){
 
     //construct filename
-    QByteArray identityInfo;
-    atn->identificationModuleQuery(atnSlotNum, identityInfo);
+    QByteArray identityInfo = atn->identificationModuleQuery(atnSlotNum);
 
     // the serial number is the third item when comma-separated, the module type is the second item
     QByteArray serialNumber = identityInfo.split(',')[2];
@@ -106,8 +105,7 @@ void EXFO_T100_ATN_Power_Test::runDeviceTest(){
     QByteArray filename = constructOutputFilename();
 
     // get min and max attenuation
-    QByteArray minMaxAtten;
-    atn->moduleAttenuationMinMaxQuery(atnSlotNum, "2", minMaxAtten);
+    QByteArray minMaxAtten = atn->moduleAttenuationMinMaxQuery(atnSlotNum, "2");
 
     minMaxAtten = minMaxAtten.split('=')[1].trimmed();
     QByteArray maxAttenRaw = minMaxAtten.mid(minMaxAtten.size() / 2);
@@ -183,18 +181,15 @@ void EXFO_T100_ATN_Power_Test::runTestLoop(QByteArray filename, double power, do
             atn->setModuleAttenuationCmd(atnSlotNum, atnToSet);
 
             // write current atteuation;
-            QByteArray attenuation;
-            atn->moduleAttenuationQuery(atnSlotNum, attenuation);
+            QByteArray attenuation = atn->moduleAttenuationQuery(atnSlotNum);
             testData.append(QByteArray::number(attenuation.split('=')[1].toDouble()).append(','));
 
             // write current output power
-            QByteArray t100Power;
-            t100->outputPowerModuleQuery(t100SlotNum, t100Power);
+            QByteArray t100Power = t100->outputPowerModuleQuery(t100SlotNum);
             testData.append(QByteArray::number(t100Power.split('=')[1].toDouble()).append(','));
 
             // write current wavelength
-            QByteArray t100Wav;
-            t100->refWavelengthModuleQuery(t100SlotNum, t100Wav);
+            QByteArray t100Wav = t100->refWavelengthModuleQuery(t100SlotNum);
             testData.append(QByteArray::number(t100Wav.split('=')[1].toDouble()).append(','));
 
             // write wavelength set on power meter
@@ -212,8 +207,7 @@ void EXFO_T100_ATN_Power_Test::runTestLoop(QByteArray filename, double power, do
             }
 
             // power reading
-            QByteArray powerReading;
-            powerMeter->measurePower(powerMeterSlotNum, powerReading);
+            QByteArray powerReading = powerMeter->measurePower(powerMeterSlotNum);
             // convert and write out
             double convertedPower = ConversionUtilities::convertWattToDBm(powerReading.trimmed().toDouble());
             testData.append(QByteArray::number(convertedPower).append(','));

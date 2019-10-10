@@ -76,7 +76,7 @@ public:
      * @param writeCount[out] Number of bytes actually transferred
      * @return Completion code
      */
-    ViStatus sendCmd(ViSession &instrSession, QByteArray instrAddr, QByteArray scpiCmd, ViUInt32 &writeCount);
+    ViStatus sendCmd(ViSession &instrSession, QByteArray instrAddr, QByteArray scpiCmd);
 
     /**
      * @brief readCmd Reads response of SCPI command from connected resource
@@ -86,7 +86,7 @@ public:
      * @param retCount[out] Number of bytes actually transferred
      * @return Completion code
      */
-    ViStatus readCmd(ViSession &instrSession, QByteArray instrAddr, QByteArray &response, ViUInt32 &retCount);
+    ViStatus readCmd(ViSession &instrSession, QByteArray instrAddr, QByteArray *response);
 
     /**
      * @brief openInstrSession Opens a session to an instrument located at instrAddr.
@@ -116,14 +116,14 @@ private:
      * @param charArray[out] resulting char array from QByteArray
      * @param byteArray[in] QByteArray to convert to char array
      */
-    void byteArrayToCharArray(char (&charArray)[VISA_MAX_BUFFER_SEND_SIZE], QByteArray &byteArray);
+    void byteArrayToCharArray(char (*charArray)[VISA_MAX_BUFFER_SEND_SIZE], QByteArray *byteArray);
 
     /**
      * @brief charArrayToByteArray Converts C style char array to QByteArray
      * @param charArray[in] resulting char array from QByteArray
      * @param byteArray[out] QByteArray to convert to char array
      */
-    void charArrayToByteArray(unsigned char (&charArray)[VISA_MAX_BUFFER_READ_SIZE], QByteArray &byteArray, ViUInt32 size);
+    void charArrayToByteArray(unsigned char (*charArray)[VISA_MAX_BUFFER_READ_SIZE], QByteArray *byteArray, ViUInt32 size);
 
     /**
      * @brief findNextResource Used to find the next resouce when multiple resources are connected to the system

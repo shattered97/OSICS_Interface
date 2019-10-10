@@ -69,13 +69,11 @@ bool EXFO_T100_SWT_PM_WM_Test::areDevicesValidForTest(){
 
 QByteArray EXFO_T100_SWT_PM_WM_Test::constructOutputFilename(){
     // get active channel number
-    QByteArray activeChannelNum;
-    swt->getChannelForSignalAPC(swtSlotNum, activeChannelNum);
+    QByteArray activeChannelNum = swt->getChannelForSignalAPC(swtSlotNum);
     activeChannelNum = activeChannelNum.split('=')[1].trimmed();
 
     // construct filename
-    QByteArray identityInfo;
-    swt->identificationModuleQuery(swtSlotNum, identityInfo);
+    QByteArray identityInfo = swt->identificationModuleQuery(swtSlotNum);
 
     // the serial number is the third item when comma-separated, the module type is the second item
     QByteArray serialNumber = identityInfo.split(',')[2];
@@ -157,13 +155,11 @@ void EXFO_T100_SWT_PM_WM_Test::runTestLoopPowerMeterOnly(QByteArray filename, in
     while(currentWav <= endWav){
 
         // get active switch channel
-        QByteArray channel;
-        swt->getChannelForSignalAPC(swtSlotNum, channel);
+        QByteArray channel = swt->getChannelForSignalAPC(swtSlotNum);
         testData.append(channel.split('=')[1].trimmed().append(','));
 
         // get t100 output power
-        QByteArray t100Power;
-        t100->outputPowerModuleQuery(t100SlotNum, t100Power);
+        QByteArray t100Power = t100->outputPowerModuleQuery(t100SlotNum);
         testData.append(QByteArray::number(t100Power.split('=')[1].toDouble()).append(','));
 
         // set t100 wavelength
@@ -184,13 +180,11 @@ void EXFO_T100_SWT_PM_WM_Test::runTestLoopPowerMeterOnly(QByteArray filename, in
         }
 
         // write current t100 wavelength
-        QByteArray t100Wav;
-        t100->refWavelengthModuleQuery(t100SlotNum, t100Wav);
+        QByteArray t100Wav = t100->refWavelengthModuleQuery(t100SlotNum);
         testData.append(QByteArray::number(t100Wav.split('=')[1].toDouble()).append(','));
 
         // write power meter reading
-        QByteArray powerReading;
-        powerMeter->measurePower(powerMeterSlotNum, powerReading);
+        QByteArray powerReading = powerMeter->measurePower(powerMeterSlotNum);
         // convert and write out
         double convertedPower = ConversionUtilities::convertWattToDBm(powerReading.trimmed().toDouble());
         testData.append(QByteArray::number(convertedPower));
@@ -242,13 +236,11 @@ void EXFO_T100_SWT_PM_WM_Test::runTestLoopWithWavemeter(QByteArray filename, int
     while(currentWav <= endWav){
 
         // get active switch channel
-        QByteArray channel;
-        swt->getChannelForSignalAPC(swtSlotNum, channel);
+        QByteArray channel = swt->getChannelForSignalAPC(swtSlotNum);
         testData.append(channel.split('=')[1].trimmed().append(','));
 
         // get t100 output power
-        QByteArray t100Power;
-        t100->outputPowerModuleQuery(t100SlotNum, t100Power);
+        QByteArray t100Power = t100->outputPowerModuleQuery(t100SlotNum);
         testData.append(QByteArray::number(t100Power.split('=')[1].toDouble()).append(','));
 
         // set t100 wavelength
@@ -269,19 +261,16 @@ void EXFO_T100_SWT_PM_WM_Test::runTestLoopWithWavemeter(QByteArray filename, int
         }
 
         // write current t100 wavelength
-        QByteArray t100Wav;
-        t100->refWavelengthModuleQuery(t100SlotNum, t100Wav);
+        QByteArray t100Wav = t100->refWavelengthModuleQuery(t100SlotNum);
         testData.append(QByteArray::number(t100Wav.split('=')[1].toDouble()).append(','));
 
 
         // write wavemeter wavelength
-        QByteArray bristolWav;
-        bristol->measureWavelengthSingle(bristolWav);
+        QByteArray bristolWav = bristol->measureWavelengthSingle();
         testData.append(bristolWav.trimmed().append(','));
 
         // write power meter reading
-        QByteArray powerReading;
-        powerMeter->measurePower(powerMeterSlotNum, powerReading);
+        QByteArray powerReading = powerMeter->measurePower(powerMeterSlotNum);
         // convert and write out
         double convertedPower = ConversionUtilities::convertWattToDBm(powerReading.trimmed().toDouble());
         testData.append(QByteArray::number(convertedPower));

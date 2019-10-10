@@ -1,31 +1,36 @@
 #include "powermeterpollingworker.h"
 #include <QTimer>
+#include <QMetaObject>
 
-PowerMeterPollingWorker::PowerMeterPollingWorker(PowerMeter *powerMeter, QMutex *powerMeterLock, QObject *parent ) : QObject(parent)
+PowerMeterPollingWorker::PowerMeterPollingWorker(PowerMeter *powerMeter, QObject *parent ) : QObject(parent)
 {
     this->powerMeter = powerMeter;
-    this->powerMeterLock = powerMeterLock;
+
 }
 
 void PowerMeterPollingWorker::slotPollPowerMeter(){
     qDebug() << "slotPollPowerMeter()";
 
-
-    QList<QByteArray> readings;
-    qDebug() << "************ " << readings.isEmpty();
-    qDebug() << &readings;
-    powerMeter->getPowerReadingOnAllChannels(readings);
-
-//    for(;;){
-//       QThread::msleep(30000);
-//       powerMeterLock->lock();
-//       emit signalSendPowerReadingCommand(powerMeter);
-//       powerMeterLock->unlock();
-//    }
+//    QByteArray unit = powerMeter->getPowerUnit(1);
+//    qDebug() << "power unit: " << unit;
 
 
+//    QList<QByteArray> readings = powerMeter->getPowerReadingOnAllChannels();
+//    qDebug() << " ***************** " << readings;
+
+
+    while(continuePolling){
+       QThread::msleep(1000);
+       PowerReadings readingsForPowerMeter;
+       readingsForPowerMeter.powerReadings = powerMeter->getPowerReadingOnAllChannels();
+       readingsForPowerMeter.powerMeter = powerMeter;
+       emit signalSendPowerReadings(readingsForPowerMeter);
+    }
+
+    emit finished();
 }
 
 void PowerMeterPollingWorker::slotStopWorkerThreads(){
-     emit finished();
+    continuePolling = false;
+
 }

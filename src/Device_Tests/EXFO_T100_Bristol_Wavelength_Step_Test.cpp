@@ -77,8 +77,7 @@ void EXFO_T100_Bristol_Wavelength_Step_Test::writeTestDataToFile(QByteArray file
 QByteArray EXFO_T100_Bristol_Wavelength_Step_Test::constructOutputFilename(){
 
     //construct filename
-    QByteArray identityInfo;
-    t100->identificationModuleQuery(t100SlotNum, identityInfo);
+    QByteArray identityInfo = t100->identificationModuleQuery(t100SlotNum);
 
     // the serial number is the third item when comma-separated, the module type is the second item
     QByteArray serialNumber = identityInfo.split(',')[2];
@@ -153,28 +152,23 @@ void EXFO_T100_Bristol_Wavelength_Step_Test::runTestLoopWithPowerMeter(QByteArra
         }
 
         // get wavelength reported by t100
-        QByteArray t100Wavelength;
-        t100->refWavelengthModuleQuery(t100SlotNum, t100Wavelength);
+        QByteArray t100Wavelength = t100->refWavelengthModuleQuery(t100SlotNum);
         testData.append(QByteArray::number(t100Wavelength.split('=')[1].toDouble()).append(','));
 
         // get output power of t100
-        QByteArray t100Power;
-        t100->outputPowerModuleQuery(t100SlotNum, t100Power);
+        QByteArray t100Power = t100->outputPowerModuleQuery(t100SlotNum);
         testData.append(QByteArray::number(t100Power.split('=')[1].toDouble()).append(','));
 
         // get wavelength reported by wavemeter
-        QByteArray bristolWavelength;
-        bristol->measureWavelengthSingle(bristolWavelength);
+        QByteArray bristolWavelength = bristol->measureWavelengthSingle();
         testData.append(bristolWavelength.trimmed().append(','));
 
         // get power reported by wavemeter
-        QByteArray bristolPower;
-        bristol->measurePowerSingle(bristolPower);
+        QByteArray bristolPower = bristol->measurePowerSingle();
         testData.append(bristolPower.trimmed().append(','));
 
         // get power reported by powerMeter
-        QByteArray powerMeterReading;
-        powerMeter->measurePower(powerMeterSlotNum, powerMeterReading);
+        QByteArray powerMeterReading = powerMeter->measurePower(powerMeterSlotNum);
         testData.append(powerMeterReading.trimmed());
 
         // end data line
@@ -235,23 +229,19 @@ void EXFO_T100_Bristol_Wavelength_Step_Test::runTestLoopBristolOnly(QByteArray f
         }
 
         // get wavelength reported by t100
-        QByteArray t100Wavelength;
-        t100->refWavelengthModuleQuery(t100SlotNum, t100Wavelength);
+        QByteArray t100Wavelength = t100->refWavelengthModuleQuery(t100SlotNum);
         testData.append(QByteArray::number(t100Wavelength.split('=')[1].toDouble()).append(','));
 
         // get output power of t100
-        QByteArray t100Power;
-        t100->outputPowerModuleQuery(t100SlotNum, t100Power);
+        QByteArray t100Power = t100->outputPowerModuleQuery(t100SlotNum);
         testData.append(QByteArray::number(t100Power.split('=')[1].toDouble()).append(','));
 
         // get wavelength reported by wavemeter
-        QByteArray bristolWavelength;
-        bristol->measureWavelengthSingle(bristolWavelength);
+        QByteArray bristolWavelength = bristol->measureWavelengthSingle();
         testData.append(bristolWavelength.trimmed().append(','));
 
         // get power reported by wavemeter
-        QByteArray bristolPower;
-        bristol->measurePowerSingle(bristolPower);
+        QByteArray bristolPower = bristol->measurePowerSingle();
         testData.append(bristolPower.trimmed().append(','));
 
         currentWav += wavStep;

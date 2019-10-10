@@ -12,6 +12,7 @@
 #include "Ando_AQ6331.h"
 #include <QObject>
 #include <QMetaType>
+#include <QMutex>
 
 #include "DeviceTest.h"
 #include "DeviceTestFactory.h"
@@ -23,6 +24,11 @@ Q_DECLARE_METATYPE(PowerMeter*)
 Q_DECLARE_METATYPE(EXFO_OSICS_MAINFRAME*)
 Q_DECLARE_METATYPE(Ando_AQ6331*);
 Q_DECLARE_METATYPE(Bristol_428A*);
+
+Q_DECLARE_METATYPE(QByteArray);
+Q_DECLARE_METATYPE(QByteArray*);
+
+
 
 namespace deviceType
 {
@@ -61,7 +67,7 @@ private:
     ViSession defaultSession;               // default session for device communication
     FoundInstr foundResources;              // map of VISA resources found
     QList<QVariant> selectedDevices;        // devices selected by the user
-
+    QMutex *communicationLock;
     bool checkOperationComplete(ViSession instrSession, QByteArray instrAddress, int timeout = DEFAULT_COMMAND_TIMEOUT_MS);
 
 private slots:

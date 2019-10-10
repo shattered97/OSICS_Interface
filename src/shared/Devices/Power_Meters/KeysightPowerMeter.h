@@ -11,19 +11,19 @@ public:
     KeysightPowerMeter(QByteArray theIdentity, QByteArray theInstrLoc);
     ~KeysightPowerMeter();
 
-    void measurePower(int window, QByteArray &response);
+    QByteArray measurePower(int window);
     void setPowerUnit(int window, QByteArray unit);
-    void getPowerUnit(int window, QByteArray &response);
-    void getAllPowerUnits(QByteArray & response);
-    void queryWavelength(int window, QByteArray &response, QByteArray value="");
-    void setWavelength(int window, QByteArray &value, QByteArray &unit);
-    void testCommand(QByteArray cmd, QByteArray &response);
+    QByteArray getPowerUnit(int window);
+    QByteArray getAllPowerUnits();
+    QByteArray queryWavelength(int window, QByteArray value="");
+    void setWavelength(int window, QByteArray value, QByteArray unit);
+    QByteArray testCommand(QByteArray cmd);
     int getNumPowerMeterChannels();
     QList<QByteArray> formatPowerUnits(QByteArray rawUnits, int numChannels);
     QList<QByteArray> parseBinaryBlockPowerReadings(QByteArray binaryBlock, int numBytesPerValue);
-    void getPowerReadingOnAllChannels(QList<QByteArray> &readings);
+    QList<QByteArray> getPowerReadingOnAllChannels();
     void updateConfig(QSettings &configSettings);
-    void getAllPowerReadings(QByteArray &response);
+    QByteArray getAllPowerReadings();
 
     void updatePowerSettings(QSettings &configSettings);
     void updateWavelengthSettings(QSettings &configSettings);

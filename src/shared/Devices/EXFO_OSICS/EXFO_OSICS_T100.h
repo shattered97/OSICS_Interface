@@ -18,7 +18,7 @@ public:
      * @param response Response from instrument - current level | Disabled (optical output is disabled)
      * @return true if command was successful
      */
-    void diodeCurrentLevelModuleQuery(int slotNum, QByteArray &response);
+    QByteArray diodeCurrentLevelModuleQuery(int slotNum);
 
     /**
      * @brief diodeMaxCurrentModuleQuery Returns the diode maximum current in mA
@@ -27,7 +27,7 @@ public:
      * @param response Response from instrument - diode maximum current in mA
      * @return true if command was successful
      */
-    void diodeMaxCurrentModuleQuery(int slotNum, QByteArray &response);
+    QByteArray diodeMaxCurrentModuleQuery(int slotNum);
 
 
     // ********************************* Modulation Control Commands *********************************
@@ -39,7 +39,7 @@ public:
      * @param frequency Frequency of the modulation signal in Hz (153 to 1000000 Hz)
      * @return true if command was successful
      */
-    void setModFrequencyModuleCmd(int slotNum, QByteArray &frequency);
+    void setModFrequencyModuleCmd(int slotNum, QByteArray frequency);
 
     /**
      * @brief modFrequencyModuleQuery Returns the frequency selected for the internal modulation generator in Hz
@@ -48,7 +48,7 @@ public:
      * @param response Response from instrument - selected frequency in Hz
      * @return true if command was successful
      */
-    void modFrequencyModuleQuery(int slotNum, QByteArray &response);
+    QByteArray modFrequencyModuleQuery(int slotNum);
 
 
     // ********************************* Calibration Control Commands ********************************
@@ -68,7 +68,7 @@ public:
      * @param wavelength First wavelength in nm
      * @return true if command was successful
      */
-    void setFirstCalibrationWavelengthCmd(int slotNum, QByteArray &wavelength);
+    void setFirstCalibrationWavelengthCmd(int slotNum, QByteArray wavelength);
 
     /**
      * @brief setSecondCalibrationWavelengthCmd Sets the second wavelength value of the wavelength calibration
@@ -77,7 +77,7 @@ public:
      * @param wavelength Second wavelength in nm
      * @return true if command was successful
      */
-    void setSecondCalibrationWavelengthCmd(int slotNum, QByteArray &wavelength);
+    void setSecondCalibrationWavelengthCmd(int slotNum, QByteArray wavelength);
 
     /**
      * @brief firstCalibrationWavelengthQuery Returns the first calibration wavelength
@@ -86,7 +86,7 @@ public:
      * @param response Response from instrument - First calibration wavelength in nm
      * @return true if command was successful
      */
-    void firstCalibrationWavelengthQuery(int slotNum,  QByteArray &response);
+    QByteArray firstCalibrationWavelengthQuery(int slotNum);
 
     /**
      * @brief secondCalibrationWavelengthQuery Returns the second calibration wavelength
@@ -95,7 +95,7 @@ public:
      * @param response Response from instrument - Second calibration wavelength in nm
      * @return true if command was successful
      */
-    void secondCalibrationWavelengthQuery(int slotNum, QByteArray &response);
+    QByteArray secondCalibrationWavelengthQuery(int slotNum);
 
     /**
      * @brief setFirstCalibrationPowerCmd Sets the first power value of the calibration method
@@ -104,7 +104,7 @@ public:
      * @param power Output power in mW
      * @return true if command was successful
      */
-    void setFirstCalibrationPowerCmd(int slotNum, QByteArray &power);
+    void setFirstCalibrationPowerCmd(int slotNum, QByteArray power);
 
     /**
      * @brief setSecondCalibrationPowerCmd Sets the second power value of the calibration method
@@ -113,7 +113,7 @@ public:
      * @param power Output power in mW
      * @return true if command was successful
      */
-    void setSecondCalibrationPowerCmd(int slotNum, QByteArray &power);
+    void setSecondCalibrationPowerCmd(int slotNum, QByteArray power);
 
     /**
      * @brief firstCalibrationPowerQuery Returns the first power value used for the power calibration
@@ -122,7 +122,7 @@ public:
      * @param response Response from instrument - Output power value in mW
      * @return true if command was successful
      */
-    void firstCalibrationPowerQuery(int slotNum, QByteArray &response);
+    QByteArray firstCalibrationPowerQuery(int slotNum);
 
     /**
      * @brief secondCalibrationPowerQuery Returns the second power value used for the power calibration
@@ -131,7 +131,7 @@ public:
      * @param response Response from instrument - Output power value in mW
      * @return true if command was successful
      */
-    void secondCalibrationPowerQuery(int slotNum, QByteArray &response);
+    QByteArray secondCalibrationPowerQuery(int slotNum);
 
 
     // ********************************** Module Parameter-Monitoring Commands *********************************
@@ -143,7 +143,7 @@ public:
      * @param signalType Type of signal - I (monitor diode's current signal) | P (monitor optical-power signal)
      * @return true if command was successful
      */
-    void assignOutBNCPortToSignalCmd(int slotNum, QByteArray &signalType);
+    void assignOutBNCPortToSignalCmd(int slotNum, QByteArray signalType);
 
     /**
      * @brief outBNCPortSignalMonitoringQuery Returns the parameter monitored by the OUT 1 BNC port
@@ -152,7 +152,7 @@ public:
      * @param response Response from instrument - I (T100 laser-diode) | P (optical output power)
      * @return true if command was successful
      */
-    void outBNCPortSignalMonitoringQuery(int slotNum, QByteArray &response);
+    QByteArray outBNCPortSignalMonitoringQuery(int slotNum);
 
 
 // *********** Functions for Applying/Updating Config Settings **********
