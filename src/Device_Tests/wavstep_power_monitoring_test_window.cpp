@@ -184,6 +184,7 @@ void WavStep_Power_Monitoring_Test_Window::updateSettings()
 {
     qDebug() << "setting config values";
     settings->setValue(WAV_STEP_TEST_CSV_FILENAME, QVariant::fromValue(ui->csvLocDisplay->text()));
+    settings->setValue(WAV_STEP_TEST_POWER_POLL_RATE, QVariant::fromValue(ui->pmReadingRefreshRateEdit));
     settings->setValue(WAV_STEP_TEST_START_WAVELENGTH, QVariant::fromValue(ui->startWavLineEdit->text()));
     settings->setValue(WAV_STEP_TEST_END_WAVELENGTH, QVariant::fromValue(ui->endWavLineEdit->text()));
     settings->setValue(WAV_STEP_TEST_WAV_STEP_SIZE, QVariant::fromValue(ui->stepSizeLineEdit->text()));
@@ -409,9 +410,10 @@ void WavStep_Power_Monitoring_Test_Window::calculateTestRuntime(){
     QByteArray endWav = ui->endWavLineEdit->text().toLatin1();
     QByteArray dwell = ui->dwellLineEdit->text().toLatin1();
     QByteArray stepSize = ui->stepSizeLineEdit->text().toLatin1();
+    QByteArray pmPollRate = ui->pmReadingRefreshRateEdit->text().toLatin1();
 
     // check if any fields are missing
-    if(startWav == "" || endWav == "" || dwell == "" || stepSize == ""){
+    if(startWav == "" || endWav == "" || dwell == "" || stepSize == "" || pmPollRate == ""){
         ui->estimatedTimeDisplay->clear();
     }
     else{
@@ -486,5 +488,23 @@ void WavStep_Power_Monitoring_Test_Window::on_selectCsvLocButton_clicked()
 
 void WavStep_Power_Monitoring_Test_Window::on_pmReadingRefreshRateEdit_editingFinished()
 {
-    // #TODO pass into wavelength test worker
+
+    ui->pmReadingRefreshRateEdit->blockSignals(true);
+    QByteArray pollRate = ui->pmReadingRefreshRateEdit->text().toLatin1();
+
+    if(isInputValueValid(pollRate)){
+        if(pollRate.toDouble() <= 0){
+            QMessageBox msgBox;
+            msgBox.setText("Graph refresh rate must be greater than 0 seconds.");
+            msgBox.exec();
+            ui->pmReadingRefreshRateEdit->clear();
+        }
+    }
+    else{
+        ui->pmReadingRefreshRateEdit->clear();
+    }
+
+    ui->pmReadingRefreshRateEdit->clearFocus();
+    ui->pmReadingRefreshRateEdit->blockSignals(false);
+
 }

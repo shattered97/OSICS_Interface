@@ -6,6 +6,7 @@
 #include <QtCharts/QLineSeries>
 #include <QtCharts/QChartView>
 
+
 namespace Ui {
 class wavstep_power_monitoring_graph_window;
 }

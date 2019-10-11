@@ -128,7 +128,7 @@ const QByteArray TEST_TYPES[] = {N7714A_WAV_CYCLE_TEST, OSICS_WAV_CYCLE_TEST, EX
 
 // Wavelength Step Test With Power Monitoring Settings
 const QByteArray WAV_STEP_TEST_CSV_FILENAME = "Wav Step Test .csv Filename";
-const QByteArray WAV_STEP_TEST_GRAPH_FILENAME = "Wav Step Test Graph Filename";
+const QByteArray WAV_STEP_TEST_POWER_POLL_RATE = "Wav Step Test Power Poll Rate";
 const QByteArray WAV_STEP_TEST_START_WAVELENGTH = "Wav Step Test Start Wavelength";
 const QByteArray WAV_STEP_TEST_END_WAVELENGTH = "Wav Step Test End Wavelength";
 const QByteArray WAV_STEP_TEST_WAV_STEP_SIZE = "Wav Step Test Step Size";

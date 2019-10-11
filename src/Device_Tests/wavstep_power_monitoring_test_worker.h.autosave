@@ -46,7 +46,7 @@ private:
     void executeTestOnT100Module(TestParamsForT100 testParams);
     void executeTestStep(double currentWavelength, TestParamsForT100 testParams);
     void setWavelengthOnPowerMeters(QByteArray wavelength);
-    void initializeT100Modules(TestParamsForT100 testParams);
+    void initializeT100Modules();
 
 };
 

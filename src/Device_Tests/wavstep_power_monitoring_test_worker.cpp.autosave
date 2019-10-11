@@ -7,10 +7,13 @@ WavStep_Power_Monitoring_Test_Worker::WavStep_Power_Monitoring_Test_Worker(TestD
 }
 
 void WavStep_Power_Monitoring_Test_Worker::runTest(){
-
+    
+    // setup modules
     initializeT100Modules();
 
+    // start timer
     timer.start();
+    
     for(auto testParams : testData.testParamsForT100){
         executeTestOnT100Module(testParams);
     }

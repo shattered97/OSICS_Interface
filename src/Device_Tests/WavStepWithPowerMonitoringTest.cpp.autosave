@@ -47,7 +47,7 @@ void WavStepWithPowerMonitoringTest::slotSendPowerReadings(PowerReadings reading
             // create series name
             QByteArray seriesName = powerMeter->getInstrIdentity() + " Channel " + QByteArray::number(i+1);
 
-            double timeInMs = timer.elapsed();
+        // #TODO remove and put in test worker
             double timeInSec = timeInMs / 1000;
             QPair<QByteArray, QByteArray> dataPoint = {QByteArray::number(timeInSec), readings[i]};
 
