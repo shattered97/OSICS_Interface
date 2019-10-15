@@ -150,7 +150,6 @@ ViStatus VisaInterface::openInstrSession(ViSession &defaultSession, QByteArray i
    ViStatus status = viOpen(defaultSession, instrAddr, VI_NULL, VI_NULL, &instrSess);
    if(status < VI_SUCCESS){
        logger->logEntry(QString("Failed to open session on instrument"), __LINE__);
-       qDebug() << "instr address: " << instrAddr;
    }
    else{
        logger->logEntry(QString("Opened session to: %1").arg(QString::fromLatin1(instrAddr)), __LINE__);
@@ -204,7 +203,6 @@ ViStatus VisaInterface::findNextResource(ViSession &defaultRMSession, FoundInstr
 
 ViStatus VisaInterface::queryInstrument(QByteArray &instrAddr, ViSession &instrSess, FoundInstr &resultMap)
 {
-    ViUInt32 rtnSize;
     InstrData firstInstr;
 
     //Ask the Instrument Identity
@@ -220,8 +218,8 @@ ViStatus VisaInterface::queryInstrument(QByteArray &instrAddr, ViSession &instrS
     else
     {
         //Asked for Identity so lets read it
-        QByteArray rsp;
-        theStatus = readCmd(instrSess, instrAddr, &rsp);
+        QByteArray rsp = "";
+        theStatus = readCmd(instrSess, instrAddr, rsp);
 
         QString responseFromCommand(rsp);  //Convert to string
 
@@ -261,35 +259,27 @@ ViStatus VisaInterface::sendCmd(ViSession &instrSession, QByteArray instrAddr, Q
     return theStatus;
 }
 
-ViStatus VisaInterface::readCmd(ViSession &instrSession, QByteArray instrAddr, QByteArray *response)
+ViStatus VisaInterface::readCmd(ViSession &instrSession, QByteArray instrAddr, QByteArray &response)
 {
-    if(response){
-        qDebug() << "address of response in readCmd() " << response;
-        unsigned char buffer[VISA_MAX_BUFFER_READ_SIZE];
-        ViUInt32 retCount = 0;
-        theStatus = viRead(instrSession, buffer, VISA_MAX_BUFFER_READ_SIZE, &retCount);
 
-        *response = QByteArray(reinterpret_cast<char*>(buffer), retCount);
+    unsigned char buffer[VISA_MAX_BUFFER_READ_SIZE];
+    ViUInt32 retCount = 0;
+    theStatus = viRead(instrSession, buffer, VISA_MAX_BUFFER_READ_SIZE, &retCount);
 
-        QByteArray rsp = *response;
-        qDebug() << "buffer to qbytearray: " << rsp;
+    response = QByteArray(reinterpret_cast<char*>(buffer), retCount);
 
-        logger->logInstrReadCmd(instrAddr, theStatus, *response, __LINE__);
+    logger->logInstrReadCmd(instrAddr, theStatus, response, __LINE__);
 
-        if(theStatus < VI_SUCCESS)
-        {
-            logger->logEntry("Error reading response from device", __LINE__);
-        }
-        else
-        {
-            logger->logEntry(QString("%1 Bytes Read:  %2").arg(retCount), __LINE__);
-        }
-
-        return theStatus;
+    if(theStatus < VI_SUCCESS)
+    {
+        logger->logEntry("Error reading response from device", __LINE__);
     }
-    else{
-        return -1;
+    else
+    {
+        logger->logEntry(QString("%1 Bytes Read:  %2").arg(retCount), __LINE__);
     }
+
+    return theStatus;
 
 }
 

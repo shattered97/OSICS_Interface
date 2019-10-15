@@ -10,6 +10,7 @@
 
 #include "constants.h"
 
+
 class DefaultInstrument : public QObject
 {
     Q_OBJECT
@@ -65,6 +66,8 @@ public:
     QMainWindow * getConfigWindow();
 
     void updateConfig(QSettings &configSettings);
+
+    void sendCommandAndWaitForResponse(QByteArray theInstrLoc, QByteArray command, QByteArray *response);
 
 signals:
     void signalSendCmdRsp(QByteArray instrAddress, QByteArray command, QByteArray *response);

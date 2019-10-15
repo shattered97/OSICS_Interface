@@ -5,6 +5,8 @@ DefaultInstrument::DefaultInstrument(QByteArray theIdentity, QByteArray theInstr
 {
     this->theIdentity = theIdentity;
     this->theInstrLoc = theInstrLoc;
+
+    qRegisterMetaType<QByteArray>();
 }
 
 QByteArray DefaultInstrument::getInstrIdentity()
@@ -25,7 +27,8 @@ QByteArray DefaultInstrument::querySTB(){
 
     QByteArray command = QUERY_STB;
     QByteArray response = "";
-    emit signalSendCmdRsp(theInstrLoc, command, &response);
+
+    sendCommandAndWaitForResponse(theInstrLoc, command, &response);
 
     return response;
 }
@@ -50,7 +53,8 @@ QByteArray DefaultInstrument::queryESE(){
 
     QByteArray command = QUERY_ESE;
     QByteArray response = "";
-    emit signalSendCmdRsp(theInstrLoc, command, &response);
+
+    sendCommandAndWaitForResponse(theInstrLoc, command, &response);
 
     return response;
 }
@@ -62,7 +66,8 @@ QByteArray DefaultInstrument::queryESR(){
 
     QByteArray command = QUERY_ESR;
     QByteArray response = "";
-    emit signalSendCmdRsp(theInstrLoc, command, &response);
+
+    sendCommandAndWaitForResponse(theInstrLoc, command, &response);
 
     return response;
 }
@@ -84,7 +89,8 @@ QByteArray DefaultInstrument::queryOPC(){
 
     QByteArray command = QUERY_OPC;
     QByteArray response = "";
-    emit signalSendCmdRsp(theInstrLoc, command, &response);
+
+    sendCommandAndWaitForResponse(theInstrLoc, command, &response);
 
     return response;
 }
@@ -116,7 +122,8 @@ QByteArray DefaultInstrument::queryTST(){
 
     QByteArray command = QUERY_TST;
     QByteArray response = "";
-    emit signalSendCmdRsp(theInstrLoc, command, &response);
+
+    sendCommandAndWaitForResponse(theInstrLoc, command, &response);
 
     return response;
 }
@@ -128,7 +135,8 @@ QByteArray DefaultInstrument::queryOPT(){
 
     QByteArray command = QUERY_OPT;
     QByteArray response = "";
-    emit signalSendCmdRsp(theInstrLoc, command, &response);
+
+    sendCommandAndWaitForResponse(theInstrLoc, command, &response);
 
     return response;
 }
@@ -150,7 +158,8 @@ QByteArray DefaultInstrument::queryIDN(){
 
     QByteArray command = QUERY_IDN;
     QByteArray response = "";
-    emit signalSendCmdRsp(theInstrLoc, command, &response);
+
+    sendCommandAndWaitForResponse(theInstrLoc, command, &response);
 
     return response;
 }
@@ -165,5 +174,14 @@ void DefaultInstrument::setConfigWindow(QMainWindow *configWindow){
 
 void DefaultInstrument::updateConfig(QSettings &){
     qDebug() << "default updateConfig()";
+}
+
+void DefaultInstrument::sendCommandAndWaitForResponse(QByteArray theInstrLoc, QByteArray command, QByteArray *response){
+    if(response){
+        emit signalSendCmdRsp(theInstrLoc, command, response);
+        while(*response == ""){
+            // wait
+        }
+    }
 }
 

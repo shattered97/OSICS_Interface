@@ -184,7 +184,7 @@ void WavStep_Power_Monitoring_Test_Window::updateSettings()
 {
     qDebug() << "setting config values";
     settings->setValue(WAV_STEP_TEST_CSV_FILENAME, QVariant::fromValue(ui->csvLocDisplay->text()));
-    settings->setValue(WAV_STEP_TEST_POWER_POLL_RATE, QVariant::fromValue(ui->pmReadingRefreshRateEdit));
+    settings->setValue(WAV_STEP_TEST_POWER_POLL_RATE, QVariant::fromValue(ui->pmReadingRefreshRateEdit->text()));
     settings->setValue(WAV_STEP_TEST_START_WAVELENGTH, QVariant::fromValue(ui->startWavLineEdit->text()));
     settings->setValue(WAV_STEP_TEST_END_WAVELENGTH, QVariant::fromValue(ui->endWavLineEdit->text()));
     settings->setValue(WAV_STEP_TEST_WAV_STEP_SIZE, QVariant::fromValue(ui->stepSizeLineEdit->text()));
@@ -432,7 +432,7 @@ double WavStep_Power_Monitoring_Test_Window::convertDwellToSeconds(double dwell)
         convertedDwell = dwell;
     }
     else if(ui->dwellMsecRadioButton->isChecked()){
-        convertedDwell = dwell / 1000;
+        convertedDwell = dwell / SEC_TO_MSEC_MULTIPLIER;
     }
     else if(ui->dwellMinRadioButton->isChecked()){
         convertedDwell = dwell * 60;
@@ -460,7 +460,7 @@ void WavStep_Power_Monitoring_Test_Window::on_dwellSRadioButton_clicked()
 
 void WavStep_Power_Monitoring_Test_Window::on_dwellMsecRadioButton_clicked()
 {
-    double displayDwell = dwellTimeInSeconds * 1000;
+    double displayDwell = dwellTimeInSeconds * SEC_TO_MSEC_MULTIPLIER;
     if(dwellTimeInSeconds >= 0){
         ui->dwellLineEdit->setText(QByteArray::number(displayDwell));
     }

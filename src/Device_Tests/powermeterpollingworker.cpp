@@ -1,26 +1,14 @@
 #include "powermeterpollingworker.h"
-#include <QTimer>
-#include <QMetaObject>
 
 PowerMeterPollingWorker::PowerMeterPollingWorker(PowerMeter *powerMeter, QObject *parent ) : QObject(parent)
 {
     this->powerMeter = powerMeter;
-
 }
 
 void PowerMeterPollingWorker::slotPollPowerMeter(){
-    qDebug() << "slotPollPowerMeter()";
-
-//    QByteArray unit = powerMeter->getPowerUnit(1);
-//    qDebug() << "power unit: " << unit;
-
-
-//    QList<QByteArray> readings = powerMeter->getPowerReadingOnAllChannels();
-//    qDebug() << " ***************** " << readings;
-
 
     while(continuePolling){
-       QThread::msleep(1000);
+       QThread::msleep(WAVSTEP_GUI_POW_POLLING_RATE_MSEC);
        PowerReadings readingsForPowerMeter;
        readingsForPowerMeter.powerReadings = powerMeter->getPowerReadingOnAllChannels();
        readingsForPowerMeter.powerMeter = powerMeter;

@@ -28,7 +28,7 @@ QByteArray EXFO_OSICS_SWT::getAPCModuleOperatingMode(int slotNum){
     QByteArray baseCmd = "CH#:MODE?\n";
     baseCmd = insertSlotNum(baseCmd, slotNum);
     QByteArray response = "";
-    emit signalSendCmdRsp(theInstrLoc, baseCmd, &response);
+    sendCommandAndWaitForResponse(theInstrLoc, baseCmd, &response);
     return response;
 }
 
@@ -64,7 +64,7 @@ QByteArray  EXFO_OSICS_SWT::getChannelForSignalAPC(int slotNum){
     QByteArray baseCmd = "CH#:CLOSE?\n";
     baseCmd = insertSlotNum(baseCmd, slotNum);
     QByteArray response = "";
-    emit signalSendCmdRsp(theInstrLoc, baseCmd, &response);
+    sendCommandAndWaitForResponse(theInstrLoc, baseCmd, &response);
     return response;
 }
 
@@ -98,7 +98,7 @@ QByteArray  EXFO_OSICS_SWT::getSingleShutterState(int slotNum){
     QByteArray baseCmd = "CH#:SHUT?\n";
     baseCmd = insertSlotNum(baseCmd, slotNum);
     QByteArray response = "";
-    emit signalSendCmdRsp(theInstrLoc, baseCmd, &response);
+    sendCommandAndWaitForResponse(theInstrLoc, baseCmd, &response);
     return response;
 }
 
@@ -125,7 +125,7 @@ QByteArray  EXFO_OSICS_SWT::getMultipleShutterState(int slotNum){
     QByteArray baseCmd = "CH#:SHUTMODE?\n";
     baseCmd = insertSlotNum(baseCmd, slotNum);
     QByteArray response = "";
-    emit signalSendCmdRsp(theInstrLoc, baseCmd, &response);
+    sendCommandAndWaitForResponse(theInstrLoc, baseCmd, &response);
     return response;
 }
 
@@ -159,7 +159,7 @@ QByteArray  EXFO_OSICS_SWT::getSwitchMode(int slotNum){
     QByteArray baseCmd = "CH#:BAR?\n";
     baseCmd = insertSlotNum(baseCmd, slotNum);
     QByteArray response = "";
-    emit signalSendCmdRsp(theInstrLoc, baseCmd, &response);
+    sendCommandAndWaitForResponse(theInstrLoc, baseCmd, &response);
     return response;
 }
 
@@ -184,7 +184,7 @@ QByteArray  EXFO_OSICS_SWT::getSignalChannel(int slotNum){
     QByteArray baseCmd = "CH#:CH?\n";
     baseCmd = insertSlotNum(baseCmd, slotNum);
     QByteArray response = "";
-    emit signalSendCmdRsp(theInstrLoc, baseCmd, &response);
+    sendCommandAndWaitForResponse(theInstrLoc, baseCmd, &response);
     return response;
 }
 

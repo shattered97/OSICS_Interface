@@ -36,7 +36,7 @@ void EXFO_OSICS_MAINFRAME::enableMainframeLaserCmd(){
 QByteArray EXFO_OSICS_MAINFRAME::laserStateMainframeQuery(){
     QByteArray baseCmd = "ENABLE?\n";
     QByteArray response = "";
-    emit signalSendCmdRsp(theInstrLoc, baseCmd, &response);
+    sendCommandAndWaitForResponse(theInstrLoc, baseCmd, &response);
     return response;
 }
 
@@ -57,7 +57,7 @@ void EXFO_OSICS_MAINFRAME::setMainframeSpectralUnitNMCmd(){
 QByteArray EXFO_OSICS_MAINFRAME::spectralUnitMainframeQuery(){
     QByteArray baseCmd = "NM?\n";
     QByteArray response = "";
-    emit signalSendCmdRsp(theInstrLoc, baseCmd, &response);
+    sendCommandAndWaitForResponse(theInstrLoc, baseCmd, &response);
     return response;
 }
 
@@ -79,7 +79,7 @@ void EXFO_OSICS_MAINFRAME::setMainframePowerUnitMWCmd(){
 QByteArray EXFO_OSICS_MAINFRAME::powerUnitMainframeQuery(){
     QByteArray baseCmd = "MW?\n";
     QByteArray response = "";
-    emit signalSendCmdRsp(theInstrLoc, baseCmd, &response);
+    sendCommandAndWaitForResponse(theInstrLoc, baseCmd, &response);
     return response;
 }
 
@@ -95,7 +95,7 @@ void EXFO_OSICS_MAINFRAME::setMainframeOutputPowerCmd(QByteArray power){
 QByteArray EXFO_OSICS_MAINFRAME::outputPowerMainframeQuery(){
     QByteArray baseCmd = "P?\n";
     QByteArray response = "";
-    emit signalSendCmdRsp(theInstrLoc, baseCmd, &response);
+    sendCommandAndWaitForResponse(theInstrLoc, baseCmd, &response);
     return response;
 }
 
@@ -111,7 +111,7 @@ void EXFO_OSICS_MAINFRAME::setMainframeModSrcTypeCmd(QByteArray modSrc){
 QByteArray EXFO_OSICS_MAINFRAME::modSrcTypeMainframeQuery(){
     QByteArray baseCmd = "MOD_SRC?\n";
     QByteArray response = "";
-    emit signalSendCmdRsp(theInstrLoc, baseCmd, &response);
+    sendCommandAndWaitForResponse(theInstrLoc, baseCmd, &response);
     return response;
 }
 
@@ -127,7 +127,7 @@ void EXFO_OSICS_MAINFRAME::setMainframeFrequencyQuery(QByteArray frequency){
 QByteArray EXFO_OSICS_MAINFRAME::frequencyMainframeQuery(){
     QByteArray baseCmd = "MOD_F?\n";
     QByteArray response = "";
-    emit signalSendCmdRsp(theInstrLoc, baseCmd, &response);
+    sendCommandAndWaitForResponse(theInstrLoc, baseCmd, &response);
     return response;
 }
 
@@ -151,18 +151,21 @@ void EXFO_OSICS_MAINFRAME::recallMainframeConfigCmd(QByteArray configMemory){
 QByteArray EXFO_OSICS_MAINFRAME::remoteInterlockMainframeQuery(){
     QByteArray baseCmd = "INTERLOCK?\n";
     QByteArray response = "";
-    emit signalSendCmdRsp(theInstrLoc, baseCmd, &response);
+    sendCommandAndWaitForResponse(theInstrLoc, baseCmd, &response);
     return response;
 }
 
 
 QByteArray EXFO_OSICS_MAINFRAME::moduleTypeAtSlotQuery(int slotNum){
     QByteArray baseCmd = "PRESENT?\n";
-    QByteArray param;
-    param.setNum(slotNum);
+    QByteArray param = QByteArray::number(slotNum);
+
     baseCmd = appendParamToCmdWithSpace(baseCmd, param);
+
     QByteArray response = "";
-    emit signalSendCmdRsp(theInstrLoc, baseCmd, &response);
+    sendCommandAndWaitForResponse(theInstrLoc, baseCmd, &response);
+
+    // parse response
     return response;
 }
 
@@ -188,7 +191,7 @@ QByteArray EXFO_OSICS_MAINFRAME::spectralUnitModuleQuery(int slotNum){
     QByteArray baseCmd = "CH#:NM?\n";
     baseCmd = insertSlotNum(baseCmd, slotNum);
     QByteArray response = "";
-    emit signalSendCmdRsp(theInstrLoc, baseCmd, &response);
+    sendCommandAndWaitForResponse(theInstrLoc, baseCmd, &response);
     return response;
 }
 
@@ -206,7 +209,7 @@ QByteArray EXFO_OSICS_MAINFRAME::refWavelengthModuleQuery(int slotNum){
     QByteArray baseCmd = "CH#:L?\n";
     baseCmd = insertSlotNum(baseCmd, slotNum);
     QByteArray response = "";
-    emit signalSendCmdRsp(theInstrLoc, baseCmd, &response);
+    sendCommandAndWaitForResponse(theInstrLoc, baseCmd, &response);
     return response;
 }
 
@@ -216,7 +219,7 @@ QByteArray EXFO_OSICS_MAINFRAME::softwareVersionModuleQuery(int slotNum){
     QByteArray baseCmd = "CH#:FIRM?\n";
     baseCmd = insertSlotNum(baseCmd, slotNum);
     QByteArray response = "";
-    emit signalSendCmdRsp(theInstrLoc, baseCmd, &response);
+    sendCommandAndWaitForResponse(theInstrLoc, baseCmd, &response);
     return response;
 }
 
@@ -224,7 +227,7 @@ QByteArray EXFO_OSICS_MAINFRAME::identificationModuleQuery(int slotNum){
     QByteArray baseCmd = "CH#:*IDN?\n";
     baseCmd = insertSlotNum(baseCmd, slotNum);
     QByteArray response = "";
-    emit signalSendCmdRsp(theInstrLoc, baseCmd, &response);
+    sendCommandAndWaitForResponse(theInstrLoc, baseCmd, &response);
     return response;
 }
 
@@ -232,7 +235,7 @@ QByteArray EXFO_OSICS_MAINFRAME::typeOfModuleQuery(int slotNum){
     QByteArray baseCmd = "CH#:TYPE?\n";
     baseCmd = insertSlotNum(baseCmd, slotNum);
     QByteArray response = "";
-    emit signalSendCmdRsp(theInstrLoc, baseCmd, &response);
+    sendCommandAndWaitForResponse(theInstrLoc, baseCmd, &response);
     return response;
 }
 
@@ -260,7 +263,7 @@ QByteArray EXFO_OSICS_MAINFRAME::laserStateModuleQuery(int slotNum){
     QByteArray baseCmd = "CH#:ENABLE?\n";
     baseCmd = insertSlotNum(baseCmd, slotNum);
     QByteArray response = "";
-    emit signalSendCmdRsp(theInstrLoc, baseCmd, &response);
+    sendCommandAndWaitForResponse(theInstrLoc, baseCmd, &response);
     return response;
 }
 
@@ -288,7 +291,7 @@ QByteArray EXFO_OSICS_MAINFRAME::powerUnitModuleQuery(int slotNum){
     QByteArray baseCmd = "CH#:MW?\n";
     baseCmd = insertSlotNum(baseCmd, slotNum);
     QByteArray response = "";
-    emit signalSendCmdRsp(theInstrLoc, baseCmd, &response);
+    sendCommandAndWaitForResponse(theInstrLoc, baseCmd, &response);
     return response;
 }
 
@@ -308,7 +311,7 @@ QByteArray EXFO_OSICS_MAINFRAME::outputPowerModuleQuery(int slotNum){
     QByteArray baseCmd = "CH#:P?\n";
     baseCmd = insertSlotNum(baseCmd, slotNum);
     QByteArray response = "";
-    emit signalSendCmdRsp(theInstrLoc, baseCmd, &response);
+    sendCommandAndWaitForResponse(theInstrLoc, baseCmd, &response);
     return response;
 }
 
@@ -317,7 +320,7 @@ QByteArray EXFO_OSICS_MAINFRAME::outputPowerReachedQuery(int slotNum){
     QByteArray baseCmd = "CH#:LIMIT?\n";
     baseCmd = insertSlotNum(baseCmd, slotNum);
     QByteArray response = "";
-    emit signalSendCmdRsp(theInstrLoc, baseCmd, &response);
+    sendCommandAndWaitForResponse(theInstrLoc, baseCmd, &response);
     return response;
 }
 
@@ -338,7 +341,7 @@ QByteArray EXFO_OSICS_MAINFRAME::frequencyModuleQuery(int slotNum){
     QByteArray baseCmd = "CH#:F?\n";
     baseCmd = insertSlotNum(baseCmd, slotNum);
     QByteArray response = "";
-    emit signalSendCmdRsp(theInstrLoc, baseCmd, &response);
+    sendCommandAndWaitForResponse(theInstrLoc, baseCmd, &response);
     return response;
 }
 
@@ -356,7 +359,7 @@ QByteArray EXFO_OSICS_MAINFRAME::coherenceControlEnabledQuery(int slotNum){
     QByteArray baseCmd = "CH#:CTRL?\n";
     baseCmd = insertSlotNum(baseCmd, slotNum);
     QByteArray response = "";
-    emit signalSendCmdRsp(theInstrLoc, baseCmd, &response);
+    sendCommandAndWaitForResponse(theInstrLoc, baseCmd, &response);
     return response;
 }
 
@@ -374,7 +377,7 @@ QByteArray EXFO_OSICS_MAINFRAME::autoPeakFindControlQuery(int slotNum){
     QByteArray baseCmd = "CH#:APF?\n";
     baseCmd = insertSlotNum(baseCmd, slotNum);
     QByteArray response = "";
-    emit signalSendCmdRsp(theInstrLoc, baseCmd, &response);
+    sendCommandAndWaitForResponse(theInstrLoc, baseCmd, &response);
     return response;
 }
 
@@ -394,7 +397,7 @@ QByteArray EXFO_OSICS_MAINFRAME::moduleModulationCtrlQuery(int slotNum){
     QByteArray baseCmd = "CH#:MOD_CTRL?\n";
     baseCmd = insertSlotNum(baseCmd, slotNum);
     QByteArray response = "";
-    emit signalSendCmdRsp(theInstrLoc, baseCmd, &response);
+    sendCommandAndWaitForResponse(theInstrLoc, baseCmd, &response);
     return response;
 }
 
@@ -412,7 +415,7 @@ QByteArray EXFO_OSICS_MAINFRAME::moduleModulationSrcQuery(int slotNum){
     QByteArray baseCmd = "CH#:MOD_SRC?\n";
     baseCmd = insertSlotNum(baseCmd, slotNum);
     QByteArray response = "";
-    emit signalSendCmdRsp(theInstrLoc, baseCmd, &response);
+    sendCommandAndWaitForResponse(theInstrLoc, baseCmd, &response);
     return response;
 }
 
@@ -447,7 +450,7 @@ void EXFO_OSICS_MAINFRAME::applyConfigSettings(QSettings &configSettings){
 void EXFO_OSICS_MAINFRAME::updateConfig(QSettings &configSettings){
     qDebug() << "updateConfigSettings()";
 
-    configSettings.setValue(DEVICE_LOCATION, QVariant::fromValue(theInstrLoc));
+    configSettings.setValue(DEVICE_ADDRESS, QVariant::fromValue(theInstrLoc));
     configSettings.setValue(DEVICE_IDENTITY, QVariant::fromValue(theIdentity));
 
     updateInstalledModules(configSettings);
@@ -462,6 +465,7 @@ void EXFO_OSICS_MAINFRAME::setupModuleTypesList(){
 
     for(int i = 0; i < EXFO_OSICS_NUM_SLOTS; i++){
         QByteArray present = moduleTypeAtSlotQuery(i + 1);
+
         if(present.toInt() == -1){
             moduleNames.append("EMPTY");
         }

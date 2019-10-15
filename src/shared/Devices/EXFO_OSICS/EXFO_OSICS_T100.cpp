@@ -8,27 +8,27 @@ EXFO_OSICS_T100::EXFO_OSICS_T100(QByteArray theIdentity, QByteArray theInstrLoc)
 
 void EXFO_OSICS_T100::setT100MinMaxWavelengths(QByteArray t100Type){
     // get module type
-    if(t100Type.contains("1310")){
+    if(t100Type == EXFO_OSICS_T100_1310_TYPE_NAME){
         minWavelength = EXFO_OSICS_T100_1310_MIN_WAV_NM;
         maxWavelength = EXFO_OSICS_T100_1310_MAX_WAV_NM;
     }
-    else if(t100Type.contains("1415")){
+    else if(t100Type == EXFO_OSICS_T100_1415_TYPE_NAME){
         minWavelength = EXFO_OSICS_T100_1415_MIN_WAV_NM;
         maxWavelength = EXFO_OSICS_T100_1415_MAX_WAV_NM;
     }
-    else if(t100Type.contains("1520")){
+    else if(t100Type == EXFO_OSICS_T100_1520_TYPE_NAME){
         minWavelength = EXFO_OSICS_T100_1520_MIN_WAV_NM;
         maxWavelength = EXFO_OSICS_T100_1520_MAX_WAV_NM;
     }
-    else if(t100Type.contains("1550")){
+    else if(t100Type == EXFO_OSICS_T100_1550_TYPE_NAME){
         minWavelength = EXFO_OSICS_T100_1550_MIN_WAV_NM;
         maxWavelength = EXFO_OSICS_T100_1550_MAX_WAV_NM;
     }
-    else if(t100Type.contains("1575")){
+    else if(t100Type == EXFO_OSICS_T100_1575_TYPE_NAME){
         minWavelength = EXFO_OSICS_T100_1575_MIN_WAV_NM;
         maxWavelength = EXFO_OSICS_T100_1575_MAX_WAV_NM;
     }
-    else if(t100Type.contains("1620")){
+    else if(t100Type == EXFO_OSICS_T100_1620_TYPE_NAME){
         minWavelength = EXFO_OSICS_T100_1620_MIN_WAV_NM;
         maxWavelength = EXFO_OSICS_T100_1620_MAX_WAV_NM;
     }
@@ -55,7 +55,7 @@ QByteArray EXFO_OSICS_T100::diodeCurrentLevelModuleQuery(int slotNum){
     QByteArray baseCmd = "CH#:I?\n";
     baseCmd = insertSlotNum(baseCmd, slotNum);
     QByteArray response = "";
-    emit signalSendCmdRsp(theInstrLoc, baseCmd, &response);
+    sendCommandAndWaitForResponse(theInstrLoc, baseCmd, &response);
     return response;
 }
 
@@ -64,7 +64,7 @@ QByteArray EXFO_OSICS_T100::diodeMaxCurrentModuleQuery(int slotNum){
     QByteArray baseCmd = "CH#:IMAX?\n";
     baseCmd = insertSlotNum(baseCmd, slotNum);
     QByteArray response = "";
-    emit signalSendCmdRsp(theInstrLoc, baseCmd, &response);
+    sendCommandAndWaitForResponse(theInstrLoc, baseCmd, &response);
     return response;
 }
 
@@ -84,7 +84,7 @@ QByteArray EXFO_OSICS_T100::modFrequencyModuleQuery(int slotNum){
     QByteArray baseCmd = "CH#:MOD_F?\n";
     baseCmd = insertSlotNum(baseCmd, slotNum);
     QByteArray response = "";
-    emit signalSendCmdRsp(theInstrLoc, baseCmd, &response);
+    sendCommandAndWaitForResponse(theInstrLoc, baseCmd, &response);
     return response;
 }
 
@@ -118,7 +118,7 @@ QByteArray EXFO_OSICS_T100::firstCalibrationWavelengthQuery(int slotNum){
     QByteArray baseCmd = "CH#:LCAL1?\n";
     baseCmd = insertSlotNum(baseCmd, slotNum);
     QByteArray response = "";
-    emit signalSendCmdRsp(theInstrLoc, baseCmd, &response);
+    sendCommandAndWaitForResponse(theInstrLoc, baseCmd, &response);
     return response;
 }
 
@@ -127,7 +127,7 @@ QByteArray EXFO_OSICS_T100::secondCalibrationWavelengthQuery(int slotNum){
     QByteArray baseCmd = "CH#:LCAL2?\n";
     baseCmd = insertSlotNum(baseCmd, slotNum);
     QByteArray response = "";
-    emit signalSendCmdRsp(theInstrLoc, baseCmd, &response);
+    sendCommandAndWaitForResponse(theInstrLoc, baseCmd, &response);
     return response;
 }
 
@@ -155,7 +155,7 @@ QByteArray EXFO_OSICS_T100::firstCalibrationPowerQuery(int slotNum){
     baseCmd = insertSlotNum(baseCmd, slotNum);
 
     QByteArray response = "";
-    emit signalSendCmdRsp(theInstrLoc, baseCmd, &response);
+    sendCommandAndWaitForResponse(theInstrLoc, baseCmd, &response);
     return response;
 }
 
@@ -164,7 +164,7 @@ QByteArray EXFO_OSICS_T100::secondCalibrationPowerQuery(int slotNum){
     QByteArray baseCmd = "CH#:PCAL2?\n";
     baseCmd = insertSlotNum(baseCmd, slotNum);
     QByteArray response = "";
-    emit signalSendCmdRsp(theInstrLoc, baseCmd, &response);
+    sendCommandAndWaitForResponse(theInstrLoc, baseCmd, &response);
     return response;
 }
 
@@ -184,7 +184,7 @@ QByteArray EXFO_OSICS_T100::outBNCPortSignalMonitoringQuery(int slotNum){
     QByteArray baseCmd = "CH#:AOUT?\n";
     baseCmd = insertSlotNum(baseCmd, slotNum);
     QByteArray response = "";
-    emit signalSendCmdRsp(theInstrLoc, baseCmd, &response);
+    sendCommandAndWaitForResponse(theInstrLoc, baseCmd, &response);
     return response;
 }
 

@@ -13,6 +13,11 @@
 
 Q_DECLARE_METATYPE(PowerReadings)
 
+typedef struct TestDataPoint{
+
+
+} TestDataPoint;
+
 class WavStepWithPowerMonitoringTest : public DeviceTest
 {
     Q_OBJECT
@@ -73,7 +78,7 @@ private:
     double estimatedTime = 0.0;
     double powerPollRate = 0.0;
 
-    QElapsedTimer timer;
+
     WavStepPowerTestData allData;
     int readingCount = 0;
     int maxCountBeforeWrite = 100;

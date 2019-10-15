@@ -27,12 +27,12 @@ private:
     int t100SlotNum = 1;
 
     PowerMeter *powerMeter = nullptr;
-    int powerMeterSlotNum = 1;
+    int powerMeterSlotNum = 3;
 
 
     double startPower = 0;
     double endPower = 10;
-    double powerStep = 5; // change back to 0.1
+    double powerStep = 0.1;
     double wavelength = 1520;
 
     QByteArray constructOutputFilename();

@@ -38,11 +38,11 @@ private:
     Bristol_428A *bristol = nullptr;
 
     PowerMeter *powerMeter = nullptr;
-    int powerMeterSlotNum = 1;
+    int powerMeterSlotNum = 3;
 
     double startWav = 1465;
     double endWav = 1575;
-    double wavStep = 50; // change back to 1
+    double wavStep = 1; // change back to 1
     double power = 0;
 
     QByteArray constructOutputFilename();

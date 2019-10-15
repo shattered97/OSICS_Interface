@@ -9,6 +9,7 @@ WavStepWithPowerMonitoringTest::WavStepWithPowerMonitoringTest(QList<QVariant> &
     settings->clear();
 
     qRegisterMetaType<PowerReadings>();
+    qRegisterMetaType<QByteArray>();
 
     QObject::connect(&configWindow, SIGNAL(signalBeginTest(QSettings *)),
                      this, SLOT(slotBeginTest(QSettings *)));
@@ -41,34 +42,6 @@ void WavStepWithPowerMonitoringTest::slotSendPowerReadings(PowerReadings reading
     // signal to window to display power (send identity and readings list)
     emit signalDisplayPowerReadings(powerMeter->getInstrIdentity(), readings);
 
-    if(testStarted){
-        qDebug() << "in test started loop";
-        for(int i = 0; i < readings.size(); i++){
-            // create series name
-            QByteArray seriesName = powerMeter->getInstrIdentity() + " Channel " + QByteArray::number(i+1);
-
-            double timeInMs = timer.elapsed();
-            double timeInSec = timeInMs / 1000;
-            QPair<QByteArray, QByteArray> dataPoint = {QByteArray::number(timeInSec), readings[i]};
-
-            // if we have reached the buffer size for graphing, remove the first item before appending
-            if(allData.value(seriesName)->size() == maxCountBeforeWrite){
-
-                allData.value(seriesName)->removeFirst();
-            }
-            allData.value(seriesName)->append(dataPoint);
-        }
-        readingCount += 1;
-        qDebug() << "emitting signal to graph readings";
-        emit signalGraphPowerMeterReadings(allData);
-        if(readingCount == maxCountBeforeWrite){
-            // clear count and write data to graph
-            readingCount = 0;
-
-            writeToCsv();
-
-        }
-    }
 }
 
 void WavStepWithPowerMonitoringTest::writeToCsv(){
@@ -118,7 +91,7 @@ void WavStepWithPowerMonitoringTest::slotPollForPowerMeterReadings(){
         connect(worker, SIGNAL(finished()), worker, SLOT(deleteLater()));
         connect(workerThread, SIGNAL(finished()), workerThread, SLOT(deleteLater()));
 
-        qDebug() << "starting worker";
+        qDebug() << "======================================== starting pm worker";
         workerThread->start();
     }
 
@@ -198,13 +171,19 @@ void WavStepWithPowerMonitoringTest::runDeviceTest()
     WavStep_Power_Monitoring_Test_Worker *worker = new WavStep_Power_Monitoring_Test_Worker(testData);
     worker->moveToThread(workerThread);
 
+    // create graph window
+    int graphRefreshMsec = powerPollRate * SEC_TO_MSEC_MULTIPLIER;
+    graphWindow = new WavStep_Power_Monitoring_Graph_Window(channelsToGraph, WAVSTEP_GRAPH_MAX_POINTS_PER_SERIES, graphRefreshMsec);
+    QObject::connect(worker, SIGNAL(signalAddReadingsToGraph(QList<WavStep_Power_Monitoring_Data_Point>)),
+                     graphWindow, SLOT(slotAddReadingsToGraph(QList<WavStep_Power_Monitoring_Data_Point>)));
+
     connect(worker, SIGNAL(finished()), workerThread, SLOT(quit()));
     connect(workerThread, SIGNAL(started()), worker, SLOT(runTest()));
     connect(worker, SIGNAL(finished()), worker, SLOT(deleteLater()));
     connect(workerThread, SIGNAL(finished()), workerThread, SLOT(deleteLater()));
 
     // start timer
-    timer.start();
+
     testStarted = true;
 
     workerThread->start();
@@ -317,14 +296,12 @@ void WavStepWithPowerMonitoringTest::slotBeginTest(QSettings *settings){
     testData.swtModule = exfoSWT;
     testData.powerMeters = powerMeters;
     testData.testParamsForT100 = testParamsForT100;
+    testData.filename = csvFilename;
     testData.powerPollRate = powerPollRate;
     testData.dwellInMs = dwellSeconds * 1000;
     testData.stepSize = wavStepSize;
 
-    // create graph window
-    graphWindow = new WavStep_Power_Monitoring_Graph_Window(channelsToGraph);
-    QObject::connect(this, SIGNAL(signalGraphPowerMeterReadings(WavStepPowerTestData)),
-                     graphWindow, SLOT(slotGraphPowerMeterReadings(WavStepPowerTestData)));
+
 
     runDeviceTest();
 }

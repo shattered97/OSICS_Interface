@@ -21,7 +21,7 @@ QByteArray Bristol_428A::measureWavelengthSingle()
 {
     QByteArray baseCmd = ":MEAS:SCAL:WAV?\n";
     QByteArray response = "";
-    emit signalSendCmdRsp(theInstrLoc, baseCmd, &response);
+    sendCommandAndWaitForResponse(theInstrLoc, baseCmd, &response);
     return response;
 }
 
@@ -29,6 +29,6 @@ QByteArray Bristol_428A::measurePowerSingle()
 {
     QByteArray baseCmd = ":MEAS:SCAL:POW?\n";
     QByteArray response = "";
-    emit signalSendCmdRsp(theInstrLoc, baseCmd, &response);
+    sendCommandAndWaitForResponse(theInstrLoc, baseCmd, &response);
     return response;
 }

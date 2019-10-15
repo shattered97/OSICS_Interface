@@ -26,7 +26,7 @@ QByteArray EXFO_OSICS_ATN::moduleAttenuationQuery(int slotNum){
 
      baseCmd = insertSlotNum(baseCmd, slotNum);
      QByteArray response = "";
-     emit signalSendCmdRsp(theInstrLoc, baseCmd, &response);
+     sendCommandAndWaitForResponse(theInstrLoc, baseCmd, &response);
 
      return response;
 }
@@ -42,7 +42,7 @@ QByteArray EXFO_OSICS_ATN::moduleAttenuationMinMaxQuery(int slotNum, QByteArray 
     baseCmd = appendParamToCmdWithSpace(baseCmd, wavelengthNum);
 
     QByteArray response = "";
-    emit signalSendCmdRsp(theInstrLoc, baseCmd, &response);
+    sendCommandAndWaitForResponse(theInstrLoc, baseCmd, &response);
 
     return response;
 }
@@ -58,7 +58,7 @@ QByteArray EXFO_OSICS_ATN::moduleWavelengthNMQuery(int slotNum, QByteArray wavel
     baseCmd = appendParamToCmdWithSpace(baseCmd, wavelengthNum);
 
     QByteArray response = "";
-    emit signalSendCmdRsp(theInstrLoc, baseCmd, &response);
+    sendCommandAndWaitForResponse(theInstrLoc, baseCmd, &response);
 
     return response;
 }
@@ -89,7 +89,7 @@ QByteArray EXFO_OSICS_ATN::moduleAttenuationOffsetQuery(int slotNum, QByteArray 
      baseCmd = appendParamToCmdWithSpace(baseCmd, wavelengthNum);
 
      QByteArray response = "";
-     emit signalSendCmdRsp(theInstrLoc, baseCmd, &response);
+     sendCommandAndWaitForResponse(theInstrLoc, baseCmd, &response);
 
      return response;
 }
@@ -122,7 +122,7 @@ void EXFO_OSICS_ATN::updateConfig(QSettings &configSettings){
     qDebug() << "atn updateConfig()";
 
     configSettings.setValue(DEVICE_IDENTITY, theIdentity);
-    configSettings.setValue(DEVICE_LOCATION, theInstrLoc);
+    configSettings.setValue(DEVICE_ADDRESS, theInstrLoc);
 
     updateAttenuationSettings(configSettings);
     updateOffsetSettings(configSettings);

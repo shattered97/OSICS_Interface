@@ -163,8 +163,15 @@ const QByteArray EXFO_OSICS_T100_1575_MAX_WAV_NM = "1630";
 const QByteArray EXFO_OSICS_T100_1620_MIN_WAV_NM = "1560";
 const QByteArray EXFO_OSICS_T100_1620_MAX_WAV_NM = "1680";
 
+const QByteArray EXFO_OSICS_T100_1310_TYPE_NAME = "T100/1310\n";
+const QByteArray EXFO_OSICS_T100_1415_TYPE_NAME = "T100/1415\n";
+const QByteArray EXFO_OSICS_T100_1520_TYPE_NAME = "T100/1520\n";
+const QByteArray EXFO_OSICS_T100_1550_TYPE_NAME = "T100/1550\n";
+const QByteArray EXFO_OSICS_T100_1575_TYPE_NAME = "T100/1575\n";
+const QByteArray EXFO_OSICS_T100_1620_TYPE_NAME = "T100/1620\n";
+
 // QSettings Key Values - General
-const QByteArray DEVICE_LOCATION = "Device Location";
+const QByteArray DEVICE_ADDRESS = "Device Location";
 const QByteArray DEVICE_IDENTITY = "Device Identity";
 
 // QSettings Key Values - Power Meter
@@ -225,7 +232,15 @@ const QByteArray EXFO_OSICS_ATN_REF_WAVELENGTH_2 = "EXFO OSICS ATN Second Refere
 const QByteArray EXFO_OSICS_ATN_OFFSET_1 = "EXFO OSICS ATN First Offset";
 const QByteArray EXFO_OSICS_ATN_OFFSET_2 = "EXFO OSICS ATN Second Offset";
 
+
+// Wavelength Step Test With Power Monitoring Test Constants
+const int WAVSTEP_GUI_POW_POLLING_RATE_MSEC = 1500;
+const int WAVSTEP_GRAPH_MAX_POINTS_PER_SERIES = 100;
+// Error Constants
+const QByteArray ERR_NO_COMM_RESPONSE = "ERROR: No Response";
+
 // Math Constants
 const double SPEED_OF_LIGHT = 299792458;
+const double SEC_TO_MSEC_MULTIPLIER = 1000;
 #endif // CONSTANTS_H
 

@@ -86,7 +86,7 @@ public:
      * @param retCount[out] Number of bytes actually transferred
      * @return Completion code
      */
-    ViStatus readCmd(ViSession &instrSession, QByteArray instrAddr, QByteArray *response);
+    ViStatus readCmd(ViSession &instrSession, QByteArray instrAddr, QByteArray &response);
 
     /**
      * @brief openInstrSession Opens a session to an instrument located at instrAddr.

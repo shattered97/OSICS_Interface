@@ -55,7 +55,7 @@ void ConfigOSICS_ATN::getValuesFromConfig()
     qDebug() << "getValuesFromConfig() atn";
 
     moduleIdentity = settings->value(DEVICE_IDENTITY).value<QByteArray>();
-    moduleLocation = settings->value(DEVICE_LOCATION).value<QByteArray>();
+    moduleLocation = settings->value(DEVICE_ADDRESS).value<QByteArray>();
     attenuationSetting = settings->value(EXFO_OSICS_ATN_ATTENUATION).value<QByteArray>();
     firstMinAttenuation = settings->value(EXFO_OSICS_ATN_MIN_ATTENUATION_1).value<QByteArray>();
     firstMaxAttenuation = settings->value(EXFO_OSICS_ATN_MAX_ATTENUATION_1).value<QByteArray>();

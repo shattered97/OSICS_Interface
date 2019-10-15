@@ -33,9 +33,9 @@ private:
     int atnSlotNum = 1;
 
     PowerMeter *powerMeter = nullptr;
-    int powerMeterSlotNum = 1;
+    int powerMeterSlotNum = 3;
 
-    double atnStep = 60;    // change back to 0.1
+    double atnStep = 0.1;
     double power = 0;
     double startWav = 1465;
     double endWav = 1575;

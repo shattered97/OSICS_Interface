@@ -15,7 +15,7 @@ QByteArray N7714A::queryPowerUnit(int module){
     QByteArray command = QString(baseCmd.insert(paramPosition, param)).toLatin1();
     QByteArray response = "";
     // send command
-    emit signalSendCmdRsp(theInstrLoc, command, &response);
+    sendCommandAndWaitForResponse(theInstrLoc, baseCmd, &response);
     return response;
 }
 
@@ -45,7 +45,7 @@ QByteArray N7714A::queryPowerStatus(int module){
     QByteArray command = QString(baseCmd.insert(paramPosition, param)).toLatin1();
     QByteArray response = "";
     // send command
-    emit signalSendCmdRsp(theInstrLoc, command, &response);
+    sendCommandAndWaitForResponse(theInstrLoc, baseCmd, &response);
     return response;
 }
 
@@ -81,7 +81,7 @@ QByteArray N7714A::queryPowerLevel(int module, QByteArray value){
     command = QString(command.insert(valuePos, " " + value)).toLatin1();
     QByteArray response = "";
     // send command
-    emit signalSendCmdRsp(theInstrLoc, command, &response);
+    sendCommandAndWaitForResponse(theInstrLoc, baseCmd, &response);
     return response;
 }
 
@@ -113,7 +113,7 @@ QByteArray N7714A::queryWavelength(int module, QByteArray value){
     command = QString(command.insert(valuePos, " " + value)).toLatin1();
     QByteArray response = "";
     // send command
-    emit signalSendCmdRsp(theInstrLoc, command, &response);
+    sendCommandAndWaitForResponse(theInstrLoc, baseCmd, &response);
     return response;
 }
 
@@ -144,7 +144,7 @@ QByteArray N7714A::queryFrequency(int module, QByteArray value){
     command = QString(command.insert(valuePos, " " + value)).toLatin1();
     QByteArray response = "";
     // send command
-    emit signalSendCmdRsp(theInstrLoc, command, &response);
+    sendCommandAndWaitForResponse(theInstrLoc, baseCmd, &response);
     return response;
 }
 
@@ -164,10 +164,10 @@ void N7714A::execFrequency(int module, QByteArray value, QByteArray unit){
     emit signalSendCmdNoRsp(theInstrLoc, command);
 }
 
-QByteArray N7714A::testCommand(QByteArray cmd){
-    cmd = cmd + '\n';
+QByteArray N7714A::testCommand(QByteArray baseCmd){
+    baseCmd = baseCmd + '\n';
     QByteArray response = "";
-    emit signalSendCmdRsp(theInstrLoc, cmd, &response);
+    sendCommandAndWaitForResponse(theInstrLoc, baseCmd, &response);
     return response;
 }
 
@@ -175,7 +175,7 @@ QByteArray N7714A::queryAutoWavMode(int module){
     QByteArray baseCmd = "sour:wav:auto?";
     baseCmd.insert(baseCmd.indexOf(':'), QByteArray::number(module));
     QByteArray response = "";
-    emit signalSendCmdRsp(theInstrLoc, baseCmd, &response);
+    sendCommandAndWaitForResponse(theInstrLoc, baseCmd, &response);
     return response;
 }
 

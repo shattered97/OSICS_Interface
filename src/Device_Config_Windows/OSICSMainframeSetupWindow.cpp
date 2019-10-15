@@ -61,7 +61,7 @@ void OSICSMainframeSetupWindow::getValuesFromConfig(){
     deviceIdentity = settings->value(DEVICE_IDENTITY).value<QByteArray>();
     qDebug() << deviceIdentity;
 
-    deviceLocation = settings->value(DEVICE_LOCATION).value<QByteArray>();
+    deviceLocation = settings->value(DEVICE_ADDRESS).value<QByteArray>();
     qDebug() << deviceLocation;
 
     moduleNames = settings->value(EXFO_OSICS_MODULE_NAMES).value<QList<QByteArray>>();
