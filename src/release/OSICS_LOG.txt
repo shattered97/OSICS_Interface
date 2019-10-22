@@ -1,0 +1,5 @@
+22_Oct_19_07_23:01:926 (13): Logging started.................................................................. 
+22_Oct_19_07_23:02:192 (35): Successfully created Default Resource 
+22_Oct_19_07_23:08:045 (77): Error Finding resources, status code: -1073807343 
+22_Oct_19_07_23:10:552 (145): Closing Default Session 
+22_Oct_19_07_23:10:575 (290): Closed Session 
