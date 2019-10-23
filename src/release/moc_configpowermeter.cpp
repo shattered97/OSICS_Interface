@@ -22,8 +22,8 @@ QT_BEGIN_MOC_NAMESPACE
 QT_WARNING_PUSH
 QT_WARNING_DISABLE_DEPRECATED
 struct qt_meta_stringdata_ConfigPowerMeter_t {
-    QByteArrayData data[18];
-    char stringdata0[374];
+    QByteArrayData data[16];
+    char stringdata0[363];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -43,13 +43,11 @@ QT_MOC_LITERAL(7, 88, 25), // "signalApplyConfigSettings"
 QT_MOC_LITERAL(8, 114, 16), // "slotUpdateWindow"
 QT_MOC_LITERAL(9, 131, 25), // "slot_radio_button_clicked"
 QT_MOC_LITERAL(10, 157, 40), // "on_powerUnitComboBox_currentI..."
-QT_MOC_LITERAL(11, 198, 4), // "unit"
-QT_MOC_LITERAL(12, 203, 41), // "on_wavelengthComboBox_current..."
-QT_MOC_LITERAL(13, 245, 5), // "index"
-QT_MOC_LITERAL(14, 251, 33), // "on_wavelengthEdit_editingFini..."
-QT_MOC_LITERAL(15, 285, 29), // "on_loadSettingsButton_pressed"
-QT_MOC_LITERAL(16, 315, 29), // "on_saveSettingsButton_pressed"
-QT_MOC_LITERAL(17, 345, 28) // "on_saveChangesButton_clicked"
+QT_MOC_LITERAL(11, 198, 41), // "on_wavelengthComboBox_current..."
+QT_MOC_LITERAL(12, 240, 33), // "on_wavelengthEdit_editingFini..."
+QT_MOC_LITERAL(13, 274, 29), // "on_loadSettingsButton_pressed"
+QT_MOC_LITERAL(14, 304, 29), // "on_saveSettingsButton_pressed"
+QT_MOC_LITERAL(15, 334, 28) // "on_saveChangesButton_clicked"
 
     },
     "ConfigPowerMeter\0signalUpdateConfigSettings\0"
@@ -57,8 +55,8 @@ QT_MOC_LITERAL(17, 345, 28) // "on_saveChangesButton_clicked"
     "configSettings\0signalApplyConfigSettings\0"
     "slotUpdateWindow\0slot_radio_button_clicked\0"
     "on_powerUnitComboBox_currentIndexChanged\0"
-    "unit\0on_wavelengthComboBox_currentIndexChanged\0"
-    "index\0on_wavelengthEdit_editingFinished\0"
+    "on_wavelengthComboBox_currentIndexChanged\0"
+    "on_wavelengthEdit_editingFinished\0"
     "on_loadSettingsButton_pressed\0"
     "on_saveSettingsButton_pressed\0"
     "on_saveChangesButton_clicked"
@@ -85,12 +83,12 @@ static const uint qt_meta_data_ConfigPowerMeter[] = {
  // slots: name, argc, parameters, tag, flags
        8,    0,   74,    2, 0x0a /* Public */,
        9,    0,   75,    2, 0x08 /* Private */,
-      10,    1,   76,    2, 0x08 /* Private */,
-      12,    1,   79,    2, 0x08 /* Private */,
-      14,    0,   82,    2, 0x08 /* Private */,
-      15,    0,   83,    2, 0x08 /* Private */,
-      16,    0,   84,    2, 0x08 /* Private */,
-      17,    0,   85,    2, 0x08 /* Private */,
+      10,    0,   76,    2, 0x08 /* Private */,
+      11,    0,   77,    2, 0x08 /* Private */,
+      12,    0,   78,    2, 0x08 /* Private */,
+      13,    0,   79,    2, 0x08 /* Private */,
+      14,    0,   80,    2, 0x08 /* Private */,
+      15,    0,   81,    2, 0x08 /* Private */,
 
  // signals: parameters
     QMetaType::Void, 0x80000000 | 3, 0x80000000 | 5,    4,    6,
@@ -99,8 +97,8 @@ static const uint qt_meta_data_ConfigPowerMeter[] = {
  // slots: parameters
     QMetaType::Void,
     QMetaType::Void,
-    QMetaType::Void, QMetaType::QString,   11,
-    QMetaType::Void, QMetaType::Int,   13,
+    QMetaType::Void,
+    QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
@@ -119,8 +117,8 @@ void ConfigPowerMeter::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int
         case 1: _t->signalApplyConfigSettings((*reinterpret_cast< QVariant(*)>(_a[1])),(*reinterpret_cast< QSettings(*)>(_a[2]))); break;
         case 2: _t->slotUpdateWindow(); break;
         case 3: _t->slot_radio_button_clicked(); break;
-        case 4: _t->on_powerUnitComboBox_currentIndexChanged((*reinterpret_cast< const QString(*)>(_a[1]))); break;
-        case 5: _t->on_wavelengthComboBox_currentIndexChanged((*reinterpret_cast< int(*)>(_a[1]))); break;
+        case 4: _t->on_powerUnitComboBox_currentIndexChanged(); break;
+        case 5: _t->on_wavelengthComboBox_currentIndexChanged(); break;
         case 6: _t->on_wavelengthEdit_editingFinished(); break;
         case 7: _t->on_loadSettingsButton_pressed(); break;
         case 8: _t->on_saveSettingsButton_pressed(); break;
