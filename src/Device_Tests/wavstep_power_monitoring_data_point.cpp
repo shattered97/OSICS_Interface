@@ -17,7 +17,6 @@ WavStep_Power_Monitoring_Data_Point::WavStep_Power_Monitoring_Data_Point(const W
     this->wavelength = other.wavelength;
 }
 
-
 QByteArray WavStep_Power_Monitoring_Data_Point::getPowerMeterChannelName(){
     return powerMeterChannelName;
 }

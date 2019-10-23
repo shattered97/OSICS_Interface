@@ -1,6 +1,7 @@
 #include "wavstep_power_monitoring_file_worker.h"
 #include <QDebug>
 #include <QFile>
+#include "constants.h"
 
 WavStep_Power_Monitoring_File_Worker::WavStep_Power_Monitoring_File_Worker(QByteArray filename, QObject *parent ) : QObject(parent)
 {
@@ -11,19 +12,17 @@ WavStep_Power_Monitoring_File_Worker::WavStep_Power_Monitoring_File_Worker(QByte
 void WavStep_Power_Monitoring_File_Worker::slotWriteBufferToFile(QList<WavStep_Power_Monitoring_Data_Point> dataPoints){
     mutex->lock();
 
-    qDebug() << "WRITING TO FILE";
     QFile file(filename);
     if(file.open(QIODevice::Append)){
         QTextStream stream(&file);
 
         for(auto dataPoint : dataPoints){
-            QByteArray seriesName = dataPoint.getPowerMeterChannelName();
-            QByteArray powerReading = dataPoint.getPowerReading();
-            QByteArray readingTime = dataPoint.getReadingTime();
-            QByteArray wavelength = dataPoint.getWavelength();
-
-            QByteArray csvLine = seriesName + "," + powerReading + "," + readingTime + "," + wavelength + '\n';
-            qDebug() << csvLine;
+            // construct and print csv line from data point
+            QString seriesName = dataPoint.getPowerMeterChannelName();
+            QString powerReading = dataPoint.getPowerReading();
+            QString readingTime = dataPoint.getReadingTime();
+            QString wavelength = dataPoint.getWavelength();
+            QString csvLine = WAVSTEP_CSV_LINE.arg(seriesName).arg(powerReading).arg(readingTime).arg(wavelength);
             stream << csvLine;
         }
 
@@ -34,24 +33,24 @@ void WavStep_Power_Monitoring_File_Worker::slotWriteBufferToFile(QList<WavStep_P
     mutex->unlock();
 }
 
-
-void WavStep_Power_Monitoring_File_Worker::slotWaitForWork(){
+void WavStep_Power_Monitoring_File_Worker::startFileOutputWorker(){
     // initialize csv file
     QFile file(filename);
     if(file.open(QIODevice::Append)){
         QTextStream stream(&file);
 
-        stream << "series,power reading (Watt),reading time, wavelength\n";
+        stream << WAVSTEP_CSV_FILE_HEADING;
 
         file.flush();
         file.close();
     }
+}
 
-    while(waitingForData){
-        mutex->lock();
-        // wait
-        mutex->unlock();
-    }
+void WavStep_Power_Monitoring_File_Worker::slotStopThread(){
+    // aquire lock and emit signal to close thread
+    mutex->lock();
+    emit finished();
+    mutex->unlock();
 }
 
 

@@ -31,7 +31,7 @@ signals:
    void signalUpdateMinMaxWavelength(double minWav, double maxWav);
    void signalDisplayPowerReadings(QByteArray powerMeterIdentity, QList<QByteArray> readings);
    void signalGraphPowerMeterReadings(WavStepPowerTestData);
-   void signalStopWorkerThreads();
+
 
 public slots:
     void slotBeginTest(QSettings *settings);
@@ -76,7 +76,7 @@ private:
     double wavStepSize = 0.0;
     double dwellSeconds = 0.0;
     double estimatedTime = 0.0;
-    double powerPollRate = 0.0;
+    double graphRefreshRate = 0.0;
 
 
     WavStepPowerTestData allData;

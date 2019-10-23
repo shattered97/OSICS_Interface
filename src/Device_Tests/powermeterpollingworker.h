@@ -7,6 +7,7 @@
 #include <QThread>
 #include <QTimer>
 #include <QMetaObject>
+#include <QMutex>
 
 typedef struct PowerReadings{
     PowerMeter* powerMeter;             /* pointer to a selected power meter */
@@ -22,19 +23,46 @@ class PowerMeterPollingWorker : public QObject
 {
     Q_OBJECT
 public:
-    PowerMeterPollingWorker(PowerMeter *powerMeter, QObject *parent = 0);
+    /**
+     * @brief PowerMeterPollingWorker Queries a power meter for all readings intermittently until this class
+     *                                receives a signal to stop.
+     * @param powerMeter The power meter to query for readings
+     */
+    PowerMeterPollingWorker(PowerMeter *powerMeter, QObject *parent = nullptr);
+    ~PowerMeterPollingWorker();
+
 
 signals:
+    /**
+     * @brief finished Signal from QThread, emitted when the thread is done executing.
+     */
     void finished();
+
+    /**
+     * @brief signalSendPowerReadings Emits the data collected from querying the power meter for readings.
+     * @param readingsForPowerMeter List of readings (one for each channel) and associated power meter.
+     */
     void signalSendPowerReadings(PowerReadings readingsForPowerMeter);
 
+
 public slots:
+    /**
+     * @brief slotPollPowerMeter The slot executed when starting the thread. Loops continuously, querying the power
+     *                           meter each time and signaling out the result.
+     */
     void slotPollPowerMeter();
+
+    /**
+     * @brief slotStopWorkerThreads Changes the flag allowing the loop in slotPollPowerMeter() to false, allowing it
+     *                              to stop executing and emit finished();
+     */
     void slotStopWorkerThreads();
 
 private:
-    PowerMeter *powerMeter;
-    bool continuePolling = true;
+    PowerMeter *powerMeter;             // pointer to a power meter to query
+    bool continuePolling = true;        // flag to continue looping and querying for data
+    QMutex *lock;                       // lock to give slotStopWorkerThreads a chance to change the continue flag
+
 };
 
 #endif // POWERMETERPOLLINGWORKER_H

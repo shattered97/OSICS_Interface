@@ -769,7 +769,7 @@
      <bool>false</bool>
     </property>
    </widget>
-   <widget class="QLineEdit" name="pmReadingRefreshRateEdit">
+   <widget class="QLineEdit" name="graphRefreshRateEdit">
     <property name="enabled">
      <bool>true</bool>
     </property>
@@ -790,7 +790,7 @@
      <string>1</string>
     </property>
    </widget>
-   <widget class="QLabel" name="pmRefreshLabel">
+   <widget class="QLabel" name="graphRefreshLabel">
     <property name="geometry">
      <rect>
       <x>20</x>
@@ -818,8 +818,8 @@
    <zorder>groupBox_3</zorder>
    <zorder>openGraphWindowButton</zorder>
    <zorder>selectCsvLocButton</zorder>
-   <zorder>pmReadingRefreshRateEdit</zorder>
-   <zorder>pmRefreshLabel</zorder>
+   <zorder>graphRefreshRateEdit</zorder>
+   <zorder>graphRefreshLabel</zorder>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
