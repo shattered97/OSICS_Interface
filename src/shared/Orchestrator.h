@@ -53,12 +53,14 @@ public slots:
     void slotCreateDevice(QString type, QByteArray instrumentAddress, QByteArray instrumentIdentity);
     void slotGetEXFOModuleQVariants(QMap <int, QVariant> &modules, QVariant &device);
     void slotBeginTest(QString testTypeName);
+    void slotClearSelectedDevices();
     void slotGetEXFOModuleConfigPairs(QVariant &device, QMap<int, ModuleConfigPair> &moduleConfigPairs);
 signals:
     void signalReturnDevicesFound(FoundInstr);
     void signalSettingsUpdated();
     void signalSetupEXFOModules();
-    void signalCreateErrorDialog(QByteArray errorMsg);
+    void signalSendDecisionErrorMsg(QString errorMsg);
+    void signalSendSimpleErrorMsg(QString errorMsg);
 
 private:
     VisaInterface theCommBus;               // common methods for talking to VISA devices

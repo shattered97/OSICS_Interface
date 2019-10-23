@@ -115,11 +115,30 @@
      <bool>true</bool>
     </property>
    </widget>
+   <widget class="QPushButton" name="skipStepButton">
+    <property name="geometry">
+     <rect>
+      <x>610</x>
+      <y>620</y>
+      <width>161</width>
+      <height>61</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>14</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>Skip Step</string>
+    </property>
+   </widget>
    <zorder>runTestButton</zorder>
    <zorder>outuptFilenameLineEdit</zorder>
    <zorder>outputFileButton</zorder>
    <zorder>directionsImageLabel</zorder>
    <zorder>directionsTextField</zorder>
+   <zorder>skipStepButton</zorder>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
@@ -127,7 +146,7 @@
      <x>0</x>
      <y>0</y>
      <width>1024</width>
-     <height>17</height>
+     <height>26</height>
     </rect>
    </property>
   </widget>

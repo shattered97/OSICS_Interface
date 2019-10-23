@@ -104,12 +104,8 @@ void EXFO_T100_SWT_PM_WM_Test::runDeviceTest(){
     QByteArray filename = constructOutputFilename();
     qDebug() << filename;
 
-    if(bristol != nullptr){
-        runTestLoopWithWavemeter(filename, activeChannel, startWav, endWav, wavStep, power);
-    }
-    else{
-        runTestLoopPowerMeterOnly(filename, activeChannel, startWav, endWav, wavStep, power);
-    }
+    runTestLoopPowerMeterOnly(filename, activeChannel, startWav, endWav, wavStep, power);
+
 
 
 }
@@ -120,16 +116,18 @@ void EXFO_T100_SWT_PM_WM_Test::runTestLoopPowerMeterOnly(QByteArray filename, in
     testData.append("SWITCH CHANNEL,");
     testData.append("T100 POWER,");
     testData.append("T100 WAVELENGTH,");
-    testData.append("POWER METER POWER");
-    testData.append("\n");
+    testData.append("POWER METER POWER\n");
+
+
+    // get active switch channel
+    QByteArray channel = swt->getChannelForSignalAPC(swtSlotNum);
+
 
     // enable laser and switch output
     t100->enableModuleLaserCmd(t100SlotNum);
     t100->setModulePowerUnitDBmCmd(t100SlotNum);
     swt->enableModuleLaserCmd(swtSlotNum);
     swt->setModulePowerUnitDBmCmd(swtSlotNum);
-
-
 
     // set laser power
     QByteArray powerToSet = QByteArray::number(power);
@@ -144,7 +142,7 @@ void EXFO_T100_SWT_PM_WM_Test::runTestLoopPowerMeterOnly(QByteArray filename, in
     powerMeter->setWavelength(powerMeterSlotNum, startWavToSet, wavUnit);
 
     // wait for adjustments
-    QTime timer = QTime::currentTime().addSecs(3);
+    QTime timer = QTime::currentTime().addSecs(4);
     while(QTime::currentTime() < timer){
         // do nothing
     }
@@ -154,13 +152,8 @@ void EXFO_T100_SWT_PM_WM_Test::runTestLoopPowerMeterOnly(QByteArray filename, in
     double currentWav = startWav;
     while(currentWav <= endWav){
 
-        // get active switch channel
-        QByteArray channel = swt->getChannelForSignalAPC(swtSlotNum);
         testData.append(channel.split('=')[1].trimmed().append(','));
 
-        // get t100 output power
-        QByteArray t100Power = t100->outputPowerModuleQuery(t100SlotNum);
-        testData.append(QByteArray::number(t100Power.split('=')[1].toDouble()).append(','));
 
         // set t100 wavelength
         QByteArray wavToSet = QByteArray::number(currentWav);
@@ -174,10 +167,15 @@ void EXFO_T100_SWT_PM_WM_Test::runTestLoopPowerMeterOnly(QByteArray filename, in
         swt->setRefWavelengthModuleCmd(swtSlotNum, wavToSet);
 
         // wait for adjustments
-        QTime timer = QTime::currentTime().addSecs(3);
+        QTime timer = QTime::currentTime().addSecs(4);
         while(QTime::currentTime() < timer){
             // do nothing
         }
+
+        // get t100 output power
+        QByteArray t100Power = t100->outputPowerModuleQuery(t100SlotNum);
+        testData.append(QByteArray::number(t100Power.split('=')[1].toDouble()).append(','));
+
 
         // write current t100 wavelength
         QByteArray t100Wav = t100->refWavelengthModuleQuery(t100SlotNum);
@@ -185,6 +183,7 @@ void EXFO_T100_SWT_PM_WM_Test::runTestLoopPowerMeterOnly(QByteArray filename, in
 
         // write power meter reading
         QByteArray powerReading = powerMeter->measurePower(powerMeterSlotNum);
+
         // convert and write out
         double convertedPower = ConversionUtilities::convertWattToDBm(powerReading.trimmed().toDouble());
         testData.append(QByteArray::number(convertedPower));

@@ -10,17 +10,27 @@ MainWindow::MainWindow(QWidget *parent) :
 
     loadTestTypesList();
     loadDeviceTypesList();
-    QObject::connect(orchestrator, SIGNAL(signalCreateErrorDialog(QByteArray)),
-                     this, SLOT(slotCreateErrorDialog(QByteArray)));
+    QObject::connect(orchestrator, SIGNAL(signalSendDecisionErrorMsg(QString)),
+                     this, SLOT(slotDisplayDecisionErrorMsg(QString)));
     QObject::connect(this, SIGNAL(signalBeginTest(QString)), orchestrator, SLOT(slotBeginTest(QString)));
     QObject::connect(this, SIGNAL(signalCreateDevice(QString, QByteArray, QByteArray)),
                      orchestrator, SLOT(slotCreateDevice(QString, QByteArray, QByteArray)));
+    QObject::connect(this, SIGNAL(signalClearSelectedDevices()), orchestrator, SLOT(slotClearSelectedDevices()));
+    QObject::connect(orchestrator, SIGNAL(signalSendSimpleErrorMsg(QString)),
+                     this, SLOT(slotDisplaySimpleErrorMsg(QString)));
 }
 
 MainWindow::~MainWindow()
 {
     delete orchestrator;
     delete ui;
+}
+
+void MainWindow::setFontSizes(){
+    // set all fonts with pixel size
+    QFont twelvePixel("MS Shell Dlg 2", 12);
+    twelvePixel.setPointSize(12);
+    ui->addSelectedDeviceBtn->setFont(twelvePixel);
 }
 
 void MainWindow::loadDeviceTypesList(){
@@ -145,14 +155,18 @@ void MainWindow::on_addSelectedDeviceBtn_clicked()
 
 void MainWindow::on_startTestPushButton_clicked()
 {
-    // #TODO open test window
-    // assuming power meter at [0], exfo at [1]
-//    orchestrator->testOSACommands();
+    // open dialog for the user to confirm
+    QMessageBox::StandardButton reply;
+    reply = QMessageBox::question(this, "Confirm", "Confirm selections to begin test.",
+                                  QMessageBox::Yes | QMessageBox::No);
 
-    // send signal with test type name from dropdown to Orchestrator
-    QString testTypeName = ui->testTypeComboBox->currentText();
+    if(reply == QMessageBox::Yes){
+        // send signal with test type name from dropdown to Orchestrator
+        QString testTypeName = ui->testTypeComboBox->currentText();
 
-    emit signalBeginTest(testTypeName);
+        // start test
+        emit signalBeginTest(testTypeName);
+    }
 }
 
 void MainWindow::on_selectedDevicesListWidget_itemDoubleClicked(QListWidgetItem *item)
@@ -172,10 +186,25 @@ void MainWindow::on_selectedDevicesListWidget_itemDoubleClicked(QListWidgetItem 
     QApplication::restoreOverrideCursor();
 }
 
-
-void MainWindow::slotCreateErrorDialog(QByteArray errorMsg){
-    qDebug() << "slotCreateErrorDialog";
+void MainWindow::slotDisplaySimpleErrorMsg(QString errorMsg){
     QMessageBox msgBox;
     msgBox.setText(errorMsg);
     msgBox.exec();
+}
+
+void MainWindow::slotDisplayDecisionErrorMsg(QString errorMsg){
+    qDebug() << "slotCreateErrorDialog";
+    QMessageBox::StandardButton msgBox;
+    msgBox = QMessageBox::question(this, "Error", errorMsg, QMessageBox::Abort | QMessageBox::Retry);
+    if(msgBox == QMessageBox::Abort){
+        // close program
+        exit(EXIT_FAILURE);
+    }
+}
+
+void MainWindow::on_clearSelectedListButton_clicked()
+{
+    emit signalClearSelectedDevices();
+    // clear items in list widget
+    ui->selectedDevicesListWidget->clear();
 }

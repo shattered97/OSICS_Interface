@@ -13,6 +13,7 @@ WavStep_Power_Monitoring_Test_Worker::~WavStep_Power_Monitoring_Test_Worker()
 
 void WavStep_Power_Monitoring_Test_Worker::runTest()
 {
+
     // setup file output worker
     setupFileWriteWorker();
 
@@ -21,7 +22,7 @@ void WavStep_Power_Monitoring_Test_Worker::runTest()
 
     // start timer
     timer.start();
-    
+
     // execute test steps
     for(auto testParams : testData.testParamsForT100){
         executeTestOnT100Module(testParams);
@@ -126,6 +127,7 @@ void WavStep_Power_Monitoring_Test_Worker::executeTestStep(double currentWavelen
 
         // send readings to be graphed
         emit signalAddReadingsToGraph(dataPoints);
+
     }
 }
 

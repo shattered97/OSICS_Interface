@@ -60,7 +60,6 @@ signals:
      */
     void signalStopWorkerThread();
 
-
 public slots:
     /**
      * @brief runTest Slot executed when this thread is started. Facilitates the wavelength step test.

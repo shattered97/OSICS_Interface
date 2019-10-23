@@ -93,7 +93,7 @@ private:
     void getTestValuesFromSettings();
     void populateAssignedModules(QMap<int, QByteArray> swtChannelToT100Map);
     QList<QByteArray> channelsToGraph;
-    
+
     QMutex *powerMeterLock;
     QMap<int, QByteArray> swtChannelToT100Map;
 

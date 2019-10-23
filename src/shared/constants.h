@@ -236,11 +236,34 @@ const QByteArray EXFO_OSICS_ATN_OFFSET_2 = "EXFO OSICS ATN Second Offset";
 // Wavelength Step Test With Power Monitoring Test Constants
 const int WAVSTEP_GUI_POW_POLLING_RATE_MSEC = 1500;
 const int WAVSTEP_GRAPH_MAX_POINTS_PER_SERIES = 100;
+const int WAVSTEP_OUTPUT_CSV_BUFFER_SIZE = 100;
+
+const QByteArray WAVSTEP_START_NOT_LESS_THAN_END = "Start wavelength should be less than the end wavelength.";
+const QByteArray WAVSTEP_END_NOT_GREATER_THAN_START = "End wavelength should be greater than the start wavelength.";
+const QByteArray WAVSTEP_NO_T100_ASSIGNED_TO_SWT = "Assign T100 Modules to switch channels before setting wavelength.";
+const QByteArray WAVSTEP_VALUE_OUT_OF_RANGE = "Value entered is invalid (out of min/max range.";
+const QByteArray WAVSTEP_VALUE_NON_NUMERIC = "Value entered is invalid (non-numeric).";
+const QByteArray WAVSTEP_DWELL_TIME_INVALID = "Dwell time must be greater than or equal to 0.";
+const QByteArray WAVSTEP_STEP_SIZE_INVALID = "Step size must be greater than 0.";
+const QByteArray WAVSTEP_GRAPH_REFRESH_INVALID = "Graph refresh rate must be greater than 0 seconds.";
+const QByteArray WAVSTEP_CANT_OPEN_FILE = "Can't open file.";
+const QByteArray WAVSTEP_NO_FILE_CHOSEN = "Choose output .csv file for test data.";
+const QByteArray WAVSTEP_NO_T100_MODULES_SELECTED = "No T100 modules selected for switch channels.";
+const QByteArray WAVSTEP_NO_SERIES_SELECTED = "Select at least one series to graph.";
+
+const QByteArray WAVSTEP_CSV_FILE_HEADING = "series,power reading (Watt),reading time, wavelength\n";
+const QByteArray WAVSTEP_SWITCH_CHANNEL_TAKEN = "T100 Module %1 is already selected for another channel.";
+const QString WAVSTEP_CSV_LINE = "%1,%2,%3,%4\n";
+
 // Error Constants
 const QByteArray ERR_NO_COMM_RESPONSE = "ERROR: No Response";
+const QString ERR_OPEN_SESSION_FAILED = "Failed to open session on instrument %1.";
+const QString ERR_SENDING_CMD_FAILED = "Failed to send command to instrument %1";
+const QString ERR_READING_RSP_FAILED = "Failed to read response from instrument %1";
 
 // Math Constants
 const double SPEED_OF_LIGHT = 299792458;
 const double SEC_TO_MSEC_MULTIPLIER = 1000;
+
 #endif // CONSTANTS_H
 

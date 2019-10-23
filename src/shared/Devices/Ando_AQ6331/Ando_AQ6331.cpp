@@ -51,28 +51,30 @@ QByteArray Ando_AQ6331::getSpan()
 }
 
 QPair<QByteArray, QByteArray> Ando_AQ6331::getPeakDataFromTrace(QByteArray wavelength, QByteArray power){
+
+    // send command to query for the wavelength data captured from trace
     QByteArray wavTraceCmd = "WDATA\n";
     QByteArray wavTraceDataRaw = "";
     sendCommandAndWaitForResponse(theInstrLoc, wavTraceCmd, &wavTraceDataRaw);
-    // parse raw data into list
 
+    // parse the raw data into a list
     QList<QByteArray> wavDataList = wavTraceDataRaw.trimmed().split(',');
-    int numWavDataPoints = wavDataList[0].toInt();
-    qDebug() << numWavDataPoints;
-    wavDataList.removeFirst();
-    qDebug() << wavDataList.size();
 
+    // remove first item in list because it's not part of following data
+    wavDataList.removeFirst();
+
+    // send command to query for the power data captured from trace
     QByteArray powTraceCmd = "LDATA\n";
     QByteArray powerTraceDataRaw = "";
     sendCommandAndWaitForResponse(theInstrLoc, powTraceCmd, &powerTraceDataRaw);
 
+    // parse raw data into a list
     QList<QByteArray> powDataList = powerTraceDataRaw.trimmed().split(',');
-    int numPowDataPoints = powDataList[0].toInt();
-    qDebug() << numPowDataPoints;
-    powDataList.removeFirst();
-    qDebug() << powDataList.size();
 
-    // get index of highest power level
+    // same as wavelength data, first item is removed because it is not a data point
+    powDataList.removeFirst();
+
+    // get index of highest power level in the power data list
     double maxPow = powDataList[0].toDouble();
     int maxPowIndex = 0;
     for(int i = 0; i < powDataList.size(); i++){
@@ -82,6 +84,7 @@ QPair<QByteArray, QByteArray> Ando_AQ6331::getPeakDataFromTrace(QByteArray wavel
             maxPowIndex = i;
         }
     }
+
 
     power = powDataList[maxPowIndex];
     wavelength = wavDataList[maxPowIndex];

@@ -103,18 +103,50 @@ private:
 
     void showEvent(QShowEvent* event);
     void populateAllValues();
-    void getValuesFromConfig();
-    bool loadSettings();
-    bool saveSettings();
 
+
+    bool isInputValueValid(QByteArray inputValue, QByteArray minValue, QByteArray maxValue);
     void convertAndDisplayPower(QList<QByteArray> powerList, QLineEdit* displayField);
     void convertAndDisplayWavelength(QList<QByteArray> wavelengthList, QLineEdit* displayField);
     void convertAndDisplayFrequency(QList<QByteArray> wavelengthList, QLineEdit* displayField);
-    bool isInputValueValid(QByteArray inputValue, QByteArray minValue, QByteArray maxValue);
 
+
+    /**
+     * @brief resetDisplayFieldColoredStatus Resets the lists of color status flags and clears the GUI of coloring
+     */
     void resetDisplayFieldColoredStatus();
+
+    /**
+     * @brief colorDisplayFieldText Calls the colorText method on all necessary GUI fields
+     */
     void colorDisplayFieldText();
+
+    /**
+     * @brief colorText Colors the text of the passed-in QLineEdit based on the colored flag
+     * @param textField Text field to color
+     * @param colored
+     */
     void colorText(QLineEdit *textField, bool colored);
+
+
+    // ======================================== Config Settings Helper Methods =======================================
+
+    /**
+     * @brief saveSettings Takes the state of the current QSettings object and applies it to the config file's
+     *                     QSettings. Syncs when finished to keep changes.
+     */
+    bool saveSettings();
+
+    /**
+     * @brief loadSettings Takes the QSettings from the selected config file and applies them to our internal
+     *                     QSettings object. Signals to apply the new settings to the device.
+     */
+    bool loadSettings();
+
+    /**
+     * @brief getValuesFromConfig Pares config values from QSettings object into individual data fields
+     */
+    void getValuesFromConfig();
 };
 
 #endif // CONFIGN7714AWINDOW_H

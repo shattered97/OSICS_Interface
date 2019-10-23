@@ -99,6 +99,11 @@ void EXFO_T100_Bristol_Wavelength_Step_Test::runDeviceTest(){
 
     QByteArray filename = constructOutputFilename();
 
+
+    // get min and max wavelength based on module
+    startWav = t100->getT100MinWavelength();
+    endWav = t100->getT100MaxWavelength();
+
     if(powerMeter != nullptr){
         runTestLoopWithPowerMeter(filename, startWav, endWav, wavStep);
     }
@@ -114,8 +119,7 @@ void EXFO_T100_Bristol_Wavelength_Step_Test::runTestLoopWithPowerMeter(QByteArra
     testData.append("T100 POWER,");
     testData.append("BRISTOL WAVELENGTH,");
     testData.append("BRISTOL POWER,");
-    testData.append("POWER METER POWER");
-    testData.append("\n");
+    testData.append("POWER METER POWER\n");
 
     //set starting wavelength
     QByteArray wavelengthToSet = QByteArray::number(startWav);
@@ -169,10 +173,7 @@ void EXFO_T100_Bristol_Wavelength_Step_Test::runTestLoopWithPowerMeter(QByteArra
 
         // get power reported by powerMeter
         QByteArray powerMeterReading = powerMeter->measurePower(powerMeterSlotNum);
-        testData.append(powerMeterReading.trimmed());
-
-        // end data line
-        testData.append("\n");
+        testData.append(powerMeterReading.trimmed() + "\n");
 
         currentWav += wavStep;
     }
@@ -194,8 +195,7 @@ void EXFO_T100_Bristol_Wavelength_Step_Test::runTestLoopBristolOnly(QByteArray f
     testData.append("T100 WAVELENGTH,");
     testData.append("T100 POWER,");
     testData.append("BRISTOL WAVELENGTH,");
-    testData.append("BRISTOL POWER");
-    testData.append("\n");
+    testData.append("BRISTOL POWER\n");
 
     //set starting wavelength (t100)
     QByteArray wavelengthToSet = QByteArray::number(startWav);
@@ -242,7 +242,7 @@ void EXFO_T100_Bristol_Wavelength_Step_Test::runTestLoopBristolOnly(QByteArray f
 
         // get power reported by wavemeter
         QByteArray bristolPower = bristol->measurePowerSingle();
-        testData.append(bristolPower.trimmed().append(','));
+        testData.append(bristolPower.trimmed().append('\n'));
 
         currentWav += wavStep;
     }

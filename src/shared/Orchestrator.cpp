@@ -296,8 +296,49 @@ void Orchestrator::slotApplyConfigSettings(QVariant &deviceVariant, QSettings &c
     }
 }
 
-void Orchestrator::slotSendCmdNoRsp(QByteArray instrAddress, QByteArray command){
+
+void Orchestrator::slotClearSelectedDevices(){
+    // #TODO should close any config windows that may be open
+    selectedDevices.clear();
+}
+
+
+void Orchestrator::slotBeginTest(QString testTypeName){
+    // #TODO probably do enum for test types
+
+    DeviceTest *test = DeviceTestFactory::makeDeviceTest(testTypeName, selectedDevices);
+
+    if(!test){
+        // signal to mainWindow to show error message
+        QString invalidTestMsg = "Test not yet supported.";
+        emit signalSendSimpleErrorMsg(invalidTestMsg);
+    }
+    else{
+        if(!test->areDevicesValidForTest()){
+
+            // don't run test and send error msg to mainwindow
+            QString invalidDevicesMsg = "Combination of selected devices are not valid for the selected test.";
+            emit signalSendSimpleErrorMsg(invalidDevicesMsg);
+        }
+        else{
+            if(test->isWindowConfigureable()){
+                // show window (if the test has one)
+                test->configWindow->show();
+            }
+            else{
+                // else run test w/o window
+                test->runDeviceTest();
+            }
+        }
+    }
+}
+
+// ========================================= COMMUNICATION FUNCTIONS ==============================================
+
+void Orchestrator::slotSendCmdNoRsp(QByteArray instrAddress, QByteArray command)
+{
     communicationLock->lock();
+
     qDebug() << "Sent command: " << command;
     bool success = true;
 
@@ -327,24 +368,26 @@ void Orchestrator::slotSendCmdNoRsp(QByteArray instrAddress, QByteArray command)
     }
     // #TODO SIGNAL QMESSAGEBOX IF UNSUCCESSFUL
     communicationLock->unlock();
-
-
 }
 
-void Orchestrator::slotSendCmdRsp(QByteArray instrAddress, QByteArray command, QByteArray *response){
+void Orchestrator::slotSendCmdRsp(QByteArray instrAddress, QByteArray command, QByteArray *response)
+{
     communicationLock->lock();
 
-    qDebug() << "Command sent: " << command;
     bool success = true;
 
+    // open a communication session to the instrument
     ViSession instrSession;
-
-    // open session
     ViStatus sessionStatus = theCommBus.openInstrSession(defaultSession, instrAddress, instrSession);
 
     if(sessionStatus < VI_SUCCESS){
         success = false;
         qDebug() << "Opening session failed.  status: " << sessionStatus;
+
+        // send message to mainWindow that we can't open a session on the instrument
+        QString message = QString(ERR_OPEN_SESSION_FAILED).arg(QString(instrAddress));
+        emit signalSendDecisionErrorMsg(message);
+        *response = ERR_NO_COMM_RESPONSE;
     }
     else{
 
@@ -355,14 +398,22 @@ void Orchestrator::slotSendCmdRsp(QByteArray instrAddress, QByteArray command, Q
         ViStatus status = theCommBus.sendCmd(instrSession, instrAddress, command);
             if(status < VI_SUCCESS){
                 qDebug() << QString("Query failed: %1").arg(status);
-                status = false;
+                success = false;
+                QString message = QString(ERR_SENDING_CMD_FAILED).arg(QString(instrAddress));
+                emit signalSendDecisionErrorMsg(message);
+                *response = ERR_NO_COMM_RESPONSE;
             }
             else{
+                qDebug() << "Command sent: " << command;
                 status = theCommBus.readCmd(instrSession, instrAddress, *response);
 
                 if(status < VI_SUCCESS){
                     qDebug() << QString("Reading response failed: %1").arg(status);
                     success = false;
+
+                    QString message = QString(ERR_READING_RSP_FAILED).arg(QString(instrAddress));
+                    emit signalSendDecisionErrorMsg(message);
+                    *response = ERR_NO_COMM_RESPONSE;
                 }
                 else{
 
@@ -373,18 +424,18 @@ void Orchestrator::slotSendCmdRsp(QByteArray instrAddress, QByteArray command, Q
         theCommBus.closeSession(instrSession);
 
     }
-
     communicationLock->unlock();
 }
 
-bool Orchestrator::checkOperationComplete(ViSession instrSession, QByteArray instrAddress, int timeout){
-
-    // start time
+bool Orchestrator::checkOperationComplete(ViSession instrSession, QByteArray instrAddress, int timeout)
+{
+    // start timer
     QElapsedTimer timer;
     timer.start();
 
     int complete = 0;
 
+    // retry sending the command and reading response until the timeout is reached
     while(timer.elapsed() < timeout && complete == 0){
         complete = 0;
 
@@ -399,32 +450,4 @@ bool Orchestrator::checkOperationComplete(ViSession instrSession, QByteArray ins
 }
 
 
-void Orchestrator::slotBeginTest(QString testTypeName){
-    // #TODO probably do enum for test types
 
-    DeviceTest *test = DeviceTestFactory::makeDeviceTest(testTypeName, selectedDevices);
-
-    if(!test){
-        // signal to mainWindow to show error message
-        QByteArray invalidTestMsg = "Test not yet supported.";
-        emit signalCreateErrorDialog(invalidTestMsg);
-    }
-    else{
-        if(!test->areDevicesValidForTest()){
-
-            // don't run test and send error msg to mainwindow
-            QByteArray invalidDevicesMsg = "Combination of selected devices are not valid for the selected test.";
-            emit signalCreateErrorDialog(invalidDevicesMsg);
-        }
-        else{
-            if(test->isWindowConfigureable()){
-                // show window (if the test has one)
-                test->configWindow->show();
-            }
-            else{
-                // else run test w/o window
-                test->runDeviceTest();
-            }
-        }
-    }
-}

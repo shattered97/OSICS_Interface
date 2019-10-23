@@ -24,6 +24,7 @@ public:
 
 signals:
     void signalBeginNextTestStep();
+    void signalSkipTestStep();
     void signalGetCurrentStepDirections(QByteArray &resourcePath, QByteArray &directions);
 
 public slots:
@@ -33,6 +34,8 @@ private slots:
     void on_outputFileButton_clicked();
 
     void on_runTestButton_clicked();
+
+    void on_skipStepButton_clicked();
 
 private:
     Ui::EXFO_OperationalTest_T100_SWT_ATN_Window *ui;

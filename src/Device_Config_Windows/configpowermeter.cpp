@@ -19,26 +19,33 @@ void ConfigPowerMeter::showEvent( QShowEvent* event )
 {
     QWidget::showEvent( event );
 
-    // initialize settings and signal to orchestrator to update them from device
-    settings = new QSettings(QSettings::IniFormat, QSettings::SystemScope, "Test Platform");
-    settings->clear();
-    emit signalUpdateConfigSettings(device, *settings);
+    if(!windowConfigured){
+        // initialize settings and signal to orchestrator to update them from device
+        settings = new QSettings(QSettings::IniFormat, QSettings::SystemScope, "Test Platform");
+        settings->clear();
+        emit signalUpdateConfigSettings(device, *settings);
+
+        windowConfigured = true;
+    }
+
 }
 
 void ConfigPowerMeter::slotUpdateWindow()
 {
-    qDebug() << "power meter update config";
     // clear text entry fields
     ui->wavelengthEdit->clear();
 
     // store values from settings
     getValuesFromConfig();
 
-    // display slot radio buttons
-    initChannelRadioButtons();
-
     // display values
     populateAllValues();
+
+    // setup radio buttons
+    initChannelRadioButtons();
+
+    // reset text fields
+    resetDisplayFieldColoredStatus();
 
     // disconnect signal
     QObject::disconnect(QObject::sender(), SIGNAL(signalSettingsUpdated()), this, SLOT(slotUpdateWindow()));
@@ -46,7 +53,9 @@ void ConfigPowerMeter::slotUpdateWindow()
 
 void ConfigPowerMeter::getValuesFromConfig()
 {
-    qDebug() << "getValuesFromConfig()";
+    // parses config values from QSettings object
+    deviceAddress = settings->value(DEVICE_ADDRESS).value<QByteArray>();
+    deviceIdentity = settings->value(DEVICE_IDENTITY).value<QByteArray>();
     numSlots = settings->value(NUM_CHANNELS).value<int>();
     powerReadings = settings->value(POWER_READINGS).value<QList<QByteArray>>();
     wavelengthSettings = settings->value(WAVELENGTH_SETTINGS).value<QList<QByteArray>>();
@@ -56,7 +65,8 @@ void ConfigPowerMeter::getValuesFromConfig()
 
 void ConfigPowerMeter::populateAllValues()
 {
-    qDebug() << "populateAllValues()";
+    // call all methods needed to re-populate GUI
+    populateIdentityAndLoc();
     populatePowerUnit();
     populatePower();
     populateWavelengthUnit();
@@ -65,29 +75,36 @@ void ConfigPowerMeter::populateAllValues()
     populateMaxWavelength();
 }
 
+void ConfigPowerMeter::populateIdentityAndLoc(){
+    // set address and identity information
+    ui->instrumentInfoLabel->setText(deviceIdentity);
+    ui->instrumentAddressLabel->setText(deviceAddress);
+}
+
 void ConfigPowerMeter::populatePowerUnit()
 {
-    qDebug() << "populatePowerUnit()";
-    // update the unit display field and unit labels
+    // update the displayed power unit from the dropdown value
     QByteArray unitText = ui->powerUnitComboBox->currentText().toLatin1();
     ui->powerDisplayUnit->setText(unitText);
 }
 
 void ConfigPowerMeter::populatePower()
 {
-    qDebug() << "populatePower()";
+    // get appropriate power reading for selected channel
     double power = powerReadings[slotNum - 1].toDouble();
+
+    // convert if necessary
     double converted = power;
     if(ui->powerUnitComboBox->currentText() == "dBm"){
         converted = ConversionUtilities::convertWattToDBm(power);
     }
 
+    // display converted value
     ui->powerDisplay->setText(QByteArray::number(converted));
 }
 
 void ConfigPowerMeter::populateWavelengthUnit()
 {
-    qDebug() << "populateWavelengthUnit()";
     QByteArray unitText = ui->wavelengthComboBox->currentText().toLatin1();
     ui->wavelengthDisplayUnitLabel->setText(unitText);
     ui->wavelengthEditUnitLabel->setText(unitText);
@@ -99,58 +116,60 @@ void ConfigPowerMeter::convertAndDisplayWavelength(QList<QByteArray> wavelengthL
     double wavelength = wavelengthList[slotNum - 1].toDouble();
     QByteArray unit = ui->wavelengthComboBox->currentText().toLatin1();
     double converted = ConversionUtilities::convertWavelengthFromMeter(wavelength, unit);
-    qDebug() << wavelength << " to " << converted;
     displayField->setText(QByteArray::number(converted));
 }
 
 void ConfigPowerMeter::populateWavelength()
 {
-    qDebug() << "populateWavelength()";
+    // display wavelength setting in correct unit
     convertAndDisplayWavelength(wavelengthSettings, ui->wavelengthDisplay);
 }
 
 void ConfigPowerMeter::populateMinWavelength()
 {
-    qDebug() << "populateMinWavelength()";
+    // display min wavelength in correct unit
     convertAndDisplayWavelength(minWavelengths, ui->minWavelengthDisplay);
 }
 
 void ConfigPowerMeter::populateMaxWavelength()
 {
-    qDebug() << "populateMaxWavelength()";
+    // display max wavelength in correct unit
     convertAndDisplayWavelength(maxWavelengths, ui->maxWavelengthDisplay);
 }
 
 void ConfigPowerMeter::initChannelRadioButtons()
 {
-    qDebug() << "initChannelRadioButtons()";
+    if(!windowConfigured){
+        // set default displayed slot/channel
+        slotNum = 1;
 
-    // set default displayed slot/channel
-    slotNum = 1;
+        // use horizontal layout
+        QHBoxLayout *hBox = new QHBoxLayout;
 
-    // use horizontal layout
-    QHBoxLayout *hBox = new QHBoxLayout;
+        for(int i = 1; i <= numSlots; i++){
+            // make button and add to layout
+            QRadioButton *button = new QRadioButton();
+            button->setText("Slot " + QString::number(i));
+            hBox->addWidget(button);
+            buttons.append(button);
 
-    for(int i = 1; i <= numSlots; i++){
-        // make button and add to layout
-        QRadioButton *button = new QRadioButton();
-        button->setText("Slot " + QString::number(i));
-        hBox->addWidget(button);
-        buttons.append(button);
+            // connect button to signal
+            connect(button,SIGNAL(clicked()),this,SLOT(slot_radio_button_clicked()));
 
-        // connect button to signal
-        connect(button,SIGNAL(clicked()),this,SLOT(slot_radio_button_clicked()));
+            // create colored flag for each channel
+            displayTextColored.append(false);
+        }
+
+        // set first item as default selected
+        buttons[0]->setChecked(true);
+
+        // apply layout
+        ui->radioButtonGroupBox->setLayout(hBox);
     }
-
-    // set first item as default selected
-    buttons[0]->setChecked(true);
-
-    ui->radioButtonGroupBox->setLayout(hBox);
 }
 
 void ConfigPowerMeter::slot_radio_button_clicked()
 {
-    qDebug() << "slot_radio_button_clicked()";
     // set the slot number to value indicated by selected button
     for(int i = 0; i < numSlots; i++){
         if(buttons[i]->isChecked()){
@@ -160,20 +179,20 @@ void ConfigPowerMeter::slot_radio_button_clicked()
 
     // refresh display values
     populateAllValues();
+
+    // color the wavelength field
+    colorDisplayFieldText();
 }
 
-void ConfigPowerMeter::on_powerUnitComboBox_currentIndexChanged(const QString &unit)
+void ConfigPowerMeter::on_powerUnitComboBox_currentIndexChanged()
 {
-    qDebug() << "on_powerUnitComboBox_currentIndexChanged()";
     // re-query power values to convert to the new unit
     populatePowerUnit();
     populatePower();
 }
 
-void ConfigPowerMeter::on_wavelengthComboBox_currentIndexChanged(int unit)
+void ConfigPowerMeter::on_wavelengthComboBox_currentIndexChanged()
 {
-    qDebug() << "on_wavelengthComboBox_currentIndexChanged()";
-
     // re-populate fields to convert values based on unit
     populateWavelengthUnit();
     populateWavelength();
@@ -183,8 +202,6 @@ void ConfigPowerMeter::on_wavelengthComboBox_currentIndexChanged(int unit)
 
 void ConfigPowerMeter::on_wavelengthEdit_editingFinished()
 {
-    qDebug() << "on_wavelengthEdit_editingFinished()";
-
     QByteArray fieldText = ui->wavelengthEdit->text().toLatin1();
 
     if(fieldText != ""){
@@ -215,15 +232,24 @@ void ConfigPowerMeter::on_wavelengthEdit_editingFinished()
 
                 // update the settings object
                 settings->setValue(WAVELENGTH_SETTINGS, QVariant::fromValue(wavelengthSettings));
+
+                // update the wavelength field to have the new value
+                populateWavelength();
+
+                // set to colored to indicate this value has not been sent to device yet
+                displayTextColored[slotNum - 1] = true;
             }
         }
     }
+    colorDisplayFieldText();
+
+    // clear edit field and remove focus
+    ui->wavelengthEdit->clear();
     ui->wavelengthEdit->clearFocus();
 }
 
 void ConfigPowerMeter::on_loadSettingsButton_pressed()
 {
-    qDebug() << "on_loadSettingsButton_pressed()";
     QString fileName = QFileDialog::getOpenFileName(this,
             tr("Load Settings File"), "",
             tr("Settings (*.ini);;All Files (*)"));
@@ -244,7 +270,6 @@ void ConfigPowerMeter::on_loadSettingsButton_pressed()
 
 void ConfigPowerMeter::on_saveSettingsButton_pressed()
 {
-    qDebug() << "on_saveSettingsButton_pressed()";
     QString fileName = QFileDialog::getSaveFileName(this,
             tr("Save Settings File"), "",
             tr("Settings (*.ini);;All Files (*)"));
@@ -263,10 +288,12 @@ void ConfigPowerMeter::on_saveSettingsButton_pressed()
     }
 }
 
-bool ConfigPowerMeter::loadSettings()
+void ConfigPowerMeter::loadSettings()
 {
+    // get config file QSettings
     QSettings settingsFromFile(settingsFileName, QSettings::IniFormat);
 
+    // for each "setting" in the file, copy its values to our local QSettings object
     QStringList keys = settingsFromFile.allKeys();
     for( QStringList::iterator i = keys.begin(); i != keys.end(); i++ )
     {
@@ -275,23 +302,25 @@ bool ConfigPowerMeter::loadSettings()
 
     settings->sync();
 
+    // signal to apply the new settings
     emit signalApplyConfigSettings(device, *settings);
 
-    return true;
 }
 
-bool ConfigPowerMeter::saveSettings()
+void ConfigPowerMeter::saveSettings()
 {
+    // get config file QSettings
     QSettings settingsFromFile(settingsFileName, QSettings::IniFormat);
 
+    // for each "setting" in our local QSettings object, copy values to the config file version
     QStringList keys = settings->allKeys();
     for( QStringList::iterator i = keys.begin(); i != keys.end(); i++ )
     {
         settingsFromFile.setValue( *i, settings->value( *i ) );
     }
 
+    // sync to make sure changes are applied
     settingsFromFile.sync();
-    return true;
 }
 
 void ConfigPowerMeter::on_saveChangesButton_clicked()
@@ -303,4 +332,30 @@ void ConfigPowerMeter::on_saveChangesButton_clicked()
     emit signalApplyConfigSettings(device, *settings);
 
     QApplication::restoreOverrideCursor();
+}
+
+void ConfigPowerMeter::resetDisplayFieldColoredStatus()
+{
+    // reset the status list to all false
+    for(int i = 0; i < displayTextColored.size(); i++){
+        displayTextColored[i] = false;
+    }
+
+    // update displayed colors
+    colorDisplayFieldText();
+}
+
+void ConfigPowerMeter::colorDisplayFieldText()
+{
+    // color the wavelength field
+    colorText(ui->wavelengthDisplay, displayTextColored.at(slotNum - 1));
+}
+
+void ConfigPowerMeter::colorText(QLineEdit *textField, bool colored){
+    if(colored){
+        textField->setStyleSheet("QLineEdit {color: rgb(0, 0, 255);}");
+    }
+    else{
+        textField->setStyleSheet("QLineEdit {color: rgb(0, 0, 0);}");
+    }
 }

@@ -21,7 +21,8 @@ public:
     ~MainWindow();
 
 public slots:
-    void slotCreateErrorDialog(QByteArray errorMsg);
+    void slotDisplayDecisionErrorMsg(QString errorMsg);
+    void slotDisplaySimpleErrorMsg(QString errorMsg);
 
 private slots:
 
@@ -37,6 +38,8 @@ private slots:
 
     void on_selectedDevicesListWidget_itemDoubleClicked(QListWidgetItem *item);
 
+    void on_clearSelectedListButton_clicked();
+
 signals:
 
     void signalDeviceTypeSelected(QByteArray deviceType);
@@ -50,6 +53,8 @@ signals:
     void signalCreateDevice(QString type, QByteArray instrumentAddress, QByteArray instrumentIdentity);
 
     void signalBeginTest(QString type);
+
+    void signalClearSelectedDevices();
 private:
 
     // main window user interface
@@ -81,6 +86,10 @@ private:
      */
     void resetMainWindow();
 
+    /**
+     * @brief setFontSizes Sets the font sizes in pixels so the font won't resize on monitors with high DPI
+     */
+    void setFontSizes();
 
     bool hasDeviceBeenSelected(QByteArray deviceAddress);
 };

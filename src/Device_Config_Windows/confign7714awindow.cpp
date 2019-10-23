@@ -510,7 +510,6 @@ void ConfigN7714AWindow::colorDisplayFieldText()
 void ConfigN7714AWindow::resetDisplayFieldColoredStatus(){
     qDebug() << "resetDisplayFieldColoredStatus()";
 
-
     for(int i = 0; i < N7714A_NUM_SLOTS; i++){
         powerSettingDisplayTextColored[i] = false;
         powerStatusDisplayTextColored[i] = false;
