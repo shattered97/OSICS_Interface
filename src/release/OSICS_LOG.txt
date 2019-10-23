@@ -1,4 +1,0 @@
-23_Oct_19_09_03:17:380 (13): Logging started.................................................................. 
-23_Oct_19_09_03:17:597 (35): Successfully created Default Resource 
-23_Oct_19_09_03:20:258 (145): Closing Default Session 
-23_Oct_19_09_03:20:283 (290): Closed Session 
