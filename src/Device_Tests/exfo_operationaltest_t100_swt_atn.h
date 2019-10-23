@@ -22,6 +22,7 @@ signals:
     void signalTestingComplete();
 public slots:
     void slotBeginNextTestStep();
+    void slotSkipTestStep();
     void slotGetCurrentStepDirections(QByteArray &resourcePath, QByteArray &directions);
 
 private:

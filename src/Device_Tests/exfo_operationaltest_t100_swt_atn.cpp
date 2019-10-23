@@ -16,6 +16,7 @@ EXFO_OperationalTest_T100_SWT_ATN::EXFO_OperationalTest_T100_SWT_ATN(QList<QVari
 
     // connect signals/slots
     QObject::connect(&configWindow, SIGNAL(signalBeginNextTestStep()), this, SLOT(slotBeginNextTestStep()));
+    QObject::connect(&configWindow, SIGNAL(signalSkipTestStep()), this, SLOT(slotSkipTestStep()));
     QObject::connect(&configWindow, SIGNAL(signalGetCurrentStepDirections(QByteArray &, QByteArray &)),
                      this, SLOT(slotGetCurrentStepDirections(QByteArray &, QByteArray &)));
     QObject::connect(this, SIGNAL(signalTestingComplete()), &configWindow, SLOT(slotTestingComplete()));
@@ -65,8 +66,44 @@ bool EXFO_OperationalTest_T100_SWT_ATN::areDevicesValidForTest(){
            t100WavTest->areDevicesValidForTest() && t100PowerTest->areDevicesValidForTest());
 }
 
+void EXFO_OperationalTest_T100_SWT_ATN::slotSkipTestStep(){
+    qDebug() << "in slotSkipTestStep()";
+    if(swtTestComplete){
+        qDebug() << "returning signal that testing is complete";
+         emit signalTestingComplete();
+    }
+
+    if(!powerStepTestComplete){
+        powerStepTestComplete = true;
+    }
+    else if(!wavelengthStepTestComplete){
+        wavelengthStepTestComplete = true;
+    }
+    else if(!attenuationTestComplete){
+        attenuationTestComplete = true;
+    }
+    else if(!swtTestComplete){
+        qDebug() << " skipping switch test";
+        numSwitchTestsCompleted++;
+        if(numSwitchTestsCompleted == EXFO_OSICS_SWT_NUM_CHANNELS.toInt()){
+            swtTestComplete = true;
+
+        }
+    }
+
+    if(!swtTestComplete){
+        directionsListIndex ++;
+        qDebug() << "next direction: " << directionsTextList[directionsListIndex];
+    }
+
+}
+
 void  EXFO_OperationalTest_T100_SWT_ATN::runDeviceTest(){
 
+    if(swtTestComplete){
+        qDebug() << "returning signal that testing is complete";
+         emit signalTestingComplete();
+    }
     // 1. power step test
     // 2. wavelength step test
     // 3. atn test
@@ -78,29 +115,28 @@ void  EXFO_OperationalTest_T100_SWT_ATN::runDeviceTest(){
 
     if(!powerStepTestComplete){
         runPowerStepTest();
-        directionsListIndex++;
     }
     else if(!wavelengthStepTestComplete){
         runWavelengthStepTest();
-        directionsListIndex++;
     }
     else if(!attenuationTestComplete){
         runAttenuationTest();
-        directionsListIndex++;
     }
     else if(!swtTestComplete){
         runSwitchTest();
-        // set the testing complete status to true
-        emit signalTestingComplete();
     }
 
-
+    if(!swtTestComplete){
+        directionsListIndex ++;
+        qDebug() << "next direction: " << directionsTextList[directionsListIndex];
+    }
 
 }
 
 void EXFO_OperationalTest_T100_SWT_ATN::slotGetCurrentStepDirections(QByteArray &resourcePath, QByteArray &directions){
 
     directions = directionsTextList[directionsListIndex];
+    qDebug() << directionsListIndex;
     resourcePath = resourcePathList[directionsListIndex];
 
 }

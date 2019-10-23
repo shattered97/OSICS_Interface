@@ -32,7 +32,7 @@ private:
 
     double startPower = 0;
     double endPower = 10;
-    double powerStep = 0.1;
+    double powerStep = 0.02;
     double wavelength = 1520;
 
     QByteArray constructOutputFilename();

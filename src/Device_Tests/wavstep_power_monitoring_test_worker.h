@@ -39,8 +39,7 @@ public:
 
 signals:
     void finished();
-    void signalWriteBufferToFile(QList<WavStep_Power_Monitoring_Data_Point> dataPoints);
-    void signalAddReadingsToGraph(QList<WavStep_Power_Monitoring_Data_Point> dataPoints);
+
 public slots:
     void runTest();
 

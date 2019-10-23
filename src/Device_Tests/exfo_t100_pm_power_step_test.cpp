@@ -44,8 +44,6 @@ bool EXFO_T100_PM_Power_Step_Test::areDevicesValidForTest(){
             }
         }
         else if(typeName == "PowerMeter"){
-            // *NOTE* for now we only use the first slot on a power meter.
-            powerMeterSlotNum = 1;
             QVariant powerMeterVariant = selectedDevices->at(i);
             powerMeter = powerMeterVariant.value<PowerMeter*>();
             powerMeterFound = true;
@@ -98,6 +96,7 @@ void EXFO_T100_PM_Power_Step_Test::runTestLoop(QByteArray filename, double start
 
     // set wavelength (power meter)
     QByteArray wavUnit = "nm";
+    qDebug() << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ " << powerMeterSlotNum;
     powerMeter->setWavelength(powerMeterSlotNum, wavelengthToSet, wavUnit);
 
     // set unit

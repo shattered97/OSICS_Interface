@@ -93,3 +93,35 @@ void EXFO_OperationalTest_T100_SWT_ATN_Window::on_runTestButton_clicked()
 void EXFO_OperationalTest_T100_SWT_ATN_Window::slotTestingComplete(){
     testingComplete = true;
 }
+
+void EXFO_OperationalTest_T100_SWT_ATN_Window::on_skipStepButton_clicked()
+{
+    if (testingComplete){
+        QMessageBox msgBox;
+        msgBox.setText("All testing is complete.");
+        ui->directionsTextField->setText("All Testing is complete.");
+    }
+    else{
+        // signal to the test class to skip the next step
+        QMessageBox::StandardButton msgBox;
+        msgBox = QMessageBox::question(this, "Confirm", "Confirm to skip test step.", QMessageBox::Yes | QMessageBox::No);
+
+        if(msgBox == QMessageBox::Yes){
+            qDebug() << "emitting signal to skip test";
+            emit signalSkipTestStep();
+
+            // get new image/directions
+            QByteArray resourcePath = "";
+            QByteArray directions = "";
+            emit signalGetCurrentStepDirections(resourcePath, directions);
+            ui->directionsImageLabel->setPixmap(QPixmap(resourcePath));
+            ui->directionsTextField->setText(directions);
+
+            QMessageBox stepFinishedMsgBox;
+            stepFinishedMsgBox.setText("Test step skipped. Click 'run' to start next step.");
+            stepFinishedMsgBox.exec();
+
+            // disable button (re-enabled when signal is received the previous test has completed
+        }
+    }
+}

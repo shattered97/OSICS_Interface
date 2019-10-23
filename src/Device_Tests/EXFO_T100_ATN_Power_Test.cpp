@@ -125,8 +125,7 @@ void EXFO_T100_ATN_Power_Test::runTestLoop(QByteArray filename, double power, do
     testData.append("T100 POWER,");
     testData.append("T100 WAVELENGTH,");
     testData.append("PM WAVELENGTH,");
-    testData.append("POWER METER POWER");
-    testData.append("\n");
+    testData.append("POWER METER POWER\n");
 
     // init ATN
     QByteArray atnToSet = QByteArray::number(startAtn);
@@ -159,7 +158,7 @@ void EXFO_T100_ATN_Power_Test::runTestLoop(QByteArray filename, double power, do
     while(currentWav <= endWav){
 
         // init T100 wavelength
-        QByteArray wavToSet = QByteArray::number(startWav);
+        QByteArray wavToSet = QByteArray::number(currentWav);
         t100->setRefWavelengthModuleCmd(t100SlotNum, wavToSet);
 
         // init wavelength on power meter
@@ -210,7 +209,7 @@ void EXFO_T100_ATN_Power_Test::runTestLoop(QByteArray filename, double power, do
             QByteArray powerReading = powerMeter->measurePower(powerMeterSlotNum);
             // convert and write out
             double convertedPower = ConversionUtilities::convertWattToDBm(powerReading.trimmed().toDouble());
-            testData.append(QByteArray::number(convertedPower).append(','));
+            testData.append(QByteArray::number(convertedPower).append('\n'));
 
             currentAtten += atnStep;
         }

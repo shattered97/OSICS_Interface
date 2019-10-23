@@ -161,7 +161,7 @@ bool WavStepWithPowerMonitoringTest::areDevicesValidForTest(){
 void WavStepWithPowerMonitoringTest::runDeviceTest()
 {
 
-    
+
     // clear data
     for( auto e : allData.keys()){
         allData.value(e)->clear();

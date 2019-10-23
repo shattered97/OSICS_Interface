@@ -7,7 +7,7 @@ WavStep_Power_Monitoring_Test_Worker::WavStep_Power_Monitoring_Test_Worker(TestD
 }
 
 void WavStep_Power_Monitoring_Test_Worker::runTest(){
-    
+
     // setup file output worker
     QThread *fileWorkerThread = new QThread;
     fileWriteWorker = new WavStep_Power_Monitoring_File_Worker(testData.filename);
@@ -23,7 +23,7 @@ void WavStep_Power_Monitoring_Test_Worker::runTest(){
 
     // start timer
     timer.start();
-    
+
     for(auto testParams : testData.testParamsForT100){
         executeTestOnT100Module(testParams);
     }
@@ -84,51 +84,6 @@ void WavStep_Power_Monitoring_Test_Worker::executeTestStep(double currentWavelen
     dwellTimer.start();
     while(dwellTimer.elapsed() <= testData.dwellInMs){
 
-        QList<WavStep_Power_Monitoring_Data_Point> dataPoints;
-
-        // get power meter readings for each channel
-        for(auto powerMeter : testData.powerMeters){
-            int numChannels = powerMeter->getNumPowerMeterChannels();
-
-            QList<QByteArray> readings = powerMeter->getPowerReadingOnAllChannels();
-            QByteArray timeOfReading = QByteArray::number(timer.elapsed() / SEC_TO_MSEC_MULTIPLIER);
-
-            // we expect one reading (and data point) per channel
-            for(int i = 1; i <= numChannels; i++){
-
-                QByteArray channel = QByteArray(" Channel ").append(QByteArray::number(i));
-                QByteArray powerMeterName = powerMeter->getInstrIdentity().replace(",", "");
-                powerMeterName = powerMeterName + channel;
-
-                // create data points for graph/.csv
-                QByteArray reading = readings[i - 1];
-
-                WavStep_Power_Monitoring_Data_Point testDataPoint(powerMeterName, reading,
-                                                                  timeOfReading, wavelengthToSet);
-
-                dataPoints.append(testDataPoint);
-
-                // append datapoint to buffer and write out to file if needed
-                if(usingFirstBuffer){
-                    firstBuffer.append(testDataPoint);
-                    if(firstBuffer.size() >= maxBufferSize){
-                        usingFirstBuffer = false;
-                        QMetaObject::invokeMethod(fileWriteWorker, "slotWriteBufferToFile", Qt::AutoConnection,
-                                                  Q_ARG(QList<WavStep_Power_Monitoring_Data_Point>, firstBuffer));
-                    }
-                }
-                else{
-                    secondBuffer.append(testDataPoint);
-
-                    if(secondBuffer.size() >= maxBufferSize){
-                        usingFirstBuffer = true;
-                        QMetaObject::invokeMethod(fileWriteWorker, "slotWriteBufferToFile", Qt::AutoConnection,
-                                                  Q_ARG(QList<WavStep_Power_Monitoring_Data_Point>, secondBuffer));
-                    }
-                }
-            }
-        }
-        emit signalAddReadingsToGraph(dataPoints);
     }
 
 
