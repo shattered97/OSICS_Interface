@@ -7,12 +7,12 @@ WavStep_Power_Monitoring_Test_Worker::WavStep_Power_Monitoring_Test_Worker(TestD
 
 WavStep_Power_Monitoring_Test_Worker::~WavStep_Power_Monitoring_Test_Worker()
 {
-    delete fileWriteWorker;
-    delete fileWorkerThread;
 }
 
 void WavStep_Power_Monitoring_Test_Worker::runTest()
 {
+
+    qDebug() << "!!!!!!!!!!!!!!!!!!!!!!!!!! test worker thread id: " << QThread::currentThread();
 
     // setup file output worker
     setupFileWriteWorker();
@@ -28,6 +28,29 @@ void WavStep_Power_Monitoring_Test_Worker::runTest()
         executeTestOnT100Module(testParams);
     }
 
+    // send last buffer to be written
+    if(usingFirstBuffer){
+        qDebug() << "writing first buffer";
+        QMetaObject::invokeMethod(fileWriteWorker, "slotWriteBufferToFile", Qt::AutoConnection,
+                                  Q_ARG(QList<WavStepPowerMonitoringDataPoint>, firstBuffer));
+    }
+    else{
+        qDebug() << "writing second buffer";
+        QMetaObject::invokeMethod(fileWriteWorker, "slotWriteBufferToFile", Qt::AutoConnection,
+                                  Q_ARG(QList<WavStepPowerMonitoringDataPoint>, secondBuffer));
+    }
+
+    // tell the file worker thread it can finish
+    emit signalStopFileWorkerThread();
+
+    // wait for file worker to finish
+    fileWorkerThread->quit();
+    fileWorkerThread->wait();
+
+    qDebug() << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ TEST FINISHED @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@";
+
+    // emit signal that test is complete
+    emit signalTestCompleted();
     // close this worker
     emit finished();
 }
@@ -38,14 +61,19 @@ void WavStep_Power_Monitoring_Test_Worker::setupFileWriteWorker()
     fileWorkerThread = new QThread;
     fileWriteWorker = new WavStep_Power_Monitoring_File_Worker(testData.filename);
     fileWriteWorker->moveToThread(fileWorkerThread);
+    // name threads
+    fileWorkerThread->setObjectName("File output worker Thread");
+
+    qDebug() << "!!!!!!!!!!!!!!!!!!!!!!!!!! test worker id: " << QThread::currentThread();
 
     connect(fileWriteWorker, SIGNAL(finished()), fileWorkerThread, SLOT(quit()));
-    connect(fileWorkerThread, SIGNAL(started()), fileWriteWorker, SLOT(slotWaitForWork()));
+    connect(fileWorkerThread, SIGNAL(started()), fileWriteWorker, SLOT(startFileOutputWorker()));
     connect(fileWriteWorker, SIGNAL(finished()), fileWriteWorker, SLOT(deleteLater()));
     connect(fileWorkerThread, SIGNAL(finished()), fileWorkerThread, SLOT(deleteLater()));
-    connect(this, SIGNAL(signalWriteBufferToFile(QList<WavStep_Power_Monitoring_Data_Point>)),
-            fileWriteWorker, SLOT(slotWriteBufferToFile(QList<WavStep_Power_Monitoring_Data_Point>)));
 
+    connect(this, SIGNAL(signalWriteBufferToFile(QList<WavStepPowerMonitoringDataPoint>)),
+            fileWriteWorker, SLOT(slotWriteBufferToFile(QList<WavStepPowerMonitoringDataPoint>)));
+    connect(this, SIGNAL(signalStopFileWorkerThread()), fileWriteWorker, SLOT(slotStopThread()));
     // run thread
     fileWorkerThread->start();
 }
@@ -68,13 +96,22 @@ void WavStep_Power_Monitoring_Test_Worker::executeTestOnT100Module(TestParamsFor
     // enable laser output for this t100 module (starting wavelengths are already set)
     testParams.t100Module->enableModuleLaserCmd(t100SlotNum);
 
+    // make sure switch is in full band mode
+    testData.swtModule->setAPCModuleOperatingMode(swtSlotNum, "ECL");
+
+    // set optical emission wavelength
+    testData.swtModule->setRefWavelengthModuleCmd(swtSlotNum, QByteArray::number(testParams.startWav));
+
     // open switch channel that the t100 is connected to
     QByteArray channelNum = QByteArray::number(testParams.swtChannel);
+
     testData.swtModule->selectChannelForSignalAPC(swtSlotNum, channelNum);
 
     // step through wavelengths
     double currentWavelength = testParams.startWav;
     while(currentWavelength <= testParams.endWav){
+        // emit signal to display current wavelength on gui
+        emit signalDisplayCurrentWavelength(QByteArray::number(currentWavelength));
         executeTestStep(currentWavelength, testParams);
         currentWavelength += testData.stepSize;
     }
@@ -85,6 +122,7 @@ void WavStep_Power_Monitoring_Test_Worker::executeTestStep(double currentWavelen
 
     QByteArray wavelengthToSet = QByteArray::number(currentWavelength);
     int t100SlotNum = testParams.t100Module->getSlotNum();
+    int swtSlotNum = testData.swtModule->getSlotNum();
 
     // set wavelength on t100
     testParams.t100Module->setRefWavelengthModuleCmd(t100SlotNum, wavelengthToSet);
@@ -92,12 +130,16 @@ void WavStep_Power_Monitoring_Test_Worker::executeTestStep(double currentWavelen
     // set wavelength on power meters
     setWavelengthOnPowerMeters(wavelengthToSet);
 
+    // set optical emission wavelength
+    testData.swtModule->setRefWavelengthModuleCmd(swtSlotNum, wavelengthToSet);
+
+
     // begin collecting power meter readings
     QElapsedTimer dwellTimer;
     dwellTimer.start();
     while(dwellTimer.elapsed() <= testData.dwellInMs){
 
-        QList<WavStep_Power_Monitoring_Data_Point> dataPoints;
+        QList<WavStepPowerMonitoringDataPoint> dataPoints;
 
         // get power meter readings for each channel
         for(auto powerMeter : testData.powerMeters){
@@ -116,8 +158,8 @@ void WavStep_Power_Monitoring_Test_Worker::executeTestStep(double currentWavelen
                 QByteArray reading = readings[i - 1];
 
                 // create data points for graph/.csv
-                WavStep_Power_Monitoring_Data_Point testDataPoint(powerMeterName, reading,
-                                                                  timeOfReading, wavelengthToSet);
+                WavStepPowerMonitoringDataPoint testDataPoint = {powerMeterName, reading,
+                                                                 timeOfReading, wavelengthToSet};
 
                 // add data point to list for graphing and to buffer for writing to .csv
                 dataPoints.append(testDataPoint);
@@ -131,29 +173,31 @@ void WavStep_Power_Monitoring_Test_Worker::executeTestStep(double currentWavelen
     }
 }
 
-void WavStep_Power_Monitoring_Test_Worker::addDataToFileBuffer(WavStep_Power_Monitoring_Data_Point testDataPoint)
+void WavStep_Power_Monitoring_Test_Worker::addDataToFileBuffer(WavStepPowerMonitoringDataPoint testDataPoint)
 {
     // append datapoint to active buffer and write out to file if needed
     if(usingFirstBuffer){
         firstBuffer.append(testDataPoint);
+        qDebug() << "size of first buffer " << firstBuffer.size();
 
         if(firstBuffer.size() >= maxBufferSize){
             usingFirstBuffer = false;
             // write buffer to file
             QMetaObject::invokeMethod(fileWriteWorker, "slotWriteBufferToFile", Qt::AutoConnection,
-                                      Q_ARG(QList<WavStep_Power_Monitoring_Data_Point>, firstBuffer));
+                                      Q_ARG(QList<WavStepPowerMonitoringDataPoint>, firstBuffer));
             // clear buffer
             firstBuffer.clear();
         }
     }
     else{
         secondBuffer.append(testDataPoint);
+        qDebug() << "size of second buffer " << secondBuffer.size();
 
         if(secondBuffer.size() >= maxBufferSize){
             usingFirstBuffer = true;
             // write buffer to file
             QMetaObject::invokeMethod(fileWriteWorker, "slotWriteBufferToFile", Qt::AutoConnection,
-                                      Q_ARG(QList<WavStep_Power_Monitoring_Data_Point>, secondBuffer));
+                                      Q_ARG(QList<WavStepPowerMonitoringDataPoint>, secondBuffer));
             // clear buffer
             secondBuffer.clear();
         }
@@ -178,11 +222,11 @@ void WavStep_Power_Monitoring_Test_Worker::slotStopWorkerThreads(){
     // if there is data in either buffer, write to file
     if(firstBuffer.size() > 0){
         QMetaObject::invokeMethod(fileWriteWorker, "slotWriteBufferToFile", Qt::AutoConnection,
-                                  Q_ARG(QList<WavStep_Power_Monitoring_Data_Point>, firstBuffer));
+                                  Q_ARG(QList<WavStepPowerMonitoringDataPoint>, firstBuffer));
     }
     if(secondBuffer.size() > 0){
         QMetaObject::invokeMethod(fileWriteWorker, "slotWriteBufferToFile", Qt::AutoConnection,
-                                  Q_ARG(QList<WavStep_Power_Monitoring_Data_Point>, secondBuffer));
+                                  Q_ARG(QList<WavStepPowerMonitoringDataPoint>, secondBuffer));
     }
 
     emit signalStopWorkerThread();

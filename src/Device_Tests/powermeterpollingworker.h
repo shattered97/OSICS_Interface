@@ -61,7 +61,7 @@ public slots:
 private:
     PowerMeter *powerMeter;             // pointer to a power meter to query
     bool continuePolling = true;        // flag to continue looping and querying for data
-    QMutex *lock;                       // lock to give slotStopWorkerThreads a chance to change the continue flag
+    QMutex lock;                       // lock to give slotStopWorkerThreads a chance to change the continue flag
 
 };
 

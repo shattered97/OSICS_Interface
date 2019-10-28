@@ -30,13 +30,11 @@ private slots:
 
     void slotReceiveDevices(FoundInstr listOfDevices);
 
-    void on_testTypeComboBox_currentIndexChanged(int index);
-
     void on_addSelectedDeviceBtn_clicked();
 
     void on_startTestPushButton_clicked();
 
-    void on_selectedDevicesListWidget_itemDoubleClicked(QListWidgetItem *item);
+    void on_selectedDevicesListWidget_itemDoubleClicked();
 
     void on_clearSelectedListButton_clicked();
 

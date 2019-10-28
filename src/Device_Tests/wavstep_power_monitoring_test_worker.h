@@ -7,7 +7,6 @@
 #include <PowerMeter.h>
 #include <EXFO_OSICS_SWT.h>
 
-#include "wavstep_power_monitoring_data_point.h"
 #include "wavstep_power_monitoring_file_worker.h"
 
 typedef struct TestParamsForT100{
@@ -47,18 +46,24 @@ signals:
      *                                to the .csv file.
      * @param dataPoints List of data points to write to file.
      */
-    void signalWriteBufferToFile(QList<WavStep_Power_Monitoring_Data_Point> dataPoints);
+    void signalWriteBufferToFile(QList<WavStepPowerMonitoringDataPoint> dataPoints);
 
     /**
      * @brief signalAddReadingsToGraph Signals to the graphing window to plot the list of data points.
      * @param dataPoints List of data points to plot on graph.
      */
-    void signalAddReadingsToGraph(QList<WavStep_Power_Monitoring_Data_Point> dataPoints);
+    void signalAddReadingsToGraph(QList<WavStepPowerMonitoringDataPoint> dataPoints);
 
     /**
      * @brief signalStopWorkerThread Signals to the file worker that it can return.
      */
     void signalStopWorkerThread();
+
+    void signalDisplayCurrentWavelength(QByteArray wavelength);
+
+    void signalTestCompleted();
+
+    void signalStopFileWorkerThread();
 
 public slots:
     /**
@@ -76,8 +81,8 @@ private:
     TestData testData;                                          /* All parameters needed to execute the step test */
     QElapsedTimer timer;                                        /* Timer to measure when readings were taken */
 
-    QList<WavStep_Power_Monitoring_Data_Point> firstBuffer;     /* One of two buffers for storing .csv data */
-    QList<WavStep_Power_Monitoring_Data_Point> secondBuffer;    /* Two of two buffers for storing .csv data */
+    QList<WavStepPowerMonitoringDataPoint> firstBuffer;     /* One of two buffers for storing .csv data */
+    QList<WavStepPowerMonitoringDataPoint> secondBuffer;    /* Two of two buffers for storing .csv data */
     bool usingFirstBuffer = true;                               /* Flag to determine which buffer to use */
     int maxBufferSize = WAVSTEP_OUTPUT_CSV_BUFFER_SIZE;         /* Max size of one buffer before switching to other */
 
@@ -119,7 +124,7 @@ private:
      * @brief addDataToFileBuffer Appends a data point to the active buffer
      * @param testDataPoint Data point to add to buffer for file output
      */
-    void addDataToFileBuffer(WavStep_Power_Monitoring_Data_Point testDataPoint);
+    void addDataToFileBuffer(WavStepPowerMonitoringDataPoint testDataPoint);
 };
 
 #endif // WAVSTEP_POWER_MONITORING_TEST_WORKER_H

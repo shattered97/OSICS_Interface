@@ -23,9 +23,6 @@ typedef QMap<InstrData, PowerReading> PowerReadingData;
 // QPair<module variant, configWindow>
 typedef QPair<QVariant, QMainWindow*> ModuleConfigPair;
 
-// series name, list of data points (time, power)
-typedef QMap<QByteArray, QList<QPair<QByteArray, QByteArray>>*> WavStepPowerTestData;
-
 //Logging Constansts
 const QString LOG_FILE_PATH  = QDir::currentPath();  //Same dir as exe
 const QString LOG_FILE       = "OSICS_LOG.txt";
@@ -250,7 +247,7 @@ const QByteArray WAVSTEP_CANT_OPEN_FILE = "Can't open file.";
 const QByteArray WAVSTEP_NO_FILE_CHOSEN = "Choose output .csv file for test data.";
 const QByteArray WAVSTEP_NO_T100_MODULES_SELECTED = "No T100 modules selected for switch channels.";
 const QByteArray WAVSTEP_NO_SERIES_SELECTED = "Select at least one series to graph.";
-
+const QString WAVSTEP_DEFAULT_CSV_FILENAME = "wavstep_power_monitoring_test_%1.csv";
 const QByteArray WAVSTEP_CSV_FILE_HEADING = "series,power reading (Watt),reading time, wavelength\n";
 const QByteArray WAVSTEP_SWITCH_CHANNEL_TAKEN = "T100 Module %1 is already selected for another channel.";
 const QString WAVSTEP_CSV_LINE = "%1,%2,%3,%4\n";
@@ -264,6 +261,15 @@ const QString ERR_READING_RSP_FAILED = "Failed to read response from instrument 
 // Math Constants
 const double SPEED_OF_LIGHT = 299792458;
 const double SEC_TO_MSEC_MULTIPLIER = 1000;
+const double MIN_TO_SEC_MULTIPLIER = 60;
 
+// Structs
+typedef struct{
+    QByteArray powerMeterChannelName;   /* Display name of a single power meter channel */
+    QByteArray powerReading;            /* A reading (Watt) taken from the power meter at this channel */
+    QByteArray readingTime;             /* Time in the test process that the reading was taken */
+    QByteArray wavelength;              /* Wavelength set at the time the power reading was taken */
+
+} WavStepPowerMonitoringDataPoint;
 #endif // CONSTANTS_H
 

@@ -9,6 +9,7 @@
 #include "powermeterpollingworker.h"
 #include "wavstep_power_monitoring_graph_window.h"
 #include "wavstep_power_monitoring_test_worker.h"
+
 #include <QMutex>
 
 Q_DECLARE_METATYPE(PowerReadings)
@@ -30,8 +31,6 @@ public:
 signals:
    void signalUpdateMinMaxWavelength(double minWav, double maxWav);
    void signalDisplayPowerReadings(QByteArray powerMeterIdentity, QList<QByteArray> readings);
-   void signalGraphPowerMeterReadings(WavStepPowerTestData);
-
 
 public slots:
     void slotBeginTest(QSettings *settings);
@@ -41,9 +40,7 @@ public slots:
     void slotPollForPowerMeterReadings();
     void slotSendPowerReadings(PowerReadings readingsForPowerMeter);
     void slotShowGraphWindow();
-    void prepareOutputDataMap();
     void slotWrapUpTest();
-
 
 private:
 
@@ -78,8 +75,6 @@ private:
     double estimatedTime = 0.0;
     double graphRefreshRate = 0.0;
 
-
-    WavStepPowerTestData allData;
     int readingCount = 0;
     int maxCountBeforeWrite = 100;
 
@@ -94,11 +89,10 @@ private:
     void populateAssignedModules(QMap<int, QByteArray> swtChannelToT100Map);
     QList<QByteArray> channelsToGraph;
 
-    QMutex *powerMeterLock;
     QMap<int, QByteArray> swtChannelToT100Map;
 
     QList<TestParamsForT100> createTestParamsForT100();
-    void writeToCsv();
+
 
 };
 

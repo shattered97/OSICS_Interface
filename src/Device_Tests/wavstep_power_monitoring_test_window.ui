@@ -35,15 +35,15 @@
    <widget class="QLabel" name="testIDLabel">
     <property name="geometry">
      <rect>
-      <x>20</x>
+      <x>10</x>
       <y>0</y>
       <width>341</width>
-      <height>21</height>
+      <height>31</height>
      </rect>
     </property>
     <property name="font">
      <font>
-      <pointsize>14</pointsize>
+      <pointsize>12</pointsize>
      </font>
     </property>
     <property name="text">
@@ -98,14 +98,14 @@
     <property name="geometry">
      <rect>
       <x>870</x>
-      <y>630</y>
+      <y>620</y>
       <width>141</width>
       <height>41</height>
      </rect>
     </property>
     <property name="font">
      <font>
-      <pointsize>14</pointsize>
+      <pointsize>12</pointsize>
      </font>
     </property>
     <property name="text">
@@ -126,7 +126,7 @@
     </property>
     <property name="font">
      <font>
-      <pointsize>12</pointsize>
+      <pointsize>10</pointsize>
      </font>
     </property>
     <property name="text">
@@ -140,14 +140,14 @@
     <property name="geometry">
      <rect>
       <x>210</x>
-      <y>680</y>
+      <y>670</y>
       <width>501</width>
       <height>41</height>
      </rect>
     </property>
     <property name="font">
      <font>
-      <pointsize>12</pointsize>
+      <pointsize>10</pointsize>
      </font>
     </property>
     <property name="text">
@@ -165,11 +165,11 @@
     </property>
     <property name="font">
      <font>
-      <pointsize>12</pointsize>
+      <pointsize>10</pointsize>
      </font>
     </property>
     <property name="title">
-     <string>Select T100 Lasers for each Switch Channel</string>
+     <string>Select T100 for each Switch Channel</string>
     </property>
     <widget class="QComboBox" name="swtChannel2ComboBox">
      <property name="geometry">
@@ -245,7 +245,7 @@
      </property>
      <property name="font">
       <font>
-       <pointsize>12</pointsize>
+       <pointsize>10</pointsize>
       </font>
      </property>
      <property name="text">
@@ -263,7 +263,7 @@
      </property>
      <property name="font">
       <font>
-       <pointsize>12</pointsize>
+       <pointsize>10</pointsize>
       </font>
      </property>
      <property name="text">
@@ -281,7 +281,7 @@
      </property>
      <property name="font">
       <font>
-       <pointsize>12</pointsize>
+       <pointsize>10</pointsize>
       </font>
      </property>
      <property name="text">
@@ -299,7 +299,7 @@
      </property>
      <property name="font">
       <font>
-       <pointsize>12</pointsize>
+       <pointsize>10</pointsize>
       </font>
      </property>
      <property name="text">
@@ -318,7 +318,7 @@
     </property>
     <property name="font">
      <font>
-      <pointsize>12</pointsize>
+      <pointsize>10</pointsize>
      </font>
     </property>
     <property name="title">
@@ -419,7 +419,7 @@
      </property>
      <property name="font">
       <font>
-       <pointsize>12</pointsize>
+       <pointsize>10</pointsize>
       </font>
      </property>
      <property name="text">
@@ -437,7 +437,7 @@
      </property>
      <property name="font">
       <font>
-       <pointsize>12</pointsize>
+       <pointsize>10</pointsize>
       </font>
      </property>
      <property name="text">
@@ -455,7 +455,7 @@
      </property>
      <property name="font">
       <font>
-       <pointsize>12</pointsize>
+       <pointsize>10</pointsize>
       </font>
      </property>
      <property name="text">
@@ -473,7 +473,7 @@
      </property>
      <property name="font">
       <font>
-       <pointsize>12</pointsize>
+       <pointsize>10</pointsize>
       </font>
      </property>
      <property name="text">
@@ -492,7 +492,7 @@
     </property>
     <property name="font">
      <font>
-      <pointsize>12</pointsize>
+      <pointsize>10</pointsize>
      </font>
     </property>
     <property name="title">
@@ -530,7 +530,7 @@
      </property>
      <property name="font">
       <font>
-       <pointsize>12</pointsize>
+       <pointsize>10</pointsize>
       </font>
      </property>
      <property name="text">
@@ -635,7 +635,7 @@
      </property>
      <property name="font">
       <font>
-       <pointsize>12</pointsize>
+       <pointsize>10</pointsize>
       </font>
      </property>
      <property name="text">
@@ -653,11 +653,11 @@
      </property>
      <property name="font">
       <font>
-       <pointsize>12</pointsize>
+       <pointsize>10</pointsize>
       </font>
      </property>
      <property name="text">
-      <string>Current Wavelength (nm)</string>
+      <string>Current Wav. (nm)</string>
      </property>
     </widget>
     <widget class="QLineEdit" name="currentWavDisplay">
@@ -713,7 +713,7 @@
      </property>
      <property name="font">
       <font>
-       <pointsize>12</pointsize>
+       <pointsize>10</pointsize>
       </font>
      </property>
      <property name="text">
@@ -728,14 +728,14 @@
     <property name="geometry">
      <rect>
       <x>870</x>
-      <y>680</y>
+      <y>670</y>
       <width>141</width>
       <height>41</height>
      </rect>
     </property>
     <property name="font">
      <font>
-      <pointsize>14</pointsize>
+      <pointsize>12</pointsize>
      </font>
     </property>
     <property name="text">
@@ -752,14 +752,14 @@
     <property name="geometry">
      <rect>
       <x>710</x>
-      <y>680</y>
+      <y>670</y>
       <width>101</width>
       <height>41</height>
      </rect>
     </property>
     <property name="font">
      <font>
-      <pointsize>14</pointsize>
+      <pointsize>12</pointsize>
      </font>
     </property>
     <property name="text">
@@ -783,7 +783,7 @@
     </property>
     <property name="font">
      <font>
-      <pointsize>12</pointsize>
+      <pointsize>10</pointsize>
      </font>
     </property>
     <property name="text">
@@ -801,7 +801,7 @@
     </property>
     <property name="font">
      <font>
-      <pointsize>12</pointsize>
+      <pointsize>10</pointsize>
      </font>
     </property>
     <property name="text">
@@ -827,9 +827,15 @@
      <x>0</x>
      <y>0</y>
      <width>1024</width>
-     <height>17</height>
+     <height>26</height>
     </rect>
    </property>
+   <widget class="QMenu" name="menuEXFO_OSICS_Wavelength_Cycle_Test">
+    <property name="title">
+     <string>EXFO OSICS Wavelength Cycle Test</string>
+    </property>
+   </widget>
+   <addaction name="menuEXFO_OSICS_Wavelength_Cycle_Test"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
  </widget>

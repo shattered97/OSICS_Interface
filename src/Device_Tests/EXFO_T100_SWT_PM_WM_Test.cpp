@@ -98,19 +98,18 @@ void EXFO_T100_SWT_PM_WM_Test::runDeviceTest(){
     swt->autoDetectT100Modules(swtSlotNum);
 
     // set active channel
-    QByteArray channel = QByteArray::number(activeChannel);
-    swt->selectChannelForSignalAPC(swtSlotNum, channel);
+    swt->selectChannelForSignalAPC(swtSlotNum, QByteArray::number(activeChannel));
 
     QByteArray filename = constructOutputFilename();
     qDebug() << filename;
 
-    runTestLoopPowerMeterOnly(filename, activeChannel, startWav, endWav, wavStep, power);
+    runTestLoopPowerMeterOnly(filename, startWav, endWav, wavStep, power);
 
 
 
 }
 
-void EXFO_T100_SWT_PM_WM_Test::runTestLoopPowerMeterOnly(QByteArray filename, int activeChannel, double startWav, double endWav, double wavStep, double power){
+void EXFO_T100_SWT_PM_WM_Test::runTestLoopPowerMeterOnly(QByteArray filename, double startWav, double endWav, double wavStep, double power){
 
     // add .csv header to test data
     testData.append("SWITCH CHANNEL,");
@@ -146,8 +145,6 @@ void EXFO_T100_SWT_PM_WM_Test::runTestLoopPowerMeterOnly(QByteArray filename, in
     while(QTime::currentTime() < timer){
         // do nothing
     }
-
-
 
     double currentWav = startWav;
     while(currentWav <= endWav){
@@ -203,7 +200,7 @@ void EXFO_T100_SWT_PM_WM_Test::runTestLoopPowerMeterOnly(QByteArray filename, in
     qDebug() << "================================= COMPLETE ===================================";
 }
 
-void EXFO_T100_SWT_PM_WM_Test::runTestLoopWithWavemeter(QByteArray filename, int activeChannel, double startWav, double endWav, double wavStep, double power){
+void EXFO_T100_SWT_PM_WM_Test::runTestLoopWithWavemeter(QByteArray filename, double startWav, double endWav, double wavStep, double power){
 
     // add .csv header to test data
     testData.append("SWITCH CHANNEL,");

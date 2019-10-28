@@ -57,7 +57,7 @@ void MainWindow::on_searchForDevTypeBtn_clicked()
     QObject::connect(this, SIGNAL(signalRequestDevicesFromOrchestrator()),
                      orchestrator, SLOT(slotLookForDevices()));
     emit signalRequestDevicesFromOrchestrator();
-    QObject::disconnect(this, SIGNAL(signalRequestDevicesFromOrchestrator()), 0, 0);
+    QObject::disconnect(this, SIGNAL(signalRequestDevicesFromOrchestrator()), nullptr, nullptr);
 
 }
 
@@ -97,11 +97,6 @@ QList<QByteArray> MainWindow::resourcesQmapToQList(FoundInstr foundResources, QB
         }
     }
     return convertedResourceInfo;
-}
-
-void MainWindow::on_testTypeComboBox_currentIndexChanged(int index)
-{
-    // #TODO implement test windows
 }
 
 bool MainWindow::hasDeviceBeenSelected(QByteArray deviceAddress){
@@ -169,7 +164,7 @@ void MainWindow::on_startTestPushButton_clicked()
     }
 }
 
-void MainWindow::on_selectedDevicesListWidget_itemDoubleClicked(QListWidgetItem *item)
+void MainWindow::on_selectedDevicesListWidget_itemDoubleClicked()
 {
     int indexOfClickedDevice = ui->selectedDevicesListWidget->currentRow();
     QVariant device = orchestrator->getDeviceAtIndex(indexOfClickedDevice);

@@ -9,19 +9,28 @@ WavStep_Power_Monitoring_File_Worker::WavStep_Power_Monitoring_File_Worker(QByte
     mutex = new QMutex();
 }
 
-void WavStep_Power_Monitoring_File_Worker::slotWriteBufferToFile(QList<WavStep_Power_Monitoring_Data_Point> dataPoints){
+WavStep_Power_Monitoring_File_Worker::WavStep_Power_Monitoring_File_Worker(QObject *parent ) : QObject(parent){
+
+}
+
+void WavStep_Power_Monitoring_File_Worker::setFilename(QByteArray filename){
+    this->filename = filename;
+}
+void WavStep_Power_Monitoring_File_Worker::slotWriteBufferToFile(QList<WavStepPowerMonitoringDataPoint> dataPoints){
     mutex->lock();
+    qDebug() << "********************************* WRITING TO FILE";
+    qDebug() << "!!!!!!!!!!!!!!!!!!!!!!!!!! file write worker thread id: " << QThread::currentThread();
 
     QFile file(filename);
     if(file.open(QIODevice::Append)){
         QTextStream stream(&file);
 
-        for(auto dataPoint : dataPoints){
+        for(int i = 0; i < dataPoints.size(); i++){
             // construct and print csv line from data point
-            QString seriesName = dataPoint.getPowerMeterChannelName();
-            QString powerReading = dataPoint.getPowerReading();
-            QString readingTime = dataPoint.getReadingTime();
-            QString wavelength = dataPoint.getWavelength();
+            QString seriesName = dataPoints[i].powerMeterChannelName;
+            QString powerReading = dataPoints[i].powerReading;
+            QString readingTime = dataPoints[i].readingTime;
+            QString wavelength = dataPoints[i].wavelength;
             QString csvLine = WAVSTEP_CSV_LINE.arg(seriesName).arg(powerReading).arg(readingTime).arg(wavelength);
             stream << csvLine;
         }
@@ -36,7 +45,7 @@ void WavStep_Power_Monitoring_File_Worker::slotWriteBufferToFile(QList<WavStep_P
 void WavStep_Power_Monitoring_File_Worker::startFileOutputWorker(){
     // initialize csv file
     QFile file(filename);
-    if(file.open(QIODevice::Append)){
+    if(file.open(QIODevice::ReadWrite)){
         QTextStream stream(&file);
 
         stream << WAVSTEP_CSV_FILE_HEADING;
@@ -48,8 +57,12 @@ void WavStep_Power_Monitoring_File_Worker::startFileOutputWorker(){
 
 void WavStep_Power_Monitoring_File_Worker::slotStopThread(){
     // aquire lock and emit signal to close thread
+
     mutex->lock();
+    qDebug() << "@@@@@@@@ stoping file worker";
     emit finished();
+
+
     mutex->unlock();
 }
 

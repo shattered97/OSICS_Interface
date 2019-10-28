@@ -17,8 +17,8 @@ public:
 
     bool areDevicesValidForTest();
     void runDeviceTest();
-    void runTestLoopWithWavemeter(QByteArray filename, int activeChannel, double startWav, double endWav, double wavStep, double power);
-    void runTestLoopPowerMeterOnly(QByteArray filename, int activeChannel, double startWav, double endWav, double wavStep, double power);
+    void runTestLoopWithWavemeter(QByteArray filename, double startWav, double endWav, double wavStep, double power);
+    void runTestLoopPowerMeterOnly(QByteArray filename, double startWav, double endWav, double wavStep, double power);
 
     void setStartWavelength(double startWav);
     void setEndWavelength(double endWav);

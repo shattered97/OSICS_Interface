@@ -13,6 +13,12 @@ WavStep_Power_Monitoring_Test_Window::WavStep_Power_Monitoring_Test_Window(QWidg
     settings->clear();
 
     qRegisterMetaTypeStreamOperators<QMap<int, QByteArray>>("swtChannelToT100Map");
+
+    // set default GUI value for filename
+    QString timestamp = QDateTime::currentDateTime().toString("ddMMyyyy-hhmmss");
+    QString defaultFilename = QDir::currentPath() + "/" + WAVSTEP_DEFAULT_CSV_FILENAME.arg(timestamp);
+    ui->csvLocDisplay->setText(defaultFilename);
+
 }
 
 WavStep_Power_Monitoring_Test_Window::~WavStep_Power_Monitoring_Test_Window()
@@ -46,6 +52,12 @@ void WavStep_Power_Monitoring_Test_Window::closeEvent(QCloseEvent* event)
     event->accept();
 }
 
+void WavStep_Power_Monitoring_Test_Window::slotTestCompleted(){
+    // display message to users that the test is complete
+    QMessageBox msgBox;
+    msgBox.setText("Test is complete. You may close the window.");
+    msgBox.exec();
+}
 
 void WavStep_Power_Monitoring_Test_Window::slotDisplayPowerReadings(QByteArray powerMeterIdentity,
                                                                     QList<QByteArray> readings)
@@ -104,10 +116,6 @@ void WavStep_Power_Monitoring_Test_Window::populatePowerMeterListWidget(){
     }
 }
 
-void WavStep_Power_Monitoring_Test_Window::on_openGraphWindowButton_clicked()
-{
-    emit signalShowGraphWindow();
-}
 
 
 void WavStep_Power_Monitoring_Test_Window::populateSwtChannelToT100Map(){
@@ -219,11 +227,13 @@ void WavStep_Power_Monitoring_Test_Window::populateSwitchChannelSelectionDropdow
 
 void WavStep_Power_Monitoring_Test_Window::handleSwitchDropdownAction(QComboBox &dropdown)
 {
+    // get text from dropdown
     QString dropdownText = dropdown.currentText().toLatin1();
 
     // you can't choose a T100 that has already been selected
     bool selectionValid = true;
     for(auto e : swtChannelToT100Map.keys()){
+        // you can't choose a T100 that has already been selected
         QByteArray t100TypeAndSlot = swtChannelToT100Map.value(e);
         if((dropdownText == t100TypeAndSlot) && (dropdownText != "<None>")){
             selectionValid = false;
@@ -231,9 +241,11 @@ void WavStep_Power_Monitoring_Test_Window::handleSwitchDropdownAction(QComboBox 
     }
 
     if(selectionValid){
+        // valid - we can add assign this switch channel to the selected T100
         populateSwtChannelToT100Map();
     }
     else{
+        // invalid - display error message
         QMessageBox msgBox;
         msgBox.setText(QString(WAVSTEP_SWITCH_CHANNEL_TAKEN).arg(dropdownText));
         msgBox.exec();
@@ -249,6 +261,7 @@ void WavStep_Power_Monitoring_Test_Window::handleSwitchDropdownAction(QComboBox 
         t100SelectedForSwitch = false;
     }
 
+    // emit signal to test class that the switch selections have changed
     emit signalSwitchMapChanged(swtChannelToT100Map);
 }
 
@@ -273,19 +286,25 @@ void WavStep_Power_Monitoring_Test_Window::on_swtChannel4ComboBox_currentIndexCh
 }
 
 void WavStep_Power_Monitoring_Test_Window::slotUpdateMinMaxWavelength(double minWav, double maxWav){
+    // populate the min/max wavelength gui fields
     ui->minWavDisplay->setText(QByteArray::number(minWav));
     ui->maxWavDisplay->setText(QByteArray::number(maxWav));
 }
 
 void WavStep_Power_Monitoring_Test_Window::on_startWavLineEdit_editingFinished()
 {
+    // block signals (known Qt Bug - users will double-enter if blockSignals() is not called
     ui->startWavLineEdit->blockSignals(true);
+
     QByteArray startWav = ui->startWavLineEdit->text().toLatin1().replace(" " , "");
     QByteArray endWav = ui->endWavLineEdit->text().toLatin1().replace(" " , "");
 
     if(isInputValueValid(startWav)){
+        // check wavelength specific error cases
         handleWavelengthErrorCases(ui->startWavLineEdit);
+
         if(startWav.toDouble() >= endWav.toDouble() && endWav != ""){
+            // if start wavelength is greater than end wavelength - error message
             QMessageBox msgBox;
             msgBox.setText(WAVSTEP_START_NOT_LESS_THAN_END);
             msgBox.exec();
@@ -293,25 +312,32 @@ void WavStep_Power_Monitoring_Test_Window::on_startWavLineEdit_editingFinished()
         }
     }
     else{
+        // invalid - clear field
         ui->startWavLineEdit->clear();
     }
 
-    ui->startWavLineEdit->clearFocus();
+    // update test runtime
     calculateTestRuntime();
+
+    ui->startWavLineEdit->clearFocus();
     ui->startWavLineEdit->blockSignals(false);
 }
 
 
 void WavStep_Power_Monitoring_Test_Window::on_endWavLineEdit_editingFinished()
 {
+    // block signals (known Qt Bug - users will double-enter if blockSignals() is not called
     ui->endWavLineEdit->blockSignals(true);
+
     QByteArray endWav = ui->endWavLineEdit->text().toLatin1().replace(" " , "");
     QByteArray startWav = ui->startWavLineEdit->text().toLatin1().replace(" " , "");
 
     if(isInputValueValid(endWav)){
+        // check wavelength specific error cases
         handleWavelengthErrorCases(ui->endWavLineEdit);
 
         if(endWav.toDouble() <= startWav.toDouble() && startWav != ""){
+            // if start wavelength is less than end wavelength - error message
             QMessageBox msgBox;
             msgBox.setText(WAVSTEP_END_NOT_GREATER_THAN_START);
             msgBox.exec();
@@ -319,11 +345,14 @@ void WavStep_Power_Monitoring_Test_Window::on_endWavLineEdit_editingFinished()
         }
     }
     else{
+        // not valid - clear field
         ui->endWavLineEdit->clear();
     }
 
-    ui->endWavLineEdit->clearFocus();
+    // update estimated runtime
     calculateTestRuntime();
+
+    ui->endWavLineEdit->clearFocus();
     ui->endWavLineEdit->blockSignals(false);
 }
 
@@ -333,12 +362,14 @@ void WavStep_Power_Monitoring_Test_Window::handleWavelengthErrorCases(QLineEdit 
     QByteArray minWav = ui->minWavDisplay->text().toLatin1();
     QByteArray maxWav = ui->maxWavDisplay->text().toLatin1();
 
+    // check if there is a switch module assigned (if not, there's no baseline for min/max)
     if(minWav.toDouble() <= 0 || maxWav.toDouble() <= 0){
         QMessageBox msgBox;
         msgBox.setText(WAVSTEP_NO_T100_ASSIGNED_TO_SWT);
         msgBox.exec();
         lineEdit->clear();
     }
+    // check if the wavelength is within min/max range
     else if(wavelength.toDouble() < minWav.toDouble() || wavelength.toDouble() > maxWav.toDouble()){
         QMessageBox msgBox;
         msgBox.setText(WAVSTEP_VALUE_OUT_OF_RANGE);
@@ -347,9 +378,11 @@ void WavStep_Power_Monitoring_Test_Window::handleWavelengthErrorCases(QLineEdit 
     }
 }
 
-bool WavStep_Power_Monitoring_Test_Window::isInputValueValid(QByteArray inputValue){
+bool WavStep_Power_Monitoring_Test_Window::isInputValueValid(QByteArray inputValue)
+{
     bool valid = true;
     if(inputValue == ""){
+        // invalid if empty, but no error message needed
         valid = false;
     }
     else{
@@ -357,6 +390,7 @@ bool WavStep_Power_Monitoring_Test_Window::isInputValueValid(QByteArray inputVal
         inputValue.toDouble(&conversionOk);
 
         if(!conversionOk){
+            // if we can't convert to double, value is non-numeric - error message
             valid = false;
             QMessageBox msgBox;
             msgBox.setText(WAVSTEP_VALUE_NON_NUMERIC);
@@ -369,36 +403,46 @@ bool WavStep_Power_Monitoring_Test_Window::isInputValueValid(QByteArray inputVal
 
 void WavStep_Power_Monitoring_Test_Window::on_dwellLineEdit_editingFinished()
 {
+    // block signals (known Qt Bug - users will double-enter if blockSignals() is not called
     ui->dwellLineEdit->blockSignals(true);
-    QByteArray dwellTime = ui->dwellLineEdit->text().toLatin1();
 
+    // check if dwell time entered is valid
+    QByteArray dwellTime = ui->dwellLineEdit->text().toLatin1();
     if(isInputValueValid(dwellTime)){
         if(dwellTime.toDouble() < 0){
+            // can't be below 0 - error message and clear field
             QMessageBox msgBox;
             msgBox.setText(WAVSTEP_DWELL_TIME_INVALID);
             msgBox.exec();
             ui->dwellLineEdit->clear();
         }
         else{
+            // value is valid - convert to seconds and store
             dwellTimeInSeconds = convertDwellToSeconds(dwellTime.toDouble());
         }
     }
     else{
+        // value was invalid - clear field
         ui->dwellLineEdit->clear();
     }
 
-    ui->dwellLineEdit->clearFocus();
+    // update estimated runtime
     calculateTestRuntime();
+
+    ui->dwellLineEdit->clearFocus();
     ui->dwellLineEdit->blockSignals(false);
 }
 
 void WavStep_Power_Monitoring_Test_Window::on_stepSizeLineEdit_editingFinished()
 {
+    // block signals (known Qt Bug - users will double-enter if blockSignals() is not called
     ui->stepSizeLineEdit->blockSignals(true);
-    QByteArray stepSize = ui->stepSizeLineEdit->text().toLatin1();
 
+    // check if step size entered is valid
+    QByteArray stepSize = ui->stepSizeLineEdit->text().toLatin1();
     if(isInputValueValid(stepSize)){
         if(stepSize.toDouble() <= 0){
+            // can't be below 0 - error message and clear field
             QMessageBox msgBox;
             msgBox.setText(WAVSTEP_STEP_SIZE_INVALID);
             msgBox.exec();
@@ -406,16 +450,23 @@ void WavStep_Power_Monitoring_Test_Window::on_stepSizeLineEdit_editingFinished()
         }
     }
     else{
+        // value was invalid - clear field
         ui->stepSizeLineEdit->clear();
     }
 
-    ui->stepSizeLineEdit->clearFocus();
+    // update estimated runtime
     calculateTestRuntime();
-    ui->stepSizeLineEdit->blockSignals(false);
 
+    // unblock signals and clear focus
+    ui->stepSizeLineEdit->clearFocus();
+    ui->stepSizeLineEdit->blockSignals(false);
 }
 
-void WavStep_Power_Monitoring_Test_Window::calculateTestRuntime(){
+void WavStep_Power_Monitoring_Test_Window::calculateTestRuntime()
+{
+    // #TODO add a factor for communication time
+
+    // gather all variables we need
     QByteArray startWav = ui->startWavLineEdit->text().toLatin1();
     QByteArray endWav = ui->endWavLineEdit->text().toLatin1();
     QByteArray dwell = ui->dwellLineEdit->text().toLatin1();
@@ -427,7 +478,7 @@ void WavStep_Power_Monitoring_Test_Window::calculateTestRuntime(){
         ui->estimatedTimeDisplay->clear();
     }
     else{
-        // calculate time
+        // all necessary fields are present - calculate time: number of steps in range * dwell
         double wavelengthRange = endWav.toDouble() - startWav.toDouble();
         double numSteps = wavelengthRange / stepSize.toDouble();
         double estimatedTime = numSteps * dwellTimeInSeconds;
@@ -436,15 +487,19 @@ void WavStep_Power_Monitoring_Test_Window::calculateTestRuntime(){
     }
 }
 
-double WavStep_Power_Monitoring_Test_Window::convertDwellToSeconds(double dwell){
+double WavStep_Power_Monitoring_Test_Window::convertDwellToSeconds(double dwell)
+{
     double convertedDwell = dwell;
     if(ui->dwellSRadioButton->isChecked()){
+        // already displayed as seconds - no need to convert
         convertedDwell = dwell;
     }
     else if(ui->dwellMsecRadioButton->isChecked()){
+        // displayed as milliseconds, convert to seconds
         convertedDwell = dwell / SEC_TO_MSEC_MULTIPLIER;
     }
     else if(ui->dwellMinRadioButton->isChecked()){
+        // displayed as minutes, convert to seconds
         convertedDwell = dwell * 60;
     }
     return convertedDwell;
@@ -453,42 +508,54 @@ double WavStep_Power_Monitoring_Test_Window::convertDwellToSeconds(double dwell)
 
 void WavStep_Power_Monitoring_Test_Window::on_dwellMinRadioButton_clicked()
 {
-
-    double displayDwell = dwellTimeInSeconds / 60;
+    // convert the stored dwell time (sec) to minutes
+    double displayDwell = dwellTimeInSeconds / MIN_TO_SEC_MULTIPLIER;
     if(dwellTimeInSeconds >= 0){
+        // if valid, display converted value
         ui->dwellLineEdit->setText(QByteArray::number(displayDwell));
     }
 }
 
 void WavStep_Power_Monitoring_Test_Window::on_dwellSRadioButton_clicked()
 {
-
     if(dwellTimeInSeconds >= 0){
+        // if valid, display stored value (seconds is native)
         ui->dwellLineEdit->setText(QByteArray::number(dwellTimeInSeconds));
     }
 }
 
 void WavStep_Power_Monitoring_Test_Window::on_dwellMsecRadioButton_clicked()
 {
+    // convert the stored dwell time (sec) to milliseconds
     double displayDwell = dwellTimeInSeconds * SEC_TO_MSEC_MULTIPLIER;
     if(dwellTimeInSeconds >= 0){
+        // if valid, display converted value
         ui->dwellLineEdit->setText(QByteArray::number(displayDwell));
     }
 }
 
+void WavStep_Power_Monitoring_Test_Window::on_openGraphWindowButton_clicked()
+{
+    // emit signal to open graph window
+    emit signalShowGraphWindow();
+}
 
 void WavStep_Power_Monitoring_Test_Window::on_selectCsvLocButton_clicked()
 {
+    // open QFileDialog so the user can select a file
     QString fileName = QFileDialog::getSaveFileName(this,
             tr("Save Output .csv File"), "",
             tr("Data (*.csv);;All Files (*)"));
 
+    // check if a file was actually selected
     if (!fileName.isEmpty()){
         QFile file(fileName);
-        if(!file.open(QIODevice::Append)){
+        if(!file.open(QIODevice::ReadWrite)){
+            // error message if the file can't be opened
             QMessageBox::information(this, tr(WAVSTEP_CANT_OPEN_FILE), file.errorString());
         }
         else{
+            // file is valid, update displayed csv filename field
             QByteArray outputCsvFilename = file.fileName().toLatin1();
             ui->csvLocDisplay->setText(outputCsvFilename);
             file.close();
@@ -496,13 +563,16 @@ void WavStep_Power_Monitoring_Test_Window::on_selectCsvLocButton_clicked()
     }
 }
 
-void WavStep_Power_Monitoring_Test_Window::on_pmReadingRefreshRateEdit_editingFinished()
+void WavStep_Power_Monitoring_Test_Window::on_graphRefreshRateEdit_editingFinished()
 {
+    // block signals (known Qt Bug - users will double-enter if blockSignals() is not called
     ui->graphRefreshRateEdit->blockSignals(true);
-    QByteArray pollRate = ui->graphRefreshRateEdit->text().toLatin1();
 
-    if(isInputValueValid(pollRate)){
-        if(pollRate.toDouble() <= 0){
+    // check if value entered is valid
+    QByteArray refreshRate = ui->graphRefreshRateEdit->text().toLatin1();
+    if(isInputValueValid(refreshRate)){
+        if(refreshRate.toDouble() <= 0){
+            // not valid - display error message and clear field
             QMessageBox msgBox;
             msgBox.setText(WAVSTEP_GRAPH_REFRESH_INVALID);
             msgBox.exec();
@@ -510,10 +580,18 @@ void WavStep_Power_Monitoring_Test_Window::on_pmReadingRefreshRateEdit_editingFi
         }
     }
     else{
+        // not valid - clear field
         ui->graphRefreshRateEdit->clear();
     }
 
+    // clear focus and un-block signals
     ui->graphRefreshRateEdit->clearFocus();
     ui->graphRefreshRateEdit->blockSignals(false);
 
 }
+
+void WavStep_Power_Monitoring_Test_Window::slotDisplayCurrentWavelength(QByteArray wavelength){
+    // display the wavelength in the Current Wav field
+    ui->currentWavDisplay->setText(wavelength);
+}
+
