@@ -17,7 +17,7 @@
    </sizepolicy>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>Device Config Window</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QLabel" name="instrumentAddressLabel">
@@ -79,10 +79,10 @@
        <widget class="QPushButton" name="configSlot1Btn">
         <property name="geometry">
          <rect>
-          <x>20</x>
-          <y>120</y>
-          <width>81</width>
-          <height>31</height>
+          <x>10</x>
+          <y>110</y>
+          <width>101</width>
+          <height>41</height>
          </rect>
         </property>
         <property name="font">
@@ -112,10 +112,10 @@
        <widget class="QPushButton" name="configSlot2Btn">
         <property name="geometry">
          <rect>
-          <x>20</x>
-          <y>120</y>
-          <width>81</width>
-          <height>31</height>
+          <x>10</x>
+          <y>110</y>
+          <width>101</width>
+          <height>41</height>
          </rect>
         </property>
         <property name="font">
@@ -145,10 +145,10 @@
        <widget class="QPushButton" name="configSlot3Btn">
         <property name="geometry">
          <rect>
-          <x>20</x>
-          <y>120</y>
-          <width>81</width>
-          <height>31</height>
+          <x>10</x>
+          <y>110</y>
+          <width>101</width>
+          <height>41</height>
          </rect>
         </property>
         <property name="font">
@@ -178,10 +178,10 @@
        <widget class="QPushButton" name="configSlot4Btn">
         <property name="geometry">
          <rect>
-          <x>20</x>
-          <y>120</y>
-          <width>81</width>
-          <height>31</height>
+          <x>10</x>
+          <y>110</y>
+          <width>101</width>
+          <height>41</height>
          </rect>
         </property>
         <property name="font">
@@ -211,10 +211,10 @@
        <widget class="QPushButton" name="configSlot5Btn">
         <property name="geometry">
          <rect>
-          <x>20</x>
-          <y>120</y>
-          <width>81</width>
-          <height>31</height>
+          <x>10</x>
+          <y>110</y>
+          <width>101</width>
+          <height>41</height>
          </rect>
         </property>
         <property name="font">
@@ -244,10 +244,10 @@
        <widget class="QPushButton" name="configSlot6Btn">
         <property name="geometry">
          <rect>
-          <x>20</x>
-          <y>120</y>
-          <width>81</width>
-          <height>31</height>
+          <x>10</x>
+          <y>110</y>
+          <width>101</width>
+          <height>41</height>
          </rect>
         </property>
         <property name="font">
@@ -277,10 +277,10 @@
        <widget class="QPushButton" name="configSlot7Btn">
         <property name="geometry">
          <rect>
-          <x>20</x>
-          <y>120</y>
-          <width>81</width>
-          <height>31</height>
+          <x>10</x>
+          <y>110</y>
+          <width>101</width>
+          <height>41</height>
          </rect>
         </property>
         <property name="font">
@@ -310,10 +310,10 @@
        <widget class="QPushButton" name="configSlot8Btn">
         <property name="geometry">
          <rect>
-          <x>20</x>
-          <y>120</y>
-          <width>81</width>
-          <height>31</height>
+          <x>10</x>
+          <y>110</y>
+          <width>101</width>
+          <height>41</height>
          </rect>
         </property>
         <property name="font">
@@ -361,7 +361,7 @@
      <x>0</x>
      <y>0</y>
      <width>1024</width>
-     <height>17</height>
+     <height>26</height>
     </rect>
    </property>
   </widget>

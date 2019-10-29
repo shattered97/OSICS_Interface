@@ -17,7 +17,7 @@
    </sizepolicy>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>Device Config Window</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QLabel" name="instrumentAddressLabel">
@@ -103,8 +103,8 @@
    <widget class="QPushButton" name="saveChangesButton">
     <property name="geometry">
      <rect>
-      <x>810</x>
-      <y>660</y>
+      <x>820</x>
+      <y>670</y>
       <width>191</width>
       <height>41</height>
      </rect>
@@ -122,9 +122,9 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>240</y>
+      <y>230</y>
       <width>1001</width>
-      <height>211</height>
+      <height>231</height>
      </rect>
     </property>
     <property name="font">
@@ -141,8 +141,13 @@
        <x>10</x>
        <y>70</y>
        <width>201</width>
-       <height>21</height>
+       <height>31</height>
       </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
      </property>
      <property name="text">
       <string>Power Unit</string>
@@ -152,10 +157,15 @@
      <property name="geometry">
       <rect>
        <x>170</x>
-       <y>60</y>
+       <y>70</y>
        <width>111</width>
        <height>31</height>
       </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
      </property>
      <item>
       <property name="text">
@@ -175,10 +185,15 @@
      <property name="geometry">
       <rect>
        <x>170</x>
-       <y>90</y>
+       <y>110</y>
        <width>211</width>
        <height>31</height>
       </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
      </property>
      <property name="styleSheet">
       <string notr="true"/>
@@ -191,10 +206,15 @@
      <property name="geometry">
       <rect>
        <x>170</x>
-       <y>120</y>
+       <y>150</y>
        <width>211</width>
        <height>31</height>
       </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
      </property>
      <property name="styleSheet">
       <string notr="true"/>
@@ -207,10 +227,15 @@
      <property name="geometry">
       <rect>
        <x>170</x>
-       <y>150</y>
+       <y>190</y>
        <width>211</width>
        <height>31</height>
       </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
      </property>
      <property name="styleSheet">
       <string notr="true"/>
@@ -223,24 +248,29 @@
      <property name="geometry">
       <rect>
        <x>480</x>
-       <y>90</y>
+       <y>110</y>
        <width>211</width>
        <height>31</height>
       </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
      </property>
     </widget>
     <widget class="QLabel" name="label_11">
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>100</y>
+       <y>110</y>
        <width>201</width>
-       <height>21</height>
+       <height>31</height>
       </rect>
      </property>
      <property name="font">
       <font>
-       <pointsize>12</pointsize>
+       <pointsize>10</pointsize>
       </font>
      </property>
      <property name="text">
@@ -251,14 +281,14 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>160</y>
+       <y>190</y>
        <width>201</width>
-       <height>21</height>
+       <height>31</height>
       </rect>
      </property>
      <property name="font">
       <font>
-       <pointsize>12</pointsize>
+       <pointsize>10</pointsize>
       </font>
      </property>
      <property name="text">
@@ -269,14 +299,14 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>130</y>
+       <y>150</y>
        <width>201</width>
-       <height>21</height>
+       <height>31</height>
       </rect>
      </property>
      <property name="font">
       <font>
-       <pointsize>12</pointsize>
+       <pointsize>10</pointsize>
       </font>
      </property>
      <property name="text">
@@ -287,10 +317,15 @@
      <property name="geometry">
       <rect>
        <x>700</x>
-       <y>100</y>
+       <y>110</y>
        <width>61</width>
-       <height>21</height>
+       <height>31</height>
       </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
      </property>
      <property name="text">
       <string>(unit)</string>
@@ -300,10 +335,15 @@
      <property name="geometry">
       <rect>
        <x>390</x>
-       <y>100</y>
+       <y>110</y>
        <width>61</width>
-       <height>21</height>
+       <height>31</height>
       </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
      </property>
      <property name="text">
       <string>(unit)</string>
@@ -313,10 +353,15 @@
      <property name="geometry">
       <rect>
        <x>390</x>
-       <y>130</y>
+       <y>150</y>
        <width>61</width>
-       <height>21</height>
+       <height>31</height>
       </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
      </property>
      <property name="text">
       <string>(unit)</string>
@@ -326,10 +371,15 @@
      <property name="geometry">
       <rect>
        <x>390</x>
-       <y>160</y>
+       <y>190</y>
        <width>61</width>
-       <height>21</height>
+       <height>31</height>
       </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
      </property>
      <property name="text">
       <string>(unit)</string>
@@ -341,8 +391,13 @@
        <x>10</x>
        <y>30</y>
        <width>201</width>
-       <height>21</height>
+       <height>31</height>
       </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
      </property>
      <property name="text">
       <string>Output Status</string>
@@ -360,6 +415,11 @@
        <height>31</height>
       </rect>
      </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
      <property name="styleSheet">
       <string notr="true"/>
      </property>
@@ -375,7 +435,7 @@
      </property>
      <property name="font">
       <font>
-       <pointsize>12</pointsize>
+       <pointsize>10</pointsize>
       </font>
      </property>
      <property name="text">
@@ -389,7 +449,7 @@
       <x>10</x>
       <y>470</y>
       <width>491</width>
-      <height>171</height>
+      <height>191</height>
      </rect>
     </property>
     <property name="font">
@@ -412,6 +472,11 @@
        <height>31</height>
       </rect>
      </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
      <property name="styleSheet">
       <string notr="true"/>
      </property>
@@ -423,10 +488,15 @@
      <property name="geometry">
       <rect>
        <x>150</x>
-       <y>60</y>
+       <y>70</y>
        <width>111</width>
        <height>31</height>
       </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
      </property>
      <property name="styleSheet">
       <string notr="true"/>
@@ -439,10 +509,15 @@
      <property name="geometry">
       <rect>
        <x>150</x>
-       <y>90</y>
+       <y>110</y>
        <width>111</width>
        <height>31</height>
       </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
      </property>
      <property name="styleSheet">
       <string notr="true"/>
@@ -460,19 +535,24 @@
        <height>31</height>
       </rect>
      </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
     </widget>
     <widget class="QLabel" name="label_13">
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>40</y>
+       <y>30</y>
        <width>201</width>
-       <height>21</height>
+       <height>31</height>
       </rect>
      </property>
      <property name="font">
       <font>
-       <pointsize>12</pointsize>
+       <pointsize>10</pointsize>
       </font>
      </property>
      <property name="text">
@@ -483,14 +563,14 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>100</y>
+       <y>110</y>
        <width>201</width>
-       <height>21</height>
+       <height>31</height>
       </rect>
      </property>
      <property name="font">
       <font>
-       <pointsize>12</pointsize>
+       <pointsize>10</pointsize>
       </font>
      </property>
      <property name="text">
@@ -503,12 +583,12 @@
        <x>10</x>
        <y>70</y>
        <width>201</width>
-       <height>21</height>
+       <height>31</height>
       </rect>
      </property>
      <property name="font">
       <font>
-       <pointsize>12</pointsize>
+       <pointsize>10</pointsize>
       </font>
      </property>
      <property name="text">
@@ -519,10 +599,15 @@
      <property name="geometry">
       <rect>
        <x>440</x>
-       <y>40</y>
+       <y>30</y>
        <width>61</width>
-       <height>21</height>
+       <height>31</height>
       </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
      </property>
      <property name="text">
       <string>nm</string>
@@ -532,10 +617,15 @@
      <property name="geometry">
       <rect>
        <x>270</x>
-       <y>40</y>
+       <y>30</y>
        <width>61</width>
-       <height>21</height>
+       <height>31</height>
       </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
      </property>
      <property name="text">
       <string>nm</string>
@@ -547,8 +637,13 @@
        <x>270</x>
        <y>70</y>
        <width>61</width>
-       <height>21</height>
+       <height>31</height>
       </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
      </property>
      <property name="text">
       <string>nm</string>
@@ -558,10 +653,15 @@
      <property name="geometry">
       <rect>
        <x>270</x>
-       <y>100</y>
+       <y>110</y>
        <width>61</width>
-       <height>21</height>
+       <height>31</height>
       </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
      </property>
      <property name="text">
       <string>nm</string>
@@ -651,7 +751,7 @@
     <widget class="QSplitter" name="splitter">
      <property name="geometry">
       <rect>
-       <x>10</x>
+       <x>20</x>
        <y>30</y>
        <width>571</width>
        <height>21</height>
@@ -723,7 +823,7 @@
       <x>520</x>
       <y>470</y>
       <width>491</width>
-      <height>171</height>
+      <height>191</height>
      </rect>
     </property>
     <property name="font">
@@ -738,10 +838,15 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>40</y>
+       <y>30</y>
        <width>201</width>
-       <height>21</height>
+       <height>31</height>
       </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
      </property>
      <property name="text">
       <string>Frequency Unit</string>
@@ -754,10 +859,15 @@
      <property name="geometry">
       <rect>
        <x>150</x>
-       <y>60</y>
+       <y>70</y>
        <width>111</width>
        <height>31</height>
       </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
      </property>
      <property name="styleSheet">
       <string notr="true"/>
@@ -770,10 +880,15 @@
      <property name="geometry">
       <rect>
        <x>150</x>
-       <y>90</y>
+       <y>110</y>
        <width>111</width>
        <height>31</height>
       </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
      </property>
      <property name="styleSheet">
       <string notr="true"/>
@@ -786,10 +901,15 @@
      <property name="geometry">
       <rect>
        <x>150</x>
-       <y>120</y>
+       <y>150</y>
        <width>111</width>
        <height>31</height>
       </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
      </property>
      <property name="styleSheet">
       <string notr="true"/>
@@ -802,10 +922,15 @@
      <property name="geometry">
       <rect>
        <x>320</x>
-       <y>60</y>
+       <y>70</y>
        <width>111</width>
        <height>31</height>
       </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
      </property>
     </widget>
     <widget class="QLabel" name="label_17">
@@ -814,12 +939,12 @@
        <x>10</x>
        <y>70</y>
        <width>201</width>
-       <height>21</height>
+       <height>31</height>
       </rect>
      </property>
      <property name="font">
       <font>
-       <pointsize>12</pointsize>
+       <pointsize>10</pointsize>
       </font>
      </property>
      <property name="text">
@@ -830,14 +955,14 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>130</y>
+       <y>150</y>
        <width>201</width>
-       <height>21</height>
+       <height>31</height>
       </rect>
      </property>
      <property name="font">
       <font>
-       <pointsize>12</pointsize>
+       <pointsize>10</pointsize>
       </font>
      </property>
      <property name="text">
@@ -848,14 +973,14 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>100</y>
+       <y>110</y>
        <width>201</width>
-       <height>21</height>
+       <height>31</height>
       </rect>
      </property>
      <property name="font">
       <font>
-       <pointsize>12</pointsize>
+       <pointsize>10</pointsize>
       </font>
      </property>
      <property name="text">
@@ -868,8 +993,13 @@
        <x>440</x>
        <y>70</y>
        <width>61</width>
-       <height>21</height>
+       <height>31</height>
       </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
      </property>
      <property name="text">
       <string>(unit)</string>
@@ -881,8 +1011,13 @@
        <x>270</x>
        <y>70</y>
        <width>61</width>
-       <height>21</height>
+       <height>31</height>
       </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
      </property>
      <property name="text">
       <string>(unit)</string>
@@ -892,10 +1027,15 @@
      <property name="geometry">
       <rect>
        <x>270</x>
-       <y>100</y>
+       <y>110</y>
        <width>61</width>
-       <height>21</height>
+       <height>31</height>
       </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
      </property>
      <property name="text">
       <string>(unit)</string>
@@ -905,10 +1045,15 @@
      <property name="geometry">
       <rect>
        <x>270</x>
-       <y>130</y>
+       <y>150</y>
        <width>61</width>
-       <height>21</height>
+       <height>31</height>
       </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
      </property>
      <property name="text">
       <string>(unit)</string>
@@ -922,6 +1067,11 @@
        <width>111</width>
        <height>31</height>
       </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
      </property>
      <item>
       <property name="text">
@@ -947,7 +1097,7 @@
      <x>0</x>
      <y>0</y>
      <width>1024</width>
-     <height>17</height>
+     <height>26</height>
     </rect>
    </property>
   </widget>
@@ -956,7 +1106,7 @@
  <resources/>
  <connections/>
  <buttongroups>
-  <buttongroup name="buttonGroup_2"/>
   <buttongroup name="buttonGroup_3"/>
+  <buttongroup name="buttonGroup_2"/>
  </buttongroups>
 </ui>

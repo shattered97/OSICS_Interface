@@ -20,6 +20,14 @@ void WavStep_Power_Monitoring_Test_Worker::runTest()
     // setup modules
     initializeT100Modules();
 
+    int swtSlotNum = testData.swtModule->getSlotNum();
+
+    // make sure switch is in full band mode
+    testData.swtModule->setAPCModuleOperatingMode(swtSlotNum, "ECL");
+
+    // enable laser output for switch (turns on all lasers)
+    testData.swtModule->enableModuleLaserCmd(swtSlotNum);
+
     // start timer
     timer.start();
 
@@ -47,10 +55,9 @@ void WavStep_Power_Monitoring_Test_Worker::runTest()
     fileWorkerThread->quit();
     fileWorkerThread->wait();
 
-    qDebug() << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ TEST FINISHED @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@";
-
     // emit signal that test is complete
     emit signalTestCompleted();
+
     // close this worker
     emit finished();
 }
@@ -93,19 +100,19 @@ void WavStep_Power_Monitoring_Test_Worker::executeTestOnT100Module(TestParamsFor
     int t100SlotNum = testParams.t100Module->getSlotNum();
     int swtSlotNum = testData.swtModule->getSlotNum();
 
-    // enable laser output for this t100 module (starting wavelengths are already set)
-    testParams.t100Module->enableModuleLaserCmd(t100SlotNum);
+//    // enable laser output for this t100 module (starting wavelengths are already set)
+//    testParams.t100Module->enableModuleLaserCmd(t100SlotNum);
 
-    // make sure switch is in full band mode
-    testData.swtModule->setAPCModuleOperatingMode(swtSlotNum, "ECL");
+//    // make sure switch is in full band mode
+//    testData.swtModule->setAPCModuleOperatingMode(swtSlotNum, "ECL");
 
-    // set optical emission wavelength
-    testData.swtModule->setRefWavelengthModuleCmd(swtSlotNum, QByteArray::number(testParams.startWav));
+//    // set optical emission wavelength
+//    testData.swtModule->setRefWavelengthModuleCmd(swtSlotNum, QByteArray::number(testParams.startWav));
 
-    // open switch channel that the t100 is connected to
-    QByteArray channelNum = QByteArray::number(testParams.swtChannel);
+//    // open switch channel that the t100 is connected to
+//    QByteArray channelNum = QByteArray::number(testParams.swtChannel);
 
-    testData.swtModule->selectChannelForSignalAPC(swtSlotNum, channelNum);
+//    testData.swtModule->selectChannelForSignalAPC(swtSlotNum, channelNum);
 
     // step through wavelengths
     double currentWavelength = testParams.startWav;

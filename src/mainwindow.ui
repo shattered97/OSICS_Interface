@@ -29,7 +29,7 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>OSICS Interface</string>
   </property>
   <widget class="QWidget" name="centralWidget">
    <widget class="QLabel" name="powerStatusIndicator">

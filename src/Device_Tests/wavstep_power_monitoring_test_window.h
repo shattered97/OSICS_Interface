@@ -152,6 +152,10 @@ private slots:
     void slotDisplayCurrentWavelength(QByteArray wavelength);
 
 
+    void on_saveConfigBtn_clicked();
+    
+    void on_loadConfigBtn_clicked();
+    
 private:
     Ui::WavStep_Power_Monitoring_Test_Window *ui;
 
@@ -163,6 +167,7 @@ private:
     double dwellTimeInSeconds = 0;
     WavStep_Power_Monitoring_Graph_Window *graphWindow;
     bool isConfigured = false;
+    QString settingsFileName;
 
     /**
      * @brief isInputValueValid Checks if the passed in input value is valid (non-empty and non-numeric). If the
@@ -198,6 +203,12 @@ private:
     void handleSwitchDropdownAction(QComboBox &dropdown);
     QList<QByteArray> getSeriesNames();
     bool areAllFieldsCompleted();
+
+    void saveSettings();
+    void loadSettings();
+
+    void disableFieldsOnTestStart();
+    void enableFieldsOnTestFinish();
 
 };
 

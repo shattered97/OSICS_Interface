@@ -151,7 +151,7 @@ void WavStepWithPowerMonitoringTest::runDeviceTest()
                      graphWindow, SLOT(slotAddReadingsToGraph(QList<WavStepPowerMonitoringDataPoint>)));
     QObject::connect(configWindow, SIGNAL(signalStopAllWorkerThreads()), worker, SLOT(slotStopWorkerThreads()));
     QObject::connect(worker, SIGNAL(signalDisplayCurrentWavelength(QByteArray)), configWindow, SLOT(slotDisplayCurrentWavelength(QByteArray)));
-
+    QObject::connect(worker, SIGNAL(signalTestCompleted()), configWindow, SLOT(slotTestCompleted()));
 
     connect(worker, SIGNAL(finished()), workerThread, SLOT(quit()));
     connect(workerThread, SIGNAL(started()), worker, SLOT(runTest()));
@@ -288,7 +288,6 @@ QList<TestParamsForT100> WavStepWithPowerMonitoringTest::createTestParamsForT100
 
     // add t100 modules to test params
     QList<TestParamsForT100> testParamsForT100;
-
 
     while(currentStartWav < currentStopWav){
 

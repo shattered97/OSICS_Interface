@@ -57,6 +57,10 @@ void WavStep_Power_Monitoring_Test_Window::slotTestCompleted(){
     QMessageBox msgBox;
     msgBox.setText("Test is complete. You may close the window.");
     msgBox.exec();
+
+    // re-enable appropriate buttons/fields
+    enableFieldsOnTestFinish();
+
 }
 
 void WavStep_Power_Monitoring_Test_Window::slotDisplayPowerReadings(QByteArray powerMeterIdentity,
@@ -170,8 +174,8 @@ void WavStep_Power_Monitoring_Test_Window::on_beginTestPB_clicked()
             msgBox.exec();
         }
         else{
-            ui->beginTestPB->setEnabled(false);
-            ui->openGraphWindowButton->setEnabled(true);
+            // enable/disable appropriate buttons and fields
+            disableFieldsOnTestStart();
 
             updateSettings();
 
@@ -595,3 +599,156 @@ void WavStep_Power_Monitoring_Test_Window::slotDisplayCurrentWavelength(QByteArr
     ui->currentWavDisplay->setText(wavelength);
 }
 
+
+void WavStep_Power_Monitoring_Test_Window::on_saveConfigBtn_clicked()
+{
+    QString fileName = QFileDialog::getSaveFileName(this,
+            tr("Save Settings File"), "",
+            tr("Settings (*.ini);;All Files (*)"));
+
+    if (!fileName.isEmpty()){
+        QFile file(fileName);
+        if(!file.open(QIODevice::ReadWrite)){
+            QMessageBox::information(this, tr("Can't open file"), file.errorString());
+        }
+        else{
+            settingsFileName = file.fileName();
+
+            file.close();
+            updateSettings();
+            saveSettings();
+        }
+    }
+}
+
+void WavStep_Power_Monitoring_Test_Window::on_loadConfigBtn_clicked()
+{
+    QString fileName = QFileDialog::getOpenFileName(this,
+            tr("Load Settings File"), "",
+            tr("Settings (*.ini);;All Files (*)"));
+
+    if(!fileName.isEmpty()){
+        QFile file(fileName);
+        if(!file.open(QIODevice::ReadWrite)){
+            QMessageBox::information(this, tr("Can't open file"), file.errorString());
+        }
+        else{
+            settingsFileName = file.fileName();
+
+            file.close();
+            loadSettings();
+        }
+    }
+}
+
+void WavStep_Power_Monitoring_Test_Window::saveSettings(){
+    QSettings settingsFromFile(settingsFileName, QSettings::IniFormat);
+
+    QStringList keys = settings->allKeys();
+    for( QStringList::iterator i = keys.begin(); i != keys.end(); i++ )
+    {
+        settingsFromFile.setValue( *i, settings->value( *i ) );
+    }
+
+    settingsFromFile.sync();
+
+}
+
+
+void WavStep_Power_Monitoring_Test_Window::loadSettings(){
+    QSettings settingsFromFile(settingsFileName, QSettings::IniFormat);
+
+    QStringList keys = settingsFromFile.allKeys();
+    for( QStringList::iterator i = keys.begin(); i != keys.end(); i++ )
+    {
+        settings->setValue( *i, settingsFromFile.value( *i ) );
+    }
+
+    settings->sync();
+
+    // update the fields with the values from the config file
+    QByteArray csvFilename = settings->value(WAV_STEP_TEST_CSV_FILENAME).value<QByteArray>();
+    double startWav = settings->value(WAV_STEP_TEST_START_WAVELENGTH).value<double>();
+    double graphRefreshRate = settings->value(WAV_STEP_TEST_POWER_POLL_RATE).value<double>();
+    double endWav = settings->value(WAV_STEP_TEST_END_WAVELENGTH).value<double>();
+    double wavStepSize = settings->value(WAV_STEP_TEST_WAV_STEP_SIZE).value<double>();
+    dwellTimeInSeconds = settings->value(WAV_STEP_TEST_DWELL_SECONDS).value<double>();
+    QMap<int, QByteArray> swtChannelToT100Map = settings->value(WAV_STEP_TEST_SWT_CHANNELS_TO_T100).value<QMap<int, QByteArray>>();
+    QList<QByteArray> channelsToGraph = settings->value(WAV_STEP_TEST_CHANNELS_TO_GRAPH).value<QList<QByteArray>>();
+
+    // fill in first channel dropdown
+    int index1 = ui->swtChannel1ComboBox->findText(swtChannelToT100Map.value(1));
+    ui->swtChannel1ComboBox->setCurrentIndex(index1);
+
+    // fill in second channel dropdown
+    int index2 = ui->swtChannel2ComboBox->findText(swtChannelToT100Map.value(2));
+    ui->swtChannel2ComboBox->setCurrentIndex(index2);
+
+    // fill in third channel dropdown
+    int index3 = ui->swtChannel3ComboBox->findText(swtChannelToT100Map.value(3));
+    ui->swtChannel3ComboBox->setCurrentIndex(index3);
+
+    // fill in third channel dropdown
+    int index4 = ui->swtChannel4ComboBox->findText(swtChannelToT100Map.value(4));
+    ui->swtChannel4ComboBox->setCurrentIndex(index4);
+
+    // fill in remaining fields
+    ui->startWavLineEdit->setText(QByteArray::number(startWav));
+    ui->endWavLineEdit->setText(QByteArray::number(endWav));
+    ui->graphRefreshRateEdit->setText(QByteArray::number(graphRefreshRate));
+    ui->stepSizeLineEdit->setText(QByteArray::number(wavStepSize));
+    ui->dwellSRadioButton->setChecked(true);
+    ui->dwellLineEdit->setText(QByteArray::number(dwellTimeInSeconds));
+    ui->csvLocDisplay->setText(csvFilename);
+
+    // re-calculate estimated time
+    calculateTestRuntime();
+
+    updateSettings();
+}
+
+
+void WavStep_Power_Monitoring_Test_Window::disableFieldsOnTestStart(){
+    // disable all fields except for the display graph button
+    ui->swtChannel1ComboBox->setEnabled(false);
+    ui->swtChannel2ComboBox->setEnabled(false);
+    ui->swtChannel3ComboBox->setEnabled(false);
+    ui->swtChannel4ComboBox->setEnabled(false);
+    ui->startWavLineEdit->setEnabled(false);
+    ui->endWavLineEdit->setEnabled(false);
+    ui->dwellLineEdit->setEnabled(false);
+    ui->dwellSRadioButton->setEnabled(false);
+    ui->dwellMinRadioButton->setEnabled(false);
+    ui->dwellMsecRadioButton->setEnabled(false);
+    ui->stepSizeLineEdit->setEnabled(false);
+    ui->powerMeterTable->setEnabled(false);
+    ui->graphRefreshRateEdit->setEnabled(false);
+    ui->loadConfigBtn->setEnabled(false);
+    ui->saveConfigBtn->setEnabled(false);
+    ui->beginTestPB->setEnabled(false);
+    ui->selectCsvLocButton->setEnabled(false);
+
+    ui->openGraphWindowButton->setEnabled(true);
+}
+
+void WavStep_Power_Monitoring_Test_Window::enableFieldsOnTestFinish(){
+    ui->swtChannel1ComboBox->setEnabled(true);
+    ui->swtChannel2ComboBox->setEnabled(true);
+    ui->swtChannel3ComboBox->setEnabled(true);
+    ui->swtChannel4ComboBox->setEnabled(true);
+    ui->startWavLineEdit->setEnabled(true);
+    ui->endWavLineEdit->setEnabled(true);
+    ui->dwellLineEdit->setEnabled(true);
+    ui->dwellSRadioButton->setEnabled(true);
+    ui->dwellMinRadioButton->setEnabled(true);
+    ui->dwellMsecRadioButton->setEnabled(true);
+    ui->stepSizeLineEdit->setEnabled(true);
+    ui->powerMeterTable->setEnabled(true);
+    ui->graphRefreshRateEdit->setEnabled(true);
+    ui->loadConfigBtn->setEnabled(true);
+    ui->saveConfigBtn->setEnabled(true);
+    ui->beginTestPB->setEnabled(true);
+    ui->selectCsvLocButton->setEnabled(true);
+
+    ui->openGraphWindowButton->setEnabled(false);
+}

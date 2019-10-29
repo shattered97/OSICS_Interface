@@ -17,7 +17,7 @@
    </sizepolicy>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>Device Config Window</string>
   </property>
   <property name="styleSheet">
    <string notr="true"/>
@@ -119,9 +119,9 @@
      <property name="geometry">
       <rect>
        <x>580</x>
-       <y>90</y>
+       <y>80</y>
        <width>51</width>
-       <height>21</height>
+       <height>31</height>
       </rect>
      </property>
      <property name="font">
@@ -202,7 +202,7 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>390</y>
+      <y>370</y>
       <width>1001</width>
       <height>281</height>
      </rect>
@@ -282,9 +282,9 @@
      <property name="geometry">
       <rect>
        <x>580</x>
-       <y>130</y>
+       <y>120</y>
        <width>51</width>
-       <height>21</height>
+       <height>31</height>
       </rect>
      </property>
      <property name="font">
@@ -300,9 +300,9 @@
      <property name="geometry">
       <rect>
        <x>580</x>
-       <y>180</y>
+       <y>170</y>
        <width>51</width>
-       <height>21</height>
+       <height>31</height>
       </rect>
      </property>
      <property name="font">
@@ -318,9 +318,9 @@
      <property name="geometry">
       <rect>
        <x>580</x>
-       <y>230</y>
+       <y>220</y>
        <width>51</width>
-       <height>21</height>
+       <height>31</height>
       </rect>
      </property>
      <property name="font">
@@ -469,9 +469,9 @@
      <property name="geometry">
       <rect>
        <x>890</x>
-       <y>130</y>
+       <y>120</y>
        <width>81</width>
-       <height>21</height>
+       <height>31</height>
       </rect>
      </property>
      <property name="font">
@@ -532,7 +532,7 @@
     <property name="geometry">
      <rect>
       <x>820</x>
-      <y>670</y>
+      <y>660</y>
       <width>191</width>
       <height>41</height>
      </rect>
@@ -560,7 +560,7 @@
      <x>0</x>
      <y>0</y>
      <width>1024</width>
-     <height>17</height>
+     <height>26</height>
     </rect>
    </property>
   </widget>
