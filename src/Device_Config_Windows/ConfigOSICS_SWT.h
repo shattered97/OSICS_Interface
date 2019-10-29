@@ -86,7 +86,8 @@ private:
     QString settingsFileName;
     bool windowConfigured = false;
     int slotNum;
-
+    QByteArray moduleIdentity;
+    QByteArray moduleLocation;
     QByteArray operatingMode;
     QByteArray activeChannel;
     QByteArray powerSetting;
@@ -100,6 +101,7 @@ private:
     bool isInputValueValid(QByteArray inputValue, QByteArray minValue, QByteArray maxValue);
     bool loadSettings();
     bool saveSettings();
+    void populateDeviceInfo();
 };
 
 #endif // CONFIGOSICS_SWT_H

@@ -38,6 +38,8 @@ private slots:
 
     void on_clearSelectedListButton_clicked();
 
+    void on_devicetypeComboBox_currentIndexChanged(int index);
+
 signals:
 
     void signalDeviceTypeSelected(QByteArray deviceType);

@@ -203,3 +203,9 @@ void MainWindow::on_clearSelectedListButton_clicked()
     // clear items in list widget
     ui->selectedDevicesListWidget->clear();
 }
+
+void MainWindow::on_devicetypeComboBox_currentIndexChanged(int index)
+{
+    // clear the contents of the list widget
+    ui->foundDevicesListWidget->clear();
+}

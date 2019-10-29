@@ -75,6 +75,8 @@ private:
 
 
     int slotNum;
+    QByteArray moduleIdentity;
+    QByteArray moduleLocation;
 
     QByteArray powerSetting;
     QByteArray minPower;
@@ -100,6 +102,7 @@ private:
     void colorText(QLineEdit *textField, bool colored);
     void colorDisplayFieldText();
     void resetDisplayFieldColoredStatus();
+    void populateDeviceInfo();
 
     bool powerSettingColored = false;
     bool laserStateColored = false;

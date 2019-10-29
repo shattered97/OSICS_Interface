@@ -57,6 +57,8 @@ void ConfigOSICS_T100::slotUpdateWindow()
 
 void ConfigOSICS_T100::getValuesFromConfig()
 {
+    moduleIdentity = settings->value(DEVICE_IDENTITY).value<QByteArray>();
+    moduleLocation = settings->value(DEVICE_ADDRESS).value<QByteArray>();
     powerSetting = settings->value(EXFO_OSICS_T100_POWER).value<QByteArray>();
     laserState = settings->value(EXFO_OSICS_T100_LASER_STATE).value<QByteArray>();
     wavelengthSetting = settings->value(EXFO_OSICS_T100_WAVELENGTH).value<QByteArray>();
@@ -67,9 +69,15 @@ void ConfigOSICS_T100::getValuesFromConfig()
     maxFrequency = settings->value(EXFO_OSICS_T100_MAX_FREQUENCY).value<QByteArray>();
 }
 
+void ConfigOSICS_T100::populateDeviceInfo(){
+    ui->instrumentInfoLabel->setText(moduleIdentity);
+    ui->instrumentAddressLabel->setText(moduleLocation);
+}
 
 void ConfigOSICS_T100::populateAllValues()
 {
+    populateDeviceInfo();
+
     // power values
     populateLaserOutputPowerUnit();
     populateLaserOutputPower();

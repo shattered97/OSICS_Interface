@@ -64,6 +64,8 @@ void ConfigOSICS_SWT::getValuesFromConfig()
 {
     qDebug() << "getValuesFromConfig() SWT";
 
+    moduleIdentity = settings->value(DEVICE_IDENTITY).value<QByteArray>();
+    moduleLocation = settings->value(DEVICE_ADDRESS).value<QByteArray>();
     outputPowerStatus = settings->value(EXFO_OSICS_SWT_OUTPUT_STATUS).value<QByteArray>().trimmed();
     operatingMode = settings->value(EXFO_OSICS_SWT_OPMODE).value<QByteArray>().trimmed();
     activeChannel = settings->value(EXFO_OSICS_SWT_ACTIVE_CHANNEL).value<QByteArray>();
@@ -82,11 +84,17 @@ void ConfigOSICS_SWT::getValuesFromConfig()
 
 }
 
+void ConfigOSICS_SWT::populateDeviceInfo(){
+    ui->instrumentInfoLabel->setText(moduleIdentity);
+    ui->instrumentAddressLabel->setText(moduleLocation);
+}
+
 void ConfigOSICS_SWT::populateAllValues()
 {
     qDebug() << "swt populate all values()";
 
     populateOperatingMode();
+    populateDeviceInfo();
 
     // power values
     populateOutputPowerStatus();
