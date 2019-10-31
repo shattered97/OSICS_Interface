@@ -24,7 +24,11 @@ public:
     virtual QList<QByteArray> getPowerReadingOnAllChannels() = 0;
     virtual void updateConfig(QSettings &) = 0;
     virtual void applyConfigSettings(QSettings &) = 0;
+    void setNumChannelsVar(int numChannels);
+    int getNumChannelsVar();
 
+public slots:
+    void slotSetupPowerMeter();
 private:
     // identity of instrument (manufacturer, model num, etc.)
     QByteArray theIdentity;
@@ -32,6 +36,8 @@ private:
     // the physical address of the instrument
     QByteArray theInstrLoc;
 
+    // number of channels on the power meter
+    int numChannels;
 };
 
 #endif // POWERMETER_H

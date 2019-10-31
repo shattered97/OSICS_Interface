@@ -96,7 +96,6 @@ void EXFO_T100_PM_Power_Step_Test::runTestLoop(QByteArray filename, double start
 
     // set wavelength (power meter)
     QByteArray wavUnit = "nm";
-    qDebug() << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ " << powerMeterSlotNum;
     powerMeter->setWavelength(powerMeterSlotNum, wavelengthToSet, wavUnit);
 
     // set unit

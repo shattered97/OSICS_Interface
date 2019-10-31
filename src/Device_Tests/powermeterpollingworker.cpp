@@ -21,10 +21,17 @@ void PowerMeterPollingWorker::slotPollPowerMeter(){
        // get power reading from power meter
        PowerReadings readingsForPowerMeter;
        readingsForPowerMeter.powerReadings = powerMeter->getPowerReadingOnAllChannels();
+
+       while(readingsForPowerMeter.powerReadings.size() == 0){
+            // wait
+       }
+
        readingsForPowerMeter.powerMeter = powerMeter;
+
 
        // signal out power readings
        emit signalSendPowerReadings(readingsForPowerMeter);
+
 
        lock.unlock();
     }

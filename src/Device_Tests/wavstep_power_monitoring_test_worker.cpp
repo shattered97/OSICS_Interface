@@ -71,8 +71,6 @@ void WavStep_Power_Monitoring_Test_Worker::setupFileWriteWorker()
     // name threads
     fileWorkerThread->setObjectName("File output worker Thread");
 
-    qDebug() << "!!!!!!!!!!!!!!!!!!!!!!!!!! test worker id: " << QThread::currentThread();
-
     connect(fileWriteWorker, SIGNAL(finished()), fileWorkerThread, SLOT(quit()));
     connect(fileWorkerThread, SIGNAL(started()), fileWriteWorker, SLOT(startFileOutputWorker()));
     connect(fileWriteWorker, SIGNAL(finished()), fileWriteWorker, SLOT(deleteLater()));
@@ -87,12 +85,12 @@ void WavStep_Power_Monitoring_Test_Worker::setupFileWriteWorker()
 
 void WavStep_Power_Monitoring_Test_Worker::initializeT100Modules()
 {
-    // for each module set initial wavelength (so modules are primed when switched over to)
-    for(auto testParam : testData.testParamsForT100){
-        int t100SlotNum = testParam.t100Module->getSlotNum();
-        QByteArray wavelengthToSet = QByteArray::number(testParam.startWav);
-        testParam.t100Module->setRefWavelengthModuleCmd(t100SlotNum, wavelengthToSet);
-    }
+//    // for each module set initial wavelength (so modules are primed when switched over to)
+//    for(auto testParam : testData.testParamsForT100){
+//        int t100SlotNum = testParam.t100Module->getSlotNum();
+//        QByteArray wavelengthToSet = QByteArray::number(testParam.startWav);
+//        testParam.t100Module->setRefWavelengthModuleCmd(t100SlotNum, wavelengthToSet);
+//    }
 }
 
 void WavStep_Power_Monitoring_Test_Worker::executeTestOnT100Module(TestParamsForT100 testParams)
@@ -140,6 +138,8 @@ void WavStep_Power_Monitoring_Test_Worker::executeTestStep(double currentWavelen
     // set optical emission wavelength
     testData.swtModule->setRefWavelengthModuleCmd(swtSlotNum, wavelengthToSet);
 
+    // wait for adjustments
+    QThread::sleep(1);
 
     // begin collecting power meter readings
     QElapsedTimer dwellTimer;
@@ -150,7 +150,7 @@ void WavStep_Power_Monitoring_Test_Worker::executeTestStep(double currentWavelen
 
         // get power meter readings for each channel
         for(auto powerMeter : testData.powerMeters){
-            int numChannels = powerMeter->getNumPowerMeterChannels();
+            int numChannels = powerMeter->getNumChannelsVar();
 
             QList<QByteArray> readings = powerMeter->getPowerReadingOnAllChannels();
             QByteArray timeOfReading = QByteArray::number(timer.elapsed() / SEC_TO_MSEC_MULTIPLIER);
@@ -160,7 +160,7 @@ void WavStep_Power_Monitoring_Test_Worker::executeTestStep(double currentWavelen
 
                 // construct name (power meter + channel num)
                 QByteArray channel = QByteArray(" Channel ").append(QByteArray::number(i));
-                QByteArray powerMeterName = powerMeter->getInstrIdentity().replace(",", "");
+                QByteArray powerMeterName = powerMeter->getNickname().replace(",", "");
                 powerMeterName = powerMeterName + channel;
                 QByteArray reading = readings[i - 1];
 
@@ -215,7 +215,7 @@ void WavStep_Power_Monitoring_Test_Worker::setWavelengthOnPowerMeters(QByteArray
 {
     // iterate through power meters and set wavelength on each channel
     for(auto powerMeter : testData.powerMeters){
-        int numChannels = powerMeter->getNumPowerMeterChannels();
+        int numChannels = powerMeter->getNumChannelsVar();
 
         for(int i = 1; i <= numChannels; i++){
             QByteArray channelNum = QByteArray::number(i);

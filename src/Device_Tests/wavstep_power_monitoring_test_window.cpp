@@ -76,8 +76,7 @@ void WavStep_Power_Monitoring_Test_Window::slotDisplayPowerReadings(QByteArray p
 
             QByteArray identityInRow = ui->powerMeterTable->item(j, 0)->text().toLatin1();
             int channelNum = ui->powerMeterTable->item(j, 1)->text().toInt();
-
-            if(identityInRow == powerMeterIdentity && channelNum == i + 1){
+            if(identityInRow.contains(powerMeterIdentity) && channelNum == i + 1){
                 rowIndex = j;
             }
         }

@@ -56,6 +56,7 @@ void ConfigPowerMeter::getValuesFromConfig()
     // parses config values from QSettings object
     deviceAddress = settings->value(DEVICE_ADDRESS).value<QByteArray>();
     deviceIdentity = settings->value(DEVICE_IDENTITY).value<QByteArray>();
+    deviceNickname = settings->value(DEVICE_NICKNAME).value<QByteArray>();
     numSlots = settings->value(NUM_CHANNELS).value<int>();
     powerReadings = settings->value(POWER_READINGS).value<QList<QByteArray>>();
     wavelengthSettings = settings->value(WAVELENGTH_SETTINGS).value<QList<QByteArray>>();
@@ -77,7 +78,7 @@ void ConfigPowerMeter::populateAllValues()
 
 void ConfigPowerMeter::populateIdentityAndLoc(){
     // set address and identity information
-    ui->instrumentInfoLabel->setText(deviceIdentity);
+    ui->instrumentInfoLabel->setText(deviceNickname);
     ui->instrumentAddressLabel->setText(deviceAddress);
 }
 
@@ -358,4 +359,20 @@ void ConfigPowerMeter::colorText(QLineEdit *textField, bool colored){
     else{
         textField->setStyleSheet("QLineEdit {color: rgb(0, 0, 0);}");
     }
+}
+
+void ConfigPowerMeter::on_setNicknameBtn_clicked()
+{
+    // open dialog box with text entry field
+    bool ok;
+    QString nicknameText = QInputDialog::getText(this, tr("QInputDialog::getText()"),
+                                                 tr("Enter desired nickname for device. Update will be applied when you submit device changes."),
+                                                 QLineEdit::Normal, "", &ok);
+    if(ok && !nicknameText.trimmed().isEmpty()){
+        deviceNickname = nicknameText.toLatin1();
+                        settings->setValue(DEVICE_NICKNAME, QVariant::fromValue(deviceNickname));
+    }
+
+
+
 }

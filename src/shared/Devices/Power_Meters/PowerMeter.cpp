@@ -6,3 +6,14 @@ PowerMeter::PowerMeter(QByteArray theIdentity, QByteArray theInstrLoc) : Default
     this->theInstrLoc = theInstrLoc;
 }
 
+void PowerMeter::setNumChannelsVar(int numChannels){
+    this->numChannels = numChannels;
+}
+
+int PowerMeter::getNumChannelsVar(){
+    return numChannels;
+}
+
+void PowerMeter::slotSetupPowerMeter(){
+    setNumChannelsVar(getNumPowerMeterChannels());
+}

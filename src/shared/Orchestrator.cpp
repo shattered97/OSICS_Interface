@@ -45,6 +45,13 @@ void Orchestrator::slotCreateDevice(QString type, QByteArray instrumentAddress, 
         PowerMeter *device = PowerMeterFactory::makePowerMeter(type, instrumentIdentity, instrumentAddress);
         deviceVariant.setValue(device);
 
+        // connecting signals for sending commands here so we can query for number of modules
+        QObject::connect(device, SIGNAL(signalSendCmdRsp(QByteArray, QByteArray, QByteArray *)),
+                         this, SLOT(slotSendCmdRsp(QByteArray, QByteArray, QByteArray *)), Qt::AutoConnection);
+        QObject::connect(device, SIGNAL(signalSendCmdNoRsp(QByteArray, QByteArray)),
+                         this, SLOT(slotSendCmdNoRsp(QByteArray, QByteArray)), Qt::AutoConnection);
+        QObject::connect(this, SIGNAL(signalSetupPowerMeter()), device, SLOT(slotSetupPowerMeter()));
+        emit signalSetupPowerMeter();
     }
     else if(type == "EXFO,OSICS"){
 
@@ -66,7 +73,7 @@ void Orchestrator::slotCreateDevice(QString type, QByteArray instrumentAddress, 
         Ando_AQ6331 *device = new Ando_AQ6331(instrumentIdentity, instrumentAddress);
         deviceVariant.setValue(device);
     }
-    else if(type == Bristol_428A_DEVICE){
+    else if(type == BRISTOL_428A_DEVICE){
         Bristol_428A *device = new Bristol_428A(instrumentIdentity, instrumentAddress);
         deviceVariant.setValue(device);
     }
@@ -96,7 +103,6 @@ QVariant Orchestrator::getDeviceAtIndex(int index){
 }
 
 void Orchestrator::slotGetEXFOModuleQVariants(QMap<int, QVariant> &modules, QVariant &device){
-    // #TODO Factory class?
 
     EXFO_OSICS_MAINFRAME *exfo = device.value<EXFO_OSICS_MAINFRAME*>();
     QByteArray chassisAddress = exfo->getInstrLocation();

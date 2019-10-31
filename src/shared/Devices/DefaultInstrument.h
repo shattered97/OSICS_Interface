@@ -32,6 +32,8 @@ public:
      */
     QByteArray getInstrLocation();
 
+    QByteArray getNickname();
+    void setNickname(QByteArray nickname);
 
     // ********************** Common SCPI Commands **********************
 
@@ -75,9 +77,9 @@ signals:
 
 
 private:
-    QByteArray theIdentity;                 // identity of instrument (manufacturer, model num, etc.)
-    QByteArray theInstrLoc;                 // the physical address of the instrument
-
+    QByteArray theIdentity = "";            // identity of instrument (manufacturer, model num, etc.)
+    QByteArray theInstrLoc = "";            // the physical address of the instrument
+    QByteArray nickname = "";               // nickname of device (can provide simpler display names)
     QMainWindow *configWindow;
 };
 

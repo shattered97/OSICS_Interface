@@ -6,6 +6,8 @@ DefaultInstrument::DefaultInstrument(QByteArray theIdentity, QByteArray theInstr
     this->theIdentity = theIdentity;
     this->theInstrLoc = theInstrLoc;
 
+    // default nickname to identity/location combo
+    this->nickname = theIdentity;
     qRegisterMetaType<QByteArray>();
 }
 
@@ -18,6 +20,14 @@ QByteArray DefaultInstrument::getInstrIdentity()
 QByteArray DefaultInstrument::getInstrLocation()
 {
     return theInstrLoc;
+}
+
+QByteArray DefaultInstrument::getNickname(){
+    return nickname;
+}
+
+void DefaultInstrument::setNickname(QByteArray nickname){
+    this->nickname = nickname;
 }
 
 QByteArray DefaultInstrument::querySTB(){

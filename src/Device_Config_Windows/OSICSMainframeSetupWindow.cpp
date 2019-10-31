@@ -109,7 +109,6 @@ void OSICSMainframeSetupWindow::on_configButton_clicked(int index){
     index = index * -1 - 2;
 
     QVariant module = moduleConfigPairs.value(index + 1).first;
-    qDebug() << "+++++++++++++++++++++++++++++++++++++++ " << module.typeName();
     QMainWindow *configWindow = moduleConfigPairs.value(index + 1).second;
 
 
@@ -127,9 +126,7 @@ void OSICSMainframeSetupWindow::on_configButton_clicked(int index){
         QObject::connect(configWindow, SIGNAL(signalUpdateConfigSettings(QVariant &, QSettings &)),
                          this, SLOT(slotForwardUpdateConfigSettings(QVariant &, QSettings &)));
     }
-    else{
-        qDebug() << "############################################ not connecting again";
-    }
+
     configWindow->show();
     moduleConfiguredStatusList[index] = true;
 }

@@ -98,12 +98,33 @@ const QList<UnitPair> FREQ_EXPONENT_LIST = {HZ_UNIT, KHZ_UNIT, MHZ_UNIT, GHZ_UNI
 
 // Device type names
 const QByteArray N7714A_DEVICE = "N7714A";
+const QByteArray KEYSIGHT_LASER_NOTE = " (Keysight Laser Source)";
+const QList<QByteArray> KEYSIGHT_LASER_SOURCES = {N7714A_DEVICE};
+
 const QByteArray N7745A_POWER_METER = "N7745A";
+const QByteArray N7744A_POWER_METER = "N7744A";
+const QByteArray N7744C_POWER_METER = "N7744C";
+const QByteArray N7745C_POWER_METER = "N7745C";
+const QByteArray N7747A_POWER_METER = "N7747A";
+const QByteArray N7748A_POWER_METER = "N7748A";
+const QByteArray KEYSIGHT_OPTICAL_PM_NOTE = " (Keysight Optical Power Meter)";
+const QList<QByteArray> KEYSIGHT_OPTICAL_POWER_METERS = {N7745A_POWER_METER, N7744A_POWER_METER, N7744C_POWER_METER,
+                                                 N7745C_POWER_METER, N7747A_POWER_METER, N7748A_POWER_METER};
+
 const QByteArray EXFO_CHASSIS_DEVICE = "EXFO,OSICS";
+const QByteArray EXFO_CHASSIS_NOTE = " (MAINFRAME CHASSIS)";
+const QList<QByteArray> EXFO_DEVICES = {EXFO_CHASSIS_DEVICE};
+
 const QByteArray ANDO_AQ6331_DEVICE = "ANDO,AQ6331";
-const QByteArray Bristol_428A_DEVICE = "Bristol Wavemeter, 428A";
-const QByteArray DEVICE_TYPES[] = {N7714A_DEVICE, N7745A_POWER_METER, EXFO_CHASSIS_DEVICE, ANDO_AQ6331_DEVICE,
-                                   Bristol_428A_DEVICE};
+const QByteArray ANDO_OSA_NOTE = " (Ando Optical Spectrum Analyzer)";
+const QList<QByteArray> ANDO_OSAS = {ANDO_AQ6331_DEVICE};
+
+const QByteArray BRISTOL_428A_DEVICE = "Bristol Wavemeter, 428A";
+const QByteArray BRISTOL_WAVEMETER_NOTE = " (Bristol Wavelength Meter)";
+const QList<QByteArray> BRISTOL_WAVEMETERS = {BRISTOL_428A_DEVICE};
+
+const QList<QByteArray> DEVICE_TYPES = KEYSIGHT_OPTICAL_POWER_METERS + KEYSIGHT_LASER_SOURCES + EXFO_DEVICES +
+                                       ANDO_OSAS + BRISTOL_WAVEMETERS;
 
 // Test type names
 const QByteArray N7714A_WAV_CYCLE_TEST = "N7714A Wavelength Cycle Test";
@@ -170,7 +191,7 @@ const QByteArray EXFO_OSICS_T100_1620_TYPE_NAME = "T100/1620\n";
 // QSettings Key Values - General
 const QByteArray DEVICE_ADDRESS = "Device Location";
 const QByteArray DEVICE_IDENTITY = "Device Identity";
-
+const QByteArray DEVICE_NICKNAME = "Device Nickname";
 // QSettings Key Values - Power Meter
 const QByteArray NUM_CHANNELS = "PowerMeter Num Channels";
 const QByteArray POWER_READINGS = "PowerMeter Power Readings";

@@ -39,7 +39,7 @@ void WavStepWithPowerMonitoringTest::slotSendPowerReadings(PowerReadings reading
     QList<QByteArray> readings = readingsForPowerMeter.powerReadings;
 
     // signal to window to display power (send identity and readings list)
-    emit signalDisplayPowerReadings(powerMeter->getInstrIdentity(), readings);
+    emit signalDisplayPowerReadings(powerMeter->getNickname(), readings);
 }
 
 
@@ -354,10 +354,10 @@ void WavStepWithPowerMonitoringTest::slotGetPowerMeterDisplayPairs(QList<QPair<Q
     powerMeterDisplayPairs.clear();
     for(auto e : powerMeters){
         // create power meter identifier string
-        QByteArray powerMeterID = e->getInstrIdentity();
+        QByteArray powerMeterID = e->getNickname();
 
         // for each channel, create pair of <id, channel num> and add to QList
-        int numChannels = e->getNumPowerMeterChannels();
+        int numChannels = e->getNumChannelsVar();
         for(int i = 1; i <= numChannels; i++){
             QPair<QByteArray, int> pair = {powerMeterID, i};
             powerMeterDisplayPairs.append(pair);

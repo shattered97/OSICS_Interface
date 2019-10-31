@@ -72,16 +72,6 @@ void ConfigOSICS_SWT::getValuesFromConfig()
     powerSetting = settings->value(EXFO_OSICS_SWT_POWER_SETTING).value<QByteArray>();
     wavelengthSetting = settings->value(EXFO_OSICS_SWT_WAVELENGTH_SETTING).value<QByteArray>();
     frequencySetting = settings->value(EXFO_OSICS_SWT_FREQUENCY_SETTING).value<QByteArray>();
-
-    qDebug() << "****************************************";
-    qDebug() << outputPowerStatus;
-    qDebug() << operatingMode;
-    qDebug() << activeChannel;
-    qDebug() << powerSetting;
-    qDebug() << wavelengthSetting;
-    qDebug() << frequencySetting;
-    qDebug() << "****************************************";
-
 }
 
 void ConfigOSICS_SWT::populateDeviceInfo(){
@@ -366,7 +356,6 @@ void ConfigOSICS_SWT::on_powerEdit_editingFinished()
 
         // update settings object
         settings->setValue(EXFO_OSICS_SWT_POWER_SETTING, QVariant::fromValue(powerSetting));
-        qDebug() << "@@@@@@@@@ " << powerSetting;
 
         populatePower();
     }

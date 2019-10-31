@@ -18,8 +18,6 @@ void WavStep_Power_Monitoring_File_Worker::setFilename(QByteArray filename){
 }
 void WavStep_Power_Monitoring_File_Worker::slotWriteBufferToFile(QList<WavStepPowerMonitoringDataPoint> dataPoints){
     mutex->lock();
-    qDebug() << "********************************* WRITING TO FILE";
-    qDebug() << "!!!!!!!!!!!!!!!!!!!!!!!!!! file write worker thread id: " << QThread::currentThread();
 
     QFile file(filename);
     if(file.open(QIODevice::Append)){
@@ -59,10 +57,7 @@ void WavStep_Power_Monitoring_File_Worker::slotStopThread(){
     // aquire lock and emit signal to close thread
 
     mutex->lock();
-    qDebug() << "@@@@@@@@ stoping file worker";
     emit finished();
-
-
     mutex->unlock();
 }
 

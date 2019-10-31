@@ -59,6 +59,7 @@ signals:
     void signalReturnDevicesFound(FoundInstr);
     void signalSettingsUpdated();
     void signalSetupEXFOModules();
+    void signalSetupPowerMeter();
     void signalSendDecisionErrorMsg(QString errorMsg);
     void signalSendSimpleErrorMsg(QString errorMsg);
 

@@ -63,7 +63,6 @@ void WavStep_Power_Monitoring_Graph_Window::processDataPoint(WavStepPowerMonitor
 
         // append data point to list of points
         points.append({timeInSeconds, powerInDBm});
-        qDebug() << "???????????" <<  points;
 
         pointsLists[index] = points;
    }

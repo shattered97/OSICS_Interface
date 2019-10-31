@@ -34,8 +34,24 @@ void MainWindow::setFontSizes(){
 }
 
 void MainWindow::loadDeviceTypesList(){
-    for(auto e: DEVICE_TYPES){
-        ui->devicetypeComboBox->addItem(e);
+    for(auto deviceType: DEVICE_TYPES){
+        // append any display notes to device model numbers
+        if(KEYSIGHT_OPTICAL_POWER_METERS.contains(deviceType)){
+            deviceType = deviceType + KEYSIGHT_OPTICAL_PM_NOTE;
+        }
+        else if(KEYSIGHT_LASER_SOURCES.contains(deviceType)){
+            deviceType = deviceType + KEYSIGHT_LASER_NOTE;
+        }
+        else if(EXFO_DEVICES.contains(deviceType)){
+            deviceType = deviceType + EXFO_CHASSIS_NOTE;
+        }
+        else if(ANDO_OSAS.contains(deviceType)){
+            deviceType = deviceType + ANDO_OSA_NOTE;
+        }
+        else if(BRISTOL_WAVEMETERS.contains(deviceType)){
+            deviceType = deviceType + BRISTOL_WAVEMETER_NOTE;
+        }
+        ui->devicetypeComboBox->addItem(deviceType);
     }
 }
 
@@ -63,7 +79,11 @@ void MainWindow::on_searchForDevTypeBtn_clicked()
 
 void MainWindow::slotReceiveDevices(FoundInstr listOfDevices)
 {
-    QList<QByteArray> convertedDevices = resourcesQmapToQList(listOfDevices, ui->devicetypeComboBox->currentText().toLatin1());
+
+    // get the model number (device type) without the note (all notes should start w/ left paren)
+    QByteArray deviceType = ui->devicetypeComboBox->currentText().split('(')[0].trimmed().toLatin1();
+    qDebug() << deviceType;
+    QList<QByteArray> convertedDevices = resourcesQmapToQList(listOfDevices, deviceType);
 
     // populate ui list with devices
     for(auto e: convertedDevices){
@@ -129,7 +149,7 @@ void MainWindow::on_addSelectedDeviceBtn_clicked()
         ui->selectedDevicesListWidget->addItem(instrumentInfo);
 
         // determine which device to create (#TODO possibly convert to factory in future)
-        QString currentDeviceType = ui->devicetypeComboBox->currentText();
+        QString currentDeviceType = ui->devicetypeComboBox->currentText().split('(')[0].trimmed();
         qDebug() << "device type from combo " << currentDeviceType;
         QByteArray instrumentAddress = instrumentInfo.split(' ')[0];
         QByteArray instrumentIdentity = instrumentInfo.mid(instrumentInfo.indexOf(' ') + 1, instrumentInfo.size());

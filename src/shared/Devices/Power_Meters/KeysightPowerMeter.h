@@ -32,7 +32,8 @@ public:
 private:
     QByteArray theIdentity;                 // identity of instrument (manufacturer, model num, etc.)
     QByteArray theInstrLoc;                 // the physical address of the instrument
-    int numSlots;                           // the number of slots/channels of the power meter
+    int numChannels;                        // the number of slots/channels of the power meter
+    QByteArray response = "";
 };
 
 #endif // KEYSIGHTPOWERMETER_H

@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QtMath>
 #include <QFileDialog>
+#include <QInputDialog>
 #include <QSettings>
 #include <QRadioButton>
 #include <QHBoxLayout>
@@ -12,6 +13,7 @@
 
 #include "PowerMeter.h"
 #include "ConversionUtilities.h"
+
 
 namespace Ui {
 class ConfigPowerMeter;
@@ -96,6 +98,8 @@ private slots:
     void on_saveChangesButton_clicked();
 
 
+    void on_setNicknameBtn_clicked();
+
 private:
     Ui::ConfigPowerMeter *ui;
 
@@ -115,8 +119,8 @@ private:
     QList<QByteArray> maxWavelengths;       // list of max wavelength values to be displayed
     QByteArray deviceAddress;               // address of device
     QByteArray deviceIdentity;              // identity of device
-
-
+    QByteArray deviceNickname;              // nickname of device
+    bool identityColored = false;
     // =================================== GUI Element Population Methods ==================================
 
     /**
