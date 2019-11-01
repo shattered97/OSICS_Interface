@@ -183,7 +183,7 @@ void DefaultInstrument::setConfigWindow(QMainWindow *configWindow){
 }
 
 void DefaultInstrument::updateConfig(QSettings &){
-    qDebug() << "default updateConfig()";
+
 }
 
 void DefaultInstrument::sendCommandAndWaitForResponse(QByteArray theInstrLoc, QByteArray command, QByteArray *response){

@@ -203,6 +203,7 @@ void ConfigPowerMeter::on_wavelengthComboBox_currentIndexChanged()
 
 void ConfigPowerMeter::on_wavelengthEdit_editingFinished()
 {
+    ui->wavelengthEdit->blockSignals(true);
     QByteArray fieldText = ui->wavelengthEdit->text().toLatin1();
 
     if(fieldText != ""){
@@ -247,6 +248,7 @@ void ConfigPowerMeter::on_wavelengthEdit_editingFinished()
     // clear edit field and remove focus
     ui->wavelengthEdit->clear();
     ui->wavelengthEdit->clearFocus();
+    ui->wavelengthEdit->blockSignals(false);
 }
 
 void ConfigPowerMeter::on_loadSettingsButton_pressed()
@@ -372,7 +374,5 @@ void ConfigPowerMeter::on_setNicknameBtn_clicked()
         deviceNickname = nicknameText.toLatin1();
                         settings->setValue(DEVICE_NICKNAME, QVariant::fromValue(deviceNickname));
     }
-
-
 
 }

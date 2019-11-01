@@ -32,7 +32,7 @@ void ConfigOSICS_ATN::showEvent(QShowEvent* event)
 
 void ConfigOSICS_ATN::slotUpdateWindow()
 {
-    qDebug() << "atn slotUpdateWindow()";
+
     // clear text entry fields
     ui->attenuationEdit->clear();
     ui->attenuationOffsetEdit->clear();
@@ -52,10 +52,10 @@ void ConfigOSICS_ATN::slotUpdateWindow()
 
 void ConfigOSICS_ATN::getValuesFromConfig()
 {
-    qDebug() << "getValuesFromConfig() atn";
 
     moduleIdentity = settings->value(DEVICE_IDENTITY).value<QByteArray>();
     moduleLocation = settings->value(DEVICE_ADDRESS).value<QByteArray>();
+    deviceNickname = settings->value(DEVICE_NICKNAME).value<QByteArray>();
     attenuationSetting = settings->value(EXFO_OSICS_ATN_ATTENUATION).value<QByteArray>();
     firstMinAttenuation = settings->value(EXFO_OSICS_ATN_MIN_ATTENUATION_1).value<QByteArray>();
     firstMaxAttenuation = settings->value(EXFO_OSICS_ATN_MAX_ATTENUATION_1).value<QByteArray>();
@@ -69,8 +69,18 @@ void ConfigOSICS_ATN::getValuesFromConfig()
 
 }
 
+void ConfigOSICS_ATN::populateSelectedRadioButton(){
+    if(refWavelengthNumber.toInt() == 1){
+        ui->refWavelengthRadioButton1->setChecked(true);
+    }
+    else{
+        ui->refWavelengthRadioButton2->setChecked(true);
+   }
+}
+
 void ConfigOSICS_ATN::populateAllValues()
 {
+    populateSelectedRadioButton();
     populateRefWavelength();
     populateDeviceInfo();
     populateAttenuation();
@@ -80,7 +90,7 @@ void ConfigOSICS_ATN::populateAllValues()
 }
 
 void ConfigOSICS_ATN::populateDeviceInfo(){
-    ui->instrumentInfoLabel->setText(moduleIdentity);
+    ui->instrumentInfoLabel->setText(deviceNickname);
     ui->instrumentAddressLabel->setText(moduleLocation);
 }
 void ConfigOSICS_ATN::populateAttenuation()
@@ -190,41 +200,52 @@ bool ConfigOSICS_ATN::saveSettings()
 
 void ConfigOSICS_ATN::on_attenuationEdit_editingFinished()
 {
+    ui->attenuationEdit->blockSignals(true);
     QByteArray enteredAtten = ui->attenuationEdit->text().toLatin1();
 
     if(isInputValueValid(enteredAtten, firstMinAttenuation, firstMaxAttenuation)){
         attenuationSetting = enteredAtten;
         settings->setValue(EXFO_OSICS_ATN_ATTENUATION, QVariant::fromValue(attenuationSetting));
         attenuationDisplayTextColored = true;
+
+        populateAttenuation();
     }
 
     colorDisplayFieldText();
     ui->attenuationEdit->clearFocus();
+    ui->attenuationEdit->clear();
+    ui->attenuationEdit->blockSignals(false);
 }
 
 void ConfigOSICS_ATN::on_attenuationOffsetEdit_editingFinished()
 {
+    ui->attenuationOffsetEdit->blockSignals(true);
     QByteArray enteredOffset = ui->attenuationOffsetEdit->text().toLatin1();
     if(isInputValueValid(enteredOffset, EXFO_OSICS_ATN_MIN_OFFSET, EXFO_OSICS_ATN_MAX_OFFSET)){
         QByteArray offset = enteredOffset;
         if(refWavelengthNumber.toInt() == 1){
             settings->setValue(EXFO_OSICS_ATN_OFFSET_1, QVariant::fromValue(offset));
             attenuationOffsetDisplay1Colored = true;
+            firstOffset = offset;
         }
 
         else{
             settings->setValue(EXFO_OSICS_ATN_OFFSET_2, QVariant::fromValue(offset));
             attenuationOffsetDisplay2Colored = true;
+            secondOffset = offset;
         }
+        populateOffset();
     }
 
     colorDisplayFieldText();
     ui->attenuationOffsetEdit->clearFocus();
+    ui->attenuationOffsetEdit->clear();
+    ui->attenuationOffsetEdit->blockSignals(false);
 }
 
 void ConfigOSICS_ATN::on_loadSettingsButton_clicked()
 {
-    qDebug() << "on_loadSettingsButton_pressed()";
+
     QString fileName = QFileDialog::getOpenFileName(this,
             tr("Load Settings File"), "",
             tr("Settings (*.ini);;All Files (*)"));
@@ -245,7 +266,7 @@ void ConfigOSICS_ATN::on_loadSettingsButton_clicked()
 
 void ConfigOSICS_ATN::on_saveSettingsButton_clicked()
 {
-    qDebug() << "on_saveSettingsButton_pressed()";
+
     QString fileName = QFileDialog::getSaveFileName(this,
             tr("Save Settings File"), "",
             tr("Settings (*.ini);;All Files (*)"));
@@ -270,7 +291,6 @@ void ConfigOSICS_ATN::on_saveChangesButton_clicked()
     QApplication::setOverrideCursor(Qt::WaitCursor);
 
     // signal to orchestrator to update the device with the values from QSettings
-    qDebug() << device;
     emit signalApplyConfigSettings(device, *settings);
 
     QApplication::restoreOverrideCursor();
@@ -314,7 +334,7 @@ void ConfigOSICS_ATN::colorDisplayFieldText(){
     colorText(ui->attenuationDisplay, attenuationDisplayTextColored);
 
     // set color based on reference wavelength selected
-    if(refWavelengthNumber == "1"){
+    if(refWavelengthNumber.toInt() == 1){
         colorText(ui->attenuationOffsetDisplay, attenuationOffsetDisplay1Colored);
     }
     else{
@@ -331,4 +351,18 @@ void ConfigOSICS_ATN::resetDisplayFieldColoredStatus(){
     ui->refWavelengthRadioButton2->setStyleSheet("QRadioButton {color: rgb(0, 0, 0);}");
 
     colorDisplayFieldText();
+}
+
+void ConfigOSICS_ATN::on_setNicknameBtn_clicked()
+{
+    // open dialog box with text entry field
+    bool ok;
+    QString nicknameText = QInputDialog::getText(this, tr("QInputDialog::getText()"),
+                                                 tr("Enter desired nickname for device. Update will be applied when you submit device changes."),
+                                                 QLineEdit::Normal, "", &ok);
+    if(ok && !nicknameText.trimmed().isEmpty()){
+        deviceNickname = nicknameText.toLatin1();
+                        settings->setValue(DEVICE_NICKNAME, QVariant::fromValue(deviceNickname));
+    }
+
 }

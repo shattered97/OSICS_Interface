@@ -50,6 +50,9 @@ void ConfigOSICS_SWT::slotUpdateWindow()
     ui->frequencyEdit->clear();
     ui->powerEdit->clear();
 
+    // reset text fields
+    resetDisplayFieldColoredStatus();
+
     // store values from settings
     getValuesFromConfig();
 
@@ -66,17 +69,35 @@ void ConfigOSICS_SWT::getValuesFromConfig()
 
     moduleIdentity = settings->value(DEVICE_IDENTITY).value<QByteArray>();
     moduleLocation = settings->value(DEVICE_ADDRESS).value<QByteArray>();
+    deviceNickname = settings->value(DEVICE_NICKNAME).value<QByteArray>();
     outputPowerStatus = settings->value(EXFO_OSICS_SWT_OUTPUT_STATUS).value<QByteArray>().trimmed();
     operatingMode = settings->value(EXFO_OSICS_SWT_OPMODE).value<QByteArray>().trimmed();
     activeChannel = settings->value(EXFO_OSICS_SWT_ACTIVE_CHANNEL).value<QByteArray>();
     powerSetting = settings->value(EXFO_OSICS_SWT_POWER_SETTING).value<QByteArray>();
     wavelengthSetting = settings->value(EXFO_OSICS_SWT_WAVELENGTH_SETTING).value<QByteArray>();
+    minWavelength = settings->value(EXFO_OSICS_SWT_MIN_WAV_SETTING).value<QByteArray>();
+    maxWavelength = settings->value(EXFO_OSICS_SWT_MAX_WAV_SETTING).value<QByteArray>();
     frequencySetting = settings->value(EXFO_OSICS_SWT_FREQUENCY_SETTING).value<QByteArray>();
 }
 
 void ConfigOSICS_SWT::populateDeviceInfo(){
-    ui->instrumentInfoLabel->setText(moduleIdentity);
+    ui->instrumentInfoLabel->setText(deviceNickname);
     ui->instrumentAddressLabel->setText(moduleLocation);
+}
+
+void ConfigOSICS_SWT::populateActiveChannel(){
+    if(activeChannel.toInt() == 1){
+        ui->ch1Radio->setChecked(true);
+    }
+    else if(activeChannel.toInt() == 2){
+        ui->ch2Radio->setChecked(true);
+    }
+    else if(activeChannel.toInt() == 3){
+        ui->ch3Radio->setChecked(true);
+    }
+    else if(activeChannel.toInt() == 4){
+        ui->ch4Radio->setChecked(true);
+    }
 }
 
 void ConfigOSICS_SWT::populateAllValues()
@@ -85,6 +106,7 @@ void ConfigOSICS_SWT::populateAllValues()
 
     populateOperatingMode();
     populateDeviceInfo();
+    populateActiveChannel();
 
     // power values
     populateOutputPowerStatus();
@@ -114,9 +136,23 @@ void ConfigOSICS_SWT::populateOperatingMode()
 {
     if(operatingMode == "ECL"){
         ui->opModeRadioBtnFullBand->setChecked(true);
+
+        // show other setting displays (only available for full-band mode)
+        ui->powerSettingsGroup->show();
+        ui->wavelengthSettingsGroup->show();
+        ui->frequencySettingsGroup->show();
+        ui->activeChannelGroupBox->hide();
+
     }
     else if(operatingMode == "SWT"){
         ui->opModeRadioBtnSwitch->setChecked(true);
+
+        // hide other setting displays (only available for full-band mode)
+        ui->powerSettingsGroup->hide();
+        ui->wavelengthSettingsGroup->hide();
+        ui->frequencySettingsGroup->hide();
+        ui->activeChannelGroupBox->show();
+
     }
 }
 
@@ -173,12 +209,12 @@ void ConfigOSICS_SWT::populateWavelength()
 
 void ConfigOSICS_SWT::populateMinWavelength()
 {
-    ui->minWavelengthDisplay->setText(EXFO_OSICS_SWT_MIN_WAV_NM);
+    ui->minWavelengthDisplay->setText(minWavelength);
 }
 
 void ConfigOSICS_SWT::populateMaxWavelength()
 {
-    ui->maxWavelengthDisplay->setText(EXFO_OSICS_SWT_MAX_WAV_NM);
+    ui->maxWavelengthDisplay->setText(maxWavelength);
 }
 
 void ConfigOSICS_SWT::populateFrequencyUnit()
@@ -206,7 +242,8 @@ void ConfigOSICS_SWT::populateMinFrequency()
 {
     // get min frequency by converting max wavelength
 
-    double maxWavelengthNM = EXFO_OSICS_SWT_MAX_WAV_NM.toDouble();
+    double maxWavelengthNM = maxWavelength.toDouble();
+
     // convert to meters
     double maxWavelengthM = ConversionUtilities::convertWavelengthToMeter(maxWavelengthNM, "nm");
     double minFrequencyHz = ConversionUtilities::convertWavelengthToFrequency(maxWavelengthM);
@@ -221,7 +258,7 @@ void ConfigOSICS_SWT::populateMaxFrequency()
 {
     // get max frequency by converting min wavelength
 
-    double minWavelengthNM = EXFO_OSICS_SWT_MIN_WAV_NM.toDouble();
+    double minWavelengthNM = minWavelength.toDouble();
     // convert to meters
     double minWavelengthM = ConversionUtilities::convertWavelengthToMeter(minWavelengthNM, "nm");
     double maxFrequencyHz = ConversionUtilities::convertWavelengthToFrequency(minWavelengthM);
@@ -233,26 +270,25 @@ void ConfigOSICS_SWT::populateMaxFrequency()
 
 void ConfigOSICS_SWT::on_opModeRadioBtnFullBand_clicked()
 {
-    // show other setting displays (only available for full-band mode)
-    ui->powerSettingsGroup->show();
-    ui->wavelengthSettingsGroup->show();
-    ui->frequencySettingsGroup->show();
 
     operatingMode = "ECL";
     settings->setValue(EXFO_OSICS_SWT_OPMODE, QVariant::fromValue(operatingMode));
     populateOperatingMode();
+
+    ui->opModeRadioBtnFullBand->setStyleSheet("QRadioButton {color: rgb(0, 0, 255);}");
+    ui->opModeRadioBtnSwitch->setStyleSheet("QRadioButton {color: rgb(0, 0, 0);}");
 }
 
 void ConfigOSICS_SWT::on_opModeRadioBtnSwitch_clicked()
 {
-    // hide other setting displays (only available for full-band mode)
-    ui->powerSettingsGroup->hide();
-    ui->wavelengthSettingsGroup->hide();
-    ui->frequencySettingsGroup->hide();
 
     operatingMode = "SWT";
     settings->setValue(EXFO_OSICS_SWT_OPMODE, QVariant::fromValue(operatingMode));
     populateOperatingMode();
+
+    ui->opModeRadioBtnSwitch->setStyleSheet("QRadioButton {color: rgb(0, 0, 255);}");
+    ui->opModeRadioBtnFullBand->setStyleSheet("QRadioButton {color: rgb(0, 0, 0);}");
+
 }
 
 
@@ -260,25 +296,53 @@ void ConfigOSICS_SWT::on_ch1Radio_clicked()
 {
     activeChannel = ui->ch1Radio->text().split(' ')[1].toLatin1();
     settings->setValue(EXFO_OSICS_SWT_ACTIVE_CHANNEL, QVariant::fromValue(activeChannel));
+
+    // reset active channel radio button coloring
+    resetActiveChannelRadioColor();
+    // change newly selected color to blue and remove color from other radio button
+    ui->ch1Radio->setStyleSheet("QRadioButton {color: rgb(0, 0, 255);}");
 }
 
 void ConfigOSICS_SWT::on_ch2Radio_clicked()
 {
     activeChannel = ui->ch2Radio->text().split(' ')[1].toLatin1();
     settings->setValue(EXFO_OSICS_SWT_ACTIVE_CHANNEL, QVariant::fromValue(activeChannel));
+
+    // reset active channel radio button coloring
+    resetActiveChannelRadioColor();
+    // change newly selected color to blue and remove color from other radio button
+    ui->ch2Radio->setStyleSheet("QRadioButton {color: rgb(0, 0, 255);}");
 }
 
 void ConfigOSICS_SWT::on_ch3Radio_clicked()
 {
     activeChannel = ui->ch3Radio->text().split(' ')[1].toLatin1();
     settings->setValue(EXFO_OSICS_SWT_ACTIVE_CHANNEL, QVariant::fromValue(activeChannel));
+
+    // reset active channel radio button coloring
+    resetActiveChannelRadioColor();
+    // change newly selected color to blue and remove color from other radio button
+    ui->ch3Radio->setStyleSheet("QRadioButton {color: rgb(0, 0, 255);}");
 }
 
 void ConfigOSICS_SWT::on_ch4Radio_clicked()
 {
     activeChannel = ui->ch4Radio->text().split(' ')[1].toLatin1();
     settings->setValue(EXFO_OSICS_SWT_ACTIVE_CHANNEL, QVariant::fromValue(activeChannel));
+
+    // reset active channel radio button coloring
+    resetActiveChannelRadioColor();
+    // change newly selected color to blue and remove color from other radio button
+    ui->ch4Radio->setStyleSheet("QRadioButton {color: rgb(0, 0, 255);}");
 }
+
+void ConfigOSICS_SWT::resetActiveChannelRadioColor(){
+    ui->ch1Radio->setStyleSheet("QRadioButton {color: rgb(0, 0, 0);}");
+    ui->ch2Radio->setStyleSheet("QRadioButton {color: rgb(0, 0, 0);}");
+    ui->ch3Radio->setStyleSheet("QRadioButton {color: rgb(0, 0, 0);}");
+    ui->ch4Radio->setStyleSheet("QRadioButton {color: rgb(0, 0, 0);}");
+}
+
 
 void ConfigOSICS_SWT::on_powerUnitComboBox_currentIndexChanged(const QString &arg1)
 {
@@ -340,6 +404,7 @@ bool ConfigOSICS_SWT::isInputValueValid(QByteArray inputValue, QByteArray minVal
 }
 void ConfigOSICS_SWT::on_powerEdit_editingFinished()
 {
+    ui->powerEdit->blockSignals(true);
     QByteArray powerValue = ui->powerEdit->text().toLatin1();
     QByteArray minPower = ui->minPowerDisplay->text().toLatin1();
     QByteArray maxPower = ui->maxPowerDisplay->text().toLatin1();
@@ -352,6 +417,7 @@ void ConfigOSICS_SWT::on_powerEdit_editingFinished()
         if(unit == "Watt"){
             converted = ConversionUtilities::convertWattToDBm(powDouble);
         }
+        outputPowerColored = true;
         powerSetting = QByteArray::number(converted);
 
         // update settings object
@@ -359,10 +425,16 @@ void ConfigOSICS_SWT::on_powerEdit_editingFinished()
 
         populatePower();
     }
+
+    colorDisplayFieldText();
+    ui->powerEdit->clearFocus();
+    ui->powerEdit->clear();
+    ui->powerEdit->blockSignals(false);
 }
 
 void ConfigOSICS_SWT::on_wavelengthEdit_editingFinished()
 {
+    ui->wavelengthEdit->blockSignals(true);
     QByteArray wavelengthValue = ui->wavelengthEdit->text().toLatin1();
     QByteArray minWavelength = ui->minWavelengthDisplay->text().toLatin1();
     QByteArray maxWavelength = ui->maxWavelengthDisplay->text().toLatin1();
@@ -374,18 +446,25 @@ void ConfigOSICS_SWT::on_wavelengthEdit_editingFinished()
 
         // update the settings object
         settings->setValue(EXFO_OSICS_SWT_WAVELENGTH_SETTING, QVariant::fromValue(wavelengthSetting));
+        wavelengthSettingColored = true;
         populateWavelength();
 
         // update frequency b/c the values are related
         double frequency = ConversionUtilities::convertWavelengthToFrequency(wavDouble);
         frequencySetting = QByteArray::number(frequency);
         settings->setValue(EXFO_OSICS_SWT_FREQUENCY_SETTING, QVariant::fromValue(frequencySetting));
+        frequencySettingColored = true;
         populateFrequency();
     }
+    colorDisplayFieldText();
+    ui->wavelengthEdit->clearFocus();
+    ui->wavelengthEdit->clear();
+    ui->wavelengthEdit->blockSignals(false);
 }
 
 void ConfigOSICS_SWT::on_frequencyEdit_editingFinished()
 {
+    ui->frequencyEdit->blockSignals(true);
     QByteArray frequencyValue = ui->frequencyEdit->text().toLatin1();
     QByteArray minFrequencyValue = ui->minFrequencyDisplay->text().toLatin1();
     QByteArray maxFrequencyValue = ui->maxFrequencyDisplay->text().toLatin1();
@@ -400,6 +479,7 @@ void ConfigOSICS_SWT::on_frequencyEdit_editingFinished()
 
         // update the settings object
         settings->setValue(EXFO_OSICS_SWT_FREQUENCY_SETTING, QVariant::fromValue(frequencySetting));
+        frequencySettingColored = true;
         populateFrequency();
 
         // update wavelength b/c the values are related
@@ -407,8 +487,14 @@ void ConfigOSICS_SWT::on_frequencyEdit_editingFinished()
         double wavelengthNM = ConversionUtilities::convertWavelengthFromMeter(wavelengthM, "nm");
         wavelengthSetting = QByteArray::number(wavelengthNM);
         settings->setValue(EXFO_OSICS_SWT_WAVELENGTH_SETTING, QVariant::fromValue(wavelengthSetting));
+        wavelengthSettingColored = true;
         populateWavelength();
     }
+
+    colorDisplayFieldText();
+    ui->frequencyEdit->clearFocus();
+    ui->frequencyEdit->clear();
+    ui->frequencyEdit->blockSignals(false);
 }
 
 void ConfigOSICS_SWT::on_loadSettingsButton_clicked()
@@ -507,8 +593,53 @@ void ConfigOSICS_SWT::on_toggleOutputButton_clicked()
     else{
         outputPowerStatus = "DISABLED";
     }
-
+    outputStatusColored = true;
     settings->setValue(EXFO_OSICS_SWT_OUTPUT_STATUS, QVariant::fromValue(outputPowerStatus));
 
+    colorDisplayFieldText();
     populateOutputPowerStatus();
+}
+
+void ConfigOSICS_SWT::on_setNicknameBtn_clicked()
+{
+    // open dialog box with text entry field
+    bool ok;
+    QString nicknameText = QInputDialog::getText(this, tr("QInputDialog::getText()"),
+                                                 tr("Enter desired nickname for device. Update will be applied when you submit device changes."),
+                                                 QLineEdit::Normal, "", &ok);
+    if(ok && !nicknameText.trimmed().isEmpty()){
+        deviceNickname = nicknameText.toLatin1();
+                        settings->setValue(DEVICE_NICKNAME, QVariant::fromValue(deviceNickname));
+    }
+
+}
+
+void ConfigOSICS_SWT::colorText(QLineEdit *textField, bool colored){
+    if(colored){
+        textField->setStyleSheet("QLineEdit {color: rgb(0, 0, 255);}");
+    }
+    else{
+        textField->setStyleSheet("QLineEdit {color: rgb(0, 0, 0);}");
+    }
+}
+
+void ConfigOSICS_SWT::colorDisplayFieldText(){
+    colorText(ui->outputStatusDisplay, outputStatusColored);
+    colorText(ui->powerDisplay, outputPowerColored);
+    colorText(ui->wavelengthDisplay, wavelengthSettingColored);
+    colorText(ui->frequencyDisplay, frequencySettingColored);
+}
+
+void ConfigOSICS_SWT::resetDisplayFieldColoredStatus(){
+    outputStatusColored = false;
+    outputPowerColored = false;
+    wavelengthSettingColored = false;
+    frequencySettingColored = false;
+
+    ui->opModeRadioBtnSwitch->setStyleSheet("QRadioButton {color: rgb(0, 0, 0);}");
+    ui->opModeRadioBtnFullBand->setStyleSheet("QRadioButton {color: rgb(0, 0, 0);}");
+
+    resetActiveChannelRadioColor();
+
+    colorDisplayFieldText();
 }

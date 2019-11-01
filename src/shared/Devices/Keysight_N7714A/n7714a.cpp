@@ -12,9 +12,9 @@ QByteArray N7714A::queryPowerUnit(int module){
     int paramPosition = baseCmd.indexOf(':');
     QString param = QString("%1").arg(module);
 
-    QByteArray command = QString(baseCmd.insert(paramPosition, param)).toLatin1();
+    baseCmd = QString(baseCmd.insert(paramPosition, param)).toLatin1();
     QByteArray response = "";
-    // send command
+
     sendCommandAndWaitForResponse(theInstrLoc, baseCmd, &response);
     return response;
 }
@@ -26,13 +26,12 @@ void N7714A::execPowerUnit(int module, QByteArray unit){
     int paramPosition = baseCmd.indexOf(':');
     QString param = QString("%1").arg(module);
 
-    QByteArray command = QString(baseCmd.insert(paramPosition, param)).toLatin1();
+    baseCmd = QString(baseCmd.insert(paramPosition, param)).toLatin1();
 
-    command.insert(command.indexOf('\n'), " " + unit);
+    baseCmd.insert(baseCmd.indexOf('\n'), " " + unit);
 
-    qDebug() << command;
     // send command
-    emit signalSendCmdNoRsp(theInstrLoc, command);
+    emit signalSendCmdNoRsp(theInstrLoc, baseCmd);
 
 }
 
@@ -42,9 +41,9 @@ QByteArray N7714A::queryPowerStatus(int module){
     int paramPosition = baseCmd.indexOf(':');
     QString param = QString("%1").arg(module);
 
-    QByteArray command = QString(baseCmd.insert(paramPosition, param)).toLatin1();
+    baseCmd = QString(baseCmd.insert(paramPosition, param)).toLatin1();
     QByteArray response = "";
-    // send command
+
     sendCommandAndWaitForResponse(theInstrLoc, baseCmd, &response);
     return response;
 }
@@ -55,9 +54,9 @@ void N7714A::execPowerOnModule(int module){
     int paramPosition = baseCmd.indexOf(':');
     QString param = QString("%1").arg(module);
 
-    QByteArray command = QString(baseCmd.insert(paramPosition, param)).toLatin1();
+    baseCmd = QString(baseCmd.insert(paramPosition, param)).toLatin1();
 
-    emit signalSendCmdNoRsp(theInstrLoc, command);
+    emit signalSendCmdNoRsp(theInstrLoc, baseCmd);
 }
 
 void N7714A::execPowerOffModule(int module){
@@ -65,9 +64,9 @@ void N7714A::execPowerOffModule(int module){
     int paramPosition = baseCmd.indexOf(':');
     QString param = QString("%1").arg(module);
 
-    QByteArray command = QString(baseCmd.insert(paramPosition, param)).toLatin1();
+    baseCmd = QString(baseCmd.insert(paramPosition, param)).toLatin1();
 
-    emit signalSendCmdNoRsp(theInstrLoc, command);
+    emit signalSendCmdNoRsp(theInstrLoc, baseCmd);
 }
 
 QByteArray N7714A::queryPowerLevel(int module, QByteArray value){
@@ -75,12 +74,12 @@ QByteArray N7714A::queryPowerLevel(int module, QByteArray value){
     int modulePos = baseCmd.indexOf(':');
 
     QString moduleString = QString("%1").arg(module);
-    QByteArray command = QString(baseCmd.insert(modulePos, moduleString)).toLatin1();
+    baseCmd = QString(baseCmd.insert(modulePos, moduleString)).toLatin1();
 
-    int valuePos = command.indexOf('\n');
-    command = QString(command.insert(valuePos, " " + value)).toLatin1();
+    int valuePos = baseCmd.indexOf('\n');
+    baseCmd = QString(baseCmd.insert(valuePos, " " + value)).toLatin1();
     QByteArray response = "";
-    // send command
+
     sendCommandAndWaitForResponse(theInstrLoc, baseCmd, &response);
     return response;
 }
@@ -90,15 +89,15 @@ void N7714A::execPowerLevel(int module, QByteArray value, QByteArray unit){
     int modulePos = baseCmd.indexOf(':');
 
     QString moduleString = QString("%1").arg(module);
-    QByteArray command = QString(baseCmd.insert(modulePos, moduleString)).toLatin1();
+    baseCmd = QString(baseCmd.insert(modulePos, moduleString)).toLatin1();
 
-    int valuePos = command.indexOf('\n');
-    command = QString(command.insert(valuePos, " " + value)).toLatin1();
+    int valuePos = baseCmd.indexOf('\n');
+    baseCmd = QString(baseCmd.insert(valuePos, " " + value)).toLatin1();
 
-    valuePos = command.indexOf('\n');
-    command = QString(command.insert(valuePos, unit)).toLatin1();
-    // send command
-    emit signalSendCmdNoRsp(theInstrLoc, command);
+    valuePos = baseCmd.indexOf('\n');
+    baseCmd = QString(baseCmd.insert(valuePos, unit)).toLatin1();
+
+    emit signalSendCmdNoRsp(theInstrLoc, baseCmd);
 }
 
 QByteArray N7714A::queryWavelength(int module, QByteArray value){
@@ -107,10 +106,10 @@ QByteArray N7714A::queryWavelength(int module, QByteArray value){
     int modulePos = baseCmd.indexOf(':');
 
     QString moduleString = QString("%1").arg(module);
-    QByteArray command = QString(baseCmd.insert(modulePos, moduleString)).toLatin1();
+    baseCmd = QString(baseCmd.insert(modulePos, moduleString)).toLatin1();
 
-    int valuePos = command.indexOf('\n');
-    command = QString(command.insert(valuePos, " " + value)).toLatin1();
+    int valuePos = baseCmd.indexOf('\n');
+    baseCmd = QString(baseCmd.insert(valuePos, " " + value)).toLatin1();
     QByteArray response = "";
     // send command
     sendCommandAndWaitForResponse(theInstrLoc, baseCmd, &response);
@@ -122,15 +121,15 @@ void N7714A::execWavelength(int module, QByteArray value, QByteArray unit){
     int modulePos = baseCmd.indexOf(':');
 
     QString moduleString = QString("%1").arg(module);
-    QByteArray command = QString(baseCmd.insert(modulePos, moduleString)).toLatin1();
+    baseCmd = QString(baseCmd.insert(modulePos, moduleString)).toLatin1();
 
-    int valuePos = command.indexOf('\n');
-    command = QString(command.insert(valuePos, " " + value)).toLatin1();
+    int valuePos = baseCmd.indexOf('\n');
+    baseCmd = QString(baseCmd.insert(valuePos, " " + value)).toLatin1();
 
-    command.insert(command.indexOf('\n'), unit);
+    baseCmd.insert(baseCmd.indexOf('\n'), unit);
 
     // send command
-    emit signalSendCmdNoRsp(theInstrLoc, command);
+    emit signalSendCmdNoRsp(theInstrLoc, baseCmd);
 }
 
 QByteArray N7714A::queryFrequency(int module, QByteArray value){
@@ -138,10 +137,10 @@ QByteArray N7714A::queryFrequency(int module, QByteArray value){
     int modulePos = baseCmd.indexOf(':');
 
     QString moduleString = QString("%1").arg(module);
-    QByteArray command = QString(baseCmd.insert(modulePos, moduleString)).toLatin1();
+    baseCmd = QString(baseCmd.insert(modulePos, moduleString)).toLatin1();
 
-    int valuePos = command.indexOf('\n');
-    command = QString(command.insert(valuePos, " " + value)).toLatin1();
+    int valuePos = baseCmd.indexOf('\n');
+    baseCmd = QString(baseCmd.insert(valuePos, " " + value)).toLatin1();
     QByteArray response = "";
     // send command
     sendCommandAndWaitForResponse(theInstrLoc, baseCmd, &response);
@@ -153,15 +152,15 @@ void N7714A::execFrequency(int module, QByteArray value, QByteArray unit){
     int modulePos = baseCmd.indexOf(':');
 
     QString moduleString = QString("%1").arg(module);
-    QByteArray command = QString(baseCmd.insert(modulePos, moduleString)).toLatin1();
+    baseCmd = QString(baseCmd.insert(modulePos, moduleString)).toLatin1();
 
-    int valuePos = command.indexOf('\n');
-    command = QString(command.insert(valuePos, " " + value)).toLatin1();
+    int valuePos = baseCmd.indexOf('\n');
+    baseCmd = QString(baseCmd.insert(valuePos, " " + value)).toLatin1();
 
-    command.insert(command.indexOf('\n'), unit);
+    baseCmd.insert(baseCmd.indexOf('\n'), unit);
 
     // send command
-    emit signalSendCmdNoRsp(theInstrLoc, command);
+    emit signalSendCmdNoRsp(theInstrLoc, baseCmd);
 }
 
 QByteArray N7714A::testCommand(QByteArray baseCmd){
@@ -188,7 +187,10 @@ void N7714A::turnOnAutoWavMode(int module){
 }
 
 void N7714A::updateConfig(QSettings &configSettings){
-    qDebug() << "n7714a update config";
+
+    configSettings.setValue(DEVICE_ADDRESS, QVariant::fromValue(theInstrLoc));
+    configSettings.setValue(DEVICE_IDENTITY, QVariant::fromValue(theIdentity));
+    configSettings.setValue(DEVICE_NICKNAME, QVariant::fromValue(getNickname()));
 
     // make sure auto mode is on
     for(int i = 1; i < N7714A_NUM_SLOTS; i++){
@@ -201,7 +203,12 @@ void N7714A::updateConfig(QSettings &configSettings){
 }
 
 void N7714A::applyConfigSettings(QSettings &configSettings){
-    // apply power settings to device
+
+    // apply nickname
+    QByteArray nicknameToSet = configSettings.value(DEVICE_NICKNAME).value<QByteArray>();
+    setNickname(nicknameToSet);
+
+
     QList<QByteArray> powerSettings = configSettings.value(N7714A_POWER_SETTINGS).value<QList<QByteArray>>();
     QList<QByteArray> powerStates = configSettings.value(N7714A_LASER_STATE).value<QList<QByteArray>>();
 
@@ -222,7 +229,7 @@ void N7714A::applyConfigSettings(QSettings &configSettings){
 
     // apply wavelength settings to device
     QList<QByteArray> wavelengthSettings = configSettings.value(N7714A_WAVELENGTH_SETTINGS).value<QList<QByteArray>>();
-    qDebug() << wavelengthSettings;
+
     for(int i = 0; i < N7714A_NUM_SLOTS; i++){
         int slot = i + 1;
         QByteArray unit = "m";
@@ -262,13 +269,9 @@ void N7714A::updatePowerSettings(QSettings &configSettings){
 
     // save to config
     configSettings.setValue(N7714A_POWER_SETTINGS, QVariant::fromValue(powerSettings));
-    qDebug() << configSettings.value(N7714A_POWER_SETTINGS).value<QList<QByteArray>>();
     configSettings.setValue(N7714A_MIN_POWER, QVariant::fromValue(minPowerSettings));
-    qDebug() << configSettings.value(N7714A_MIN_POWER).value<QList<QByteArray>>();
     configSettings.setValue(N7714A_MAX_POWER, QVariant::fromValue(maxPowerSettings));
-    qDebug() << configSettings.value(N7714A_MAX_POWER).value<QList<QByteArray>>();
     configSettings.setValue(N7714A_LASER_STATE, QVariant::fromValue(laserStates));
-    qDebug() << configSettings.value(N7714A_LASER_STATE).value<QList<QByteArray>>();
     configSettings.sync();
 }
 
@@ -289,11 +292,8 @@ void N7714A::updateWavelengthSettings(QSettings &configSettings){
 
     // save to config
     configSettings.setValue(N7714A_WAVELENGTH_SETTINGS, QVariant::fromValue(wavelengthSettings));
-    qDebug() << configSettings.value(N7714A_WAVELENGTH_SETTINGS).value<QList<QByteArray>>();
     configSettings.setValue(N7714A_MIN_WAVELENGTH, QVariant::fromValue(minWavelengthSettings));
-    qDebug() << configSettings.value(N7714A_MIN_WAVELENGTH).value<QList<QByteArray>>();
     configSettings.setValue(N7714A_MAX_WAVELENGTH, QVariant::fromValue(maxWavelengthSettings));
-    qDebug() << configSettings.value(N7714A_MAX_WAVELENGTH).value<QList<QByteArray>>();
     configSettings.sync();
 }
 
@@ -314,11 +314,8 @@ void N7714A::updateFrequencySettings(QSettings &configSettings){
 
     // save to config
     configSettings.setValue(N7714A_FREQUENCY_SETTINGS, QVariant::fromValue(frequencySettings));
-    qDebug() << configSettings.value(N7714A_FREQUENCY_SETTINGS).value<QList<QByteArray>>();
     configSettings.setValue(N7714A_MIN_FREQUENCY, QVariant::fromValue(minFrequencySettings));
-    qDebug() << configSettings.value(N7714A_MIN_FREQUENCY).value<QList<QByteArray>>();
     configSettings.setValue(N7714A_MAX_FREQUENCY, QVariant::fromValue(maxFrequencySettings));
-    qDebug() << configSettings.value(N7714A_MAX_FREQUENCY).value<QList<QByteArray>>();
     configSettings.sync();
 
 }

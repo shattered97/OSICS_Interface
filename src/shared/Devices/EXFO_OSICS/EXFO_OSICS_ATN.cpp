@@ -4,6 +4,7 @@ EXFO_OSICS_ATN::EXFO_OSICS_ATN(QByteArray theIdentity, QByteArray theInstrLoc) :
 {
     this->theIdentity = theIdentity;
     this->theInstrLoc = theInstrLoc;
+    setNickname(theIdentity);
 }
 
 void EXFO_OSICS_ATN::setModuleAttenuationCmd(int slotNum, QByteArray attenuation){
@@ -99,7 +100,10 @@ void EXFO_OSICS_ATN::setSlotNum(int slotNum){
 }
 
 void EXFO_OSICS_ATN::applyConfigSettings(QSettings &configSettings){
-    qDebug() << "in applyConfigSettings() for ATN";
+
+    // apply nickname
+    QByteArray nicknameToSet = configSettings.value(DEVICE_NICKNAME).value<QByteArray>();
+    setNickname(nicknameToSet);
 
     // apply attenuation
     QByteArray attenuation = configSettings.value(EXFO_OSICS_ATN_ATTENUATION).value<QByteArray>();
@@ -119,10 +123,10 @@ void EXFO_OSICS_ATN::applyConfigSettings(QSettings &configSettings){
 }
 
 void EXFO_OSICS_ATN::updateConfig(QSettings &configSettings){
-    qDebug() << "atn updateConfig()";
 
     configSettings.setValue(DEVICE_IDENTITY, theIdentity);
     configSettings.setValue(DEVICE_ADDRESS, theInstrLoc);
+    configSettings.setValue(DEVICE_NICKNAME, QVariant::fromValue(getNickname()));
 
     updateAttenuationSettings(configSettings);
     updateOffsetSettings(configSettings);
@@ -137,7 +141,6 @@ void parseMinMaxReturnValue(QByteArray valueToParse, QByteArray &minValue, QByte
 
     // get sign of first value
     firstSign = valueToParse.at(0);
-    qDebug() << "first sign: " << firstSign;
 
     // remove first sign then search for second sign
     QByteArray valueToParseCopy = valueToParse;
@@ -160,14 +163,11 @@ void parseMinMaxReturnValue(QByteArray valueToParse, QByteArray &minValue, QByte
     minValue = valueToParse.mid(0, secondIndex);
     maxValue = valueToParse.mid(secondIndex);
 
-    qDebug() << "minValue: " << minValue;
-    qDebug() << "maxValue: " << maxValue;
-
 }
 
 void EXFO_OSICS_ATN::updateAttenuationSettings(QSettings &configSettings)
 {
-    qDebug() << "updateAttenuationSettings()";
+
     // get attenuation value / parse returned value
     QByteArray attenuation = moduleAttenuationQuery(slotNum);
     attenuation = attenuation.split('=')[1];
@@ -200,7 +200,7 @@ void EXFO_OSICS_ATN::updateAttenuationSettings(QSettings &configSettings)
 
 void EXFO_OSICS_ATN::updateOffsetSettings(QSettings &configSettings)
 {
-    qDebug() << "updateOffsetSettings()";
+
     // get offset for wavelength number 1
     QByteArray firstOffset = moduleAttenuationOffsetQuery(slotNum, "1");
     firstOffset = firstOffset.split('=')[1];
@@ -214,7 +214,6 @@ void EXFO_OSICS_ATN::updateOffsetSettings(QSettings &configSettings)
 
 void EXFO_OSICS_ATN::updateWavelengthSettings(QSettings &configSettings)
 {
-    qDebug() << "updateWavelengthSettings()";
 
     // set reference wavelength number
     QByteArray refWavelength = refWavelengthModuleQuery(slotNum);

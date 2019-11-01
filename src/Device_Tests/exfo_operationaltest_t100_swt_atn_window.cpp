@@ -33,27 +33,6 @@ EXFO_OperationalTest_T100_SWT_ATN_Window::~EXFO_OperationalTest_T100_SWT_ATN_Win
 }
 
 
-void EXFO_OperationalTest_T100_SWT_ATN_Window::on_outputFileButton_clicked()
-{
-    QString fileName = QFileDialog::getSaveFileName(this,
-            tr("Save Output File"), "",
-            tr("Settings (*.csv);;All Files (*)"));
-
-    if (!fileName.isEmpty()){
-        QFile file(fileName);
-        if(!file.open(QIODevice::ReadWrite)){
-            QMessageBox::information(this, tr("Can't open file"), file.errorString());
-        }
-        else{
-            outputFilename = file.fileName().toLatin1();
-            file.close();
-
-            // update the field showing the filename
-            ui->outuptFilenameLineEdit->setText(outputFilename);
-
-        }
-    }
-}
 
 void EXFO_OperationalTest_T100_SWT_ATN_Window::runTest(){
     // signal to the test class to start the next step

@@ -161,12 +161,15 @@ private:
 
     int slotNum = 1;
 
+    bool autoDetectComplete = false;
+    bool minMaxWavelengthsFound = false;
     void updateOperatingModeSettings(QSettings &configSettings);
     void updateActiveChannelSettings(QSettings &configSettings);
     void updatePowerSettings(QSettings &configSettings);
     void updateWavelengthSettings(QSettings &configSettings);
     void updateFrequencySettings(QSettings &configSettings);
-
+    QByteArray getMinWavelengthForSWT();
+    QByteArray getMaxWavelengthForSWT();
 };
 
 #endif // EXFO_OSICS_SWT_H

@@ -159,11 +159,9 @@ const QByteArray EXFO_OSICS_ATN_MIN_OFFSET = "-10"; // defined in spec sheet/pro
 const QByteArray EXFO_OSICS_ATN_MAX_OFFSET = "10"; // defined in spec sheet/prog guide
 
 // EXFO_OSICS_SWT Values
-const QByteArray EXFO_OSICS_SWT_MIN_WAV_NM = "1250";
-const QByteArray EXFO_OSICS_SWT_MAX_WAV_NM = "1650";
 const QByteArray EXFO_OSICS_SWT_MIN_POWER_DBM = "-6.99";
 const QByteArray EXFO_OSICS_SWT_MAX_POWER_DBM = "3";
-const QByteArray EXFO_OSICS_SWT_NUM_CHANNELS = "4";
+const int EXFO_OSICS_SWT_NUM_CHANNELS = 4;
 
 // EXFO_OSICS_T100 Values
 const QByteArray EXFO_OSICS_T100_MIN_POWER_DBM = "-6.99";
@@ -237,6 +235,8 @@ const QByteArray EXFO_OSICS_SWT_ACTIVE_CHANNEL = "EXFO OSICS SWT Active Channel"
 const QByteArray EXFO_OSICS_SWT_POWER_SETTING = "EXFO OSICS SWT Power Setting";
 const QByteArray EXFO_OSICS_SWT_WAVELENGTH_SETTING = "EXFO OSICS SWT Wavelength Setting";
 const QByteArray EXFO_OSICS_SWT_FREQUENCY_SETTING = "EXFO OSICS SWT Frequency Setting";
+const QByteArray EXFO_OSICS_SWT_MIN_WAV_SETTING = "EXFO OSICS SWT Min Wavelength Setting";
+const QByteArray EXFO_OSICS_SWT_MAX_WAV_SETTING = "EXFO OSICS SWT Max Wavelength Setting";
 
 // QSettings Key Values - EXFO OSICS ATN
 const QByteArray EXFO_OSICS_ATN_ATTENUATION  = "EXFO OSICS ATN Attenuation";
@@ -252,9 +252,9 @@ const QByteArray EXFO_OSICS_ATN_OFFSET_2 = "EXFO OSICS ATN Second Offset";
 
 
 // Wavelength Step Test With Power Monitoring Test Constants
-const int WAVSTEP_GUI_POW_POLLING_RATE_MSEC = 1500;
+const int WAVSTEP_GUI_POW_POLLING_RATE_MSEC = 2000;
 const int WAVSTEP_GRAPH_MAX_POINTS_PER_SERIES = 100;
-const int WAVSTEP_OUTPUT_CSV_BUFFER_SIZE = 100;
+const int WAVSTEP_OUTPUT_CSV_BUFFER_SIZE = 1000;
 
 const QByteArray WAVSTEP_START_NOT_LESS_THAN_END = "Start wavelength should be less than the end wavelength.";
 const QByteArray WAVSTEP_END_NOT_GREATER_THAN_START = "End wavelength should be greater than the start wavelength.";

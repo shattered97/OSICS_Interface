@@ -23,8 +23,8 @@
    <widget class="QPushButton" name="runTestButton">
     <property name="geometry">
      <rect>
-      <x>430</x>
-      <y>620</y>
+      <x>330</x>
+      <y>590</y>
       <width>161</width>
       <height>61</height>
      </rect>
@@ -38,46 +38,12 @@
      <string>Run</string>
     </property>
    </widget>
-   <widget class="QLineEdit" name="outuptFilenameLineEdit">
-    <property name="enabled">
-     <bool>false</bool>
-    </property>
-    <property name="geometry">
-     <rect>
-      <x>30</x>
-      <y>530</y>
-      <width>711</width>
-      <height>41</height>
-     </rect>
-    </property>
-    <property name="readOnly">
-     <bool>true</bool>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="outputFileButton">
-    <property name="geometry">
-     <rect>
-      <x>750</x>
-      <y>530</y>
-      <width>221</width>
-      <height>41</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>14</pointsize>
-     </font>
-    </property>
-    <property name="text">
-     <string>Choose Output File</string>
-    </property>
-   </widget>
    <widget class="QLabel" name="directionsTextField">
     <property name="geometry">
      <rect>
       <x>640</x>
       <y>40</y>
-      <width>341</width>
+      <width>351</width>
       <height>401</height>
      </rect>
     </property>
@@ -90,7 +56,7 @@
      <string>PLACEHOLDER TEXT</string>
     </property>
     <property name="alignment">
-     <set>Qt::AlignCenter</set>
+     <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
     </property>
     <property name="wordWrap">
      <bool>true</bool>
@@ -118,8 +84,8 @@
    <widget class="QPushButton" name="skipStepButton">
     <property name="geometry">
      <rect>
-      <x>610</x>
-      <y>620</y>
+      <x>560</x>
+      <y>590</y>
       <width>161</width>
       <height>61</height>
      </rect>
@@ -134,8 +100,6 @@
     </property>
    </widget>
    <zorder>runTestButton</zorder>
-   <zorder>outuptFilenameLineEdit</zorder>
-   <zorder>outputFileButton</zorder>
    <zorder>directionsImageLabel</zorder>
    <zorder>directionsTextField</zorder>
    <zorder>skipStepButton</zorder>

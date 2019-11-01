@@ -1,6 +1,7 @@
 #include "ConfigOSICS_T100.h"
 #include "ui_ConfigOSICS_T100.h"
 #include "ConversionUtilities.h"
+
 ConfigOSICS_T100::ConfigOSICS_T100(QVariant &device, QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::ConfigOSICS_T100)
@@ -59,6 +60,7 @@ void ConfigOSICS_T100::getValuesFromConfig()
 {
     moduleIdentity = settings->value(DEVICE_IDENTITY).value<QByteArray>();
     moduleLocation = settings->value(DEVICE_ADDRESS).value<QByteArray>();
+    deviceNickname = settings->value(DEVICE_NICKNAME).value<QByteArray>();
     powerSetting = settings->value(EXFO_OSICS_T100_POWER).value<QByteArray>();
     laserState = settings->value(EXFO_OSICS_T100_LASER_STATE).value<QByteArray>();
     wavelengthSetting = settings->value(EXFO_OSICS_T100_WAVELENGTH).value<QByteArray>();
@@ -70,7 +72,7 @@ void ConfigOSICS_T100::getValuesFromConfig()
 }
 
 void ConfigOSICS_T100::populateDeviceInfo(){
-    ui->instrumentInfoLabel->setText(moduleIdentity);
+    ui->instrumentInfoLabel->setText(deviceNickname);
     ui->instrumentAddressLabel->setText(moduleLocation);
 }
 
@@ -256,6 +258,8 @@ bool ConfigOSICS_T100::isInputValueValid(QByteArray inputValue, QByteArray minVa
 
 void ConfigOSICS_T100::on_laserOutputPowerEdit_editingFinished()
 {
+    ui->laserOutputPowerEdit->blockSignals(true);
+
     QByteArray powerValue = ui->laserOutputPowerEdit->text().toLatin1();
     QByteArray minPower = ui->laserMinPowerDisplay->text().toLatin1();
     QByteArray maxPower = ui->laserMaxPowerDisplay->text().toLatin1();
@@ -278,10 +282,13 @@ void ConfigOSICS_T100::on_laserOutputPowerEdit_editingFinished()
 
     colorDisplayFieldText();
     ui->laserOutputPowerEdit->clearFocus();
+    ui->laserOutputPowerEdit->clear();
+    ui->laserOutputPowerEdit->blockSignals(false);
 }
 
 void ConfigOSICS_T100::on_laserWavelengthEdit_editingFinished()
 {
+    ui->laserWavelengthEdit->blockSignals(true);
     QByteArray wavelengthValue = ui->laserWavelengthEdit->text().toLatin1();
     QByteArray minWavelength = ui->minWavelengthDisplay->text().toLatin1();
     QByteArray maxWavelength = ui->maxWavelengthDisplay->text().toLatin1();
@@ -306,10 +313,14 @@ void ConfigOSICS_T100::on_laserWavelengthEdit_editingFinished()
 
     colorDisplayFieldText();
     ui->laserFrequencyEdit->clearFocus();
+    ui->laserFrequencyEdit->clear();
+    ui->laserWavelengthEdit->blockSignals(false);
 }
 
 void ConfigOSICS_T100::on_laserFrequencyEdit_editingFinished()
 {
+    ui->laserFrequencyEdit->blockSignals(true);
+
     QByteArray frequencyValue = ui->laserFrequencyEdit->text().toLatin1();
     QByteArray minFrequencyValue = ui->minFrequencyDisplay->text().toLatin1();
     QByteArray maxFrequencyValue = ui->maxFrequencyDisplay->text().toLatin1();
@@ -339,6 +350,8 @@ void ConfigOSICS_T100::on_laserFrequencyEdit_editingFinished()
     }
     colorDisplayFieldText();
     ui->laserFrequencyEdit->clearFocus();
+    ui->laserFrequencyEdit->clear();
+    ui->laserFrequencyEdit->blockSignals(false);
 }
 
 void ConfigOSICS_T100::on_togglePowerButton_clicked()
@@ -472,3 +485,17 @@ void ConfigOSICS_T100::resetDisplayFieldColoredStatus(){
 }
 
 
+
+void ConfigOSICS_T100::on_setNicknameBtn_clicked()
+{
+    // open dialog box with text entry field
+    bool ok;
+    QString nicknameText = QInputDialog::getText(this, tr("QInputDialog::getText()"),
+                                                 tr("Enter desired nickname for device. Update will be applied when you submit device changes."),
+                                                 QLineEdit::Normal, "", &ok);
+    if(ok && !nicknameText.trimmed().isEmpty()){
+        deviceNickname = nicknameText.toLatin1();
+                        settings->setValue(DEVICE_NICKNAME, QVariant::fromValue(deviceNickname));
+    }
+
+}

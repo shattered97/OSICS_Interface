@@ -25,8 +25,8 @@
      <rect>
       <x>20</x>
       <y>10</y>
-      <width>991</width>
-      <height>21</height>
+      <width>561</width>
+      <height>31</height>
      </rect>
     </property>
     <property name="font">
@@ -42,8 +42,8 @@
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>30</y>
-      <width>981</width>
+      <y>40</y>
+      <width>561</width>
       <height>31</height>
      </rect>
     </property>
@@ -59,11 +59,16 @@
    <widget class="QSplitter" name="splitter">
     <property name="geometry">
      <rect>
-      <x>70</x>
-      <y>60</y>
+      <x>20</x>
+      <y>90</y>
       <width>661</width>
       <height>20</height>
      </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>12</pointsize>
+     </font>
     </property>
     <property name="orientation">
      <enum>Qt::Horizontal</enum>
@@ -1041,6 +1046,24 @@
       <string>(unit)</string>
      </property>
     </widget>
+   </widget>
+   <widget class="QPushButton" name="setNicknameBtn">
+    <property name="geometry">
+     <rect>
+      <x>600</x>
+      <y>20</y>
+      <width>161</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>12</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>Set Nickname</string>
+    </property>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">

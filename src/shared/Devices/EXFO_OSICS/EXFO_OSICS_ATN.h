@@ -82,6 +82,8 @@ private:
     // the physical address of the instrument
     QByteArray theInstrLoc;
 
+
+
     int slotNum;
 
     void updateAttenuationSettings(QSettings &configSettings);

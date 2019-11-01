@@ -7,6 +7,7 @@
 #include <QDebug>
 #include <QMessageBox>
 #include <QFileDialog>
+#include <QInputDialog>
 #include "constants.h"
 #include "ConversionUtilities.h"
 
@@ -28,6 +29,7 @@ public:
     void populateMinPower();
     void populateMaxPower();
     void populateOperatingMode();
+    void populateActiveChannel();
 
     void populateWavelength();
     void populateMinWavelength();
@@ -78,6 +80,8 @@ private slots:
 
     void on_toggleOutputButton_clicked();
 
+    void on_setNicknameBtn_clicked();
+
 private:
     Ui::ConfigOSICS_SWT *ui;
 
@@ -88,12 +92,29 @@ private:
     int slotNum;
     QByteArray moduleIdentity;
     QByteArray moduleLocation;
+    QByteArray deviceNickname;              // nickname of device
+
     QByteArray operatingMode;
     QByteArray activeChannel;
     QByteArray powerSetting;
     QByteArray wavelengthSetting;
     QByteArray frequencySetting;
     QByteArray outputPowerStatus;
+    QByteArray minWavelength;
+    QByteArray maxWavelength;
+
+    bool fullBandOpModeColored = false;
+    bool switchOpModeColored = false;
+    bool activeChannelColored[EXFO_OSICS_SWT_NUM_CHANNELS] = {false};
+    bool outputStatusColored = false;
+    bool outputPowerColored = false;
+    bool wavelengthSettingColored = false;
+    bool frequencySettingColored = false;
+
+    void colorText(QLineEdit *textField, bool colored);
+    void colorDisplayFieldText();
+    void resetDisplayFieldColoredStatus();
+    void resetActiveChannelRadioColor();
 
     void showEvent(QShowEvent* event);
     void getValuesFromConfig();

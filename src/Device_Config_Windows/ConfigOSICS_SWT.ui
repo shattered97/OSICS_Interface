@@ -24,8 +24,8 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>30</y>
-      <width>981</width>
+      <y>40</y>
+      <width>571</width>
       <height>31</height>
      </rect>
     </property>
@@ -87,8 +87,8 @@
      <rect>
       <x>10</x>
       <y>10</y>
-      <width>991</width>
-      <height>21</height>
+      <width>581</width>
+      <height>31</height>
      </rect>
     </property>
     <property name="font">
@@ -731,7 +731,7 @@
      </attribute>
     </widget>
    </widget>
-   <widget class="QGroupBox" name="groupBox_5">
+   <widget class="QGroupBox" name="activeChannelGroupBox">
     <property name="geometry">
      <rect>
       <x>10</x>
@@ -1089,6 +1089,24 @@
       </property>
      </item>
     </widget>
+   </widget>
+   <widget class="QPushButton" name="setNicknameBtn">
+    <property name="geometry">
+     <rect>
+      <x>600</x>
+      <y>10</y>
+      <width>161</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>12</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>Set Nickname</string>
+    </property>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">

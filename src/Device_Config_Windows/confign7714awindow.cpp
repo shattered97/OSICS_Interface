@@ -28,7 +28,6 @@ void ConfigN7714AWindow::showEvent(QShowEvent* event)
 
 void ConfigN7714AWindow::slotUpdateWindow()
 {
-    qDebug() << "n7714a slotUpdateWindow()";
     // clear text entry fields
     ui->laserWavelengthEdit->clear();
     ui->laserFrequencyEdit->clear();
@@ -49,6 +48,10 @@ void ConfigN7714AWindow::slotUpdateWindow()
 
 void ConfigN7714AWindow::getValuesFromConfig()
 {
+    deviceAddress = settings->value(DEVICE_ADDRESS).value<QByteArray>();
+    deviceIdentity = settings->value(DEVICE_IDENTITY).value<QByteArray>();
+    deviceNickname = settings->value(DEVICE_NICKNAME).value<QByteArray>();
+
     powerSettings = settings->value(N7714A_POWER_SETTINGS).value<QList<QByteArray>>();
     minPowerSettings = settings->value(N7714A_MIN_POWER).value<QList<QByteArray>>();
     maxPowerSettings = settings->value(N7714A_MAX_POWER).value<QList<QByteArray>>();
@@ -56,6 +59,7 @@ void ConfigN7714AWindow::getValuesFromConfig()
 
     wavelengthSettings = settings->value(N7714A_WAVELENGTH_SETTINGS).value<QList<QByteArray>>();
     minWavelengths = settings->value(N7714A_MIN_WAVELENGTH).value<QList<QByteArray>>();
+
     maxWavelengths = settings->value(N7714A_MAX_WAVELENGTH).value<QList<QByteArray>>();
 
     frequencySettings = settings->value(N7714A_FREQUENCY_SETTINGS).value<QList<QByteArray>>();
@@ -63,9 +67,19 @@ void ConfigN7714AWindow::getValuesFromConfig()
     maxFrequencies = settings->value(N7714A_MAX_FREQUENCY).value<QList<QByteArray>>();
 }
 
+void ConfigN7714AWindow::populateIdentityAndLoc(){
+    // set address and identity information
+    ui->instrumentInfoLabel->setText(deviceNickname);
+    ui->instrumentAddressLabel->setText(deviceAddress);
+}
+
+
 void ConfigN7714AWindow::populateAllValues()
 {
-    qDebug() << "n7714a populate all values()";
+
+    // populate info at top of page
+    populateIdentityAndLoc();
+
     // power values
     populateLaserOutputPowerUnit();
     populateLaserOutputPower();
@@ -91,7 +105,7 @@ void ConfigN7714AWindow::populateAllValues()
 
 void ConfigN7714AWindow::populateLaserOutputPowerUnit()
 {
-    qDebug() << "populateLaserOutputPowerUnit()";
+
     // update the unit display field and labels
     QByteArray unitText = ui->powerUnitComboBox->currentText().toLatin1();
     ui->powerDisplayUnitLabel->setText(unitText);
@@ -111,25 +125,24 @@ void ConfigN7714AWindow::convertAndDisplayPower(QList<QByteArray> powerList, QLi
 
 void ConfigN7714AWindow::populateLaserOutputPower()
 {
-    qDebug() << "populateLaserOutputPower()";
+
     convertAndDisplayPower(powerSettings, ui->laserOutputPowerDisplay);
 }
 
 void ConfigN7714AWindow::populateLaserMinPower()
 {
-    qDebug() << "populateLaserMinPower()";
+
     convertAndDisplayPower(minPowerSettings, ui->laserMinPowerDisplay);
 }
 
 void ConfigN7714AWindow::populateLaserMaxPower()
 {
-    qDebug() << "populateLaserMaxPower()";
+
     convertAndDisplayPower(maxPowerSettings, ui->laserMaxPowerDisplay);
 }
 
 void ConfigN7714AWindow::populateLaserState()
 {
-    qDebug() << "populateLaserState()";
 
     int state = laserStates[slotNum - 1].toInt();
     if(!state){
@@ -297,7 +310,8 @@ bool ConfigN7714AWindow::isInputValueValid(QByteArray inputValue, QByteArray min
 
 void ConfigN7714AWindow::on_laserOutputPowerEdit_editingFinished()
 {
-    qDebug() << "on_laserOutputPowerEdit_editingFinished()";
+
+    ui->laserOutputPowerEdit->blockSignals(true);
 
     QByteArray powerValue = ui->laserOutputPowerEdit->text().toLatin1();
     QByteArray minPower = ui->laserMinPowerDisplay->text().toLatin1();
@@ -310,7 +324,6 @@ void ConfigN7714AWindow::on_laserOutputPowerEdit_editingFinished()
         double converted = powDouble;
         if(unit == "dBm"){
             converted = ConversionUtilities::convertDBmToWatt(powDouble);
-            qDebug() << powDouble << " to " << converted;
         }
         powerSettings[slotNum - 1] = QByteArray::number(converted);
 
@@ -322,11 +335,14 @@ void ConfigN7714AWindow::on_laserOutputPowerEdit_editingFinished()
 
     colorDisplayFieldText();
     ui->laserOutputPowerEdit->clearFocus();
+    ui->laserOutputPowerEdit->clear();
+    ui->laserOutputPowerEdit->blockSignals(false);
 }
 
 void ConfigN7714AWindow::on_laserWavelengthEdit_editingFinished()
 {
-    qDebug() << "on_laserWavelengthEdit_editingFinished()";
+
+    ui->laserWavelengthEdit->blockSignals(true);
 
     QByteArray wavelengthValue = ui->laserWavelengthEdit->text().toLatin1();
     QByteArray minWavelength = ui->minWavelengthDisplay->text().toLatin1();
@@ -354,11 +370,14 @@ void ConfigN7714AWindow::on_laserWavelengthEdit_editingFinished()
     }
     colorDisplayFieldText();
     ui->laserWavelengthEdit->clearFocus();
+    ui->laserWavelengthEdit->clear();
+    ui->laserWavelengthEdit->blockSignals(false);
 }
 
 void ConfigN7714AWindow::on_laserFrequencyEdit_editingFinished()
 {
-    qDebug() << "on_laserFrequencyEdit_editingFinished()";
+
+    ui->laserFrequencyEdit->blockSignals(true);
 
     QByteArray frequencyValue = ui->laserFrequencyEdit->text().toLatin1();
     QByteArray minFrequencyValue = ui->minFrequencyDisplay->text().toLatin1();
@@ -386,6 +405,8 @@ void ConfigN7714AWindow::on_laserFrequencyEdit_editingFinished()
 
     colorDisplayFieldText();
     ui->laserFrequencyEdit->clearFocus();
+    ui->laserFrequencyEdit->clear();
+    ui->laserFrequencyEdit->blockSignals(false);
 }
 
 void ConfigN7714AWindow::on_togglePowerButton_clicked()
@@ -450,7 +471,7 @@ bool ConfigN7714AWindow::saveSettings()
 
 void ConfigN7714AWindow::on_loadSettingsButton_clicked()
 {
-    qDebug() << "on_loadSettingsButton_pressed()";
+
     QString fileName = QFileDialog::getOpenFileName(this,
             tr("Load Settings File"), "",
             tr("Settings (*.ini);;All Files (*)"));
@@ -471,7 +492,7 @@ void ConfigN7714AWindow::on_loadSettingsButton_clicked()
 
 void ConfigN7714AWindow::on_saveSettingsButton_clicked()
 {
-    qDebug() << "on_saveSettingsButton_pressed()";
+
     QString fileName = QFileDialog::getSaveFileName(this,
             tr("Save Settings File"), "",
             tr("Settings (*.ini);;All Files (*)"));
@@ -508,7 +529,7 @@ void ConfigN7714AWindow::colorDisplayFieldText()
 }
 
 void ConfigN7714AWindow::resetDisplayFieldColoredStatus(){
-    qDebug() << "resetDisplayFieldColoredStatus()";
+
 
     for(int i = 0; i < N7714A_NUM_SLOTS; i++){
         powerSettingDisplayTextColored[i] = false;
@@ -518,4 +539,18 @@ void ConfigN7714AWindow::resetDisplayFieldColoredStatus(){
     }
 
     colorDisplayFieldText();
+}
+
+void ConfigN7714AWindow::on_setNicknameBtn_clicked()
+{
+    // open dialog box with text entry field
+    bool ok;
+    QString nicknameText = QInputDialog::getText(this, tr("QInputDialog::getText()"),
+                                                 tr("Enter desired nickname for device. Update will be applied when you submit device changes."),
+                                                 QLineEdit::Normal, "", &ok);
+    if(ok && !nicknameText.trimmed().isEmpty()){
+        deviceNickname = nicknameText.toLatin1();
+                        settings->setValue(DEVICE_NICKNAME, QVariant::fromValue(deviceNickname));
+    }
+
 }

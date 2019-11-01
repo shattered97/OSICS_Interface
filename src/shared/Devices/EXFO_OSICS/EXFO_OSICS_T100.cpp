@@ -4,6 +4,7 @@ EXFO_OSICS_T100::EXFO_OSICS_T100(QByteArray theIdentity, QByteArray theInstrLoc)
 {
     this->theIdentity = theIdentity;
     this->theInstrLoc = theInstrLoc;
+    setNickname(theIdentity);
 }
 
 void EXFO_OSICS_T100::setT100MinMaxWavelengths(QByteArray t100Type){
@@ -195,7 +196,10 @@ void EXFO_OSICS_T100::setSlotNum(int slotNum){
 }
 
 void EXFO_OSICS_T100::applyConfigSettings(QSettings &configSettings){
-    qDebug() << "t100 applyConfigSettings()";
+
+    // apply nickname
+    QByteArray nicknameToSet = configSettings.value(DEVICE_NICKNAME).value<QByteArray>();
+    setNickname(nicknameToSet);
 
     // apply laser power
     QByteArray power = configSettings.value(EXFO_OSICS_T100_POWER).value<QByteArray>();
@@ -219,7 +223,8 @@ void EXFO_OSICS_T100::applyConfigSettings(QSettings &configSettings){
 }
 
 void EXFO_OSICS_T100::updateConfig(QSettings &configSettings){
-    qDebug() << "t100 updateConfig() " << theInstrLoc;
+
+    configSettings.setValue(DEVICE_NICKNAME, QVariant::fromValue(getNickname()));
 
     updatePowerSettings(configSettings);
     updateWavelengthSettings(configSettings);
@@ -273,8 +278,6 @@ void EXFO_OSICS_T100::updateFrequencySettings(QSettings &configSettings){
 
     double minFrequencyGHz = ConversionUtilities::convertFrequencyFromHz(minFrequencyHz, "GHz");
     double maxFrequencyGHz = ConversionUtilities::convertFrequencyFromHz(maxFrequencyHz, "GHz");
-    qDebug() << minWavelength << " " << minFrequencyHz << " " << minFrequencyGHz;
-    qDebug() << maxWavelength << " " << maxFrequencyHz << " " << maxFrequencyGHz;
 
     // parse returned strings
     frequency = frequency.split('=')[1];

@@ -57,26 +57,24 @@ void OSICSMainframeSetupWindow::slotUpdateWindow(){
 
 
 void OSICSMainframeSetupWindow::getValuesFromConfig(){
-    // device name/identity
+
     deviceIdentity = settings->value(DEVICE_IDENTITY).value<QByteArray>();
-    qDebug() << deviceIdentity;
-
     deviceLocation = settings->value(DEVICE_ADDRESS).value<QByteArray>();
-    qDebug() << deviceLocation;
-
+    deviceNickname = settings->value(DEVICE_NICKNAME).value<QByteArray>();
     moduleNames = settings->value(EXFO_OSICS_MODULE_NAMES).value<QList<QByteArray>>();
-    qDebug() << moduleNames;
-
 }
 
 void OSICSMainframeSetupWindow::populateAllValues(){
     populateIdentityAndLoc();
-    populateModuleNames();
+    if(!moduleTypesDisplayed){
+        populateModuleNames();
+    }
+
 }
 
 void OSICSMainframeSetupWindow::populateIdentityAndLoc(){
     ui->instrumentAddressLabel->setText(deviceLocation);
-    ui->instrumentInfoLabel->setText(deviceIdentity);
+    ui->instrumentInfoLabel->setText(deviceNickname);
 }
 
 void OSICSMainframeSetupWindow::populateModuleNames(){
@@ -101,6 +99,7 @@ void OSICSMainframeSetupWindow::populateModuleNames(){
             ui->configureButtonGroup->button(index)->setEnabled(false);
         }
     }
+    moduleTypesDisplayed = true;
 }
 
 
@@ -140,3 +139,19 @@ void OSICSMainframeSetupWindow::slotForwardUpdateConfigSettings(QVariant &device
     emit signalUpdateConfigSettings(deviceVariant, *settings);
 }
 
+
+void OSICSMainframeSetupWindow::on_setNicknameBtn_clicked()
+{
+    // open dialog box with text entry field
+    bool ok;
+    QString nicknameText = QInputDialog::getText(this, tr("QInputDialog::getText()"),
+                                                 tr("Enter desired nickname for device."),
+                                                 QLineEdit::Normal, "", &ok);
+    if(ok && !nicknameText.trimmed().isEmpty()){
+        deviceNickname = nicknameText.toLatin1();
+                        settings->setValue(DEVICE_NICKNAME, QVariant::fromValue(deviceNickname));
+    }
+
+    emit signalApplyConfigSettings(device, *settings);
+
+}

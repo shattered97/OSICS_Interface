@@ -4,11 +4,11 @@ EXFO_OSICS_MAINFRAME::EXFO_OSICS_MAINFRAME(QByteArray theIdentity, QByteArray th
 {
     this->theIdentity = theIdentity;
     this->theInstrLoc = theInstrLoc;
+    setNickname(theIdentity);
 
 }
 
 void EXFO_OSICS_MAINFRAME::slotSetupEXFOModules(){
-    qDebug() << "slotSetupEXFOModules()";
 
     setupModuleTypesList();
 
@@ -201,6 +201,15 @@ void EXFO_OSICS_MAINFRAME::setRefWavelengthModuleCmd(int slotNum, QByteArray wav
     QByteArray baseCmd = "CH#:L\n";
     baseCmd = insertSlotNum(baseCmd, slotNum);
     baseCmd = appendParamToCmdWithSpace(baseCmd, wavelengthNum);
+
+    emit signalSendCmdNoRsp(theInstrLoc, baseCmd);
+}
+
+void EXFO_OSICS_MAINFRAME::setWavelengthForModuleCmd(int slotNum, QByteArray wavelength){
+    QByteArray baseCmd = "CH#:L=\n";
+    baseCmd = insertSlotNum(baseCmd, slotNum);
+    int paramIndex = baseCmd.indexOf('\n');
+    baseCmd = baseCmd.insert(paramIndex, wavelength);
 
     emit signalSendCmdNoRsp(theInstrLoc, baseCmd);
 }
@@ -444,21 +453,24 @@ QByteArray EXFO_OSICS_MAINFRAME::insertSlotNum(QByteArray command, int slotNum){
 void EXFO_OSICS_MAINFRAME::applyConfigSettings(QSettings &configSettings){
     // # TODO mainframe won't have many config settings (if any) so apply
     // settings to modules
-    qDebug() << "applyConfigSettings() in EXFO_OSICS_MAINFRAME";
+
+    // apply nickname
+    QByteArray nicknameToSet = configSettings.value(DEVICE_NICKNAME).value<QByteArray>();
+    setNickname(nicknameToSet);
+
 }
 
 void EXFO_OSICS_MAINFRAME::updateConfig(QSettings &configSettings){
-    qDebug() << "updateConfigSettings()";
 
     configSettings.setValue(DEVICE_ADDRESS, QVariant::fromValue(theInstrLoc));
     configSettings.setValue(DEVICE_IDENTITY, QVariant::fromValue(theIdentity));
+    configSettings.setValue(DEVICE_NICKNAME, QVariant::fromValue(getNickname()));
 
     updateInstalledModules(configSettings);
 }
 
 void EXFO_OSICS_MAINFRAME::updateInstalledModules(QSettings &configSettings){
     configSettings.setValue(EXFO_OSICS_MODULE_NAMES, QVariant::fromValue(moduleNames));
-    qDebug() << configSettings.value(EXFO_OSICS_MODULE_NAMES).value<QList<QByteArray>>();
 }
 
 void EXFO_OSICS_MAINFRAME::setupModuleTypesList(){

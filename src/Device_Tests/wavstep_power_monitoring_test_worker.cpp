@@ -138,13 +138,13 @@ void WavStep_Power_Monitoring_Test_Worker::executeTestStep(double currentWavelen
     // set optical emission wavelength
     testData.swtModule->setRefWavelengthModuleCmd(swtSlotNum, wavelengthToSet);
 
-    // wait for adjustments
-    QThread::sleep(1);
-
     // begin collecting power meter readings
     QElapsedTimer dwellTimer;
     dwellTimer.start();
     while(dwellTimer.elapsed() <= testData.dwellInMs){
+
+        // wait for adjustments
+        QThread::sleep(1);
 
         QList<WavStepPowerMonitoringDataPoint> dataPoints;
 
@@ -185,7 +185,6 @@ void WavStep_Power_Monitoring_Test_Worker::addDataToFileBuffer(WavStepPowerMonit
     // append datapoint to active buffer and write out to file if needed
     if(usingFirstBuffer){
         firstBuffer.append(testDataPoint);
-        qDebug() << "size of first buffer " << firstBuffer.size();
 
         if(firstBuffer.size() >= maxBufferSize){
             usingFirstBuffer = false;
@@ -198,7 +197,6 @@ void WavStep_Power_Monitoring_Test_Worker::addDataToFileBuffer(WavStepPowerMonit
     }
     else{
         secondBuffer.append(testDataPoint);
-        qDebug() << "size of second buffer " << secondBuffer.size();
 
         if(secondBuffer.size() >= maxBufferSize){
             usingFirstBuffer = true;

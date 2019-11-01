@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QSettings>
 #include <QDebug>
+#include <QInputDialog>
 #include "constants.h"
 
 namespace Ui {
@@ -31,6 +32,8 @@ public slots:
 private slots:
     void on_configButton_clicked(int index);
 
+    void on_setNicknameBtn_clicked();
+
 private:
     Ui::OSICSMainframeSetupWindow *ui;
 
@@ -42,16 +45,15 @@ private:
     int numInstalledModules = 0;
     QByteArray deviceIdentity;
     QByteArray deviceLocation;
+    QByteArray deviceNickname;              // nickname of device
     QList<QByteArray> moduleNames;
     QMap<int, ModuleConfigPair> moduleConfigPairs;
     QList<bool> moduleConfiguredStatusList = {false, false, false, false, false, false, false, false};
-
+    bool moduleTypesDisplayed = false;
     void populateAllValues();
     void getValuesFromConfig();
-
     void populateIdentityAndLoc();
     void populateModuleNames();
-
     void showEvent(QShowEvent* event);
 
 };

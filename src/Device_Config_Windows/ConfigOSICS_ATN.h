@@ -7,6 +7,7 @@
 #include <QDebug>
 #include <QMessageBox>
 #include <QFileDialog>
+#include <QInputDialog>
 #include "constants.h"
 
 
@@ -21,6 +22,7 @@ class ConfigOSICS_ATN : public QMainWindow
 public:
     explicit ConfigOSICS_ATN(QVariant &device, QWidget *parent = nullptr);
     ~ConfigOSICS_ATN();
+
 
     void populateDeviceInfo();
     void populateAttenuation();
@@ -51,6 +53,8 @@ private slots:
 
     void on_refWavelengthRadioButton2_clicked();
 
+    void on_setNicknameBtn_clicked();
+
 private:
     Ui::ConfigOSICS_ATN *ui;
 
@@ -61,6 +65,7 @@ private:
     int slotNum;
     QByteArray moduleIdentity;
     QByteArray moduleLocation;
+    QByteArray deviceNickname;              // nickname of device
     QByteArray attenuationSetting;
     QByteArray firstMinAttenuation;
     QByteArray firstMaxAttenuation;
@@ -84,6 +89,7 @@ private:
     void colorDisplayFieldText();
     void resetDisplayFieldColoredStatus();
 
+    void populateSelectedRadioButton();
     bool attenuationDisplayTextColored = false;
     bool attenuationOffsetDisplay1Colored = false;
     bool attenuationOffsetDisplay2Colored = false;

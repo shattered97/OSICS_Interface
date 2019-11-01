@@ -85,7 +85,7 @@ void EXFO_OperationalTest_T100_SWT_ATN::slotSkipTestStep(){
     else if(!swtTestComplete){
         qDebug() << " skipping switch test";
         numSwitchTestsCompleted++;
-        if(numSwitchTestsCompleted == EXFO_OSICS_SWT_NUM_CHANNELS.toInt()){
+        if(numSwitchTestsCompleted == EXFO_OSICS_SWT_NUM_CHANNELS){
             swtTestComplete = true;
 
         }
@@ -176,7 +176,7 @@ void EXFO_OperationalTest_T100_SWT_ATN::runSwitchTest(){
     numSwitchTestsCompleted++;
 
     // if four tests have been completed (number of switch modules), we are done
-    if(numSwitchTestsCompleted == EXFO_OSICS_SWT_NUM_CHANNELS.toInt()){
+    if(numSwitchTestsCompleted == EXFO_OSICS_SWT_NUM_CHANNELS){
         swtTestComplete = true;
     }
 }

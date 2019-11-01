@@ -5,6 +5,7 @@ EXFO_OSICS_SWT::EXFO_OSICS_SWT(QByteArray theIdentity, QByteArray theInstrLoc) :
 {
     this->theIdentity = theIdentity;
     this->theInstrLoc = theInstrLoc;
+    setNickname(theIdentity);
 }
 
 void EXFO_OSICS_SWT::setAPCModuleOperatingMode(int slotNum, QByteArray mode){
@@ -199,68 +200,94 @@ int EXFO_OSICS_SWT::getSlotNum(){
 }
 
 void EXFO_OSICS_SWT::updateConfig(QSettings &configSettings){
-    qDebug() << "swt updateConfig() " << theInstrLoc;
 
+    configSettings.setValue(DEVICE_NICKNAME, QVariant::fromValue(getNickname()));
     // get operating mode and store it
+
     QByteArray opMode = getAPCModuleOperatingMode(slotNum);
 
-    // change opMode to full-band mode to be able to get power/wavelength/frequency values
-    QByteArray fullBand = "ECL";
-    setAPCModuleOperatingMode(slotNum, fullBand);
 
-    // auto-detect T100 modules
-    autoDetectT100Modules(slotNum);
+    if(opMode.contains("SWT")){
 
-    updatePowerSettings(configSettings);
-    updateWavelengthSettings(configSettings);
-    updateFrequencySettings(configSettings);
-    updateActiveChannelSettings(configSettings);
+        QByteArray activeChannel =  getChannelForSignalAPC(slotNum);
+        activeChannel = activeChannel = activeChannel.split('=')[1].trimmed();
 
-    // return operating mode to original state
-    setAPCModuleOperatingMode(slotNum, opMode);
-    updateOperatingModeSettings(configSettings);
+        // change opMode to full-band mode to be able to get power/wavelength/frequency values
+        QByteArray fullBand = "ECL";
+        setAPCModuleOperatingMode(slotNum, fullBand);
+
+        // auto-detect T100 modules
+        if(!autoDetectComplete){
+            autoDetectT100Modules(slotNum);
+            autoDetectComplete = true;
+        }
+
+        updatePowerSettings(configSettings);
+        updateWavelengthSettings(configSettings);
+        updateFrequencySettings(configSettings);
+
+        // return operating mode to original state
+        setAPCModuleOperatingMode(slotNum, "SWT");
+        selectChannelForSignalAPC(slotNum, activeChannel);
+
+        updateActiveChannelSettings(configSettings);
+        updateOperatingModeSettings(configSettings);
+    }
+    else{
+
+        // auto-detect T100 modules
+        if(!autoDetectComplete){
+            autoDetectT100Modules(slotNum);
+            autoDetectComplete = true;
+        }
+
+        updatePowerSettings(configSettings);
+        updateWavelengthSettings(configSettings);
+        updateFrequencySettings(configSettings);
+        updateActiveChannelSettings(configSettings);
+        updateOperatingModeSettings(configSettings);
+    }
+
 }
 
 void EXFO_OSICS_SWT::applyConfigSettings(QSettings &configSettings){
-    qDebug() << "swt applyConfigSettings() >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>";
 
-    // apply output power state from settings
-    QByteArray outputStatus = configSettings.value(EXFO_OSICS_SWT_OUTPUT_STATUS).value<QByteArray>();
-    if(outputStatus == "ENABLED"){
-        enableModuleLaserCmd(slotNum);
-    }
-    else{
-        disableModuleLaserCmd(slotNum);
-    }
+    // apply nickname
+    QByteArray nicknameToSet = configSettings.value(DEVICE_NICKNAME).value<QByteArray>();
+    setNickname(nicknameToSet);
 
     // apply operating mode from settings
     QByteArray operatingMode = configSettings.value(EXFO_OSICS_SWT_OPMODE).value<QByteArray>();
     setAPCModuleOperatingMode(slotNum, operatingMode);
 
-    // apply active channel from settings
-    QByteArray activeChannel = configSettings.value(EXFO_OSICS_SWT_ACTIVE_CHANNEL).value<QByteArray>();
-    selectChannelForSignalAPC(slotNum, activeChannel);
+    if(operatingMode == "SWT"){
 
-    // apply power from settings
-    // make sure power unit is set to dbm
-    setModulePowerUnitDBmCmd(slotNum);
-    QByteArray power = configSettings.value(EXFO_OSICS_SWT_POWER_SETTING).value<QByteArray>();
-    setModuleOutputPowerCmd(slotNum, power);
-    qDebug() << power;
+        // apply active channel from settings
+        QByteArray activeChannel = configSettings.value(EXFO_OSICS_SWT_ACTIVE_CHANNEL).value<QByteArray>();
+        selectChannelForSignalAPC(slotNum, activeChannel);
 
-    // apply wavelength from settings
-    QByteArray wavelength = configSettings.value(EXFO_OSICS_SWT_WAVELENGTH_SETTING).value<QByteArray>();
-    // convert to nanometers
-    double wavDouble = ConversionUtilities::convertWavelengthFromMeter(wavelength.toDouble(), "nm");
-    wavelength = QByteArray::number(wavDouble);
-    setRefWavelengthModuleCmd(slotNum, wavelength);
+    }
+    else{
+        // apply output power state from settings
+        QByteArray outputStatus = configSettings.value(EXFO_OSICS_SWT_OUTPUT_STATUS).value<QByteArray>();
+        if(outputStatus == "ENABLED"){
+            enableModuleLaserCmd(slotNum);
+        }
+        else{
+            disableModuleLaserCmd(slotNum);
+        }
 
-    // apply frequency from settings
-    QByteArray frequency = configSettings.value(EXFO_OSICS_SWT_FREQUENCY_SETTING).value<QByteArray>();
-    // convert to GHz
-    double freqDouble = ConversionUtilities::convertFrequencyFromHz(frequency.toDouble(), "GHz");
-    frequency = QByteArray::number(freqDouble);
-    setFrequencyModuleCmd(slotNum, frequency);
+        // apply power from settings
+        // make sure power unit is set to dbm
+        setModulePowerUnitDBmCmd(slotNum);
+        QByteArray power = configSettings.value(EXFO_OSICS_SWT_POWER_SETTING).value<QByteArray>();
+        setModuleOutputPowerCmd(slotNum, power);
+
+        // apply wavelength from settings
+        QByteArray wavelength = configSettings.value(EXFO_OSICS_SWT_WAVELENGTH_SETTING).value<QByteArray>();
+        setWavelengthForModuleCmd(slotNum, wavelength);
+
+    }
 
     // update values
     updateConfig(configSettings);
@@ -269,32 +296,31 @@ void EXFO_OSICS_SWT::applyConfigSettings(QSettings &configSettings){
 
 void EXFO_OSICS_SWT::updateOperatingModeSettings(QSettings &configSettings)
 {
-    qDebug() << "updateOperatingModeSettings()";
+
     QByteArray operatingMode = getAPCModuleOperatingMode(slotNum);
 
     // parse returned value
-    operatingMode = operatingMode.split('=')[1];
+    operatingMode = operatingMode.split('=')[1].trimmed();
 
     configSettings.setValue(EXFO_OSICS_SWT_OPMODE, QVariant::fromValue(operatingMode));
 }
 
 void EXFO_OSICS_SWT::updateActiveChannelSettings(QSettings &configSettings)
 {
-    qDebug() << "updateActiveChannelSettings()";
+
     QByteArray activeChannel = getChannelForSignalAPC(slotNum);
 
     // parse returned value
-    activeChannel = activeChannel.split('=')[1];
+    activeChannel = activeChannel.split('=')[1].trimmed();
 
     configSettings.setValue(EXFO_OSICS_SWT_ACTIVE_CHANNEL, QVariant::fromValue(activeChannel));
 }
 
 void EXFO_OSICS_SWT::updatePowerSettings(QSettings &configSettings)
 {
-    qDebug() << "updatePowerSettings()";
 
     QByteArray outputStatus = laserStateModuleQuery(slotNum);
-    outputStatus = outputStatus.split(':')[1];
+    outputStatus = outputStatus.split(':')[1].trimmed();
     configSettings.setValue(EXFO_OSICS_SWT_OUTPUT_STATUS, QVariant::fromValue(outputStatus.trimmed().toUpper()));
 
     QByteArray power = outputPowerModuleQuery(slotNum);
@@ -304,7 +330,7 @@ void EXFO_OSICS_SWT::updatePowerSettings(QSettings &configSettings)
     }
     else{
         // parse returned value
-        power = power.split('=')[1];
+        power = power.split('=')[1].trimmed();
     }
 
     configSettings.setValue(EXFO_OSICS_SWT_POWER_SETTING, QVariant::fromValue(power.trimmed()));
@@ -313,30 +339,109 @@ void EXFO_OSICS_SWT::updatePowerSettings(QSettings &configSettings)
 
 void EXFO_OSICS_SWT::updateWavelengthSettings(QSettings &configSettings)
 {
-    qDebug() << "updateWavelengthSettings()";
-    QByteArray wavelength = refWavelengthModuleQuery(slotNum);
 
-    // parse returned value
-    qDebug() << wavelength;
+    QByteArray wavelength = refWavelengthModuleQuery(slotNum);
 
     // if there is no laser input, you can't read the wavelength
     if(wavelength != "")
-        wavelength = wavelength.split('=')[1];
+        wavelength = wavelength.split('=')[1].trimmed();
 
     configSettings.setValue(EXFO_OSICS_SWT_WAVELENGTH_SETTING, QVariant::fromValue(wavelength));
+
+    if(!minMaxWavelengthsFound){
+
+        QByteArray minWavelength = getMinWavelengthForSWT();
+        QByteArray maxWavelength = getMaxWavelengthForSWT();
+
+        configSettings.setValue(EXFO_OSICS_SWT_MIN_WAV_SETTING, QVariant::fromValue(minWavelength));
+        configSettings.setValue(EXFO_OSICS_SWT_MAX_WAV_SETTING, QVariant::fromValue(maxWavelength));
+
+        minMaxWavelengthsFound = true;
+    }
 }
 
 void EXFO_OSICS_SWT::updateFrequencySettings(QSettings &configSettings)
 {
-    qDebug() << "updateFrequencySettings()";
     QByteArray frequency = frequencyModuleQuery(slotNum);
 
     // if there is no laser input, you can't read the frequency
     if(frequency != "")
-        frequency = frequency.split('=')[1];
+        frequency = frequency.split('=')[1].trimmed();
 
     configSettings.setValue(EXFO_OSICS_SWT_FREQUENCY_SETTING, QVariant::fromValue(frequency));
 }
 
+QByteArray EXFO_OSICS_SWT::getMinWavelengthForSWT(){
+    // query each module for type
+    double minWavelength = INT_MAX;
 
+    for(int i = 0; i < EXFO_OSICS_NUM_SLOTS; i++){
+        QByteArray t100MinWav = QByteArray::number(INT_MAX);
+        QByteArray presentModule = moduleTypeAtSlotQuery(i + 1);
+        if(presentModule.trimmed() != "-1"){
+            QByteArray type = typeOfModuleQuery(i + 1).split(':')[1];
+
+            if(type == EXFO_OSICS_T100_1310_TYPE_NAME){
+                t100MinWav = EXFO_OSICS_T100_1310_MIN_WAV_NM;
+            }
+            else if(type == EXFO_OSICS_T100_1415_TYPE_NAME){
+                t100MinWav = EXFO_OSICS_T100_1415_MIN_WAV_NM;
+            }
+            else if(type == EXFO_OSICS_T100_1520_TYPE_NAME){
+                t100MinWav = EXFO_OSICS_T100_1520_MIN_WAV_NM;
+            }
+            else if(type == EXFO_OSICS_T100_1550_TYPE_NAME){
+                t100MinWav = EXFO_OSICS_T100_1550_MIN_WAV_NM;
+            }
+            else if(type == EXFO_OSICS_T100_1575_TYPE_NAME){
+                t100MinWav = EXFO_OSICS_T100_1575_MIN_WAV_NM;
+            }
+            else if(type == EXFO_OSICS_T100_1620_TYPE_NAME){
+                t100MinWav = EXFO_OSICS_T100_1620_MIN_WAV_NM;
+            }
+
+            if(t100MinWav.toDouble() < minWavelength){
+                minWavelength = t100MinWav.toDouble();
+            }
+        }
+    }
+
+    return QByteArray::number(minWavelength);
+}
+
+QByteArray EXFO_OSICS_SWT::getMaxWavelengthForSWT(){
+    // query each module for type
+    double maxWavelength = 0;
+    for(int i = 0; i < EXFO_OSICS_NUM_SLOTS; i++){
+        QByteArray t100MaxWav = QByteArray::number(0);
+        QByteArray presentModule = moduleTypeAtSlotQuery(i + 1);
+        if(presentModule.trimmed() != "-1"){
+            QByteArray type = typeOfModuleQuery(i + 1).split(':')[1];
+            if(type == EXFO_OSICS_T100_1310_TYPE_NAME){
+                t100MaxWav = EXFO_OSICS_T100_1310_MAX_WAV_NM;
+            }
+            else if(type == EXFO_OSICS_T100_1415_TYPE_NAME){
+                t100MaxWav = EXFO_OSICS_T100_1415_MAX_WAV_NM;
+            }
+            else if(type == EXFO_OSICS_T100_1520_TYPE_NAME){
+                t100MaxWav = EXFO_OSICS_T100_1520_MAX_WAV_NM;
+            }
+            else if(type == EXFO_OSICS_T100_1550_TYPE_NAME){
+                t100MaxWav = EXFO_OSICS_T100_1550_MAX_WAV_NM;
+            }
+            else if(type == EXFO_OSICS_T100_1575_TYPE_NAME){
+                t100MaxWav = EXFO_OSICS_T100_1575_MAX_WAV_NM;
+            }
+            else if(type == EXFO_OSICS_T100_1620_TYPE_NAME){
+                t100MaxWav = EXFO_OSICS_T100_1620_MAX_WAV_NM;
+            }
+
+            if(t100MaxWav.toDouble() > maxWavelength){
+                maxWavelength = t100MaxWav.toDouble();
+            }
+        }
+    }
+
+    return QByteArray::number(maxWavelength);
+}
 

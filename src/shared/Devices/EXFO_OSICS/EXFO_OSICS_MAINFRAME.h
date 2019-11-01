@@ -312,6 +312,8 @@ public:
      */
     QByteArray refWavelengthModuleQuery(int slotNum);
 
+    void setWavelengthForModuleCmd(int slotNum, QByteArray wavelength);
+
     /**
      * @brief setFrequencyModuleCmd Sets the emission frequency of the module in GHz
      *        Base command: CH#:F=

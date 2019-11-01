@@ -31,7 +31,6 @@ public slots:
     void slotTestingComplete();
 
 private slots:
-    void on_outputFileButton_clicked();
 
     void on_runTestButton_clicked();
 
@@ -40,7 +39,6 @@ private slots:
 private:
     Ui::EXFO_OperationalTest_T100_SWT_ATN_Window *ui;
 
-    QByteArray outputFilename = "";
     bool testingComplete = false;
 
     void runTest();

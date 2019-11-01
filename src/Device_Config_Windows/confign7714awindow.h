@@ -6,6 +6,7 @@
 #include <QSettings>
 #include <QMessageBox>
 #include <QLineEdit>
+#include <QInputDialog>
 
 #include "N7714A.h"
 #include "ConversionUtilities.h"
@@ -75,6 +76,8 @@ private slots:
 
     void on_saveSettingsButton_clicked();
 
+    void on_setNicknameBtn_clicked();
+
 private:
     Ui::ConfigN7714AWindow *ui;
 
@@ -87,6 +90,11 @@ private:
     bool powerStatusDisplayTextColored[N7714A_NUM_SLOTS] = {false};
     bool wavelengthDisplayTextColored[N7714A_NUM_SLOTS] = {false};
     bool frequencyDisplayTextColored[N7714A_NUM_SLOTS] = {false};
+
+    QByteArray deviceAddress;               // address of device
+    QByteArray deviceIdentity;              // identity of device
+    QByteArray deviceNickname;              // nickname of device
+
 
     QList<QByteArray> powerSettings;
     QList<QByteArray> minPowerSettings;
@@ -110,6 +118,7 @@ private:
     void convertAndDisplayWavelength(QList<QByteArray> wavelengthList, QLineEdit* displayField);
     void convertAndDisplayFrequency(QList<QByteArray> wavelengthList, QLineEdit* displayField);
 
+    void populateIdentityAndLoc();
 
     /**
      * @brief resetDisplayFieldColoredStatus Resets the lists of color status flags and clears the GUI of coloring

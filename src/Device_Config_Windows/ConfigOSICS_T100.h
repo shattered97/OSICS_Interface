@@ -7,6 +7,7 @@
 #include <QDebug>
 #include <QMessageBox>
 #include <QFileDialog>
+#include <QInputDialog>
 #include "constants.h"
 
 namespace Ui {
@@ -65,6 +66,8 @@ private slots:
 
     void on_saveChangesButton_clicked();
 
+    void on_setNicknameBtn_clicked();
+
 private:
     Ui::ConfigOSICS_T100 *ui;
 
@@ -77,6 +80,7 @@ private:
     int slotNum;
     QByteArray moduleIdentity;
     QByteArray moduleLocation;
+    QByteArray deviceNickname;              // nickname of device
 
     QByteArray powerSetting;
     QByteArray minPower;
