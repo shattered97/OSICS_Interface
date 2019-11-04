@@ -19,6 +19,7 @@ WavStep_Power_Monitoring_Test_Window::WavStep_Power_Monitoring_Test_Window(QWidg
     QString defaultFilename = QDir::currentPath() + "/" + WAVSTEP_DEFAULT_CSV_FILENAME.arg(timestamp);
     ui->csvLocDisplay->setText(defaultFilename);
 
+    ui->powerMeterTable->setColumnWidth(0, 500);
 }
 
 WavStep_Power_Monitoring_Test_Window::~WavStep_Power_Monitoring_Test_Window()
@@ -720,7 +721,6 @@ void WavStep_Power_Monitoring_Test_Window::disableFieldsOnTestStart(){
     ui->dwellMinRadioButton->setEnabled(false);
     ui->dwellMsecRadioButton->setEnabled(false);
     ui->stepSizeLineEdit->setEnabled(false);
-    ui->powerMeterTable->setEnabled(false);
     ui->graphRefreshRateEdit->setEnabled(false);
     ui->loadConfigBtn->setEnabled(false);
     ui->saveConfigBtn->setEnabled(false);
@@ -742,7 +742,6 @@ void WavStep_Power_Monitoring_Test_Window::enableFieldsOnTestFinish(){
     ui->dwellMinRadioButton->setEnabled(true);
     ui->dwellMsecRadioButton->setEnabled(true);
     ui->stepSizeLineEdit->setEnabled(true);
-    ui->powerMeterTable->setEnabled(true);
     ui->graphRefreshRateEdit->setEnabled(true);
     ui->loadConfigBtn->setEnabled(true);
     ui->saveConfigBtn->setEnabled(true);
