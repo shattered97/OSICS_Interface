@@ -26,7 +26,7 @@ void OSICSMainframeSetupWindow::showEvent( QShowEvent* event )
 
     QWidget::showEvent( event );
     if(!windowConfigured){
-        emit signalUpdateConfigSettings(device, *settings);
+        emit signalUpdateConfigSettings(device, settings);
     }
 
     windowConfigured = true;
@@ -119,11 +119,11 @@ void OSICSMainframeSetupWindow::on_configButton_clicked(int index){
 
     //  we only want to carry out this connect() if the window hasn't been configured yet
     if(!moduleConfiguredStatusList[index]){
-        QObject::connect(configWindow, SIGNAL(signalApplyConfigSettings(QVariant &, QSettings &)),
-                         this, SLOT(slotForwardApplyConfigSettings(QVariant &, QSettings &)));
+//        QObject::connect(configWindow, SIGNAL(signalApplyConfigSettings(QVariant &, QSettings &)),
+//                         this, SLOT(slotForwardApplyConfigSettings(QVariant &, QSettings &)));
 
-        QObject::connect(configWindow, SIGNAL(signalUpdateConfigSettings(QVariant &, QSettings &)),
-                         this, SLOT(slotForwardUpdateConfigSettings(QVariant &, QSettings &)));
+//        QObject::connect(configWindow, SIGNAL(signalUpdateConfigSettings(QVariant &, QSettings &)),
+//                         this, SLOT(slotForwardUpdateConfigSettings(QVariant &, QSettings &)));
     }
 
     configWindow->show();
@@ -132,11 +132,11 @@ void OSICSMainframeSetupWindow::on_configButton_clicked(int index){
 
 
 void OSICSMainframeSetupWindow::slotForwardApplyConfigSettings(QVariant &deviceVariant, QSettings &configSettings){
-    emit signalApplyConfigSettings(deviceVariant, *settings);
+    emit signalApplyConfigSettings(deviceVariant, settings);
 }
 
 void OSICSMainframeSetupWindow::slotForwardUpdateConfigSettings(QVariant &deviceVariant, QSettings &configSettings){
-    emit signalUpdateConfigSettings(deviceVariant, *settings);
+    emit signalUpdateConfigSettings(deviceVariant, settings);
 }
 
 
@@ -152,6 +152,6 @@ void OSICSMainframeSetupWindow::on_setNicknameBtn_clicked()
                         settings->setValue(DEVICE_NICKNAME, QVariant::fromValue(deviceNickname));
     }
 
-    emit signalApplyConfigSettings(device, *settings);
+    emit signalApplyConfigSettings(device, settings);
 
 }

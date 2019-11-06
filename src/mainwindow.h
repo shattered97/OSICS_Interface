@@ -62,7 +62,7 @@ private:
 
     // Orchestrator object that handles device communication
     Orchestrator *orchestrator;
-
+    WindowFactory *windowFactory;
     /**
      * @brief resourcesQmapToQList Returns a list of device identities that match a particular device type
      * @param foundResources QMap of all VISA resources found on system

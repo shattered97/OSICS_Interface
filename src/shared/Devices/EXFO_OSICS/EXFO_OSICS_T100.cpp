@@ -195,18 +195,18 @@ void EXFO_OSICS_T100::setSlotNum(int slotNum){
     this->slotNum = slotNum;
 }
 
-void EXFO_OSICS_T100::applyConfigSettings(QSettings &configSettings){
+void EXFO_OSICS_T100::applyConfigSettings(QSettings *configSettings){
 
     // apply nickname
-    QByteArray nicknameToSet = configSettings.value(DEVICE_NICKNAME).value<QByteArray>();
+    QByteArray nicknameToSet = configSettings->value(DEVICE_NICKNAME).value<QByteArray>();
     setNickname(nicknameToSet);
 
     // apply laser power
-    QByteArray power = configSettings.value(EXFO_OSICS_T100_POWER).value<QByteArray>();
+    QByteArray power = configSettings->value(EXFO_OSICS_T100_POWER).value<QByteArray>();
     setModuleOutputPowerCmd(slotNum, power);
 
     // apply laser state
-    QByteArray laserState = configSettings.value(EXFO_OSICS_T100_LASER_STATE).value<QByteArray>();
+    QByteArray laserState = configSettings->value(EXFO_OSICS_T100_LASER_STATE).value<QByteArray>();
     if(laserState == "DISABLED"){
         disableModuleLaserCmd(slotNum);
     }
@@ -215,20 +215,20 @@ void EXFO_OSICS_T100::applyConfigSettings(QSettings &configSettings){
     }
 
     // apply laser wavelength (changing wavelength should change frequency)
-    QByteArray wavelength = configSettings.value(EXFO_OSICS_T100_WAVELENGTH).value<QByteArray>();
+    QByteArray wavelength = configSettings->value(EXFO_OSICS_T100_WAVELENGTH).value<QByteArray>();
     setRefWavelengthModuleCmd(slotNum, wavelength);
 
     updateConfig(configSettings);
 
 }
 
-void EXFO_OSICS_T100::updateConfig(QSettings &configSettings){
+void EXFO_OSICS_T100::updateConfig(QSettings *configSettings){
 
-    configSettings.setValue(DEVICE_NICKNAME, QVariant::fromValue(getNickname()));
+    configSettings->setValue(DEVICE_NICKNAME, QVariant::fromValue(getNickname()));
 
-    updatePowerSettings(configSettings);
-    updateWavelengthSettings(configSettings);
-    updateFrequencySettings(configSettings);
+    updatePowerSettings(*configSettings);
+    updateWavelengthSettings(*configSettings);
+    updateFrequencySettings(*configSettings);
 }
 
 void EXFO_OSICS_T100::updatePowerSettings(QSettings &configSettings){

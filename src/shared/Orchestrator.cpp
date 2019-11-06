@@ -1,17 +1,23 @@
 #include "Orchestrator.h"
-#include "PowerMeterFactory.h"
-#include "WindowFactory.h"
-#include "ConversionUtilities.h"
 
-Orchestrator::Orchestrator()
+
+Orchestrator::Orchestrator(WindowFactory *windowFactory, QObject *parent) : QObject(parent)
 {
-    theCommBus.createDefaultRM(defaultSession);
-    communicationLock = new QMutex();
+    this->windowFactory = windowFactory;
+    qRegisterMetaType<FoundInstr>();
+    qRegisterMetaType<QVariant>();
+    qRegisterMetaType<QVariant*>();
 }
 
 Orchestrator::~Orchestrator()
 {
     theCommBus.closeDefaultSession(defaultSession);
+}
+
+void Orchestrator::slotStartOrchestrator(){
+
+    theCommBus.createDefaultRM(defaultSession);
+    communicationLock = new QMutex();
 }
 
 void Orchestrator::slotLookForDevices()
@@ -83,19 +89,27 @@ void Orchestrator::slotCreateDevice(QString type, QByteArray instrumentAddress, 
 
     selectedDevices.append(deviceVariant);
 
-    QMainWindow *configWindow = WindowFactory::makeWindow(type, deviceVariant);
+
+    QMainWindow *configWindow;
+    QMetaObject::invokeMethod(windowFactory, "makeWindow", Qt::BlockingQueuedConnection,
+                              Q_RETURN_ARG(QMainWindow *, configWindow),
+                              Q_ARG(QString, type),
+                              Q_ARG(QVariant *, &deviceVariant));
+    qDebug() << "@@@@@@@@@@@@@@@@@ " << QThread::currentThread();
+
     DefaultInstrument *device = deviceVariant.value<DefaultInstrument*>();
     device->setConfigWindow(configWindow);
+
 
     QObject::connect(device, SIGNAL(signalSendCmdRsp(QByteArray, QByteArray, QByteArray *)),
                      this, SLOT(slotSendCmdRsp(QByteArray, QByteArray, QByteArray *)), Qt::AutoConnection);
     QObject::connect(device, SIGNAL(signalSendCmdNoRsp(QByteArray, QByteArray)),
                      this, SLOT(slotSendCmdNoRsp(QByteArray, QByteArray)), Qt::AutoConnection);
 
-    QObject::connect(configWindow, SIGNAL(signalUpdateConfigSettings(QVariant &, QSettings &)),
-                     this, SLOT(slotUpdateConfigSettings(QVariant &, QSettings &)));
-    QObject::connect(configWindow, SIGNAL(signalApplyConfigSettings(QVariant &, QSettings &)),
-                     this, SLOT(slotApplyConfigSettings(QVariant &, QSettings &)));
+    QObject::connect(configWindow, SIGNAL(signalUpdateConfigSettings(QVariant, QSettings *)),
+                     this, SLOT(slotUpdateConfigSettings(QVariant, QSettings *)));
+    QObject::connect(configWindow, SIGNAL(signalApplyConfigSettings(QVariant, QSettings *)),
+                     this, SLOT(slotApplyConfigSettings(QVariant, QSettings *)));
 }
 
 QVariant Orchestrator::getDeviceAtIndex(int index){
@@ -126,7 +140,12 @@ void Orchestrator::slotGetEXFOModuleQVariants(QMap<int, QVariant> &modules, QVar
                              this, SLOT(slotSendCmdNoRsp(QByteArray, QByteArray)));
 
             // create window
-            QMainWindow *configWindow = WindowFactory::makeWindow(modTypes[i], moduleVariant);
+            QMainWindow *configWindow;
+            QMetaObject::invokeMethod(windowFactory, "makeWindow", Qt::BlockingQueuedConnection,
+                                      Q_RETURN_ARG(QMainWindow *, configWindow),
+                                      Q_ARG(QString, modTypes[i]),
+                                      Q_ARG(QVariant *, &moduleVariant));
+
             module->setConfigWindow(configWindow);
         }
         else if(modTypes[i].contains("ATN")){
@@ -141,7 +160,12 @@ void Orchestrator::slotGetEXFOModuleQVariants(QMap<int, QVariant> &modules, QVar
                              this, SLOT(slotSendCmdNoRsp(QByteArray, QByteArray)));
 
             // create window
-            QMainWindow *configWindow = WindowFactory::makeWindow(modTypes[i], moduleVariant);
+            QMainWindow *configWindow;
+            QMetaObject::invokeMethod(windowFactory, "makeWindow", Qt::BlockingQueuedConnection,
+                                      Q_RETURN_ARG(QMainWindow *, configWindow),
+                                      Q_ARG(QString, modTypes[i]),
+                                      Q_ARG(QVariant *, &moduleVariant));
+
             module->setConfigWindow(configWindow);
         }
         else if(modTypes[i].contains("SWT")){
@@ -156,7 +180,11 @@ void Orchestrator::slotGetEXFOModuleQVariants(QMap<int, QVariant> &modules, QVar
                              this, SLOT(slotSendCmdNoRsp(QByteArray, QByteArray)));
 
             // create window
-            QMainWindow *configWindow = WindowFactory::makeWindow(modTypes[i], moduleVariant);
+            QMainWindow *configWindow;
+            QMetaObject::invokeMethod(windowFactory, "makeWindow", Qt::BlockingQueuedConnection,
+                                      Q_RETURN_ARG(QMainWindow *, configWindow),
+                                      Q_ARG(QString, modTypes[i]),
+                                      Q_ARG(QVariant *, &moduleVariant));
             module->setConfigWindow(configWindow);
         }
         else{
@@ -186,7 +214,7 @@ void Orchestrator::slotGetEXFOModuleConfigPairs(QVariant &device, QMap<int, Modu
     }
 }
 
-void Orchestrator::slotUpdateConfigSettings(QVariant &deviceVariant, QSettings &configSettings){
+void Orchestrator::slotUpdateConfigSettings(QVariant deviceVariant, QSettings *configSettings){
     // because QVariant types are <type*> compare result of typeName()[:-1] with enum strings
     QString typeName = QString(deviceVariant.typeName());
     typeName.chop(1);
@@ -246,7 +274,7 @@ void Orchestrator::slotUpdateConfigSettings(QVariant &deviceVariant, QSettings &
 
 }
 
-void Orchestrator::slotApplyConfigSettings(QVariant &deviceVariant, QSettings &configSettings){
+void Orchestrator::slotApplyConfigSettings(QVariant deviceVariant, QSettings *configSettings){
     QString typeName = QString(deviceVariant.typeName());
     typeName.chop(1);
 
@@ -260,7 +288,6 @@ void Orchestrator::slotApplyConfigSettings(QVariant &deviceVariant, QSettings &c
         emit signalSettingsUpdated();
     }
     else if(typeName == "N7714A"){
-
         N7714A* device = deviceVariant.value<N7714A*>();
         device->applyConfigSettings(configSettings);
 

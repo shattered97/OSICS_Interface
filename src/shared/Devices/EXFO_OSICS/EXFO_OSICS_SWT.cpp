@@ -199,9 +199,9 @@ int EXFO_OSICS_SWT::getSlotNum(){
     return slotNum;
 }
 
-void EXFO_OSICS_SWT::updateConfig(QSettings &configSettings){
+void EXFO_OSICS_SWT::updateConfig(QSettings *configSettings){
 
-    configSettings.setValue(DEVICE_NICKNAME, QVariant::fromValue(getNickname()));
+    configSettings->setValue(DEVICE_NICKNAME, QVariant::fromValue(getNickname()));
     // get operating mode and store it
 
     QByteArray opMode = getAPCModuleOperatingMode(slotNum);
@@ -222,16 +222,16 @@ void EXFO_OSICS_SWT::updateConfig(QSettings &configSettings){
             autoDetectComplete = true;
         }
 
-        updatePowerSettings(configSettings);
-        updateWavelengthSettings(configSettings);
-        updateFrequencySettings(configSettings);
+        updatePowerSettings(*configSettings);
+        updateWavelengthSettings(*configSettings);
+        updateFrequencySettings(*configSettings);
 
         // return operating mode to original state
         setAPCModuleOperatingMode(slotNum, "SWT");
         selectChannelForSignalAPC(slotNum, activeChannel);
 
-        updateActiveChannelSettings(configSettings);
-        updateOperatingModeSettings(configSettings);
+        updateActiveChannelSettings(*configSettings);
+        updateOperatingModeSettings(*configSettings);
     }
     else{
 
@@ -241,35 +241,35 @@ void EXFO_OSICS_SWT::updateConfig(QSettings &configSettings){
             autoDetectComplete = true;
         }
 
-        updatePowerSettings(configSettings);
-        updateWavelengthSettings(configSettings);
-        updateFrequencySettings(configSettings);
-        updateActiveChannelSettings(configSettings);
-        updateOperatingModeSettings(configSettings);
+        updatePowerSettings(*configSettings);
+        updateWavelengthSettings(*configSettings);
+        updateFrequencySettings(*configSettings);
+        updateActiveChannelSettings(*configSettings);
+        updateOperatingModeSettings(*configSettings);
     }
 
 }
 
-void EXFO_OSICS_SWT::applyConfigSettings(QSettings &configSettings){
+void EXFO_OSICS_SWT::applyConfigSettings(QSettings *configSettings){
 
     // apply nickname
-    QByteArray nicknameToSet = configSettings.value(DEVICE_NICKNAME).value<QByteArray>();
+    QByteArray nicknameToSet = configSettings->value(DEVICE_NICKNAME).value<QByteArray>();
     setNickname(nicknameToSet);
 
     // apply operating mode from settings
-    QByteArray operatingMode = configSettings.value(EXFO_OSICS_SWT_OPMODE).value<QByteArray>();
+    QByteArray operatingMode = configSettings->value(EXFO_OSICS_SWT_OPMODE).value<QByteArray>();
     setAPCModuleOperatingMode(slotNum, operatingMode);
 
     if(operatingMode == "SWT"){
 
         // apply active channel from settings
-        QByteArray activeChannel = configSettings.value(EXFO_OSICS_SWT_ACTIVE_CHANNEL).value<QByteArray>();
+        QByteArray activeChannel = configSettings->value(EXFO_OSICS_SWT_ACTIVE_CHANNEL).value<QByteArray>();
         selectChannelForSignalAPC(slotNum, activeChannel);
 
     }
     else{
         // apply output power state from settings
-        QByteArray outputStatus = configSettings.value(EXFO_OSICS_SWT_OUTPUT_STATUS).value<QByteArray>();
+        QByteArray outputStatus = configSettings->value(EXFO_OSICS_SWT_OUTPUT_STATUS).value<QByteArray>();
         if(outputStatus == "ENABLED"){
             enableModuleLaserCmd(slotNum);
         }
@@ -280,11 +280,11 @@ void EXFO_OSICS_SWT::applyConfigSettings(QSettings &configSettings){
         // apply power from settings
         // make sure power unit is set to dbm
         setModulePowerUnitDBmCmd(slotNum);
-        QByteArray power = configSettings.value(EXFO_OSICS_SWT_POWER_SETTING).value<QByteArray>();
+        QByteArray power = configSettings->value(EXFO_OSICS_SWT_POWER_SETTING).value<QByteArray>();
         setModuleOutputPowerCmd(slotNum, power);
 
         // apply wavelength from settings
-        QByteArray wavelength = configSettings.value(EXFO_OSICS_SWT_WAVELENGTH_SETTING).value<QByteArray>();
+        QByteArray wavelength = configSettings->value(EXFO_OSICS_SWT_WAVELENGTH_SETTING).value<QByteArray>();
         setWavelengthForModuleCmd(slotNum, wavelength);
 
     }

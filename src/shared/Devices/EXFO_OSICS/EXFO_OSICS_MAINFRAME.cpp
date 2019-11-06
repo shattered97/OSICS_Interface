@@ -450,23 +450,23 @@ QByteArray EXFO_OSICS_MAINFRAME::insertSlotNum(QByteArray command, int slotNum){
 
 // *********** Functions for Applying/Updating Config Settings **********
 
-void EXFO_OSICS_MAINFRAME::applyConfigSettings(QSettings &configSettings){
+void EXFO_OSICS_MAINFRAME::applyConfigSettings(QSettings *configSettings){
     // # TODO mainframe won't have many config settings (if any) so apply
     // settings to modules
 
     // apply nickname
-    QByteArray nicknameToSet = configSettings.value(DEVICE_NICKNAME).value<QByteArray>();
+    QByteArray nicknameToSet = configSettings->value(DEVICE_NICKNAME).value<QByteArray>();
     setNickname(nicknameToSet);
 
 }
 
-void EXFO_OSICS_MAINFRAME::updateConfig(QSettings &configSettings){
+void EXFO_OSICS_MAINFRAME::updateConfig(QSettings *configSettings){
 
-    configSettings.setValue(DEVICE_ADDRESS, QVariant::fromValue(theInstrLoc));
-    configSettings.setValue(DEVICE_IDENTITY, QVariant::fromValue(theIdentity));
-    configSettings.setValue(DEVICE_NICKNAME, QVariant::fromValue(getNickname()));
+    configSettings->setValue(DEVICE_ADDRESS, QVariant::fromValue(theInstrLoc));
+    configSettings->setValue(DEVICE_IDENTITY, QVariant::fromValue(theIdentity));
+    configSettings->setValue(DEVICE_NICKNAME, QVariant::fromValue(getNickname()));
 
-    updateInstalledModules(configSettings);
+    updateInstalledModules(*configSettings);
 }
 
 void EXFO_OSICS_MAINFRAME::updateInstalledModules(QSettings &configSettings){

@@ -39,14 +39,14 @@ signals:
      * @param device Device to query for settings
      * @param configSettings Settings object to populate
      */
-    void signalUpdateConfigSettings(QVariant &device, QSettings &configSettings);
+    void signalUpdateConfigSettings(QVariant device, QSettings *configSettings);
 
     /**
      * @brief signalApplyConfigSettings Tells the device to apply the settings that exist in the QSettings object
      * @param device Device to apply settings to
      * @param configSettings Settings to apply to device
      */
-    void signalApplyConfigSettings(QVariant &device, QSettings &configSettings);
+    void signalApplyConfigSettings(QVariant device, QSettings *configSettings);
 
 
 public slots:

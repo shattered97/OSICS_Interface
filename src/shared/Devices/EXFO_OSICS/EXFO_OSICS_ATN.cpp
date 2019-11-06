@@ -99,38 +99,38 @@ void EXFO_OSICS_ATN::setSlotNum(int slotNum){
     this->slotNum = slotNum;
 }
 
-void EXFO_OSICS_ATN::applyConfigSettings(QSettings &configSettings){
+void EXFO_OSICS_ATN::applyConfigSettings(QSettings *configSettings){
 
     // apply nickname
-    QByteArray nicknameToSet = configSettings.value(DEVICE_NICKNAME).value<QByteArray>();
+    QByteArray nicknameToSet = configSettings->value(DEVICE_NICKNAME).value<QByteArray>();
     setNickname(nicknameToSet);
 
     // apply attenuation
-    QByteArray attenuation = configSettings.value(EXFO_OSICS_ATN_ATTENUATION).value<QByteArray>();
+    QByteArray attenuation = configSettings->value(EXFO_OSICS_ATN_ATTENUATION).value<QByteArray>();
     setModuleAttenuationCmd(slotNum, attenuation);
 
     // apply refwavelength number
-    QByteArray refWavNumber = configSettings.value(EXFO_OSICS_ATN_REF_WAV_NUMBER).value<QByteArray>();
+    QByteArray refWavNumber = configSettings->value(EXFO_OSICS_ATN_REF_WAV_NUMBER).value<QByteArray>();
     setRefWavelengthModuleCmd(slotNum, refWavNumber);
 
     // apply attenuation offset
-    QByteArray firstOffset = configSettings.value(EXFO_OSICS_ATN_OFFSET_1).value<QByteArray>();
-    QByteArray secondOffset = configSettings.value(EXFO_OSICS_ATN_OFFSET_2).value<QByteArray>();
+    QByteArray firstOffset = configSettings->value(EXFO_OSICS_ATN_OFFSET_1).value<QByteArray>();
+    QByteArray secondOffset = configSettings->value(EXFO_OSICS_ATN_OFFSET_2).value<QByteArray>();
     moduleAttenuationOffsetCmd(slotNum, "1", firstOffset);
     moduleAttenuationOffsetCmd(slotNum, "2", secondOffset);
 
     updateConfig(configSettings);
 }
 
-void EXFO_OSICS_ATN::updateConfig(QSettings &configSettings){
+void EXFO_OSICS_ATN::updateConfig(QSettings *configSettings){
 
-    configSettings.setValue(DEVICE_IDENTITY, theIdentity);
-    configSettings.setValue(DEVICE_ADDRESS, theInstrLoc);
-    configSettings.setValue(DEVICE_NICKNAME, QVariant::fromValue(getNickname()));
+    configSettings->setValue(DEVICE_IDENTITY, theIdentity);
+    configSettings->setValue(DEVICE_ADDRESS, theInstrLoc);
+    configSettings->setValue(DEVICE_NICKNAME, QVariant::fromValue(getNickname()));
 
-    updateAttenuationSettings(configSettings);
-    updateOffsetSettings(configSettings);
-    updateWavelengthSettings(configSettings);
+    updateAttenuationSettings(*configSettings);
+    updateOffsetSettings(*configSettings);
+    updateWavelengthSettings(*configSettings);
 }
 
 void parseMinMaxReturnValue(QByteArray valueToParse, QByteArray &minValue, QByteArray &maxValue){

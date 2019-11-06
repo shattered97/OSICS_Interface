@@ -147,8 +147,8 @@ public:
 
 // *********** Functions for Applying/Updating Config Settings **********
 
-    void applyConfigSettings(QSettings &configSettings);
-    void updateConfig(QSettings &configSettings);
+    void applyConfigSettings(QSettings *configSettings);
+    void updateConfig(QSettings *configSettings);
     void setSlotNum(int slotNum);
     int getSlotNum();
 private:

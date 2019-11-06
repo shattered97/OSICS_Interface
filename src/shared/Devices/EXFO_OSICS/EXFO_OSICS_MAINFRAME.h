@@ -440,8 +440,8 @@ public:
 
     // *********** Functions for Applying/Updating Config Settings **********
 
-    void applyConfigSettings(QSettings &configSettings);
-    void updateConfig(QSettings &configSettings);
+    void applyConfigSettings(QSettings *configSettings);
+    void updateConfig(QSettings *configSettings);
     void updateInstalledModules(QSettings &configSettings);
     QVariant getModuleAtSlot(int slotNum);
     QMainWindow* getWindowForModuleAtSlot(int slotNum);

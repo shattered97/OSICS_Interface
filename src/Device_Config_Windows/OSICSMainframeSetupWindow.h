@@ -21,8 +21,8 @@ public:
 
 
 signals:
-    void signalUpdateConfigSettings(QVariant &device, QSettings &configSettings);
-    void signalApplyConfigSettings(QVariant &device, QSettings &configSettings);
+    void signalUpdateConfigSettings(QVariant device, QSettings *configSettings);
+    void signalApplyConfigSettings(QVariant device, QSettings *configSettings);
     void signalGetEXFOModuleConfigPairs(QVariant &device, QMap<int, ModuleConfigPair> &moduleConfigPairs);
 public slots:
     void slotUpdateWindow();

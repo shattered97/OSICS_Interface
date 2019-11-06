@@ -186,31 +186,31 @@ void N7714A::turnOnAutoWavMode(int module){
     emit signalSendCmdNoRsp(theInstrLoc, baseCmd);
 }
 
-void N7714A::updateConfig(QSettings &configSettings){
+void N7714A::updateConfig(QSettings *configSettings){
 
-    configSettings.setValue(DEVICE_ADDRESS, QVariant::fromValue(theInstrLoc));
-    configSettings.setValue(DEVICE_IDENTITY, QVariant::fromValue(theIdentity));
-    configSettings.setValue(DEVICE_NICKNAME, QVariant::fromValue(getNickname()));
+    configSettings->setValue(DEVICE_ADDRESS, QVariant::fromValue(theInstrLoc));
+    configSettings->setValue(DEVICE_IDENTITY, QVariant::fromValue(theIdentity));
+    configSettings->setValue(DEVICE_NICKNAME, QVariant::fromValue(getNickname()));
 
     // make sure auto mode is on
     for(int i = 1; i < N7714A_NUM_SLOTS; i++){
         turnOnAutoWavMode(i);
     }
 
-    updatePowerSettings(configSettings);
-    updateWavelengthSettings(configSettings);
-    updateFrequencySettings(configSettings);
+    updatePowerSettings(*configSettings);
+    updateWavelengthSettings(*configSettings);
+    updateFrequencySettings(*configSettings);
 }
 
-void N7714A::applyConfigSettings(QSettings &configSettings){
+void N7714A::applyConfigSettings(QSettings *configSettings){
 
     // apply nickname
-    QByteArray nicknameToSet = configSettings.value(DEVICE_NICKNAME).value<QByteArray>();
+    QByteArray nicknameToSet = configSettings->value(DEVICE_NICKNAME).value<QByteArray>();
     setNickname(nicknameToSet);
 
 
-    QList<QByteArray> powerSettings = configSettings.value(N7714A_POWER_SETTINGS).value<QList<QByteArray>>();
-    QList<QByteArray> powerStates = configSettings.value(N7714A_LASER_STATE).value<QList<QByteArray>>();
+    QList<QByteArray> powerSettings = configSettings->value(N7714A_POWER_SETTINGS).value<QList<QByteArray>>();
+    QList<QByteArray> powerStates = configSettings->value(N7714A_LASER_STATE).value<QList<QByteArray>>();
 
     for(int i = 0; i < N7714A_NUM_SLOTS; i++){
         int slot = i + 1;
@@ -228,7 +228,7 @@ void N7714A::applyConfigSettings(QSettings &configSettings){
     }
 
     // apply wavelength settings to device
-    QList<QByteArray> wavelengthSettings = configSettings.value(N7714A_WAVELENGTH_SETTINGS).value<QList<QByteArray>>();
+    QList<QByteArray> wavelengthSettings = configSettings->value(N7714A_WAVELENGTH_SETTINGS).value<QList<QByteArray>>();
 
     for(int i = 0; i < N7714A_NUM_SLOTS; i++){
         int slot = i + 1;
@@ -237,7 +237,7 @@ void N7714A::applyConfigSettings(QSettings &configSettings){
     }
 
     // apply frequency settings to device
-    QList<QByteArray> frequencySettings = configSettings.value(N7714A_FREQUENCY_SETTINGS).value<QList<QByteArray>>();
+    QList<QByteArray> frequencySettings = configSettings->value(N7714A_FREQUENCY_SETTINGS).value<QList<QByteArray>>();
     for(int i = 0; i < N7714A_NUM_SLOTS; i++){
         int slot = i + 1;
         QByteArray unit = "Hz";

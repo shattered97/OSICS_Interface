@@ -5,8 +5,17 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-
-    orchestrator = new Orchestrator();
+    WindowFactory *windowFactory = new WindowFactory();
+    orchestrator = new Orchestrator(windowFactory);
+    QThread *orchestratorThread = new QThread;
+    orchestrator->moveToThread(orchestratorThread);
+    QThread::currentThread()->setObjectName("MAIN THREAD");
+    orchestratorThread->setObjectName("ORCHESTRATOR THREAD");
+    connect(orchestrator, SIGNAL(finished()), orchestratorThread, SLOT(quit()));
+    connect(orchestratorThread, SIGNAL(started()), orchestrator, SLOT(slotStartOrchestrator()));
+    connect(orchestrator, SIGNAL(finished()), orchestrator, SLOT(deleteLater()));
+    connect(orchestratorThread, SIGNAL(finished()), orchestratorThread, SLOT(deleteLater()));
+    orchestratorThread->start();
 
     loadTestTypesList();
     loadDeviceTypesList();
@@ -111,7 +120,7 @@ QList<QByteArray> MainWindow::resourcesQmapToQList(FoundInstr foundResources, QB
 
     for(auto e: foundResources){
         QByteArray deviceString = e.first + " " + e.second;
-
+        qDebug() << "??????? " << deviceString;
         if(deviceString.contains(deviceType)){
             convertedResourceInfo.append(e.first + " " + e.second.split('\n')[0]);
         }
