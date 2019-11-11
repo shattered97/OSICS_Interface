@@ -15,14 +15,14 @@ bool EXFO_T100_SWT_PM_WM_Test::areDevicesValidForTest(){
     bool powerMeterFound = false;
 
     // iterate through the selected devices
-    for(int i = 0; i < selectedDevices->size(); i++){
+    for(int i = 0; i < selectedDevices.size(); i++){
         // get type name - (typeName() returns the type with '*' at the end)
-        QByteArray typeName = selectedDevices->at(i).typeName();
+        QByteArray typeName = selectedDevices.at(i).typeName();
         typeName.chop(1);
         if(typeName == "EXFO_OSICS_MAINFRAME"){
             // create exfo and find out if it has a T100
             // *NOTE* for now we assume that only one T100 is plugged in or we use the first one we see
-            QVariant exfoVariant = selectedDevices->at(i);
+            QVariant exfoVariant = selectedDevices.at(i);
             EXFO_OSICS_MAINFRAME *exfo = exfoVariant.value<EXFO_OSICS_MAINFRAME*>();
 
             QMap<int, QVariant> exfoModuleSlotQMap = exfo->getModuleSlotQVariantMap();
@@ -50,14 +50,14 @@ bool EXFO_T100_SWT_PM_WM_Test::areDevicesValidForTest(){
             }
         }
         else if(typeName == "Bristol_428A"){
-            QVariant bristolVariant = selectedDevices->at(i);
+            QVariant bristolVariant = selectedDevices.at(i);
             bristol = bristolVariant.value<Bristol_428A*>();
             bristolFound = true;
         }
         else if(typeName == "PowerMeter"){
             // *NOTE* for now we only use the first slot on a power meter.
             powerMeterSlotNum = 1;
-            QVariant powerMeterVariant = selectedDevices->at(i);
+            QVariant powerMeterVariant = selectedDevices.at(i);
             powerMeter = powerMeterVariant.value<PowerMeter*>();
             powerMeterFound = true;
         }

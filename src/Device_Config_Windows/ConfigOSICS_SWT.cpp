@@ -24,21 +24,16 @@ void ConfigOSICS_SWT::showEvent(QShowEvent* event)
 {
     QWidget::showEvent(event);
     if(!windowConfigured){
-        emit signalUpdateConfigSettings(device, *settings);
-    }
+        emit signalUpdateConfigSettings(device, settings);
 
-    if(wavelengthSetting == ""){
-        QMessageBox msgBox;
-        msgBox.setText("No optical input to switch module.");
-        msgBox.exec();
-        this->close();
-    }
-    else{
+
+        // disable cursor (re-enabled in slotUpdateWindow)
+        QApplication::setOverrideCursor(Qt::WaitCursor);
         windowConfigured = true;
     }
+    else{
 
-
-
+    }
 
 }
 
@@ -59,8 +54,19 @@ void ConfigOSICS_SWT::slotUpdateWindow()
     // display values
     populateAllValues();
 
+    if(wavelengthSetting == ""){
+        QMessageBox msgBox;
+        msgBox.setText("No optical input to switch module.");
+        msgBox.exec();
+        this->close();
+    }
+
     // disconnect signal
     QObject::disconnect(QObject::sender(), SIGNAL(signalSettingsUpdated()), this, SLOT(slotUpdateWindow()));
+
+    // enable cursor
+    QApplication::restoreOverrideCursor();
+
 }
 
 void ConfigOSICS_SWT::getValuesFromConfig()
@@ -551,7 +557,10 @@ bool ConfigOSICS_SWT::loadSettings()
 
     settings->sync();
 
-    emit signalApplyConfigSettings(device, *settings);
+    emit signalApplyConfigSettings(device, settings);
+
+    // disable cursor (re-enabled in slotUpdateWindow)
+    QApplication::setOverrideCursor(Qt::WaitCursor);
 
     return true;
 }
@@ -578,9 +587,8 @@ void ConfigOSICS_SWT::on_saveChangesButton_clicked()
     QApplication::setOverrideCursor(Qt::WaitCursor);
 
     // signal to orchestrator to update the device with the values from QSettings
-    emit signalApplyConfigSettings(device, *settings);
+    emit signalApplyConfigSettings(device, settings);
 
-    QApplication::restoreOverrideCursor();
 }
 
 

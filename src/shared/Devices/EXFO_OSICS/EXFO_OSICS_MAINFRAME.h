@@ -176,7 +176,7 @@ public:
      * @param slotNum Target slot number
      * @return true if command was successful
      */
-    void enableModuleLaserCmd(int slotNum);
+    Q_INVOKABLE void enableModuleLaserCmd(int slotNum);
 
     /**
      * @brief laserStateModuleQuery Returns the state of the laser output control

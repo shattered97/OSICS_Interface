@@ -20,10 +20,17 @@ void ConfigPowerMeter::showEvent( QShowEvent* event )
     QWidget::showEvent( event );
 
     if(!windowConfigured){
+
         // initialize settings and signal to orchestrator to update them from device
         settings = new QSettings(QSettings::IniFormat, QSettings::SystemScope, "Test Platform");
         settings->clear();
+
+        // disable cursor (re-enabled in slotUpdateWindow)
+        QApplication::setOverrideCursor(Qt::WaitCursor);
+
         emit signalUpdateConfigSettings(device, settings);
+
+
 
     }
 
@@ -50,6 +57,9 @@ void ConfigPowerMeter::slotUpdateWindow()
     QObject::disconnect(QObject::sender(), SIGNAL(signalSettingsUpdated()), this, SLOT(slotUpdateWindow()));
 
     windowConfigured = true;
+
+    // re-enable cursor
+    QApplication::restoreOverrideCursor();
 }
 
 void ConfigPowerMeter::getValuesFromConfig()
@@ -307,6 +317,9 @@ void ConfigPowerMeter::loadSettings()
 
     settings->sync();
 
+    // disable cursor (re-enabled in slotUpdateWindow)
+    QApplication::setOverrideCursor(Qt::WaitCursor);
+
     // signal to apply the new settings
     emit signalApplyConfigSettings(device, settings);
 
@@ -335,8 +348,6 @@ void ConfigPowerMeter::on_saveChangesButton_clicked()
 
     // signal to orchestrator to update the device with the values in the QSettings
     emit signalApplyConfigSettings(device, settings);
-
-    QApplication::restoreOverrideCursor();
 }
 
 void ConfigPowerMeter::resetDisplayFieldColoredStatus()

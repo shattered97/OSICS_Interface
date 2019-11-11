@@ -49,7 +49,9 @@ void WavStep_Power_Monitoring_Test_Window::showEvent(QShowEvent* event)
 void WavStep_Power_Monitoring_Test_Window::closeEvent(QCloseEvent* event)
 {
     // signal to test class to stop all worker threads
+    qDebug() << "CLOSE TEST THREADS/WINDOWS";
     emit signalStopAllWorkerThreads();
+    emit signalTestWindowClosed();
     event->accept();
 }
 

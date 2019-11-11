@@ -24,6 +24,9 @@ OSICSMainframeSetupWindow::~OSICSMainframeSetupWindow()
 void OSICSMainframeSetupWindow::showEvent( QShowEvent* event )
 {
 
+    // disable cursor (re-enabled in slotUpdateWindow)
+    QApplication::setOverrideCursor(Qt::WaitCursor);
+
     QWidget::showEvent( event );
     if(!windowConfigured){
         emit signalUpdateConfigSettings(device, settings);
@@ -39,9 +42,9 @@ void OSICSMainframeSetupWindow::slotUpdateWindow(){
     // if modules/config windows haven't been added for this window, connect w/ orchestrator and get them
     if(moduleConfigPairs.size() == 0){
         // connect signal to orchestrator to get modules and module windows
-        QObject::connect(this, SIGNAL(signalGetEXFOModuleConfigPairs(QVariant &, QMap<int, ModuleConfigPair> &)),
-                         QObject::sender(), SLOT(slotGetEXFOModuleConfigPairs(QVariant &, QMap<int, ModuleConfigPair> &)));
-        emit signalGetEXFOModuleConfigPairs(device, moduleConfigPairs);
+        QObject::connect(this, SIGNAL(signalGetEXFOModuleConfigPairs(QVariant , QMap<int, ModuleConfigPair> *)),
+                         QObject::sender(), SLOT(slotGetEXFOModuleConfigPairs(QVariant , QMap<int, ModuleConfigPair> *)));
+        emit signalGetEXFOModuleConfigPairs(device, &moduleConfigPairs);
     }
 
     // store values from settings
@@ -52,6 +55,9 @@ void OSICSMainframeSetupWindow::slotUpdateWindow(){
 
     // disconnect signal
     QObject::disconnect(QObject::sender(), SIGNAL(signalSettingsUpdated()), this, SLOT(slotUpdateWindow()));
+
+    // enable cursor
+    QApplication::restoreOverrideCursor();
 
 }
 
@@ -119,11 +125,11 @@ void OSICSMainframeSetupWindow::on_configButton_clicked(int index){
 
     //  we only want to carry out this connect() if the window hasn't been configured yet
     if(!moduleConfiguredStatusList[index]){
-//        QObject::connect(configWindow, SIGNAL(signalApplyConfigSettings(QVariant &, QSettings &)),
-//                         this, SLOT(slotForwardApplyConfigSettings(QVariant &, QSettings &)));
+        QObject::connect(configWindow, SIGNAL(signalApplyConfigSettings(QVariant, QSettings *)),
+                         this, SLOT(slotForwardApplyConfigSettings(QVariant, QSettings *)));
 
-//        QObject::connect(configWindow, SIGNAL(signalUpdateConfigSettings(QVariant &, QSettings &)),
-//                         this, SLOT(slotForwardUpdateConfigSettings(QVariant &, QSettings &)));
+        QObject::connect(configWindow, SIGNAL(signalUpdateConfigSettings(QVariant, QSettings *)),
+                         this, SLOT(slotForwardUpdateConfigSettings(QVariant, QSettings *)));
     }
 
     configWindow->show();
@@ -131,11 +137,11 @@ void OSICSMainframeSetupWindow::on_configButton_clicked(int index){
 }
 
 
-void OSICSMainframeSetupWindow::slotForwardApplyConfigSettings(QVariant &deviceVariant, QSettings &configSettings){
+void OSICSMainframeSetupWindow::slotForwardApplyConfigSettings(QVariant deviceVariant, QSettings *configSettings){
     emit signalApplyConfigSettings(deviceVariant, settings);
 }
 
-void OSICSMainframeSetupWindow::slotForwardUpdateConfigSettings(QVariant &deviceVariant, QSettings &configSettings){
+void OSICSMainframeSetupWindow::slotForwardUpdateConfigSettings(QVariant deviceVariant, QSettings *configSettings){
     emit signalUpdateConfigSettings(deviceVariant, settings);
 }
 

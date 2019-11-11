@@ -5,8 +5,9 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    WindowFactory *windowFactory = new WindowFactory();
-    orchestrator = new Orchestrator(windowFactory);
+    windowFactory = new WindowFactory();
+    deviceTestFactory = new DeviceTestFactory();
+    orchestrator = new Orchestrator(windowFactory, deviceTestFactory);
     QThread *orchestratorThread = new QThread;
     orchestrator->moveToThread(orchestratorThread);
     QThread::currentThread()->setObjectName("MAIN THREAD");
@@ -23,10 +24,12 @@ MainWindow::MainWindow(QWidget *parent) :
                      this, SLOT(slotDisplayDecisionErrorMsg(QString)));
     QObject::connect(this, SIGNAL(signalBeginTest(QString)), orchestrator, SLOT(slotBeginTest(QString)));
     QObject::connect(this, SIGNAL(signalCreateDevice(QString, QByteArray, QByteArray)),
-                     orchestrator, SLOT(slotCreateDevice(QString, QByteArray, QByteArray)));
+                     orchestrator, SLOT(slotCreateDevice(QString, QByteArray, QByteArray)), Qt::AutoConnection);
     QObject::connect(this, SIGNAL(signalClearSelectedDevices()), orchestrator, SLOT(slotClearSelectedDevices()));
     QObject::connect(orchestrator, SIGNAL(signalSendSimpleErrorMsg(QString)),
                      this, SLOT(slotDisplaySimpleErrorMsg(QString)));
+    QObject::connect(orchestrator, SIGNAL(signalDeviceCreated()), this, SLOT(slotDeviceCreated()));
+
 }
 
 MainWindow::~MainWindow()
@@ -146,6 +149,10 @@ bool MainWindow::hasDeviceBeenSelected(QByteArray deviceAddress){
     return success;
 }
 
+void MainWindow::slotDeviceCreated(){
+    QApplication::restoreOverrideCursor();
+    ui->addSelectedDeviceBtn->setEnabled(true);
+}
 void MainWindow::on_addSelectedDeviceBtn_clicked()
 {
     ui->addSelectedDeviceBtn->setEnabled(false);
@@ -171,10 +178,10 @@ void MainWindow::on_addSelectedDeviceBtn_clicked()
         QMessageBox msgBox;
         msgBox.setText("This device has already been added to the \"Selected Devices\" list.");
         msgBox.exec();
+        QApplication::restoreOverrideCursor();
     }
 
-    QApplication::restoreOverrideCursor();
-    ui->addSelectedDeviceBtn->setEnabled(true);
+
 }
 
 void MainWindow::on_startTestPushButton_clicked()

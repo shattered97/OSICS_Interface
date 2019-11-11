@@ -18,7 +18,7 @@ public:
      * @param mode Operating mode - SWT (Switch mode) | ECL (Full-band mode)
      * @return true if command was successful
      */
-    void setAPCModuleOperatingMode(int slotNum, QByteArray mode);
+    Q_INVOKABLE void setAPCModuleOperatingMode(int slotNum, QByteArray mode);
 
     /**
      * @brief getAPCModuleOperatinGMode Returns the operating mode of the SWT-APC module

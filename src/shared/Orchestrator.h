@@ -45,7 +45,7 @@ class Orchestrator : public QObject
     Q_OBJECT
 
 public:
-    Orchestrator(WindowFactory *windowFactory, QObject *parent = nullptr);
+    Orchestrator(WindowFactory *windowFactory, DeviceTestFactory *deviceTestFactory, QObject *parent = nullptr);
     ~Orchestrator();
 
     QVariant getDeviceAtIndex(int index);
@@ -60,7 +60,7 @@ public slots:
     void slotGetEXFOModuleQVariants(QMap <int, QVariant> &modules, QVariant &device);
     void slotBeginTest(QString testTypeName);
     void slotClearSelectedDevices();
-    void slotGetEXFOModuleConfigPairs(QVariant &device, QMap<int, ModuleConfigPair> &moduleConfigPairs);
+    void slotGetEXFOModuleConfigPairs(QVariant device, QMap<int, ModuleConfigPair> *moduleConfigPairs);
 signals:
     void signalReturnDevicesFound(FoundInstr);
     void signalSettingsUpdated();
@@ -68,10 +68,12 @@ signals:
     void signalSetupPowerMeter();
     void signalSendDecisionErrorMsg(QString errorMsg);
     void signalSendSimpleErrorMsg(QString errorMsg);
+    void signalDeviceCreated();
     /**
      * @brief finished Signal from QThread, emitted when the thread is done executing.
      */
     void finished();
+    void signalShowConfigWindow();
 
 private:
     VisaInterface theCommBus;               // common methods for talking to VISA devices
@@ -80,6 +82,7 @@ private:
     QList<QVariant> selectedDevices;        // devices selected by the user
     QMutex *communicationLock;
     WindowFactory *windowFactory;
+    DeviceTestFactory *deviceTestFactory;
     bool checkOperationComplete(ViSession instrSession, QByteArray instrAddress, int timeout = DEFAULT_COMMAND_TIMEOUT_MS);
 
 private slots:

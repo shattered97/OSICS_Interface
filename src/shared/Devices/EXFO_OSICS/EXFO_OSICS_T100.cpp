@@ -223,7 +223,7 @@ void EXFO_OSICS_T100::applyConfigSettings(QSettings *configSettings){
 }
 
 void EXFO_OSICS_T100::updateConfig(QSettings *configSettings){
-
+    qDebug() << "=================== " << QThread::currentThread();
     configSettings->setValue(DEVICE_NICKNAME, QVariant::fromValue(getNickname()));
 
     updatePowerSettings(*configSettings);

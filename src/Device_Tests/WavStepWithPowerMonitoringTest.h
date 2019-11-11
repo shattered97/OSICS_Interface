@@ -23,7 +23,7 @@ class WavStepWithPowerMonitoringTest : public DeviceTest
 {
     Q_OBJECT
 public:
-    WavStepWithPowerMonitoringTest(QList<QVariant> &selectedDevices, QMainWindow &configWindow);
+    WavStepWithPowerMonitoringTest(QList<QVariant> selectedDevices, QMainWindow &configWindow);
     ~WavStepWithPowerMonitoringTest();
     bool areDevicesValidForTest();
     void runDeviceTest();
@@ -41,6 +41,9 @@ public slots:
     void slotSendPowerReadings(PowerReadings readingsForPowerMeter);
     void slotShowGraphWindow();
     void slotWrapUpTest();
+    void slotTestWindowClosed();
+    void slotIsPollingContinued(bool *continuePolling);
+
 
 private:
 
@@ -92,7 +95,8 @@ private:
     QMap<int, QByteArray> swtChannelToT100Map;
 
     QList<TestParamsForT100> createTestParamsForT100();
-
+    QMutex pollingLock;
+    bool continuePolling = true;
 
 };
 
