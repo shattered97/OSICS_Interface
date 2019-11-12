@@ -2,9 +2,10 @@
 #include <QMessageBox>
 
 
-WavStepWithPowerMonitoringTest::WavStepWithPowerMonitoringTest(QList<QVariant> &selectedDevices, QMainWindow &configWindow) :
+WavStepWithPowerMonitoringTest::WavStepWithPowerMonitoringTest(QList<QVariant> selectedDevices, QMainWindow &configWindow) :
     DeviceTest (selectedDevices, configWindow)
 {
+    qDebug() << "wavstep test object thread: " << QThread::currentThread();
     settings = new QSettings(QSettings::IniFormat, QSettings::SystemScope, "Test Platform");
     settings->clear();
 
@@ -42,6 +43,10 @@ void WavStepWithPowerMonitoringTest::slotSendPowerReadings(PowerReadings reading
     emit signalDisplayPowerReadings(powerMeter->getNickname(), readings);
 }
 
+void WavStepWithPowerMonitoringTest::slotIsPollingContinued(bool *continuePolling){
+    *continuePolling = this->continuePolling;
+    qDebug() << "asking if polling should continue..." << this->continuePolling;
+}
 
 void WavStepWithPowerMonitoringTest::slotPollForPowerMeterReadings(){
 
@@ -59,7 +64,8 @@ void WavStepWithPowerMonitoringTest::slotPollForPowerMeterReadings(){
         QObject::connect(worker, SIGNAL(signalSendPowerReadings(PowerReadings)),
                          this, SLOT(slotSendPowerReadings(PowerReadings)));
         QObject::connect(configWindow, SIGNAL(signalStopAllWorkerThreads()), worker, SLOT(slotStopWorkerThreads()));
-
+        QObject::connect(worker, SIGNAL(signalIsPollingContinued(bool *)), this, SLOT(slotIsPollingContinued(bool *)), Qt::BlockingQueuedConnection);
+        QObject::connect(configWindow, SIGNAL(signalTestWindowClosed()), this, SLOT(slotTestWindowClosed()));
 
         connect(worker, SIGNAL(finished()), workerThread, SLOT(quit()));
         connect(workerThread, SIGNAL(started()), worker, SLOT(slotPollPowerMeter()));
@@ -79,14 +85,14 @@ bool WavStepWithPowerMonitoringTest::areDevicesValidForTest(){
     bool powerMeterFound = false;
 
     // iterate through the selected devices
-    for(int i = 0; i < selectedDevices->size(); i++){
+    for(int i = 0; i < selectedDevices.size(); i++){
         // get type name - (typeName() returns the type with '*' at the end)
-        QByteArray typeName = selectedDevices->at(i).typeName();
+        QByteArray typeName = selectedDevices.at(i).typeName();
         typeName.chop(1);
         if(typeName == "EXFO_OSICS_MAINFRAME"){
             // create exfo and find out if it has a T100
             // *NOTE* for now we assume that only one T100 is plugged in or we use the first one we see
-            QVariant exfoVariant = selectedDevices->at(i);
+            QVariant exfoVariant = selectedDevices.at(i);
             EXFO_OSICS_MAINFRAME *exfo = exfoVariant.value<EXFO_OSICS_MAINFRAME*>();
 
             QMap<int, QVariant> exfoModuleSlotQMap = exfo->getModuleSlotQVariantMap();
@@ -121,7 +127,7 @@ bool WavStepWithPowerMonitoringTest::areDevicesValidForTest(){
             }
         }
         else if(typeName == "PowerMeter"){
-            QVariant powerMeterVariant = selectedDevices->at(i);
+            QVariant powerMeterVariant = selectedDevices.at(i);
             PowerMeter *powerMeter = powerMeterVariant.value<PowerMeter*>();
             powerMeters.append(powerMeter);
             powerMeterFound = true;
@@ -175,6 +181,13 @@ void WavStepWithPowerMonitoringTest::slotWrapUpTest(){
     msgBox.setText("Test complete.");
 }
 
+void WavStepWithPowerMonitoringTest::slotTestWindowClosed(){
+    // change flag that the polling worker uses to continue
+    qDebug() << "WINDOW CLOSED";
+    pollingLock.lock();
+    continuePolling = false;
+    pollingLock.unlock();
+}
 
 
 void WavStepWithPowerMonitoringTest::slotGetT100DisplayNames(QList<QByteArray> &displayNames){

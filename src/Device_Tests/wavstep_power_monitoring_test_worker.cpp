@@ -1,5 +1,5 @@
 #include "wavstep_power_monitoring_test_worker.h"
-
+#include "ConversionUtilities.h"
 WavStep_Power_Monitoring_Test_Worker::WavStep_Power_Monitoring_Test_Worker(TestData testData, QObject *parent) : QObject(parent)
 {
     this->testData = testData;
@@ -24,6 +24,9 @@ void WavStep_Power_Monitoring_Test_Worker::runTest()
 
     // make sure switch is in full band mode
     testData.swtModule->setAPCModuleOperatingMode(swtSlotNum, "ECL");
+//    QMetaObject::invokeMethod(testData.swtModule, "setAPCModuleOperatingMode",
+//                              Qt::BlockingQueuedConnection, Q_ARG(int, swtSlotNum),
+//                              Q_ARG(QByteArray, "ECL"));
 
     // enable laser output for switch (turns on all lasers)
     testData.swtModule->enableModuleLaserCmd(swtSlotNum);
@@ -34,6 +37,11 @@ void WavStep_Power_Monitoring_Test_Worker::runTest()
     // execute test steps
     for(auto testParams : testData.testParamsForT100){
         executeTestOnT100Module(testParams);
+    }
+
+    // #TEST read power to see if test waits at end before emitting signal to close
+    for(auto powerMeter : testData.powerMeters){
+        QList<QByteArray> readings = powerMeter->getPowerReadingOnAllChannels();
     }
 
     // send last buffer to be written
@@ -132,19 +140,22 @@ void WavStep_Power_Monitoring_Test_Worker::executeTestStep(double currentWavelen
     // set wavelength on t100
     testParams.t100Module->setRefWavelengthModuleCmd(t100SlotNum, wavelengthToSet);
 
+    // set optical emission wavelength
+    testData.swtModule->setRefWavelengthModuleCmd(swtSlotNum, wavelengthToSet);
+
     // set wavelength on power meters
     setWavelengthOnPowerMeters(wavelengthToSet);
 
-    // set optical emission wavelength
-    testData.swtModule->setRefWavelengthModuleCmd(swtSlotNum, wavelengthToSet);
+    // wait until wavelength is adjusted
+    QByteArray setRefWav = testData.swtModule->refWavelengthModuleQuery(swtSlotNum);
+    while(setRefWav.toDouble() > currentWavelength){
+        setRefWav = testData.swtModule->refWavelengthModuleQuery(swtSlotNum);
+    }
 
     // begin collecting power meter readings
     QElapsedTimer dwellTimer;
     dwellTimer.start();
     while(dwellTimer.elapsed() <= testData.dwellInMs){
-
-        // wait for adjustments
-        QThread::sleep(1);
 
         QList<WavStepPowerMonitoringDataPoint> dataPoints;
 
@@ -164,6 +175,12 @@ void WavStep_Power_Monitoring_Test_Worker::executeTestStep(double currentWavelen
                 powerMeterName = powerMeterName + channel;
                 QByteArray reading = readings[i - 1];
 
+
+                // ##### testing only
+                if(i == 3){
+                    double todBm = ConversionUtilities::convertWattToDBm(reading.toDouble());
+                    qDebug() << "                                                            " <<  todBm << " " << timeOfReading << " " << wavelengthToSet;
+                }
                 // create data points for graph/.csv
                 WavStepPowerMonitoringDataPoint testDataPoint = {powerMeterName, reading,
                                                                  timeOfReading, wavelengthToSet};
@@ -178,6 +195,8 @@ void WavStep_Power_Monitoring_Test_Worker::executeTestStep(double currentWavelen
         emit signalAddReadingsToGraph(dataPoints);
 
     }
+
+    qDebug() << "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! dwell time elapsed : " << dwellTimer.elapsed();
 }
 
 void WavStep_Power_Monitoring_Test_Worker::addDataToFileBuffer(WavStepPowerMonitoringDataPoint testDataPoint)
@@ -234,5 +253,5 @@ void WavStep_Power_Monitoring_Test_Worker::slotStopWorkerThreads(){
                                   Q_ARG(QList<WavStepPowerMonitoringDataPoint>, secondBuffer));
     }
 
-    emit signalStopWorkerThread();
+    emit finished();
 }

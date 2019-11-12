@@ -40,9 +40,9 @@ public:
     void populateLaserMaxFrequency();
 
 signals:
-    void signalUpdateConfigSettings(QVariant &device, QSettings &configSettings);
+    void signalUpdateConfigSettings(QVariant device, QSettings *configSettings);
 
-    void signalApplyConfigSettings(QVariant &device, QSettings &configSettings);
+    void signalApplyConfigSettings(QVariant device, QSettings *configSettings);
 
 public slots:
     void slotUpdateWindow();

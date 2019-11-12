@@ -23,7 +23,10 @@ void ConfigN7714AWindow::showEvent(QShowEvent* event)
     // initialize settings and signal to orchestrator to update them from device
     settings = new QSettings(QSettings::IniFormat, QSettings::SystemScope, "Test Platform");
     settings->clear();
-    emit signalUpdateConfigSettings(device, *settings);
+    emit signalUpdateConfigSettings(device, settings);
+
+    // disable cursor (re-enabled in slotUpdateWindow)
+    QApplication::setOverrideCursor(Qt::WaitCursor);
 }
 
 void ConfigN7714AWindow::slotUpdateWindow()
@@ -44,6 +47,9 @@ void ConfigN7714AWindow::slotUpdateWindow()
 
     // disconnect signal
     QObject::disconnect(QObject::sender(), SIGNAL(signalSettingsUpdated()), this, SLOT(slotUpdateWindow()));
+
+    // enable cursor
+    QApplication::restoreOverrideCursor();
 }
 
 void ConfigN7714AWindow::getValuesFromConfig()
@@ -433,9 +439,8 @@ void ConfigN7714AWindow::on_saveChangesButton_clicked()
     QApplication::setOverrideCursor(Qt::WaitCursor);
 
     // signal to orchestrator to update the device with the values from QSettings
-    emit signalApplyConfigSettings(device, *settings);
+    emit signalApplyConfigSettings(device, settings);
 
-    QApplication::restoreOverrideCursor();
 }
 
 bool ConfigN7714AWindow::loadSettings()
@@ -450,7 +455,10 @@ bool ConfigN7714AWindow::loadSettings()
 
     settings->sync();
 
-    emit signalApplyConfigSettings(device, *settings);
+    emit signalApplyConfigSettings(device, settings);
+
+    // disable cursor (re-enabled in slotUpdateWindow)
+    QApplication::setOverrideCursor(Qt::WaitCursor);
 
     return true;
 }

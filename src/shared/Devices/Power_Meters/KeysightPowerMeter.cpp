@@ -167,13 +167,13 @@ QList<QByteArray> KeysightPowerMeter::parseBinaryBlockPowerReadings(QByteArray b
     return powerReadings;
 }
 
-void KeysightPowerMeter::applyConfigSettings(QSettings &configSettings)
+void KeysightPowerMeter::applyConfigSettings(QSettings *configSettings)
 {
     // apply nickname
-    QByteArray nicknameToSet = configSettings.value(DEVICE_NICKNAME).value<QByteArray>();
+    QByteArray nicknameToSet = configSettings->value(DEVICE_NICKNAME).value<QByteArray>();
     setNickname(nicknameToSet);
 
-    QList<QByteArray> wavelengthSettings = configSettings.value(WAVELENGTH_SETTINGS).value<QList<QByteArray>>();
+    QList<QByteArray> wavelengthSettings = configSettings->value(WAVELENGTH_SETTINGS).value<QList<QByteArray>>();
     for(int i = 0; i < numChannels; i++){
        int slot = i + 1;
        QByteArray unit = "m";
@@ -184,20 +184,21 @@ void KeysightPowerMeter::applyConfigSettings(QSettings &configSettings)
     updateConfig(configSettings);
 }
 
-void KeysightPowerMeter::updateConfig(QSettings &configSettings)
+void KeysightPowerMeter::updateConfig(QSettings *configSettings)
 {
+    qDebug() << "@@@@@@@@@@@@@@@@@@@@ power meter device class thread: " << QThread::currentThread();
     // get number of slots
     numChannels = getNumChannelsVar();
-    configSettings.setValue(NUM_CHANNELS, QVariant::fromValue(numChannels));
+    configSettings->setValue(NUM_CHANNELS, QVariant::fromValue(numChannels));
 
     // get device address/identity
-    configSettings.setValue(DEVICE_ADDRESS, QVariant::fromValue(theInstrLoc));
-    configSettings.setValue(DEVICE_IDENTITY, QVariant::fromValue(theIdentity));
-    configSettings.setValue(DEVICE_NICKNAME, QVariant::fromValue(getNickname()));
+    configSettings->setValue(DEVICE_ADDRESS, QVariant::fromValue(theInstrLoc));
+    configSettings->setValue(DEVICE_IDENTITY, QVariant::fromValue(theIdentity));
+    configSettings->setValue(DEVICE_NICKNAME, QVariant::fromValue(getNickname()));
 
     // get power/wavelength settings
-    updatePowerSettings(configSettings);
-    updateWavelengthSettings(configSettings);
+    updatePowerSettings(*configSettings);
+    updateWavelengthSettings(*configSettings);
 }
 
 void KeysightPowerMeter::updatePowerSettings(QSettings &configSettings)

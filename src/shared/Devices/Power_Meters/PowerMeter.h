@@ -22,8 +22,8 @@ public:
     virtual QList<QByteArray> formatPowerUnits(QByteArray rawUnits, int numChannels) = 0;
     virtual QList<QByteArray> parseBinaryBlockPowerReadings(QByteArray binaryBlock, int numBytesPerValue) = 0;
     virtual QList<QByteArray> getPowerReadingOnAllChannels() = 0;
-    virtual void updateConfig(QSettings &) = 0;
-    virtual void applyConfigSettings(QSettings &) = 0;
+    virtual void updateConfig(QSettings *) = 0;
+    virtual void applyConfigSettings(QSettings *) = 0;
     void setNumChannelsVar(int numChannels);
     int getNumChannelsVar();
 

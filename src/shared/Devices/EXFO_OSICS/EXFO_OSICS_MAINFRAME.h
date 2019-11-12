@@ -176,7 +176,7 @@ public:
      * @param slotNum Target slot number
      * @return true if command was successful
      */
-    void enableModuleLaserCmd(int slotNum);
+    Q_INVOKABLE void enableModuleLaserCmd(int slotNum);
 
     /**
      * @brief laserStateModuleQuery Returns the state of the laser output control
@@ -440,8 +440,8 @@ public:
 
     // *********** Functions for Applying/Updating Config Settings **********
 
-    void applyConfigSettings(QSettings &configSettings);
-    void updateConfig(QSettings &configSettings);
+    void applyConfigSettings(QSettings *configSettings);
+    void updateConfig(QSettings *configSettings);
     void updateInstalledModules(QSettings &configSettings);
     QVariant getModuleAtSlot(int slotNum);
     QMainWindow* getWindowForModuleAtSlot(int slotNum);

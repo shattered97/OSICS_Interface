@@ -25,7 +25,7 @@ public slots:
     void slotDisplaySimpleErrorMsg(QString errorMsg);
 
 private slots:
-
+    void slotDeviceCreated();
     void on_searchForDevTypeBtn_clicked();
 
     void slotReceiveDevices(FoundInstr listOfDevices);
@@ -55,6 +55,8 @@ signals:
     void signalBeginTest(QString type);
 
     void signalClearSelectedDevices();
+
+
 private:
 
     // main window user interface
@@ -62,7 +64,8 @@ private:
 
     // Orchestrator object that handles device communication
     Orchestrator *orchestrator;
-
+    WindowFactory *windowFactory;
+    DeviceTestFactory *deviceTestFactory;
     /**
      * @brief resourcesQmapToQList Returns a list of device identities that match a particular device type
      * @param foundResources QMap of all VISA resources found on system

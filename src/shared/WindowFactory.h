@@ -16,7 +16,10 @@ class WindowFactory : public QObject
 public:
     explicit WindowFactory(QObject *parent = nullptr);
 
-    static QMainWindow *makeWindow(QString windowType, QVariant &deviceVariant);
+public slots:
+    QMainWindow *makeWindow(QString windowType, QVariant *deviceVariant);
+
+
 };
 
 #endif // WINDOWFACTORY_H

@@ -20,12 +20,18 @@ void ConfigPowerMeter::showEvent( QShowEvent* event )
     QWidget::showEvent( event );
 
     if(!windowConfigured){
+
         // initialize settings and signal to orchestrator to update them from device
         settings = new QSettings(QSettings::IniFormat, QSettings::SystemScope, "Test Platform");
         settings->clear();
-        emit signalUpdateConfigSettings(device, *settings);
 
-        windowConfigured = true;
+        // disable cursor (re-enabled in slotUpdateWindow)
+        QApplication::setOverrideCursor(Qt::WaitCursor);
+
+        emit signalUpdateConfigSettings(device, settings);
+
+
+
     }
 
 }
@@ -49,6 +55,11 @@ void ConfigPowerMeter::slotUpdateWindow()
 
     // disconnect signal
     QObject::disconnect(QObject::sender(), SIGNAL(signalSettingsUpdated()), this, SLOT(slotUpdateWindow()));
+
+    windowConfigured = true;
+
+    // re-enable cursor
+    QApplication::restoreOverrideCursor();
 }
 
 void ConfigPowerMeter::getValuesFromConfig()
@@ -171,6 +182,7 @@ void ConfigPowerMeter::initChannelRadioButtons()
 
 void ConfigPowerMeter::slot_radio_button_clicked()
 {
+    qDebug() << "@@@@@@@@@@@@@@@@@@@@ power meter config window thread: " << QThread::currentThread();
     // set the slot number to value indicated by selected button
     for(int i = 0; i < numSlots; i++){
         if(buttons[i]->isChecked()){
@@ -305,8 +317,11 @@ void ConfigPowerMeter::loadSettings()
 
     settings->sync();
 
+    // disable cursor (re-enabled in slotUpdateWindow)
+    QApplication::setOverrideCursor(Qt::WaitCursor);
+
     // signal to apply the new settings
-    emit signalApplyConfigSettings(device, *settings);
+    emit signalApplyConfigSettings(device, settings);
 
 }
 
@@ -332,9 +347,7 @@ void ConfigPowerMeter::on_saveChangesButton_clicked()
     QApplication::setOverrideCursor(Qt::WaitCursor);
 
     // signal to orchestrator to update the device with the values in the QSettings
-    emit signalApplyConfigSettings(device, *settings);
-
-    QApplication::restoreOverrideCursor();
+    emit signalApplyConfigSettings(device, settings);
 }
 
 void ConfigPowerMeter::resetDisplayFieldColoredStatus()

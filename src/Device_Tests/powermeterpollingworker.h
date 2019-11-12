@@ -43,7 +43,7 @@ signals:
      * @param readingsForPowerMeter List of readings (one for each channel) and associated power meter.
      */
     void signalSendPowerReadings(PowerReadings readingsForPowerMeter);
-
+    void signalIsPollingContinued(bool *continuePolling);
 
 public slots:
     /**
@@ -52,17 +52,15 @@ public slots:
      */
     void slotPollPowerMeter();
 
-    /**
-     * @brief slotStopWorkerThreads Changes the flag allowing the loop in slotPollPowerMeter() to false, allowing it
-     *                              to stop executing and emit finished();
-     */
-    void slotStopWorkerThreads();
+//    /**
+//     * @brief slotStopWorkerThreads Changes the flag allowing the loop in slotPollPowerMeter() to false, allowing it
+//     *                              to stop executing and emit finished();
+//     */
+//    void slotStopWorkerThreads();
 
 private:
     PowerMeter *powerMeter;             // pointer to a power meter to query
-    bool continuePolling = true;        // flag to continue looping and querying for data
-    QMutex lock;                       // lock to give slotStopWorkerThreads a chance to change the continue flag
-
+    bool continuePolling = true;
 };
 
 #endif // POWERMETERPOLLINGWORKER_H

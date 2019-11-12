@@ -51,6 +51,7 @@ signals:
     void signalPollForPowerMeterReadings();
     void signalShowGraphWindow();
     void signalStopAllWorkerThreads();
+    void signalTestWindowClosed();
 
 public slots:
     /**

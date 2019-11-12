@@ -20,7 +20,8 @@ class DeviceTestFactory : public QObject
 public:
     explicit DeviceTestFactory(QObject *parent = nullptr);
 
-    static DeviceTest *makeDeviceTest(QString deviceTestType, QList<QVariant> &selectedDevices);
+public slots:
+    DeviceTest *makeDeviceTest(QString deviceTestType, QList<QVariant> selectedDevices);
 };
 
 #endif // DEVICETESTFACTORY_H

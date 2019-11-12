@@ -29,10 +29,13 @@ void ConfigOSICS_T100::showEvent(QShowEvent* event)
 {
     QWidget::showEvent(event);
     if(!windowConfigured){
-        emit signalUpdateConfigSettings(device, *settings);
+        emit signalUpdateConfigSettings(device, settings);
     }
 
     windowConfigured = true;
+
+    // disable cursor (re-enabled in slotUpdateWindow)
+    QApplication::setOverrideCursor(Qt::WaitCursor);
 
 }
 
@@ -54,6 +57,9 @@ void ConfigOSICS_T100::slotUpdateWindow()
 
     // disconnect signal
     QObject::disconnect(QObject::sender(), SIGNAL(signalSettingsUpdated()), this, SLOT(slotUpdateWindow()));
+
+    // enable cursor
+    QApplication::restoreOverrideCursor();
 }
 
 void ConfigOSICS_T100::getValuesFromConfig()
@@ -376,13 +382,12 @@ void ConfigOSICS_T100::on_togglePowerButton_clicked()
 
 void ConfigOSICS_T100::on_saveChangesButton_clicked()
 {
-    // disable cursor until finished
+    // disable cursor until finished (re-enabled in slotUpdateWindow)
     QApplication::setOverrideCursor(Qt::WaitCursor);
 
     // signal to orchestrator to update the device with the values from QSettings
-    emit signalApplyConfigSettings(device, *settings);
+    emit signalApplyConfigSettings(device, settings);
 
-    QApplication::restoreOverrideCursor();
 }
 
 bool ConfigOSICS_T100::loadSettings()
@@ -397,7 +402,10 @@ bool ConfigOSICS_T100::loadSettings()
 
     settings->sync();
 
-    emit signalApplyConfigSettings(device, *settings);
+    // disable cursor (re-enabled in slotUpdateWindow)
+    QApplication::setOverrideCursor(Qt::WaitCursor);
+
+    emit signalApplyConfigSettings(device, settings);
 
     return true;
 }

@@ -67,7 +67,7 @@ public:
 
     QMainWindow * getConfigWindow();
 
-    void updateConfig(QSettings &configSettings);
+    void updateConfig(QSettings *configSettings);
 
     void sendCommandAndWaitForResponse(QByteArray theInstrLoc, QByteArray command, QByteArray *response);
 

@@ -97,9 +97,9 @@
     </property>
     <property name="geometry">
      <rect>
-      <x>870</x>
-      <y>620</y>
-      <width>141</width>
+      <x>820</x>
+      <y>670</y>
+      <width>191</width>
       <height>41</height>
      </rect>
     </property>
@@ -118,7 +118,7 @@
    <widget class="QLabel" name="csvLocLabel">
     <property name="geometry">
      <rect>
-      <x>20</x>
+      <x>10</x>
       <y>670</y>
       <width>261</width>
       <height>41</height>
@@ -727,9 +727,9 @@
     </property>
     <property name="geometry">
      <rect>
-      <x>870</x>
-      <y>670</y>
-      <width>141</width>
+      <x>540</x>
+      <y>620</y>
+      <width>231</width>
       <height>41</height>
      </rect>
     </property>
@@ -739,7 +739,7 @@
      </font>
     </property>
     <property name="text">
-     <string>Display Graph</string>
+     <string>Open Scrolling Graph</string>
     </property>
     <property name="checkable">
      <bool>false</bool>
@@ -777,7 +777,7 @@
      <rect>
       <x>210</x>
       <y>620</y>
-      <width>91</width>
+      <width>81</width>
       <height>41</height>
      </rect>
     </property>
@@ -793,7 +793,7 @@
    <widget class="QLabel" name="graphRefreshLabel">
     <property name="geometry">
      <rect>
-      <x>20</x>
+      <x>10</x>
       <y>620</y>
       <width>211</width>
       <height>41</height>
@@ -805,7 +805,7 @@
      </font>
     </property>
     <property name="text">
-     <string>Graph Refresh Speed (s)</string>
+     <string>Graph Refresh Speed (s):</string>
     </property>
    </widget>
    <widget class="QPushButton" name="loadConfigBtn">
@@ -856,6 +856,69 @@
      <bool>false</bool>
     </property>
    </widget>
+   <widget class="QLabel" name="seriesDataPointsLabel">
+    <property name="geometry">
+     <rect>
+      <x>300</x>
+      <y>620</y>
+      <width>171</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>10</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>Series Data Points:</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="seriesDataPointsEdit">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>450</x>
+      <y>620</y>
+      <width>81</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>10</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>100</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="openSnapshotGraphBtn">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>780</x>
+      <y>620</y>
+      <width>231</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>12</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>Open Snapshot Graph</string>
+    </property>
+    <property name="checkable">
+     <bool>false</bool>
+    </property>
+   </widget>
    <zorder>groupBox</zorder>
    <zorder>testIDLabel</zorder>
    <zorder>powerMeterTable</zorder>
@@ -870,6 +933,9 @@
    <zorder>graphRefreshLabel</zorder>
    <zorder>loadConfigBtn</zorder>
    <zorder>saveConfigBtn</zorder>
+   <zorder>seriesDataPointsLabel</zorder>
+   <zorder>seriesDataPointsEdit</zorder>
+   <zorder>openSnapshotGraphBtn</zorder>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">

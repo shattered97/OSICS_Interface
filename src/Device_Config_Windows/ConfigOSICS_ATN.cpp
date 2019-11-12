@@ -23,10 +23,15 @@ void ConfigOSICS_ATN::showEvent(QShowEvent* event)
 {
     QWidget::showEvent(event);
     if(!windowConfigured){
-        emit signalUpdateConfigSettings(device, *settings);
+        emit signalUpdateConfigSettings(device, settings);
+
+        // disable cursor (re-enabled in slotUpdateWindow)
+        QApplication::setOverrideCursor(Qt::WaitCursor);
     }
 
     windowConfigured = true;
+
+
 
 }
 
@@ -48,6 +53,9 @@ void ConfigOSICS_ATN::slotUpdateWindow()
 
     // disconnect signal
     QObject::disconnect(QObject::sender(), SIGNAL(signalSettingsUpdated()), this, SLOT(slotUpdateWindow()));
+
+    // enable cursor
+    QApplication::restoreOverrideCursor();
 }
 
 void ConfigOSICS_ATN::getValuesFromConfig()
@@ -179,7 +187,10 @@ bool ConfigOSICS_ATN::loadSettings()
 
     settings->sync();
 
-    emit signalApplyConfigSettings(device, *settings);
+    emit signalApplyConfigSettings(device, settings);
+
+    // disable cursor (re-enabled in slotUpdateWindow)
+    QApplication::setOverrideCursor(Qt::WaitCursor);
 
     return true;
 }
@@ -291,9 +302,8 @@ void ConfigOSICS_ATN::on_saveChangesButton_clicked()
     QApplication::setOverrideCursor(Qt::WaitCursor);
 
     // signal to orchestrator to update the device with the values from QSettings
-    emit signalApplyConfigSettings(device, *settings);
+    emit signalApplyConfigSettings(device, settings);
 
-    QApplication::restoreOverrideCursor();
 }
 
 

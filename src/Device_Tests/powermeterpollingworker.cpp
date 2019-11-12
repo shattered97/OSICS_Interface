@@ -12,8 +12,10 @@ PowerMeterPollingWorker::~PowerMeterPollingWorker()
 void PowerMeterPollingWorker::slotPollPowerMeter(){
     qDebug() << "power meter polling thread id: " << QThread::currentThread();
     // loop until signal is received to stop (upon test window closing)
+
+    emit signalIsPollingContinued(&continuePolling);
+
     while(continuePolling && powerMeter){
-       lock.lock();
 
        // pause thread for time = refresh rate
        QThread::msleep(WAVSTEP_GUI_POW_POLLING_RATE_MSEC);
@@ -28,21 +30,13 @@ void PowerMeterPollingWorker::slotPollPowerMeter(){
 
        readingsForPowerMeter.powerMeter = powerMeter;
 
-
        // signal out power readings
        emit signalSendPowerReadings(readingsForPowerMeter);
 
+       emit signalIsPollingContinued(&continuePolling);
 
-       lock.unlock();
     }
 
+    qDebug() << "polling worker thread quitting...";
     emit finished();
-}
-
-void PowerMeterPollingWorker::slotStopWorkerThreads()
-{
-    // grab lock between loops to stop polling
-    lock.lock();
-    continuePolling = false;
-    lock.unlock();
 }

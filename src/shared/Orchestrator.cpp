@@ -1,17 +1,24 @@
 #include "Orchestrator.h"
-#include "PowerMeterFactory.h"
-#include "WindowFactory.h"
-#include "ConversionUtilities.h"
 
-Orchestrator::Orchestrator()
+
+Orchestrator::Orchestrator(WindowFactory *windowFactory, DeviceTestFactory *deviceTestFactory, QObject *parent) : QObject(parent)
 {
-    theCommBus.createDefaultRM(defaultSession);
-    communicationLock = new QMutex();
+    this->windowFactory = windowFactory;
+    this->deviceTestFactory = deviceTestFactory;
+    qRegisterMetaType<FoundInstr>();
+    qRegisterMetaType<QVariant>();
+    qRegisterMetaType<QVariant*>();
 }
 
 Orchestrator::~Orchestrator()
 {
     theCommBus.closeDefaultSession(defaultSession);
+}
+
+void Orchestrator::slotStartOrchestrator(){
+
+    theCommBus.createDefaultRM(defaultSession);
+    communicationLock = new QMutex();
 }
 
 void Orchestrator::slotLookForDevices()
@@ -40,6 +47,7 @@ void Orchestrator::slotCreateDevice(QString type, QByteArray instrumentAddress, 
     if(type == "N7714A"){
         N7714A *device = new N7714A(instrumentIdentity, instrumentAddress);
         deviceVariant.setValue(device);
+
     }
     else if(type == "N7745A") {
         PowerMeter *device = PowerMeterFactory::makePowerMeter(type, instrumentIdentity, instrumentAddress);
@@ -67,6 +75,7 @@ void Orchestrator::slotCreateDevice(QString type, QByteArray instrumentAddress, 
         emit signalSetupEXFOModules();
 
         deviceVariant.setValue(device);
+        qDebug() << "created exfo";
 
     }
     else if(type == "ANDO,AQ6331"){
@@ -83,19 +92,31 @@ void Orchestrator::slotCreateDevice(QString type, QByteArray instrumentAddress, 
 
     selectedDevices.append(deviceVariant);
 
-    QMainWindow *configWindow = WindowFactory::makeWindow(type, deviceVariant);
+
+    QMainWindow *configWindow;
+    QMetaObject::invokeMethod(windowFactory, "makeWindow", Qt::BlockingQueuedConnection,
+                              Q_RETURN_ARG(QMainWindow *, configWindow),
+                              Q_ARG(QString, type),
+                              Q_ARG(QVariant *, &deviceVariant));
+
+    qDebug() << "@@@@@@@@@@@@@@@@@ " << QThread::currentThread();
+
     DefaultInstrument *device = deviceVariant.value<DefaultInstrument*>();
     device->setConfigWindow(configWindow);
+
 
     QObject::connect(device, SIGNAL(signalSendCmdRsp(QByteArray, QByteArray, QByteArray *)),
                      this, SLOT(slotSendCmdRsp(QByteArray, QByteArray, QByteArray *)), Qt::AutoConnection);
     QObject::connect(device, SIGNAL(signalSendCmdNoRsp(QByteArray, QByteArray)),
                      this, SLOT(slotSendCmdNoRsp(QByteArray, QByteArray)), Qt::AutoConnection);
 
-    QObject::connect(configWindow, SIGNAL(signalUpdateConfigSettings(QVariant &, QSettings &)),
-                     this, SLOT(slotUpdateConfigSettings(QVariant &, QSettings &)));
-    QObject::connect(configWindow, SIGNAL(signalApplyConfigSettings(QVariant &, QSettings &)),
-                     this, SLOT(slotApplyConfigSettings(QVariant &, QSettings &)));
+    QObject::connect(configWindow, SIGNAL(signalUpdateConfigSettings(QVariant, QSettings *)),
+                     this, SLOT(slotUpdateConfigSettings(QVariant, QSettings *)));
+    QObject::connect(configWindow, SIGNAL(signalApplyConfigSettings(QVariant, QSettings *)),
+                     this, SLOT(slotApplyConfigSettings(QVariant, QSettings *)));
+    qDebug() << "done creating device";
+
+    emit signalDeviceCreated();
 }
 
 QVariant Orchestrator::getDeviceAtIndex(int index){
@@ -126,7 +147,12 @@ void Orchestrator::slotGetEXFOModuleQVariants(QMap<int, QVariant> &modules, QVar
                              this, SLOT(slotSendCmdNoRsp(QByteArray, QByteArray)));
 
             // create window
-            QMainWindow *configWindow = WindowFactory::makeWindow(modTypes[i], moduleVariant);
+            QMainWindow *configWindow;
+            QMetaObject::invokeMethod(windowFactory, "makeWindow", Qt::BlockingQueuedConnection,
+                                      Q_RETURN_ARG(QMainWindow *, configWindow),
+                                      Q_ARG(QString, modTypes[i]),
+                                      Q_ARG(QVariant *, &moduleVariant));
+
             module->setConfigWindow(configWindow);
         }
         else if(modTypes[i].contains("ATN")){
@@ -141,7 +167,12 @@ void Orchestrator::slotGetEXFOModuleQVariants(QMap<int, QVariant> &modules, QVar
                              this, SLOT(slotSendCmdNoRsp(QByteArray, QByteArray)));
 
             // create window
-            QMainWindow *configWindow = WindowFactory::makeWindow(modTypes[i], moduleVariant);
+            QMainWindow *configWindow;
+            QMetaObject::invokeMethod(windowFactory, "makeWindow", Qt::BlockingQueuedConnection,
+                                      Q_RETURN_ARG(QMainWindow *, configWindow),
+                                      Q_ARG(QString, modTypes[i]),
+                                      Q_ARG(QVariant *, &moduleVariant));
+
             module->setConfigWindow(configWindow);
         }
         else if(modTypes[i].contains("SWT")){
@@ -156,7 +187,11 @@ void Orchestrator::slotGetEXFOModuleQVariants(QMap<int, QVariant> &modules, QVar
                              this, SLOT(slotSendCmdNoRsp(QByteArray, QByteArray)));
 
             // create window
-            QMainWindow *configWindow = WindowFactory::makeWindow(modTypes[i], moduleVariant);
+            QMainWindow *configWindow;
+            QMetaObject::invokeMethod(windowFactory, "makeWindow", Qt::BlockingQueuedConnection,
+                                      Q_RETURN_ARG(QMainWindow *, configWindow),
+                                      Q_ARG(QString, modTypes[i]),
+                                      Q_ARG(QVariant *, &moduleVariant));
             module->setConfigWindow(configWindow);
         }
         else{
@@ -168,25 +203,27 @@ void Orchestrator::slotGetEXFOModuleQVariants(QMap<int, QVariant> &modules, QVar
 
 }
 
-void Orchestrator::slotGetEXFOModuleConfigPairs(QVariant &device, QMap<int, ModuleConfigPair> &moduleConfigPairs){
+void Orchestrator::slotGetEXFOModuleConfigPairs(QVariant device, QMap<int, ModuleConfigPair> *moduleConfigPairs){
     // get exfo from qvariant
+    if(moduleConfigPairs){
 
-    EXFO_OSICS_MAINFRAME *exfo = device.value<EXFO_OSICS_MAINFRAME*>();
-    QMap<int, QVariant> moduleVariantMap = exfo->getModuleSlotQVariantMap();
+        EXFO_OSICS_MAINFRAME *exfo = device.value<EXFO_OSICS_MAINFRAME*>();
+        QMap<int, QVariant> moduleVariantMap = exfo->getModuleSlotQVariantMap();
 
-    QList<ModuleConfigPair> configPairs;
-    for(int i = 0; i < EXFO_OSICS_NUM_SLOTS; i++){
-        int slotNum = i + 1;
-        if(moduleVariantMap.count(slotNum)){
-            QVariant moduleVariant = exfo->getModuleAtSlot(slotNum);
-            QMainWindow *moduleWindow = exfo->getWindowForModuleAtSlot(slotNum);
-            ModuleConfigPair modPair(moduleVariant, moduleWindow);
-            moduleConfigPairs.insert(slotNum, modPair);
+        QList<ModuleConfigPair> configPairs;
+        for(int i = 0; i < EXFO_OSICS_NUM_SLOTS; i++){
+            int slotNum = i + 1;
+            if(moduleVariantMap.count(slotNum)){
+                QVariant moduleVariant = exfo->getModuleAtSlot(slotNum);
+                QMainWindow *moduleWindow = exfo->getWindowForModuleAtSlot(slotNum);
+                ModuleConfigPair modPair(moduleVariant, moduleWindow);
+                *moduleConfigPairs->insert(slotNum, modPair);
+            }
         }
     }
 }
 
-void Orchestrator::slotUpdateConfigSettings(QVariant &deviceVariant, QSettings &configSettings){
+void Orchestrator::slotUpdateConfigSettings(QVariant deviceVariant, QSettings *configSettings){
     // because QVariant types are <type*> compare result of typeName()[:-1] with enum strings
     QString typeName = QString(deviceVariant.typeName());
     typeName.chop(1);
@@ -246,7 +283,7 @@ void Orchestrator::slotUpdateConfigSettings(QVariant &deviceVariant, QSettings &
 
 }
 
-void Orchestrator::slotApplyConfigSettings(QVariant &deviceVariant, QSettings &configSettings){
+void Orchestrator::slotApplyConfigSettings(QVariant deviceVariant, QSettings *configSettings){
     QString typeName = QString(deviceVariant.typeName());
     typeName.chop(1);
 
@@ -260,7 +297,6 @@ void Orchestrator::slotApplyConfigSettings(QVariant &deviceVariant, QSettings &c
         emit signalSettingsUpdated();
     }
     else if(typeName == "N7714A"){
-
         N7714A* device = deviceVariant.value<N7714A*>();
         device->applyConfigSettings(configSettings);
 
@@ -311,8 +347,12 @@ void Orchestrator::slotClearSelectedDevices(){
 
 void Orchestrator::slotBeginTest(QString testTypeName){
     // #TODO probably do enum for test types
-
-    DeviceTest *test = DeviceTestFactory::makeDeviceTest(testTypeName, selectedDevices);
+    qDebug() << "about to invoke makeWindow";
+    DeviceTest *test = nullptr;
+    QMetaObject::invokeMethod(deviceTestFactory, "makeDeviceTest", Qt::BlockingQueuedConnection,
+                              Q_RETURN_ARG(DeviceTest *, test),
+                              Q_ARG(QString, testTypeName),
+                              Q_ARG(QList<QVariant>, selectedDevices));
 
     if(!test){
         // signal to mainWindow to show error message
@@ -320,6 +360,7 @@ void Orchestrator::slotBeginTest(QString testTypeName){
         emit signalSendSimpleErrorMsg(invalidTestMsg);
     }
     else{
+        QObject::connect(this, SIGNAL(signalShowConfigWindow()), test, SLOT(slotShowConfigWindow()));
         if(!test->areDevicesValidForTest()){
 
             // don't run test and send error msg to mainwindow
@@ -329,7 +370,8 @@ void Orchestrator::slotBeginTest(QString testTypeName){
         else{
             if(test->isWindowConfigureable()){
                 // show window (if the test has one)
-                test->configWindow->show();
+                emit signalShowConfigWindow();
+//                test->configWindow->show();
             }
             else{
                 // else run test w/o window

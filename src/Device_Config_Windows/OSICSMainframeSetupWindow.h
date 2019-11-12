@@ -21,13 +21,13 @@ public:
 
 
 signals:
-    void signalUpdateConfigSettings(QVariant &device, QSettings &configSettings);
-    void signalApplyConfigSettings(QVariant &device, QSettings &configSettings);
-    void signalGetEXFOModuleConfigPairs(QVariant &device, QMap<int, ModuleConfigPair> &moduleConfigPairs);
+    void signalUpdateConfigSettings(QVariant device, QSettings *configSettings);
+    void signalApplyConfigSettings(QVariant device, QSettings *configSettings);
+    void signalGetEXFOModuleConfigPairs(QVariant device, QMap<int, ModuleConfigPair> *moduleConfigPairs);
 public slots:
     void slotUpdateWindow();
-    void slotForwardApplyConfigSettings(QVariant &deviceVariant, QSettings &configSettings);
-    void slotForwardUpdateConfigSettings(QVariant &deviceVariant, QSettings &configSettings);
+    void slotForwardApplyConfigSettings(QVariant deviceVariant, QSettings *configSettings);
+    void slotForwardUpdateConfigSettings(QVariant deviceVariant, QSettings *configSettings);
 
 private slots:
     void on_configButton_clicked(int index);

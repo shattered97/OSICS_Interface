@@ -182,7 +182,7 @@ void DefaultInstrument::setConfigWindow(QMainWindow *configWindow){
     this->configWindow = configWindow;
 }
 
-void DefaultInstrument::updateConfig(QSettings &){
+void DefaultInstrument::updateConfig(QSettings *){
 
 }
 

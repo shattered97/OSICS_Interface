@@ -13,14 +13,14 @@ bool EXFO_T100_SWT_OSA_WavelengthTest::areDevicesValidForTest(){
     bool andoFound = false;
 
     // iterate through the selected devices
-    for(int i = 0; i < selectedDevices->size(); i++){
+    for(int i = 0; i < selectedDevices.size(); i++){
         // get type name - (typeName() returns the type with '*' at the end)
-        QByteArray typeName = selectedDevices->at(i).typeName();
+        QByteArray typeName = selectedDevices.at(i).typeName();
         typeName.chop(1);
         if(typeName == "EXFO_OSICS_MAINFRAME"){
             // create exfo and find out if it has a T100
             // *NOTE* for now we assume that only one T100 is plugged in or we use the first one we see
-            QVariant exfoVariant = selectedDevices->at(i);
+            QVariant exfoVariant = selectedDevices.at(i);
             EXFO_OSICS_MAINFRAME *exfo = exfoVariant.value<EXFO_OSICS_MAINFRAME*>();
 
             QMap<int, QVariant> exfoModuleSlotQMap = exfo->getModuleSlotQVariantMap();
@@ -48,7 +48,7 @@ bool EXFO_T100_SWT_OSA_WavelengthTest::areDevicesValidForTest(){
             }
         }
         else if(typeName == "Ando_AQ6331"){
-            QVariant bristolVariant = selectedDevices->at(i);
+            QVariant bristolVariant = selectedDevices.at(i);
             andoOSA = bristolVariant.value<Ando_AQ6331*>();
             andoFound = true;
         }
@@ -95,7 +95,7 @@ void EXFO_T100_SWT_OSA_WavelengthTest::writeTestDataToFile(QByteArray filename){
 
 void EXFO_T100_SWT_OSA_WavelengthTest::runDeviceTest(){
 
-    QVariant exfoVariant = selectedDevices->at(0);
+    QVariant exfoVariant = selectedDevices.at(0);
     EXFO_OSICS_MAINFRAME *exfo = exfoVariant.value<EXFO_OSICS_MAINFRAME*>();
 
     t100 = exfo->getModuleAtSlot(t100SlotNum).value<EXFO_OSICS_T100*>();

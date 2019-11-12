@@ -22,12 +22,12 @@ public:
     QList<QByteArray> formatPowerUnits(QByteArray rawUnits, int numChannels);
     QList<QByteArray> parseBinaryBlockPowerReadings(QByteArray binaryBlock, int numBytesPerValue);
     QList<QByteArray> getPowerReadingOnAllChannels();
-    void updateConfig(QSettings &configSettings);
+    void updateConfig(QSettings *configSettings);
     QByteArray getAllPowerReadings();
 
     void updatePowerSettings(QSettings &configSettings);
     void updateWavelengthSettings(QSettings &configSettings);
-    void applyConfigSettings(QSettings &configSettings);
+    void applyConfigSettings(QSettings *configSettings);
 
 private:
     QByteArray theIdentity;                 // identity of instrument (manufacturer, model num, etc.)
