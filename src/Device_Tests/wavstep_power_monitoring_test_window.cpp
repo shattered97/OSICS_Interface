@@ -182,7 +182,6 @@ void WavStep_Power_Monitoring_Test_Window::on_beginTestPB_clicked()
             updateSettings();
 
             emit signalBeginTest(settings);
-
         }
     }
 }
@@ -216,7 +215,7 @@ void WavStep_Power_Monitoring_Test_Window::updateSettings()
     settings->setValue(WAV_STEP_TEST_DWELL_SECONDS, QVariant::fromValue(ui->dwellLineEdit->text()));
     settings->setValue(WAV_STEP_TEST_SWT_CHANNELS_TO_T100, QVariant::fromValue(swtChannelToT100Map));
     settings->setValue(WAV_STEP_TEST_CHANNELS_TO_GRAPH, QVariant::fromValue(seriesNames));
-
+    settings->setValue(WAV_STEP_TEST_POINTS_PER_SERIES, QVariant::fromValue(ui->seriesDataPointsEdit->text()));
 }
 
 void WavStep_Power_Monitoring_Test_Window::populateSwitchChannelSelectionDropdowns()
@@ -468,6 +467,37 @@ void WavStep_Power_Monitoring_Test_Window::on_stepSizeLineEdit_editingFinished()
     ui->stepSizeLineEdit->blockSignals(false);
 }
 
+void WavStep_Power_Monitoring_Test_Window::on_seriesDataPointsEdit_editingFinished()
+{
+    // block signals (to prevent QT bug for double-enter)
+    ui->seriesDataPointsEdit->blockSignals(true);
+
+    // check if number of data points is valid
+    QByteArray dataPoints = ui->seriesDataPointsEdit->text().toLatin1();
+    if(isInputValueValid(dataPoints)){
+        if(dataPoints.toInt() <= 0){
+            // can't be below 0 - error message and clear field
+            QMessageBox msgBox;
+            msgBox.setText(WAVSTEP_SERIES_DATA_POINTS_INVALID);
+            msgBox.exec();
+            ui->seriesDataPointsEdit->clear();
+        }
+        else{
+            // re-display as int (in case users enter a decimal)
+            ui->seriesDataPointsEdit->setText(QByteArray::number(dataPoints.toInt()));
+        }
+    }
+    else{
+        // value was invalid - clear field
+        ui->seriesDataPointsEdit->clear();
+    }
+
+    // unblock signals and clear focus
+    ui->seriesDataPointsEdit->clearFocus();
+    ui->seriesDataPointsEdit->blockSignals(false);
+}
+
+
 void WavStep_Power_Monitoring_Test_Window::calculateTestRuntime()
 {
     // #TODO add a factor for communication time
@@ -647,15 +677,17 @@ void WavStep_Power_Monitoring_Test_Window::saveSettings(){
     QSettings settingsFromFile(settingsFileName, QSettings::IniFormat);
 
     QStringList keys = settings->allKeys();
-    for( QStringList::iterator i = keys.begin(); i != keys.end(); i++ )
-    {
-        settingsFromFile.setValue( *i, settings->value( *i ) );
+    for(auto key : keys){
+        settingsFromFile.setValue(key, settings->value(key));
     }
+//    for( QStringList::iterator i = keys.begin(); i != keys.end(); i++ )
+//    {
+//        settingsFromFile.setValue( *i, settings->value( *i ) );
+//    }
 
     settingsFromFile.sync();
 
 }
-
 
 void WavStep_Power_Monitoring_Test_Window::loadSettings(){
     QSettings settingsFromFile(settingsFileName, QSettings::IniFormat);
@@ -677,6 +709,13 @@ void WavStep_Power_Monitoring_Test_Window::loadSettings(){
     dwellTimeInSeconds = settings->value(WAV_STEP_TEST_DWELL_SECONDS).value<double>();
     QMap<int, QByteArray> swtChannelToT100Map = settings->value(WAV_STEP_TEST_SWT_CHANNELS_TO_T100).value<QMap<int, QByteArray>>();
     QList<QByteArray> channelsToGraph = settings->value(WAV_STEP_TEST_CHANNELS_TO_GRAPH).value<QList<QByteArray>>();
+    int maxSeriesDataPoints = settings->value(WAV_STEP_TEST_POINTS_PER_SERIES).value<int>();
+
+    // reset channel dropdowns
+    ui->swtChannel1ComboBox->setCurrentIndex(0);
+    ui->swtChannel2ComboBox->setCurrentIndex(0);
+    ui->swtChannel3ComboBox->setCurrentIndex(0);
+    ui->swtChannel4ComboBox->setCurrentIndex(0);
 
     // fill in first channel dropdown
     int index1 = ui->swtChannel1ComboBox->findText(swtChannelToT100Map.value(1));
@@ -702,6 +741,7 @@ void WavStep_Power_Monitoring_Test_Window::loadSettings(){
     ui->dwellSRadioButton->setChecked(true);
     ui->dwellLineEdit->setText(QByteArray::number(dwellTimeInSeconds));
     ui->csvLocDisplay->setText(csvFilename);
+    ui->seriesDataPointsEdit->setText(QByteArray::number(maxSeriesDataPoints));
 
     // re-calculate estimated time
     calculateTestRuntime();
@@ -752,3 +792,4 @@ void WavStep_Power_Monitoring_Test_Window::enableFieldsOnTestFinish(){
 
     ui->openGraphWindowButton->setEnabled(false);
 }
+

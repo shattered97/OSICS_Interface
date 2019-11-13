@@ -727,7 +727,7 @@
     </property>
     <property name="geometry">
      <rect>
-      <x>540</x>
+      <x>550</x>
       <y>620</y>
       <width>231</width>
       <height>41</height>
@@ -874,6 +874,30 @@
      <string>Series Data Points:</string>
     </property>
    </widget>
+   <widget class="QPushButton" name="openSnapshotGraphBtn">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>790</x>
+      <y>620</y>
+      <width>221</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>12</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>Open Snapshot Graph</string>
+    </property>
+    <property name="checkable">
+     <bool>false</bool>
+    </property>
+   </widget>
    <widget class="QLineEdit" name="seriesDataPointsEdit">
     <property name="enabled">
      <bool>true</bool>
@@ -895,30 +919,6 @@
      <string>100</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="openSnapshotGraphBtn">
-    <property name="enabled">
-     <bool>false</bool>
-    </property>
-    <property name="geometry">
-     <rect>
-      <x>780</x>
-      <y>620</y>
-      <width>231</width>
-      <height>41</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>12</pointsize>
-     </font>
-    </property>
-    <property name="text">
-     <string>Open Snapshot Graph</string>
-    </property>
-    <property name="checkable">
-     <bool>false</bool>
-    </property>
-   </widget>
    <zorder>groupBox</zorder>
    <zorder>testIDLabel</zorder>
    <zorder>powerMeterTable</zorder>
@@ -934,8 +934,8 @@
    <zorder>loadConfigBtn</zorder>
    <zorder>saveConfigBtn</zorder>
    <zorder>seriesDataPointsLabel</zorder>
-   <zorder>seriesDataPointsEdit</zorder>
    <zorder>openSnapshotGraphBtn</zorder>
+   <zorder>seriesDataPointsEdit</zorder>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
