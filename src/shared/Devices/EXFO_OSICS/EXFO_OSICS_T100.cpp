@@ -55,7 +55,7 @@ int EXFO_OSICS_T100::getSlotNum(){
 QByteArray EXFO_OSICS_T100::diodeCurrentLevelModuleQuery(int slotNum){
     QByteArray baseCmd = "CH#:I?\n";
     baseCmd = insertSlotNum(baseCmd, slotNum);
-    QByteArray response = "";
+    response = "";
     sendCommandAndWaitForResponse(theInstrLoc, baseCmd, &response);
     return response;
 }
@@ -64,7 +64,7 @@ QByteArray EXFO_OSICS_T100::diodeCurrentLevelModuleQuery(int slotNum){
 QByteArray EXFO_OSICS_T100::diodeMaxCurrentModuleQuery(int slotNum){
     QByteArray baseCmd = "CH#:IMAX?\n";
     baseCmd = insertSlotNum(baseCmd, slotNum);
-    QByteArray response = "";
+    response = "";
     sendCommandAndWaitForResponse(theInstrLoc, baseCmd, &response);
     return response;
 }
@@ -84,7 +84,7 @@ void EXFO_OSICS_T100::setModFrequencyModuleCmd(int slotNum, QByteArray frequency
 QByteArray EXFO_OSICS_T100::modFrequencyModuleQuery(int slotNum){
     QByteArray baseCmd = "CH#:MOD_F?\n";
     baseCmd = insertSlotNum(baseCmd, slotNum);
-    QByteArray response = "";
+    response = "";
     sendCommandAndWaitForResponse(theInstrLoc, baseCmd, &response);
     return response;
 }
@@ -127,7 +127,7 @@ QByteArray EXFO_OSICS_T100::firstCalibrationWavelengthQuery(int slotNum){
 QByteArray EXFO_OSICS_T100::secondCalibrationWavelengthQuery(int slotNum){
     QByteArray baseCmd = "CH#:LCAL2?\n";
     baseCmd = insertSlotNum(baseCmd, slotNum);
-    QByteArray response = "";
+    response = "";
     sendCommandAndWaitForResponse(theInstrLoc, baseCmd, &response);
     return response;
 }
@@ -155,7 +155,7 @@ QByteArray EXFO_OSICS_T100::firstCalibrationPowerQuery(int slotNum){
     QByteArray baseCmd = "CH#:PCAL1?\n";
     baseCmd = insertSlotNum(baseCmd, slotNum);
 
-    QByteArray response = "";
+    response = "";
     sendCommandAndWaitForResponse(theInstrLoc, baseCmd, &response);
     return response;
 }
@@ -164,7 +164,7 @@ QByteArray EXFO_OSICS_T100::firstCalibrationPowerQuery(int slotNum){
 QByteArray EXFO_OSICS_T100::secondCalibrationPowerQuery(int slotNum){
     QByteArray baseCmd = "CH#:PCAL2?\n";
     baseCmd = insertSlotNum(baseCmd, slotNum);
-    QByteArray response = "";
+    response = "";
     sendCommandAndWaitForResponse(theInstrLoc, baseCmd, &response);
     return response;
 }
@@ -184,7 +184,7 @@ void EXFO_OSICS_T100::assignOutBNCPortToSignalCmd(int slotNum, QByteArray signal
 QByteArray EXFO_OSICS_T100::outBNCPortSignalMonitoringQuery(int slotNum){
     QByteArray baseCmd = "CH#:AOUT?\n";
     baseCmd = insertSlotNum(baseCmd, slotNum);
-    QByteArray response = "";
+    response = "";
     sendCommandAndWaitForResponse(theInstrLoc, baseCmd, &response);
     return response;
 }
