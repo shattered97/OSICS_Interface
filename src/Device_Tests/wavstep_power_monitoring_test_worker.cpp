@@ -12,7 +12,6 @@ WavStep_Power_Monitoring_Test_Worker::~WavStep_Power_Monitoring_Test_Worker()
 void WavStep_Power_Monitoring_Test_Worker::runTest()
 {
 
-    qDebug() << "!!!!!!!!!!!!!!!!!!!!!!!!!! test worker thread id: " << QThread::currentThread();
 
     // setup file output worker
     setupFileWriteWorker();
@@ -179,8 +178,7 @@ void WavStep_Power_Monitoring_Test_Worker::executeTestStep(double currentWavelen
                 // ##### testing only
                 if(i == 3){
                     double todBm = ConversionUtilities::convertWattToDBm(reading.toDouble());
-                    qDebug() << "                                                            " <<  todBm << " " << timeOfReading << " " << wavelengthToSet;
-                }
+      }
                 // create data points for graph/.csv
                 WavStepPowerMonitoringDataPoint testDataPoint = {powerMeterName, reading,
                                                                  timeOfReading, wavelengthToSet};
@@ -196,7 +194,6 @@ void WavStep_Power_Monitoring_Test_Worker::executeTestStep(double currentWavelen
 
     }
 
-    qDebug() << "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! dwell time elapsed : " << dwellTimer.elapsed();
 }
 
 void WavStep_Power_Monitoring_Test_Worker::addDataToFileBuffer(WavStepPowerMonitoringDataPoint testDataPoint)

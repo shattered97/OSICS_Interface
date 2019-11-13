@@ -10,15 +10,14 @@ WavStep_Power_Monitoring_Graph_Window::WavStep_Power_Monitoring_Graph_Window(QLi
     ui->setupUi(this);
 
     this->seriesNames = seriesNames;
-    this->maxSeriesSize = maxSeriesSize;
     this->refreshTimeMsec = refreshTimeMsec;
+    this->maxSeriesSize = maxSeriesSize;
 
     setupGraphing();
 
     // needed for using signals/slots with parameters of this type
     qRegisterMetaType<QList<WavStepPowerMonitoringDataPoint>>();
 }
-
 
 WavStep_Power_Monitoring_Graph_Window::~WavStep_Power_Monitoring_Graph_Window()
 {
@@ -72,11 +71,10 @@ void WavStep_Power_Monitoring_Graph_Window::processDataPoint(WavStepPowerMonitor
 
 void WavStep_Power_Monitoring_Graph_Window::maintainSeriesSize(QList<QPointF> &points){
     // if the list contains >= maxSeriesSize, knock off the first value
+//    qDebug() << points.size();
     if(points.size() >= maxSeriesSize){
         points.removeFirst();
     }
-
-
 
 }
 

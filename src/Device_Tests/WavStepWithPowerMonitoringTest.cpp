@@ -5,7 +5,7 @@
 WavStepWithPowerMonitoringTest::WavStepWithPowerMonitoringTest(QList<QVariant> selectedDevices, QMainWindow &configWindow) :
     DeviceTest (selectedDevices, configWindow)
 {
-    qDebug() << "wavstep test object thread: " << QThread::currentThread();
+
     settings = new QSettings(QSettings::IniFormat, QSettings::SystemScope, "Test Platform");
     settings->clear();
 
@@ -45,7 +45,6 @@ void WavStepWithPowerMonitoringTest::slotSendPowerReadings(PowerReadings reading
 
 void WavStepWithPowerMonitoringTest::slotIsPollingContinued(bool *continuePolling){
     *continuePolling = this->continuePolling;
-    qDebug() << "asking if polling should continue..." << this->continuePolling;
 }
 
 void WavStepWithPowerMonitoringTest::slotPollForPowerMeterReadings(){
@@ -58,8 +57,6 @@ void WavStepWithPowerMonitoringTest::slotPollForPowerMeterReadings(){
         // name threads
         QThread::currentThread()->setObjectName("Main Thread");
         workerThread->setObjectName("PM Polling Thread");
-
-        qDebug() << "!!!!!!!!!!!!!!!!!!!!!!!!!! main thread id: " << QThread::currentThread();
 
         QObject::connect(worker, SIGNAL(signalSendPowerReadings(PowerReadings)),
                          this, SLOT(slotSendPowerReadings(PowerReadings)));
@@ -147,11 +144,9 @@ void WavStepWithPowerMonitoringTest::runDeviceTest()
     // name threads
     workerThread->setObjectName("Test Worker Thread");
 
-    qDebug() << "!!!!!!!!!!!!!!!!!!!!!!!!!! main thread id: " << QThread::currentThread();
-
     // create graph window
     double graphRefreshMsec = graphRefreshRate * SEC_TO_MSEC_MULTIPLIER;
-    graphWindow = new WavStep_Power_Monitoring_Graph_Window(channelsToGraph, WAVSTEP_GRAPH_MAX_POINTS_PER_SERIES, graphRefreshMsec);
+    graphWindow = new WavStep_Power_Monitoring_Graph_Window(channelsToGraph, maxSeriesDataPoints, graphRefreshMsec);
 
     QObject::connect(worker, SIGNAL(signalAddReadingsToGraph(QList<WavStepPowerMonitoringDataPoint>)),
                      graphWindow, SLOT(slotAddReadingsToGraph(QList<WavStepPowerMonitoringDataPoint>)));
@@ -260,14 +255,14 @@ void WavStepWithPowerMonitoringTest::populateAssignedModules(QMap<int, QByteArra
         if(t100Type != "<None>"){
             int t100SlotNum = t100Type.mid(t100Type.size() - 1).toInt();
 
-            EXFO_OSICS_T100 *t100Module = t100Modules.at(t100SlotNum - 1).first;
-
-            assignedT100Modules.insert(t100Module, switchChannel);
-
+            // get the module based on the slot num (second element of qpair)
+            for (auto t100Module : t100Modules){
+                if(t100Module.second == t100SlotNum){
+                    assignedT100Modules.insert(t100Module.first, switchChannel);
+                }
+            }
         }
-
     }
-
 }
 
 void WavStepWithPowerMonitoringTest::slotShowGraphWindow(){
@@ -358,6 +353,7 @@ void WavStepWithPowerMonitoringTest::getTestValuesFromSettings(){
     dwellSeconds = settings->value(WAV_STEP_TEST_DWELL_SECONDS).value<double>();
     swtChannelToT100Map = settings->value(WAV_STEP_TEST_SWT_CHANNELS_TO_T100).value<QMap<int, QByteArray>>();
     channelsToGraph = settings->value(WAV_STEP_TEST_CHANNELS_TO_GRAPH).value<QList<QByteArray>>();
+    maxSeriesDataPoints = settings->value(WAV_STEP_TEST_POINTS_PER_SERIES).value<int>();
 
 }
 

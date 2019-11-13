@@ -77,7 +77,7 @@ private:
     double dwellSeconds = 0.0;
     double estimatedTime = 0.0;
     double graphRefreshRate = 0.0;
-
+    int maxSeriesDataPoints = 0;
     int readingCount = 0;
     int maxCountBeforeWrite = 100;
 
