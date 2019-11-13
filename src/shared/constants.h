@@ -153,7 +153,7 @@ const QByteArray WAV_STEP_TEST_WAV_STEP_SIZE = "Wav Step Test Step Size";
 const QByteArray WAV_STEP_TEST_DWELL_SECONDS = "Wav Step Test Dwell in Seconds";
 const QByteArray WAV_STEP_TEST_SWT_CHANNELS_TO_T100 = "Wav Step Test SWT Channels to T100 Map";
 const QByteArray WAV_STEP_TEST_CHANNELS_TO_GRAPH = "Wav Step Test Channels To Graph";
-
+const QByteArray WAV_STEP_TEST_POINTS_PER_SERIES = "Wav Step Test Data Points Per Series";
 // EXFO_OSICS_ATN Values
 const QByteArray EXFO_OSICS_ATN_MIN_OFFSET = "-10"; // defined in spec sheet/prog guide
 const QByteArray EXFO_OSICS_ATN_MAX_OFFSET = "10"; // defined in spec sheet/prog guide
@@ -268,6 +268,8 @@ const QByteArray WAVSTEP_CANT_OPEN_FILE = "Can't open file.";
 const QByteArray WAVSTEP_NO_FILE_CHOSEN = "Choose output .csv file for test data.";
 const QByteArray WAVSTEP_NO_T100_MODULES_SELECTED = "No T100 modules selected for switch channels.";
 const QByteArray WAVSTEP_NO_SERIES_SELECTED = "Select at least one series to graph.";
+const QByteArray WAVSTEP_SERIES_DATA_POINTS_INVALID = "Number of data points must be above 0.";
+
 const QString WAVSTEP_DEFAULT_CSV_FILENAME = "wavstep_power_monitoring_test_%1.csv";
 const QByteArray WAVSTEP_CSV_FILE_HEADING = "series,power reading (Watt),reading time, wavelength\n";
 const QByteArray WAVSTEP_SWITCH_CHANNEL_TAKEN = "T100 Module %1 is already selected for another channel.";

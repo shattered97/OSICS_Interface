@@ -157,6 +157,8 @@ private slots:
     
     void on_loadConfigBtn_clicked();
     
+    void on_seriesDataPointsEdit_editingFinished();
+
 private:
     Ui::WavStep_Power_Monitoring_Test_Window *ui;
 

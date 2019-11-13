@@ -216,7 +216,7 @@ void WavStep_Power_Monitoring_Test_Window::updateSettings()
     settings->setValue(WAV_STEP_TEST_DWELL_SECONDS, QVariant::fromValue(ui->dwellLineEdit->text()));
     settings->setValue(WAV_STEP_TEST_SWT_CHANNELS_TO_T100, QVariant::fromValue(swtChannelToT100Map));
     settings->setValue(WAV_STEP_TEST_CHANNELS_TO_GRAPH, QVariant::fromValue(seriesNames));
-
+    settings->setValue(WAV_STEP_TEST_POINTS_PER_SERIES, QVariant::fromValue(ui->seriesDataPointsEdit));
 }
 
 void WavStep_Power_Monitoring_Test_Window::populateSwitchChannelSelectionDropdowns()
@@ -467,6 +467,37 @@ void WavStep_Power_Monitoring_Test_Window::on_stepSizeLineEdit_editingFinished()
     ui->stepSizeLineEdit->clearFocus();
     ui->stepSizeLineEdit->blockSignals(false);
 }
+
+void WavStep_Power_Monitoring_Test_Window::on_seriesDataPointsEdit_editingFinished()
+{
+    // block signals (to prevent QT bug for double-enter)
+    ui->seriesDataPointsEdit->blockSignals(true);
+
+    // check if number of data points is valid
+    QByteArray dataPoints = ui->seriesDataPointsEdit->text().toLatin1();
+    if(isInputValueValid(dataPoints)){
+        if(dataPoints.toInt() <= 0){
+            // can't be below 0 - error message and clear field
+            QMessageBox msgBox;
+            msgBox.setText(WAVSTEP_SERIES_DATA_POINTS_INVALID);
+            msgBox.exec();
+            ui->seriesDataPointsEdit->clear();
+        }
+        else{
+            // re-display as int (in case users enter a decimal)
+            ui->seriesDataPointsEdit->setText(QByteArray::number(dataPoints.toInt()));
+        }
+    }
+    else{
+        // value was invalid - clear field
+        ui->seriesDataPointsEdit->clear();
+    }
+
+    // unblock signals and clear focus
+    ui->seriesDataPointsEdit->clearFocus();
+    ui->seriesDataPointsEdit->blockSignals(false);
+}
+
 
 void WavStep_Power_Monitoring_Test_Window::calculateTestRuntime()
 {
@@ -752,3 +783,4 @@ void WavStep_Power_Monitoring_Test_Window::enableFieldsOnTestFinish(){
 
     ui->openGraphWindowButton->setEnabled(false);
 }
+
