@@ -181,6 +181,8 @@ private:
 
     QByteArray minWavelength;
     QByteArray maxWavelength;
+
+    QByteArray response = "";
 };
 
 #endif // EXFO_OSICS_T100_H
