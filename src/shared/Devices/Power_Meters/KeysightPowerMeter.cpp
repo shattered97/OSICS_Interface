@@ -108,6 +108,56 @@ int KeysightPowerMeter::getNumPowerMeterChannels(){
     return numChannels;
 }
 
+QByteArray KeysightPowerMeter::getStabilityValues(int channel){
+    QByteArray baseCmd = "sens:func:par:stab?\n";
+    baseCmd.insert(baseCmd.indexOf(':'), QByteArray::number(channel));
+    response = "";
+    sendCommandAndWaitForResponse(theInstrLoc, baseCmd, &response);
+
+    return response;
+}
+
+
+void KeysightPowerMeter::setStabilityValues(int channel, double totalTime, double avgTime, double periodTime){
+    QByteArray baseCmd = "sens:func:par:stab \n";
+    baseCmd.insert(baseCmd.indexOf(':'), QByteArray::number(channel));
+
+    // create comma-delimited list of times
+    QStringList listOfTimes;
+    listOfTimes.append(QByteArray::number(totalTime));
+    listOfTimes.append(QByteArray::number(periodTime));
+    listOfTimes.append(QByteArray::number(avgTime));
+
+    // join with commas, and insert in to command string
+    QString timesParam = listOfTimes.join("s,");
+    baseCmd.insert(baseCmd.indexOf('\n'), timesParam);
+
+    emit signalSendCmdNoRsp(theInstrLoc, baseCmd);
+}
+
+QByteArray KeysightPowerMeter::getMinMaxModeValues(int channel){
+    QByteArray baseCmd = "sens:func:par:minm?\n";
+    baseCmd.insert(baseCmd.indexOf(':'), QByteArray::number(channel));
+
+    response = "";
+    sendCommandAndWaitForResponse(theInstrLoc, baseCmd, &response);
+
+    return response;
+
+}
+
+void KeysightPowerMeter::setMinMaxModeValues(int channel, QByteArray mode, int dataPoints){
+    QByteArray baseCmd = "sens:func:par:minm \n";
+    baseCmd.insert(baseCmd.indexOf(':'), QByteArray::number(channel));
+
+    // create single string from arguments
+    QString param = mode + "," + QString::number(dataPoints);
+
+    baseCmd.insert(baseCmd.indexOf('\n'), param);
+
+    emit signalSendCmdNoRsp(theInstrLoc, baseCmd);
+}
+
 QList<QByteArray> KeysightPowerMeter::getPowerReadingOnAllChannels(){
 
     // query for raw text block of readings
@@ -173,20 +223,39 @@ void KeysightPowerMeter::applyConfigSettings(QSettings *configSettings)
     QByteArray nicknameToSet = configSettings->value(DEVICE_NICKNAME).value<QByteArray>();
     setNickname(nicknameToSet);
 
+    // apply wavelength
     QList<QByteArray> wavelengthSettings = configSettings->value(WAVELENGTH_SETTINGS).value<QList<QByteArray>>();
     for(int i = 0; i < numChannels; i++){
        int slot = i + 1;
        QByteArray unit = "m";
        setWavelength(slot, wavelengthSettings[i], unit);
     }
-    // update values
 
+    // apply stability values
+    QList<QByteArray> totalTimes = configSettings->value(PM_TOTAL_TIME).value<QList<QByteArray>>();
+    QList<QByteArray> periodTimes = configSettings->value(PM_PERIOD_TIME).value<QList<QByteArray>>();
+    QList<QByteArray> avgTimes = configSettings->value(PM_AVERAGING_TIME).value<QList<QByteArray>>();
+
+    for(int i = 0; i < numChannels; i++){
+        int channel = i + 1;
+        setStabilityValues(channel, totalTimes[i].toDouble(), avgTimes[i].toDouble(), periodTimes[i].toDouble());
+    }
+
+    // apply minmax values
+    QList<QByteArray> minMaxModes = configSettings->value(PM_MINMAX_MODE).value<QList<QByteArray>>();
+    QList<QByteArray> minMaxDataPoints = configSettings->value(PM_MINMAX_DATA_POINTS).value<QList<QByteArray>>();
+
+    for(int i = 0; i < numChannels; i++){
+        int channel = i + 1;
+        setMinMaxModeValues(channel, minMaxModes[i].mid(0, 4), minMaxDataPoints[i].toDouble());
+    }
+
+    // update values
     updateConfig(configSettings);
 }
 
 void KeysightPowerMeter::updateConfig(QSettings *configSettings)
 {
-    qDebug() << "@@@@@@@@@@@@@@@@@@@@ power meter device class thread: " << QThread::currentThread();
     // get number of slots
     numChannels = getNumChannelsVar();
     configSettings->setValue(NUM_CHANNELS, QVariant::fromValue(numChannels));
@@ -199,6 +268,52 @@ void KeysightPowerMeter::updateConfig(QSettings *configSettings)
     // get power/wavelength settings
     updatePowerSettings(*configSettings);
     updateWavelengthSettings(*configSettings);
+
+    // get stability settings
+    updateStabilitySettings(*configSettings);
+
+    // get minmax settings
+    updateMinMaxSettings(*configSettings);
+}
+
+void KeysightPowerMeter::updateStabilitySettings(QSettings &configSettings){
+
+    QList<QByteArray> totalTimes;
+    QList<QByteArray> periodTimes;
+    QList<QByteArray> avgTimes;
+
+    for(int i = 0; i < numChannels; i++){
+        int channel = i + 1;
+        QByteArray stabilityValues = getStabilityValues(channel);
+        QList<QByteArray> stabilityValuesList = stabilityValues.split(',');
+        if(stabilityValuesList.size() == 3){
+            // total time, period time, averaging time
+            totalTimes.append(stabilityValuesList.at(0));
+            periodTimes.append(stabilityValuesList.at(1));
+            avgTimes.append(stabilityValuesList.at(2));
+        }
+    }
+
+    configSettings.setValue(PM_TOTAL_TIME, QVariant::fromValue(totalTimes));
+    configSettings.setValue(PM_PERIOD_TIME, QVariant::fromValue(periodTimes));
+    configSettings.setValue(PM_AVERAGING_TIME, QVariant::fromValue(avgTimes));
+}
+
+void KeysightPowerMeter::updateMinMaxSettings(QSettings &configSettings){
+    QList<QByteArray> minMaxModes;
+    QList<QByteArray> minMaxDataPoints;
+
+    for(int i = 0; i < numChannels; i++){
+        int channel = i + 1;
+        QByteArray minMaxModeAndPoints = getMinMaxModeValues(channel);
+        QByteArray mode = minMaxModeAndPoints.split(',')[0];
+        QByteArray points = minMaxModeAndPoints.split(',')[1].trimmed();
+        minMaxModes.append(mode);
+        minMaxDataPoints.append(points);
+    }
+
+    configSettings.setValue(PM_MINMAX_MODE, QVariant::fromValue(minMaxModes));
+    configSettings.setValue(PM_MINMAX_DATA_POINTS, QVariant::fromValue(minMaxDataPoints));
 }
 
 void KeysightPowerMeter::updatePowerSettings(QSettings &configSettings)

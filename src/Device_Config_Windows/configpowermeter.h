@@ -14,9 +14,9 @@
 #include "PowerMeter.h"
 #include "ConversionUtilities.h"
 
-
 namespace Ui {
 class ConfigPowerMeter;
+
 }
 
 class ConfigPowerMeter : public QMainWindow
@@ -28,7 +28,9 @@ public:
     ~ConfigPowerMeter();
 
     /**
-     * @brief showEvent Override of the show() method. Sets up QSettings object and signals to update it
+     * @brief showEvent Override of the show() method. Sets up initial objects and signals/slots.  Can't do this
+     *                  in the constructor because the signals/slots for this window aren't set up by
+     *                  the Orchestrator yet.
      */
     void showEvent(QShowEvent* event);
 
@@ -97,41 +99,93 @@ private slots:
      */
     void on_saveChangesButton_clicked();
 
-
+    /**
+     * @brief on_setNicknameBtn_clicked Opens a QInputDialog for users to enter the desired nickname
+     */
     void on_setNicknameBtn_clicked();
+
+    /**
+     * @brief on_totalTimeDisplay_editingFinished Checks if the Total Time value is valid. If yes the settings
+     *                                            object is updated. If no, an error dialog is opened.
+     */
+    void on_totalTimeDisplay_editingFinished();
+
+    /**
+     * @brief on_periodTimeDisplay_editingFinished Checks if the Period Time value is valid. If yes the settings
+     *                                             object is updated. If no, an error dialog is opened.
+     */
+    void on_periodTimeDisplay_editingFinished();
+
+    /**
+     * @brief on_avgTimeDisplay_editingFinished Checks if the Averaging Time value is valid. If yes the settings
+     *                                          object is updated. If no, an error dialog is opened.
+     */
+    void on_avgTimeDisplay_editingFinished();
+
+    /**
+     * @brief on_continuousRadioBtn_clicked Changes the QSetting for MinMax mode to Continuous
+     */
+    void on_continuousRadioBtn_clicked();
+
+    /**
+     * @brief on_refreshRadioBtn_clicked Changes the QSetting for MinMax mode to Refresh
+     */
+    void on_refreshRadioBtn_clicked();
+
+    /**
+     * @brief on_dataPointsEdit_editingFinished Checks if the value for Data Points is valid. If yes the settings
+     *                                          object is updated.
+     */
+    void on_dataPointsEdit_editingFinished();
+
+    /**
+     * @brief on_timeUnitComboBox_currentIndexChanged Changes the time unit for the page. Values for total, period
+     *                                                and averaging time are updated to reflect the unit change.
+     * @param unit The unit selected
+     */
+    void on_timeUnitComboBox_currentIndexChanged(const QString &unit);
 
 private:
     Ui::ConfigPowerMeter *ui;
 
-    QVariant device;                        // the device to be configured (a power meter)
-    QList<QRadioButton*> buttons;           // list of radio buttons - one for each channel on the powe meter
-    bool windowConfigured = false;          // flag to determine if the gui needs to be updated when show() is called
-    QList<bool> displayTextColored;         // one flag per channel to set if a value needs to be updated on device
-    int slotNum = 1;                        // slot number of the currently selected channel in the GUI
+    QVariant device;                         // the device to be configured (a power meter)
+    QByteArray deviceAddress;                // address of device
+    QByteArray deviceIdentity;               // identity of device
+    QByteArray deviceNickname;               // nickname of device
 
-    QString settingsFileName;               // filename to store/retrieve QSettings contents
-    QSettings *settings;                    // QSettings object to hold config settings
+    QList<QRadioButton*> buttons;            // list of radio buttons - one for each channel on the power meter
+    int slotNum = 1;                         // slot number of the currently selected channel in the GUI
+    int numSlots;                            // number of slots (channels) the power meter has
+    bool windowConfigured = false;           // flag to determine if the gui needs to be updated when show() is called
 
-    int numSlots;                           // number of slots (channels) the power meter has
-    QList<QByteArray> powerReadings;        // list of power readings from device to be displayed
-    QList<QByteArray> wavelengthSettings;   // list of wavelength settings from device to be displayed
-    QList<QByteArray> minWavelengths;       // list of min wavelength values to be displayed
-    QList<QByteArray> maxWavelengths;       // list of max wavelength values to be displayed
-    QByteArray deviceAddress;               // address of device
-    QByteArray deviceIdentity;              // identity of device
-    QByteArray deviceNickname;              // nickname of device
-    bool identityColored = false;
-    // =================================== GUI Element Population Methods ==================================
+    QList<bool> wavelengthFieldColored;      // one flag/channel to indicate if the wavlngth field should be colored
+    QList<bool> totalTimeTextColored;        // one flag/channel to set the color status of the total time field
+    QList<bool> periodTimeTextColored;       // one flag/channel to set the color status for the period time field
+    QList<bool> avgTimeTextColored;          // one flag/channel to set the color status of the average time field
+    QList<bool> minMaxDataPointsColored;     // one flag/channel to set the color status of the data points field
+    QList<bool> minMaxRefreshModeColored;    // one flag/channel to set the color status of the refresh mode button
+    QList<bool> minMaxContinuousModeColored; // one flag/channel to set the color status of the continuous mode button
+
+    QString settingsFileName;                // filename to store/retrieve QSettings contents
+    QSettings *settings;                     // QSettings object to hold config settings
+
+    QList<QByteArray> powerReadings;         // list of power readings from device to be displayed
+    QList<QByteArray> wavelengthSettings;    // list of wavelength settings from device to be displayed
+    QList<QByteArray> minWavelengths;        // list of min wavelength values to be displayed
+    QList<QByteArray> maxWavelengths;        // list of max wavelength values to be displayed
+    QList<QByteArray> totalTimeInSeconds;    // list of total time values to be displayed
+    QList<QByteArray> periodTimeInSeconds;   // list of period time values to be displayed
+    QList<QByteArray> avgTimeInSeconds;      // list of averaging time values to be displayed
+    QList<QByteArray> minMaxMode;            // list of mode values (Continuous or Refresh) to be displayed
+    QList<QByteArray> minMaxDataPoints;      // list of num data points (for min/max mode) to be displayed
+
+
+    // ================================== GUI Element Population Methods ==================================
 
     /**
      * @brief populateIdentityAndLoc Populates the device identity and the device address in the GUI.
      */
     void populateIdentityAndLoc();
-
-    /**
-     * @brief populatePowerUnit Populates the displayed power unit with what was selected from the dropdown.
-     */
-    void populatePowerUnit();
 
     /**
      * @brief populatePower Populates the displayed power value from the list of current power readings. Converts
@@ -163,6 +217,31 @@ private:
      * @brief populateAllValues Calls all methods needed to refresh displayed GUI values
      */
     void populateAllValues();
+
+    /**
+     * @brief populateTotalTime Converts and displays the value for Total Time
+     */
+    void populateTotalTime();
+
+    /**
+     * @brief populatePeriodTime Converts and displays the value for Period Time
+     */
+    void populatePeriodTime();
+
+    /**
+     * @brief populateAvgTime Converts and displays the value for Averaging Time
+     */
+    void populateAvgTime();
+
+    /**
+     * @brief populateMinMaxMode Selects the radio button that corresponds with the MinMax Mode value
+     */
+    void populateMinMaxMode();
+
+    /**
+     * @brief populateMinMaxDataPoints Displays the value for number of Data Points
+     */
+    void populateMinMaxDataPoints();
 
     /**
      * @brief initChannelRadioButtons Adds a radio button to the GUI for every channel that exists on the power meter
