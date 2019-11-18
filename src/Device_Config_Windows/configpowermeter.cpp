@@ -30,8 +30,6 @@ void ConfigPowerMeter::showEvent( QShowEvent* event )
 
         emit signalUpdateConfigSettings(device, settings);
 
-
-
     }
 
 }
@@ -73,18 +71,71 @@ void ConfigPowerMeter::getValuesFromConfig()
     wavelengthSettings = settings->value(WAVELENGTH_SETTINGS).value<QList<QByteArray>>();
     minWavelengths = settings->value(MIN_WAVELENGTHS).value<QList<QByteArray>>();
     maxWavelengths = settings->value(MAX_WAVELENGTHS).value<QList<QByteArray>>();
+    totalTimeInSeconds = settings->value(PM_TOTAL_TIME).value<QList<QByteArray>>();
+    periodTimeInSeconds = settings->value(PM_PERIOD_TIME).value<QList<QByteArray>>();
+    avgTimeInSeconds = settings->value(PM_AVERAGING_TIME).value<QList<QByteArray>>();
+    minMaxMode = settings->value(PM_MINMAX_MODE).value<QList<QByteArray>>();
+    minMaxDataPoints = settings->value(PM_MINMAX_DATA_POINTS).value<QList<QByteArray>>();
 }
 
 void ConfigPowerMeter::populateAllValues()
 {
     // call all methods needed to re-populate GUI
     populateIdentityAndLoc();
-    populatePowerUnit();
     populatePower();
     populateWavelengthUnit();
     populateWavelength();
     populateMinWavelength();
     populateMaxWavelength();
+    populateTotalTime();
+    populatePeriodTime();
+    populateAvgTime();
+    populateMinMaxMode();
+    populateMinMaxDataPoints();
+}
+
+void ConfigPowerMeter::populateMinMaxMode(){
+
+
+    if(PM_CONTINUOUS_MODE_STRING.contains(minMaxMode[slotNum - 1])){
+        // select the continuous radio button
+        ui->continuousRadioBtn->setChecked(true);
+    }
+    else{
+        // the two modes "WINDOW" AND "REFRESH" are the same
+        // select the refresh radio button
+        ui->refreshRadioBtn->setChecked(true);
+    }
+}
+
+void ConfigPowerMeter::populateMinMaxDataPoints(){
+    // convert to double for easy formatting
+    double dataPoints = minMaxDataPoints[slotNum - 1].toDouble();
+    ui->dataPointsEdit->setText(QByteArray::number(dataPoints));
+}
+
+void ConfigPowerMeter::populateTotalTime(){
+    // get time in seconds and convert to dropdown unit
+    QByteArray unit = ui->timeUnitComboBox->currentText().toLatin1();
+    double timeToConvert = totalTimeInSeconds[slotNum - 1].toDouble();
+    double convertedTime = ConversionUtilities::convertTimeFromSeconds(timeToConvert, unit);
+    ui->totalTimeDisplay->setText(QByteArray::number(convertedTime));
+}
+
+void ConfigPowerMeter::populateAvgTime(){
+    // get time in seconds and convert to dropdown unit
+    QByteArray unit = ui->timeUnitComboBox->currentText().toLatin1();
+    double timeToConvert = avgTimeInSeconds[slotNum - 1].toDouble();
+    double convertedTime = ConversionUtilities::convertTimeFromSeconds(timeToConvert, unit);
+    ui->avgTimeDisplay->setText(QByteArray::number(convertedTime));
+}
+
+void ConfigPowerMeter::populatePeriodTime(){
+    // get time in seconds and convert to dropdown unit
+    QByteArray unit = ui->timeUnitComboBox->currentText().toLatin1();
+    double timeToConvert = periodTimeInSeconds[slotNum - 1].toDouble();
+    double convertedTime = ConversionUtilities::convertTimeFromSeconds(timeToConvert, unit);
+    ui->periodTimeDisplay->setText(QByteArray::number(convertedTime));
 }
 
 void ConfigPowerMeter::populateIdentityAndLoc(){
@@ -93,12 +144,6 @@ void ConfigPowerMeter::populateIdentityAndLoc(){
     ui->instrumentAddressLabel->setText(deviceAddress);
 }
 
-void ConfigPowerMeter::populatePowerUnit()
-{
-    // update the displayed power unit from the dropdown value
-    QByteArray unitText = ui->powerUnitComboBox->currentText().toLatin1();
-    ui->powerDisplayUnit->setText(unitText);
-}
 
 void ConfigPowerMeter::populatePower()
 {
@@ -118,7 +163,6 @@ void ConfigPowerMeter::populatePower()
 void ConfigPowerMeter::populateWavelengthUnit()
 {
     QByteArray unitText = ui->wavelengthComboBox->currentText().toLatin1();
-    ui->wavelengthDisplayUnitLabel->setText(unitText);
     ui->wavelengthEditUnitLabel->setText(unitText);
     ui->minWavelengthUnitLabel->setText(unitText);
     ui->maxWavelengthUnitLabel->setText(unitText);
@@ -169,7 +213,13 @@ void ConfigPowerMeter::initChannelRadioButtons()
             connect(button,SIGNAL(clicked()),this,SLOT(slot_radio_button_clicked()));
 
             // create colored flag for each channel
-            displayTextColored.append(false);
+            wavelengthFieldColored.append(false);
+            totalTimeTextColored.append(false);
+            periodTimeTextColored.append(false);
+            avgTimeTextColored.append(false);
+            minMaxDataPointsColored.append(false);
+            minMaxRefreshModeColored.append(false);
+            minMaxContinuousModeColored.append(false);
         }
 
         // set first item as default selected
@@ -182,7 +232,7 @@ void ConfigPowerMeter::initChannelRadioButtons()
 
 void ConfigPowerMeter::slot_radio_button_clicked()
 {
-    qDebug() << "@@@@@@@@@@@@@@@@@@@@ power meter config window thread: " << QThread::currentThread();
+
     // set the slot number to value indicated by selected button
     for(int i = 0; i < numSlots; i++){
         if(buttons[i]->isChecked()){
@@ -200,7 +250,7 @@ void ConfigPowerMeter::slot_radio_button_clicked()
 void ConfigPowerMeter::on_powerUnitComboBox_currentIndexChanged()
 {
     // re-query power values to convert to the new unit
-    populatePowerUnit();
+//    populatePowerUnit();
     populatePower();
 }
 
@@ -211,6 +261,11 @@ void ConfigPowerMeter::on_wavelengthComboBox_currentIndexChanged()
     populateWavelength();
     populateMinWavelength();
     populateMaxWavelength();
+    populateTotalTime();
+    populatePeriodTime();
+    populateAvgTime();
+    populateMinMaxMode();
+    populateMinMaxDataPoints();
 }
 
 void ConfigPowerMeter::on_wavelengthEdit_editingFinished()
@@ -251,7 +306,7 @@ void ConfigPowerMeter::on_wavelengthEdit_editingFinished()
                 populateWavelength();
 
                 // set to colored to indicate this value has not been sent to device yet
-                displayTextColored[slotNum - 1] = true;
+                wavelengthFieldColored[slotNum - 1] = true;
             }
         }
     }
@@ -352,9 +407,15 @@ void ConfigPowerMeter::on_saveChangesButton_clicked()
 
 void ConfigPowerMeter::resetDisplayFieldColoredStatus()
 {
-    // reset the status list to all false
-    for(int i = 0; i < displayTextColored.size(); i++){
-        displayTextColored[i] = false;
+    // reset the color status lists to all false
+    for(int i = 0; i < wavelengthFieldColored.size(); i++){
+        wavelengthFieldColored[i] = false;
+        totalTimeTextColored[i] = false;
+        periodTimeTextColored[i] = false;
+        avgTimeTextColored[i] = false;
+        minMaxDataPointsColored[i] = false;
+        minMaxRefreshModeColored[i] = false;
+        minMaxContinuousModeColored[i] = false;
     }
 
     // update displayed colors
@@ -364,7 +425,30 @@ void ConfigPowerMeter::resetDisplayFieldColoredStatus()
 void ConfigPowerMeter::colorDisplayFieldText()
 {
     // color the wavelength field
-    colorText(ui->wavelengthDisplay, displayTextColored.at(slotNum - 1));
+    colorText(ui->wavelengthDisplay, wavelengthFieldColored.at(slotNum - 1));
+
+    // color the integration time fields
+    colorText(ui->totalTimeDisplay, totalTimeTextColored.at(slotNum - 1));
+    colorText(ui->periodTimeDisplay, periodTimeTextColored.at(slotNum - 1));
+    colorText(ui->avgTimeDisplay, avgTimeTextColored.at(slotNum - 1));
+
+    // color the minmax mode fields and data points field
+    colorText(ui->dataPointsEdit, minMaxDataPointsColored.at(slotNum - 1));
+
+    // color the radio buttons separate b/c they are not QLineEdits
+    if(minMaxRefreshModeColored[slotNum - 1]){
+        ui->refreshRadioBtn->setStyleSheet("QRadioButton {color: rgb(0, 0, 255);}");
+    }
+    else{
+        ui->refreshRadioBtn->setStyleSheet("QRadioButton {color: rgb(0, 0, 0);}");
+    }
+
+    if(minMaxContinuousModeColored[slotNum - 1]){
+        ui->continuousRadioBtn->setStyleSheet("QRadioButton {color: rgb(0, 0, 255);}");
+    }
+    else{
+        ui->continuousRadioBtn->setStyleSheet("QRadioButton {color: rgb(0, 0, 0);}");
+    }
 }
 
 void ConfigPowerMeter::colorText(QLineEdit *textField, bool colored){
@@ -388,4 +472,278 @@ void ConfigPowerMeter::on_setNicknameBtn_clicked()
                         settings->setValue(DEVICE_NICKNAME, QVariant::fromValue(deviceNickname));
     }
 
+}
+
+void ConfigPowerMeter::on_totalTimeDisplay_editingFinished()
+{
+    ui->totalTimeDisplay->blockSignals(true);
+
+    QByteArray fieldText = ui->totalTimeDisplay->text().toLatin1();
+
+    if(fieldText != ""){
+
+        // see if value can be converted to double
+        bool ok;
+        double totalTimeDouble =fieldText.toDouble(&ok);
+
+        // if conversion can't be made, error message
+        if(!ok){
+            QMessageBox msgBox;
+            msgBox.setText("Value entered is invalid (non-numeric).");
+            msgBox.exec();
+
+            // return to set value
+            populateTotalTime();
+        }
+        else{
+            // convert time to seconds
+            QByteArray unit = ui->timeUnitComboBox->currentText().toLatin1();
+            double timeinSecDouble = ConversionUtilities::convertTimeToSeconds(totalTimeDouble, unit);
+
+
+            if(timeinSecDouble < PM_MIN_TOTAL_TIME_SECONDS ||
+               timeinSecDouble > PM_MAX_TOTAL_TIME_SECONDS){
+
+                QMessageBox msgBox;
+                QString rangeString = " Range: %1 to %2.";
+                rangeString = rangeString.arg(PM_MIN_TOTAL_TIME_SECONDS).arg(PM_MAX_TOTAL_TIME_SECONDS);
+                msgBox.setText("Value entered is invalid (out of min/max range)." + rangeString);
+                msgBox.exec();
+
+                // return to set value
+                populateTotalTime();
+            }
+            else{
+
+                // if the set time is the same as the time in settings, don't set the colored flag
+                // (happens if a user clicks then un-clicks the field).
+                if(timeinSecDouble != totalTimeInSeconds[slotNum - 1].toDouble()){
+                     totalTimeTextColored[slotNum - 1] = true;
+                }
+                // total time is valid, update the settings object
+                totalTimeInSeconds[slotNum - 1] = QByteArray::number(timeinSecDouble);
+                settings->setValue(PM_TOTAL_TIME, QVariant::fromValue(totalTimeInSeconds));
+
+            }
+        }
+    }
+    else{
+        // return to set value
+        populateTotalTime();
+    }
+    colorDisplayFieldText();
+    ui->totalTimeDisplay->clearFocus();
+    ui->totalTimeDisplay->blockSignals(false);
+}
+
+void ConfigPowerMeter::on_periodTimeDisplay_editingFinished()
+{
+    ui->periodTimeDisplay->blockSignals(true);
+
+    QByteArray fieldText = ui->periodTimeDisplay->text().toLatin1();
+
+    if(fieldText != ""){
+
+        // see if value can be converted to double
+        bool ok;
+        double periodTimeDouble =fieldText.toDouble(&ok);
+
+        // if conversion can't be made, error message
+        if(!ok){
+            QMessageBox msgBox;
+            msgBox.setText("Value entered is invalid (non-numeric).");
+            msgBox.exec();
+
+            // return to set value
+            populatePeriodTime();
+        }
+        else{
+            // convert time to seconds
+            QByteArray unit = ui->timeUnitComboBox->currentText().toLatin1();
+            double timeInSecDouble =  ConversionUtilities::convertTimeToSeconds(periodTimeDouble, unit);
+
+            if(timeInSecDouble < PM_MIN_AVG_TIME_SECONDS ||
+               timeInSecDouble > PM_MAX_AVG_TIME_SECONDS){
+
+                QMessageBox msgBox;
+                msgBox.setText("Value entered is invalid (out of min/max range).");
+                msgBox.exec();
+
+                // return to set value
+                populatePeriodTime();
+            }
+            else{
+                // if the set time is the same as the time in settings, don't set the colored flag
+                // (happens if a user clicks then un-clicks the field).
+                if(timeInSecDouble != periodTimeInSeconds[slotNum - 1].toDouble()){
+                     periodTimeTextColored[slotNum - 1] = true;
+                }
+                periodTimeInSeconds[slotNum - 1] = QByteArray::number(timeInSecDouble);
+                // period time is valid, update the settings object
+                settings->setValue(PM_PERIOD_TIME, QVariant::fromValue(periodTimeInSeconds));
+
+            }
+        }
+    }
+    else{
+        // return to set value
+        populatePeriodTime();
+    }
+    colorDisplayFieldText();
+    ui->periodTimeDisplay->clearFocus();
+    ui->periodTimeDisplay->blockSignals(false);
+}
+
+void ConfigPowerMeter::on_avgTimeDisplay_editingFinished()
+{
+    ui->avgTimeDisplay->blockSignals(true);
+
+    QByteArray fieldText = ui->avgTimeDisplay->text().toLatin1();
+
+    if(fieldText != ""){
+
+        // see if value can be converted to double
+        bool ok;
+        double avgTimeDouble =fieldText.toDouble(&ok);
+
+        // if conversion can't be made, error message
+        if(!ok){
+            QMessageBox msgBox;
+            msgBox.setText("Value entered is invalid (non-numeric).");
+            msgBox.exec();
+            ui->avgTimeDisplay->clear();
+
+            // return to set value
+            populateAvgTime();
+        }
+        else{
+            // convert time to seconds
+            QByteArray unit = ui->timeUnitComboBox->currentText().toLatin1();
+            double timeInSecDouble = ConversionUtilities::convertTimeToSeconds(avgTimeDouble, unit);
+
+
+            if(timeInSecDouble < PM_MIN_AVG_TIME_SECONDS ||
+               timeInSecDouble > PM_MAX_AVG_TIME_SECONDS){
+                QMessageBox msgBox;
+                msgBox.setText("Value entered is invalid (out of min/max range).");
+                msgBox.exec();
+
+                // return to set value
+                populateAvgTime();
+            }
+            else{
+
+                if(timeInSecDouble != avgTimeInSeconds[slotNum - 1].toDouble()){
+                     avgTimeTextColored[slotNum - 1] = true;
+                }
+                // period time is valid, update the settings object
+                avgTimeInSeconds[slotNum - 1] = QByteArray::number(timeInSecDouble);
+                settings->setValue(PM_AVERAGING_TIME, QVariant::fromValue(avgTimeInSeconds));
+                // set to colored to indicate this value has not been sent to device yet
+
+            }
+        }
+    }
+    else{
+        // return to set value
+        populateAvgTime();
+    }
+    colorDisplayFieldText();
+    ui->avgTimeDisplay->clearFocus();
+    ui->avgTimeDisplay->blockSignals(false);
+}
+
+
+void ConfigPowerMeter::on_continuousRadioBtn_clicked()
+{
+    minMaxMode[slotNum - 1] = PM_CONTINUOUS_MODE_STRING;
+    settings->setValue(PM_MINMAX_MODE, QVariant::fromValue(minMaxMode));
+
+    // swap colored status and update colors
+    minMaxRefreshModeColored[slotNum - 1] = false;
+    minMaxContinuousModeColored[slotNum - 1] = true;
+
+    colorDisplayFieldText();
+}
+
+void ConfigPowerMeter::on_refreshRadioBtn_clicked()
+{
+    minMaxMode[slotNum - 1] = PM_REFRESH_MODE_STRING;
+    settings->setValue(PM_MINMAX_MODE, QVariant::fromValue(minMaxMode));
+
+    // swap colored status and update colors
+    minMaxRefreshModeColored[slotNum - 1] = true;
+    minMaxContinuousModeColored[slotNum - 1] = false;
+
+    colorDisplayFieldText();
+}
+
+
+void ConfigPowerMeter::on_dataPointsEdit_editingFinished()
+{
+    ui->dataPointsEdit->blockSignals(true);
+
+    QByteArray fieldText = ui->dataPointsEdit->text().toLatin1();
+
+    if(fieldText != ""){
+
+        // see if value can be converted to double
+        bool ok;
+        double dataPoints = fieldText.toDouble(&ok);
+
+        // if conversion can't be made, error message
+        if(!ok){
+            QMessageBox msgBox;
+            msgBox.setText("Value entered is invalid (non-numeric).");
+            msgBox.exec();
+            ui->dataPointsEdit->clear();
+        }
+        else{
+            if(dataPoints < 1){
+                QMessageBox msgBox;
+                msgBox.setText("Data points must be greater than 0.");
+                msgBox.exec();
+                ui->dataPointsEdit->clear();
+            }
+            else{
+                // if the data points value was not changed, don't set colored flag
+                if(dataPoints != minMaxDataPoints[slotNum - 1].toInt()){
+                     minMaxDataPointsColored[slotNum - 1] = true;
+                }
+
+                minMaxDataPoints[slotNum - 1] = QByteArray::number(dataPoints);
+
+                // update the settings object
+                settings->setValue(PM_MINMAX_DATA_POINTS, QVariant::fromValue(minMaxDataPoints));
+            }
+        }
+    }
+
+    colorDisplayFieldText();
+    ui->dataPointsEdit->clearFocus();
+    ui->dataPointsEdit->blockSignals(false);
+}
+
+void ConfigPowerMeter::on_timeUnitComboBox_currentIndexChanged(const QString &unit)
+{
+    // change labels to match new unit
+    ui->avgTimeUnitLabel->setText(unit);
+    ui->periodTimeUnitLabel->setText(unit);
+
+    // convert current values to new unit
+    if(ui->totalTimeDisplay->text() != ""){
+        double totalTime = totalTimeInSeconds[slotNum - 1].toDouble();
+        double newTotalTime = ConversionUtilities::convertTimeFromSeconds(totalTime, unit.toLatin1());
+        ui->totalTimeDisplay->setText(QByteArray::number(newTotalTime));
+    }
+    if(ui->periodTimeDisplay->text() != ""){
+        double periodTime = periodTimeInSeconds[slotNum - 1].toDouble();
+        double newPeriodTime = ConversionUtilities::convertTimeFromSeconds(periodTime, unit.toLatin1());
+        ui->periodTimeDisplay->setText(QByteArray::number(newPeriodTime));
+    }
+    if(ui->avgTimeDisplay->text() != ""){
+        double avgTime = avgTimeInSeconds[slotNum - 1].toDouble();
+        double newAvgTime = ConversionUtilities::convertTimeFromSeconds(avgTime, unit.toLatin1());
+        ui->avgTimeDisplay->setText(QByteArray::number(newAvgTime));
+    }
 }

@@ -190,13 +190,24 @@ const QByteArray EXFO_OSICS_T100_1620_TYPE_NAME = "T100/1620\n";
 const QByteArray DEVICE_ADDRESS = "Device Location";
 const QByteArray DEVICE_IDENTITY = "Device Identity";
 const QByteArray DEVICE_NICKNAME = "Device Nickname";
+
 // QSettings Key Values - Power Meter
 const QByteArray NUM_CHANNELS = "PowerMeter Num Channels";
 const QByteArray POWER_READINGS = "PowerMeter Power Readings";
 const QByteArray WAVELENGTH_SETTINGS = "PowerMeter Wavelength Settings";
 const QByteArray MIN_WAVELENGTHS = "PowerMeter Min Wavelength";
 const QByteArray MAX_WAVELENGTHS = "PowerMeter Max Wavelength";
-
+const QByteArray PM_AVERAGING_TIME = "Power Meter Averaging Time";
+const QByteArray PM_PERIOD_TIME = "Power Meter Period Time";
+const QByteArray PM_TOTAL_TIME = "Power Meter Stability Total Time";
+const QByteArray PM_MINMAX_MODE = "Power Meter MinMax Mode";
+const QByteArray PM_MINMAX_DATA_POINTS = "Power Meter MinMax Mode Data Points";
+const double PM_MIN_AVG_TIME_SECONDS = 25 * pow(10, -6);  // 25 microseconds to seconds
+const double PM_MAX_AVG_TIME_SECONDS = 10;
+const double PM_MAX_TOTAL_TIME_SECONDS = 277 * 60 * 60; // 277 hours to seconds
+const QByteArray PM_REFRESH_MODE_STRING = "REFRESH";
+const QByteArray PM_CONTINUOUS_MODE_STRING = "CONTINUOUS";
+const double PM_MIN_TOTAL_TIME_SECONDS = PM_MIN_AVG_TIME_SECONDS;
 // QSettings Key Values - N7714A
 const QByteArray N7714A_POWER_SETTINGS = "N7714A Power Settings";
 const QByteArray N7714A_MIN_POWER = "N7714A Min Power";

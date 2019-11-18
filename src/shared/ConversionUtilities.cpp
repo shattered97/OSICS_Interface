@@ -50,3 +50,41 @@ double ConversionUtilities::convertFrequencyToWavelength(double frequency){
     double wavelength = SPEED_OF_LIGHT / frequency;
     return wavelength;
 }
+
+double ConversionUtilities::convertTimeFromSeconds(double time, QByteArray unit){
+    double convertedTime = time;
+
+    if(unit == "hr"){
+        convertedTime = time / 60 / 60;
+    }
+    else if(unit == "min"){
+        convertedTime = time / 60;
+    }
+    else if(unit == "ms"){
+        convertedTime = time * 1000;
+    }
+    else if(unit == "us"){
+        convertedTime = time / qPow(10, -6);
+    }
+
+    return convertedTime;
+}
+
+double ConversionUtilities::convertTimeToSeconds(double time, QByteArray unit){
+    double convertedTime = time;
+
+    if(unit == "hr"){
+        convertedTime = time * 60 * 60;
+    }
+    else if(unit == "min"){
+        convertedTime = time * 60;
+    }
+    else if(unit == "ms"){
+        convertedTime = time / 1000;
+    }
+    else if(unit == "us"){
+        convertedTime = time * qPow(10, -6);
+    }
+
+    return convertedTime;
+}

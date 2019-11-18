@@ -18,6 +18,9 @@ public:
     static double convertFrequencyToHz(double freuqency, QByteArray unit);
     static double convertWavelengthToFrequency(double wavelength);
     static double convertFrequencyToWavelength(double frequency);
+    static double convertTimeFromSeconds(double time, QByteArray unit);
+    static double convertTimeToSeconds(double time, QByteArray unit);
+
 };
 
 #endif // CONVERSIONUTILITIES_H

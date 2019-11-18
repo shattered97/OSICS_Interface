@@ -22,6 +22,10 @@ public:
     virtual QList<QByteArray> formatPowerUnits(QByteArray rawUnits, int numChannels) = 0;
     virtual QList<QByteArray> parseBinaryBlockPowerReadings(QByteArray binaryBlock, int numBytesPerValue) = 0;
     virtual QList<QByteArray> getPowerReadingOnAllChannels() = 0;
+    virtual QByteArray getStabilityValues(int channel) = 0;
+    virtual void setStabilityValues(int channel, double totalTime, double avgTime, double periodTime) = 0;
+    virtual QByteArray getMinMaxModeValues(int channel) = 0;
+    virtual void setMinMaxModeValues(int channel, QByteArray mode, int dataPoints) = 0;
     virtual void updateConfig(QSettings *) = 0;
     virtual void applyConfigSettings(QSettings *) = 0;
     void setNumChannelsVar(int numChannels);
@@ -29,6 +33,7 @@ public:
 
 public slots:
     void slotSetupPowerMeter();
+
 private:
     // identity of instrument (manufacturer, model num, etc.)
     QByteArray theIdentity;

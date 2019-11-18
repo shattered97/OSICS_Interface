@@ -24,16 +24,22 @@ public:
     QList<QByteArray> getPowerReadingOnAllChannels();
     void updateConfig(QSettings *configSettings);
     QByteArray getAllPowerReadings();
-
+    QByteArray getStabilityValues(int channel);
+    void setStabilityValues(int channel, double totalTime, double avgTime, double periodTime);
+    void setMinMaxModeValues(int channel, QByteArray mode, int dataPoints);
+    QByteArray getMinMaxModeValues(int channel);
+    
+    void updateMinMaxSettings(QSettings &configSettings);
     void updatePowerSettings(QSettings &configSettings);
     void updateWavelengthSettings(QSettings &configSettings);
+    void updateStabilitySettings(QSettings &configSettings);
     void applyConfigSettings(QSettings *configSettings);
 
 private:
     QByteArray theIdentity;                 // identity of instrument (manufacturer, model num, etc.)
     QByteArray theInstrLoc;                 // the physical address of the instrument
     int numChannels;                        // the number of slots/channels of the power meter
-    QByteArray response = "";
+    QByteArray response = "";               // holds a communication response from the instrument (power meter)
 };
 
 #endif // KEYSIGHTPOWERMETER_H
