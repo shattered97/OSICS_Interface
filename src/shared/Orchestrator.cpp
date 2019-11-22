@@ -129,6 +129,12 @@ void Orchestrator::slotGetEXFOModuleQVariants(QMap<int, QVariant> &modules, QVar
     QByteArray chassisAddress = exfo->getInstrLocation();
     QByteArray chassisIdentity = exfo->getInstrIdentity();
     QList<QByteArray> modTypes = exfo->getModuleTypeNames();
+
+    // #TODO TESTING ONLY
+//    modTypes[1] = "T100";
+//    modTypes[2] = "T100";
+//    modTypes[3] = "T100";
+
     QVariant moduleVariant;
 
 

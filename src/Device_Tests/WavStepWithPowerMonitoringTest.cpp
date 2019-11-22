@@ -27,7 +27,9 @@ WavStepWithPowerMonitoringTest::WavStepWithPowerMonitoringTest(QList<QVariant> s
     QObject::connect(this, SIGNAL(signalDisplayPowerReadings(QByteArray, QList<QByteArray>)),
                      &configWindow, SLOT(slotDisplayPowerReadings(QByteArray, QList<QByteArray>)));
     QObject::connect(&configWindow, SIGNAL(signalShowGraphWindow()), this, SLOT(slotShowGraphWindow()));
-
+    QObject::connect(&configWindow, SIGNAL(signalGetStaticGraphDataFromFile(QList<QPair<QByteArray, QPointF>> &,
+                                                                            double, double)),
+                     this, SLOT(slotGetStaticGraphDataFromFile(QList<QPair<QByteArray, QPointF>> &, double, double)));
 }
 
 WavStepWithPowerMonitoringTest::~WavStepWithPowerMonitoringTest(){
@@ -146,14 +148,16 @@ void WavStepWithPowerMonitoringTest::runDeviceTest()
 
     // create graph window
     double graphRefreshMsec = graphRefreshRate * SEC_TO_MSEC_MULTIPLIER;
-    graphWindow = new WavStep_Power_Monitoring_Graph_Window(channelsToGraph, maxSeriesDataPoints, graphRefreshMsec);
+    graphWindow = new WavStep_Power_Monitoring_Graph_Window(channelsToGraph, maxSeriesDataPoints, graphRefreshMsec, false);
 
     QObject::connect(worker, SIGNAL(signalAddReadingsToGraph(QList<WavStepPowerMonitoringDataPoint>)),
                      graphWindow, SLOT(slotAddReadingsToGraph(QList<WavStepPowerMonitoringDataPoint>)));
     QObject::connect(configWindow, SIGNAL(signalStopAllWorkerThreads()), worker, SLOT(slotStopWorkerThreads()));
     QObject::connect(worker, SIGNAL(signalDisplayCurrentWavelength(QByteArray)), configWindow, SLOT(slotDisplayCurrentWavelength(QByteArray)));
     QObject::connect(worker, SIGNAL(signalTestCompleted()), configWindow, SLOT(slotTestCompleted()));
-
+    QObject::connect(configWindow, SIGNAL(signalGetTestTimesFromFile(double &, double &)),
+                     this, SLOT(slotGetTestTimesFromFile(double &, double &)));
+    qDebug() << "______________________________________________________________________________";
     connect(worker, SIGNAL(finished()), workerThread, SLOT(quit()));
     connect(workerThread, SIGNAL(started()), worker, SLOT(runTest()));
     connect(worker, SIGNAL(finished()), worker, SLOT(deleteLater()));
@@ -371,5 +375,86 @@ void WavStepWithPowerMonitoringTest::slotGetPowerMeterDisplayPairs(QList<QPair<Q
             QPair<QByteArray, int> pair = {powerMeterID, i};
             powerMeterDisplayPairs.append(pair);
         }
+    }
+}
+
+void WavStepWithPowerMonitoringTest::slotGetTestTimesFromFile(double &testStartTime, double &currentTestTime){
+    // #TODO lock for file
+
+    QFile file(csvFilename);
+    if(file.open(QIODevice::ReadOnly)){
+        QTextStream stream(&file);
+        int linesRead = 0;
+        testStartTime = 0;
+        currentTestTime = 0;
+        double timeAtCurrentLine = 0;
+
+        if(!stream.atEnd()){
+            // get first line and ignore (csv header)
+            stream.readLine();
+        }
+        while(!stream.atEnd()){
+            QString line = stream.readLine();
+            linesRead++;
+
+            // get time (index 2 in line)
+            int indexOfTestTimeInLine = 2; // #TODO MAKE A CONSTANT
+            timeAtCurrentLine = line.split(',')[indexOfTestTimeInLine].toDouble();
+
+            // start time is set to the first time value read
+            if(testStartTime <= 0){
+                testStartTime = timeAtCurrentLine;
+            }
+        }
+
+        file.close();
+
+        // set end to the last time read from the file
+        currentTestTime = timeAtCurrentLine;
+
+        if(linesRead == 0){
+            // #TODO pass error to window class
+        }
+
+    }
+
+}
+
+void WavStepWithPowerMonitoringTest::slotGetStaticGraphDataFromFile(QList<QPair<QByteArray, QPointF>> &dataFromGraph, double graphStartTime, double graphEndtime){
+    // #TODO lock for file
+
+    QFile file(csvFilename);
+    if(file.open(QIODevice::ReadOnly)){
+        QTextStream stream(&file);
+        int linesRead = 0;
+
+        if(!stream.atEnd()){
+            // get first line and ignore (csv header)
+            stream.readLine();
+        }
+        while(!stream.atEnd()){
+            QString line = stream.readLine();
+            linesRead++;
+
+            // get time (index 2 in line)
+            int indexOfTestTimeInLine = 2; // #TODO MAKE A CONSTANT
+            double timeAtCurrentLine = line.split(',')[indexOfTestTimeInLine].toDouble();
+
+            if(timeAtCurrentLine >= graphStartTime && timeAtCurrentLine <= graphEndtime){
+                // get series name (index 0 in line)
+                QByteArray seriesName = line.split(',')[0].toLatin1();
+
+                // get power reading (index 1 in line) and convert to dBm
+                int indexOfPowerInLine = 1; // #TODO MAKE A CONSTANT
+                double powerAtCurrentLine = line.split(',')[indexOfPowerInLine].toDouble();
+                powerAtCurrentLine = ConversionUtilities::convertWattToDBm(powerAtCurrentLine);
+
+                // add to list (data points will be processed in the graph window class, we want to free-up the file)
+                dataFromGraph.append({seriesName, {timeAtCurrentLine, powerAtCurrentLine}});
+            }
+
+        }
+
+        file.close();
     }
 }

@@ -24,8 +24,10 @@ class WavStep_Power_Monitoring_Graph_Window : public QMainWindow
 
 public:
     explicit WavStep_Power_Monitoring_Graph_Window(QList<QByteArray> seriesNames, int maxSeriesSize,
-                                                   double refreshTimeMsec, QWidget *parent = nullptr);
+                                                   double refreshTimeMsec, bool isGraphStatic, QWidget *parent = nullptr);
     ~WavStep_Power_Monitoring_Graph_Window();
+
+    void generateStaticGraph(QList<QPair<QByteArray, QPointF>> &dataFromGraph);
 
 public slots:
     /**
@@ -49,6 +51,9 @@ private:
     double refreshTimeMsec = 0;                                /* Min time between graph re-draws */
     QMutex mutex;
     double wavelength = 0;
+    bool isGraphStatic = false;
+
+
 
     /**
      * @brief drawGraph Creates a new graph from the current data in the pointsPerSeries map and displays it.

@@ -43,8 +43,8 @@ public slots:
     void slotWrapUpTest();
     void slotTestWindowClosed();
     void slotIsPollingContinued(bool *continuePolling);
-
-
+    void slotGetTestTimesFromFile(double &testStartTime, double &currentTestTime);
+    void slotGetStaticGraphDataFromFile(QList<QPair<QByteArray, QPointF>> &dataFromGraph, double graphStartTime, double graphEndtime);
 private:
 
 
@@ -98,6 +98,7 @@ private:
     QMutex pollingLock;
     bool continuePolling = true;
 
+    void getStartAndEndTimeFromCsvFile();
 };
 
 #endif // WAVSTEPWITHPOWERMONITORINGTEST_H

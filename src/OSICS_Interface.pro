@@ -50,6 +50,7 @@ SOURCES += \
         Device_Tests/exfo_operationaltest_t100_swt_atn_window.cpp \
         Device_Tests/exfo_t100_pm_power_step_test.cpp \
         Device_Tests/powermeterpollingworker.cpp \
+        Device_Tests/snapshotgraphdialog.cpp \
         Device_Tests/wavstep_power_monitoring_file_worker.cpp \
         Device_Tests/wavstep_power_monitoring_graph_window.cpp \
         Device_Tests/wavstep_power_monitoring_test_window.cpp \
@@ -92,6 +93,7 @@ HEADERS += \
         Device_Tests/exfo_operationaltest_t100_swt_atn_window.h \
         Device_Tests/exfo_t100_pm_power_step_test.h \
         Device_Tests/powermeterpollingworker.h \
+        Device_Tests/snapshotgraphdialog.h \
         Device_Tests/wavstep_power_monitoring_file_worker.h \
         Device_Tests/wavstep_power_monitoring_graph_window.h \
         Device_Tests/wavstep_power_monitoring_test_window.h \
@@ -131,6 +133,7 @@ HEADERS += \
 
 FORMS += \
         Device_Tests/exfo_operationaltest_t100_swt_atn_window.ui \
+        Device_Tests/snapshotgraphdialog.ui \
         Device_Tests/wavstep_power_monitoring_graph_window.ui \
         Device_Tests/wavstep_power_monitoring_test_window.ui \
         mainwindow.ui \
