@@ -77,6 +77,8 @@ public slots:
      */
     void slotStopWorkerThreads();
 
+    void slotGetCurrentTestTime(double *testTime);
+
 private:
     TestData testData;                                          /* All parameters needed to execute the step test */
     QElapsedTimer timer;                                        /* Timer to measure when readings were taken */

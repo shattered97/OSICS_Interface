@@ -4,6 +4,7 @@
 #include "constants.h"
 #include "wavstep_power_monitoring_graph_window.h"
 #include "ConversionUtilities.h"
+#include "snapshotgraphdialog.h"
 
 #include <QMainWindow>
 #include <QDebug>
@@ -52,6 +53,8 @@ signals:
     void signalShowGraphWindow();
     void signalStopAllWorkerThreads();
     void signalTestWindowClosed();
+    void signalGetTestTimesFromFile(double &testStartTime, double &currentTestTime);
+    void signalGetStaticGraphDataFromFile(QList<QPair<QByteArray, QPointF>> &dataFromGraph, double graphStartTime, double graphEndtime);
 
 public slots:
     /**
@@ -159,6 +162,8 @@ private slots:
     
     void on_seriesDataPointsEdit_editingFinished();
 
+    void on_openSnapshotGraphBtn_clicked();
+
 private:
     Ui::WavStep_Power_Monitoring_Test_Window *ui;
 
@@ -171,6 +176,8 @@ private:
     WavStep_Power_Monitoring_Graph_Window *graphWindow;
     bool isConfigured = false;
     QString settingsFileName;
+    SnapshotGraphDialog snapshotGraphDialog;
+    WavStep_Power_Monitoring_Graph_Window *snapshotGraphWindow;
 
     /**
      * @brief isInputValueValid Checks if the passed in input value is valid (non-empty and non-numeric). If the

@@ -769,6 +769,7 @@ void WavStep_Power_Monitoring_Test_Window::disableFieldsOnTestStart(){
     ui->beginTestPB->setEnabled(false);
     ui->selectCsvLocButton->setEnabled(false);
 
+    ui->openSnapshotGraphBtn->setEnabled(true);
     ui->openGraphWindowButton->setEnabled(true);
 }
 
@@ -790,6 +791,41 @@ void WavStep_Power_Monitoring_Test_Window::enableFieldsOnTestFinish(){
     ui->beginTestPB->setEnabled(true);
     ui->selectCsvLocButton->setEnabled(true);
 
+    ui->openSnapshotGraphBtn->setEnabled(true);
     ui->openGraphWindowButton->setEnabled(false);
 }
 
+
+void WavStep_Power_Monitoring_Test_Window::on_openSnapshotGraphBtn_clicked()
+{
+    double testStartTime = 0;
+    double currentTestTime = 0;
+    emit signalGetTestTimesFromFile(testStartTime, currentTestTime);
+
+    // set these values in the snapshot dialog
+    snapshotGraphDialog.setTestStartTime(testStartTime);
+    snapshotGraphDialog.setTestCurrentTime(currentTestTime);
+
+    int result = snapshotGraphDialog.exec();
+    if(result == QDialog::Accepted)
+    {
+        qDebug() << "---------------------------------------------------------";
+        qDebug() << "start time " << snapshotGraphDialog.getGraphStartTime();
+        qDebug() << "end time " << snapshotGraphDialog.getGraphEndTime();
+        qDebug() << "---------------------------------------------------------";
+
+        double graphStartTime = snapshotGraphDialog.getGraphStartTime();
+        double graphEndTime = snapshotGraphDialog.getGraphEndTime();
+
+        // create chart and display
+        snapshotGraphWindow = new WavStep_Power_Monitoring_Graph_Window(seriesNames, 0, 0, true);
+
+        QList<QPair<QByteArray, QPointF>> dataFromGraph;
+        emit signalGetStaticGraphDataFromFile(dataFromGraph, graphStartTime, graphEndTime);
+
+        snapshotGraphWindow->generateStaticGraph(dataFromGraph);
+        snapshotGraphWindow->show();
+
+
+    }
+}

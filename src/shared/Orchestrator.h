@@ -33,6 +33,8 @@ Q_DECLARE_METATYPE(QVariant)
 Q_DECLARE_METATYPE(QVariant*)
 Q_DECLARE_METATYPE(FoundInstr)
 Q_DECLARE_METATYPE(QList<double>)
+Q_DECLARE_METATYPE(double)
+Q_DECLARE_METATYPE(double *)
 
 
 namespace deviceType

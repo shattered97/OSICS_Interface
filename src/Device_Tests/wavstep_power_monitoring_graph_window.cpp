@@ -3,7 +3,7 @@
 
 
 WavStep_Power_Monitoring_Graph_Window::WavStep_Power_Monitoring_Graph_Window(QList<QByteArray> seriesNames,
-                                                                             int maxSeriesSize, double refreshTimeMsec,
+                                                                             int maxSeriesSize, double refreshTimeMsec, bool isGraphStatic,
                                                                              QWidget *parent) : QMainWindow(parent),
     ui(new Ui::wavstep_power_monitoring_graph_window)
 {
@@ -12,7 +12,7 @@ WavStep_Power_Monitoring_Graph_Window::WavStep_Power_Monitoring_Graph_Window(QLi
     this->seriesNames = seriesNames;
     this->refreshTimeMsec = refreshTimeMsec;
     this->maxSeriesSize = maxSeriesSize;
-
+    this->isGraphStatic = isGraphStatic;
     setupGraphing();
 
     // needed for using signals/slots with parameters of this type
@@ -28,7 +28,6 @@ WavStep_Power_Monitoring_Graph_Window::~WavStep_Power_Monitoring_Graph_Window()
 
 void WavStep_Power_Monitoring_Graph_Window::setupGraphing(){
 
-
     // set up keys for map of series names to QPoint lists
     for(auto name : seriesNames){
         name = name.replace(",", "");
@@ -36,8 +35,6 @@ void WavStep_Power_Monitoring_Graph_Window::setupGraphing(){
         pointsLists.append(placeholder);
         pointsListIndexPerSeries.insert(name, pointsLists.size() - 1);
     }
-
-
 
     // begin refresh timer
     timer.start();
@@ -71,11 +68,9 @@ void WavStep_Power_Monitoring_Graph_Window::processDataPoint(WavStepPowerMonitor
 
 void WavStep_Power_Monitoring_Graph_Window::maintainSeriesSize(QList<QPointF> &points){
     // if the list contains >= maxSeriesSize, knock off the first value
-//    qDebug() << points.size();
     if(points.size() >= maxSeriesSize){
         points.removeFirst();
     }
-
 }
 
 void WavStep_Power_Monitoring_Graph_Window::slotAddReadingsToGraph(QList<WavStepPowerMonitoringDataPoint> dataPoints)
@@ -133,4 +128,20 @@ void WavStep_Power_Monitoring_Graph_Window::drawGraph()
         // reset timer
         timer.restart();
     }
+}
+
+void WavStep_Power_Monitoring_Graph_Window::generateStaticGraph(QList<QPair<QByteArray, QPointF>> &dataFromGraph){
+    // take data and sort it into lists matching the seriesName
+    for(auto dataPoint : dataFromGraph){
+        if(pointsListIndexPerSeries.contains(dataPoint.first)){
+            qDebug() << dataPoint.second;
+            QByteArray seriesNameFromDataPoint = dataPoint.first;
+            int indexToInsert = pointsListIndexPerSeries.value(seriesNameFromDataPoint);
+            pointsLists[indexToInsert].append(dataPoint.second);
+        }
+    }
+
+    drawGraph();
+
+
 }

@@ -174,11 +174,6 @@ void WavStep_Power_Monitoring_Test_Worker::executeTestStep(double currentWavelen
                 powerMeterName = powerMeterName + channel;
                 QByteArray reading = readings[i - 1];
 
-
-                // ##### testing only
-                if(i == 3){
-                    double todBm = ConversionUtilities::convertWattToDBm(reading.toDouble());
-      }
                 // create data points for graph/.csv
                 WavStepPowerMonitoringDataPoint testDataPoint = {powerMeterName, reading,
                                                                  timeOfReading, wavelengthToSet};
@@ -251,4 +246,13 @@ void WavStep_Power_Monitoring_Test_Worker::slotStopWorkerThreads(){
     }
 
     emit finished();
+}
+
+void WavStep_Power_Monitoring_Test_Worker::slotGetCurrentTestTime(double *testTime){
+
+    if(testTime){
+        qDebug() << "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1  ELAPSED TIME: " << timer.elapsed();
+        *testTime = timer.elapsed();
+    }
+
 }
