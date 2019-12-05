@@ -147,6 +147,9 @@ void EXFO_T100_PM_Power_Step_Test::runTestLoop(QByteArray filename, double start
         currentPow += powStep;
     }
 
+    // reset laser power to 0
+    powerToSet = QByteArray::number(startPow);
+
     // shut off laser
     t100->disableModuleLaserCmd(t100SlotNum);
 
