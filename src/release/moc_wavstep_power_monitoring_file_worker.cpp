@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'wavstep_power_monitoring_file_worker.h'
 **
-** Created by: The Qt Meta Object Compiler version 67 (Qt 5.13.0)
+** Created by: The Qt Meta Object Compiler version 67 (Qt 5.13.2)
 **
 ** WARNING! All changes made in this file will be lost!
 *****************************************************************************/
@@ -14,7 +14,7 @@
 #if !defined(Q_MOC_OUTPUT_REVISION)
 #error "The header file 'wavstep_power_monitoring_file_worker.h' doesn't include <QObject>."
 #elif Q_MOC_OUTPUT_REVISION != 67
-#error "This file was generated using the moc from 5.13.0. It"
+#error "This file was generated using the moc from 5.13.2. It"
 #error "cannot be used with the include files from this version of Qt."
 #error "(The moc has changed too much.)"
 #endif
@@ -24,7 +24,7 @@ QT_WARNING_PUSH
 QT_WARNING_DISABLE_DEPRECATED
 struct qt_meta_stringdata_WavStep_Power_Monitoring_File_Worker_t {
     QByteArrayData data[8];
-    char stringdata0[160];
+    char stringdata0[156];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -37,15 +37,15 @@ QT_MOC_LITERAL(0, 0, 36), // "WavStep_Power_Monitoring_File..."
 QT_MOC_LITERAL(1, 37, 8), // "finished"
 QT_MOC_LITERAL(2, 46, 0), // ""
 QT_MOC_LITERAL(3, 47, 21), // "slotWriteBufferToFile"
-QT_MOC_LITERAL(4, 69, 42), // "QList<WavStep_Power_Monitorin..."
-QT_MOC_LITERAL(5, 112, 10), // "dataPoints"
-QT_MOC_LITERAL(6, 123, 21), // "startFileOutputWorker"
-QT_MOC_LITERAL(7, 145, 14) // "slotStopThread"
+QT_MOC_LITERAL(4, 69, 38), // "QList<WavStepPowerMonitoringD..."
+QT_MOC_LITERAL(5, 108, 10), // "dataPoints"
+QT_MOC_LITERAL(6, 119, 21), // "startFileOutputWorker"
+QT_MOC_LITERAL(7, 141, 14) // "slotStopThread"
 
     },
     "WavStep_Power_Monitoring_File_Worker\0"
     "finished\0\0slotWriteBufferToFile\0"
-    "QList<WavStep_Power_Monitoring_Data_Point>\0"
+    "QList<WavStepPowerMonitoringDataPoint>\0"
     "dataPoints\0startFileOutputWorker\0"
     "slotStopThread"
 };
@@ -90,7 +90,7 @@ void WavStep_Power_Monitoring_File_Worker::qt_static_metacall(QObject *_o, QMeta
         Q_UNUSED(_t)
         switch (_id) {
         case 0: _t->finished(); break;
-        case 1: _t->slotWriteBufferToFile((*reinterpret_cast< QList<WavStep_Power_Monitoring_Data_Point>(*)>(_a[1]))); break;
+        case 1: _t->slotWriteBufferToFile((*reinterpret_cast< QList<WavStepPowerMonitoringDataPoint>(*)>(_a[1]))); break;
         case 2: _t->startFileOutputWorker(); break;
         case 3: _t->slotStopThread(); break;
         default: ;

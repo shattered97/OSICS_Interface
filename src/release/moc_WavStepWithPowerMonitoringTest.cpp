@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'WavStepWithPowerMonitoringTest.h'
 **
-** Created by: The Qt Meta Object Compiler version 67 (Qt 5.13.0)
+** Created by: The Qt Meta Object Compiler version 67 (Qt 5.13.2)
 **
 ** WARNING! All changes made in this file will be lost!
 *****************************************************************************/
@@ -14,7 +14,7 @@
 #if !defined(Q_MOC_OUTPUT_REVISION)
 #error "The header file 'WavStepWithPowerMonitoringTest.h' doesn't include <QObject>."
 #elif Q_MOC_OUTPUT_REVISION != 67
-#error "This file was generated using the moc from 5.13.0. It"
+#error "This file was generated using the moc from 5.13.2. It"
 #error "cannot be used with the include files from this version of Qt."
 #error "(The moc has changed too much.)"
 #endif
@@ -23,8 +23,8 @@ QT_BEGIN_MOC_NAMESPACE
 QT_WARNING_PUSH
 QT_WARNING_DISABLE_DEPRECATED
 struct qt_meta_stringdata_WavStepWithPowerMonitoringTest_t {
-    QByteArrayData data[29];
-    char stringdata0[561];
+    QByteArrayData data[39];
+    char stringdata0[726];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -41,35 +41,43 @@ QT_MOC_LITERAL(4, 68, 6), // "maxWav"
 QT_MOC_LITERAL(5, 75, 26), // "signalDisplayPowerReadings"
 QT_MOC_LITERAL(6, 102, 18), // "powerMeterIdentity"
 QT_MOC_LITERAL(7, 121, 8), // "readings"
-QT_MOC_LITERAL(8, 130, 29), // "signalGraphPowerMeterReadings"
-QT_MOC_LITERAL(9, 160, 20), // "WavStepPowerTestData"
-QT_MOC_LITERAL(10, 181, 13), // "slotBeginTest"
-QT_MOC_LITERAL(11, 195, 10), // "QSettings*"
-QT_MOC_LITERAL(12, 206, 8), // "settings"
-QT_MOC_LITERAL(13, 215, 23), // "slotGetT100DisplayNames"
-QT_MOC_LITERAL(14, 239, 18), // "QList<QByteArray>&"
-QT_MOC_LITERAL(15, 258, 12), // "displayNames"
-QT_MOC_LITERAL(16, 271, 20), // "slotSwitchMapChanged"
-QT_MOC_LITERAL(17, 292, 20), // "QMap<int,QByteArray>"
-QT_MOC_LITERAL(18, 313, 19), // "swtChannelToT100Map"
-QT_MOC_LITERAL(19, 333, 29), // "slotGetPowerMeterDisplayPairs"
-QT_MOC_LITERAL(20, 363, 30), // "QList<QPair<QByteArray,int> >&"
-QT_MOC_LITERAL(21, 394, 22), // "powerMeterDisplayPairs"
-QT_MOC_LITERAL(22, 417, 29), // "slotPollForPowerMeterReadings"
-QT_MOC_LITERAL(23, 447, 21), // "slotSendPowerReadings"
-QT_MOC_LITERAL(24, 469, 13), // "PowerReadings"
-QT_MOC_LITERAL(25, 483, 21), // "readingsForPowerMeter"
-QT_MOC_LITERAL(26, 505, 19), // "slotShowGraphWindow"
-QT_MOC_LITERAL(27, 525, 20), // "prepareOutputDataMap"
-QT_MOC_LITERAL(28, 546, 14) // "slotWrapUpTest"
+QT_MOC_LITERAL(8, 130, 13), // "slotBeginTest"
+QT_MOC_LITERAL(9, 144, 10), // "QSettings*"
+QT_MOC_LITERAL(10, 155, 8), // "settings"
+QT_MOC_LITERAL(11, 164, 23), // "slotGetT100DisplayNames"
+QT_MOC_LITERAL(12, 188, 18), // "QList<QByteArray>&"
+QT_MOC_LITERAL(13, 207, 12), // "displayNames"
+QT_MOC_LITERAL(14, 220, 20), // "slotSwitchMapChanged"
+QT_MOC_LITERAL(15, 241, 20), // "QMap<int,QByteArray>"
+QT_MOC_LITERAL(16, 262, 19), // "swtChannelToT100Map"
+QT_MOC_LITERAL(17, 282, 29), // "slotGetPowerMeterDisplayPairs"
+QT_MOC_LITERAL(18, 312, 30), // "QList<QPair<QByteArray,int> >&"
+QT_MOC_LITERAL(19, 343, 22), // "powerMeterDisplayPairs"
+QT_MOC_LITERAL(20, 366, 29), // "slotPollForPowerMeterReadings"
+QT_MOC_LITERAL(21, 396, 21), // "slotSendPowerReadings"
+QT_MOC_LITERAL(22, 418, 13), // "PowerReadings"
+QT_MOC_LITERAL(23, 432, 21), // "readingsForPowerMeter"
+QT_MOC_LITERAL(24, 454, 19), // "slotShowGraphWindow"
+QT_MOC_LITERAL(25, 474, 14), // "slotWrapUpTest"
+QT_MOC_LITERAL(26, 489, 20), // "slotTestWindowClosed"
+QT_MOC_LITERAL(27, 510, 22), // "slotIsPollingContinued"
+QT_MOC_LITERAL(28, 533, 5), // "bool*"
+QT_MOC_LITERAL(29, 539, 15), // "continuePolling"
+QT_MOC_LITERAL(30, 555, 24), // "slotGetTestTimesFromFile"
+QT_MOC_LITERAL(31, 580, 7), // "double&"
+QT_MOC_LITERAL(32, 588, 13), // "testStartTime"
+QT_MOC_LITERAL(33, 602, 15), // "currentTestTime"
+QT_MOC_LITERAL(34, 618, 30), // "slotGetStaticGraphDataFromFile"
+QT_MOC_LITERAL(35, 649, 34), // "QList<QPair<QByteArray,QPoint..."
+QT_MOC_LITERAL(36, 684, 13), // "dataFromGraph"
+QT_MOC_LITERAL(37, 698, 14), // "graphStartTime"
+QT_MOC_LITERAL(38, 713, 12) // "graphEndtime"
 
     },
     "WavStepWithPowerMonitoringTest\0"
     "signalUpdateMinMaxWavelength\0\0minWav\0"
     "maxWav\0signalDisplayPowerReadings\0"
-    "powerMeterIdentity\0readings\0"
-    "signalGraphPowerMeterReadings\0"
-    "WavStepPowerTestData\0slotBeginTest\0"
+    "powerMeterIdentity\0readings\0slotBeginTest\0"
     "QSettings*\0settings\0slotGetT100DisplayNames\0"
     "QList<QByteArray>&\0displayNames\0"
     "slotSwitchMapChanged\0QMap<int,QByteArray>\0"
@@ -79,7 +87,13 @@ QT_MOC_LITERAL(28, 546, 14) // "slotWrapUpTest"
     "slotPollForPowerMeterReadings\0"
     "slotSendPowerReadings\0PowerReadings\0"
     "readingsForPowerMeter\0slotShowGraphWindow\0"
-    "prepareOutputDataMap\0slotWrapUpTest"
+    "slotWrapUpTest\0slotTestWindowClosed\0"
+    "slotIsPollingContinued\0bool*\0"
+    "continuePolling\0slotGetTestTimesFromFile\0"
+    "double&\0testStartTime\0currentTestTime\0"
+    "slotGetStaticGraphDataFromFile\0"
+    "QList<QPair<QByteArray,QPointF> >&\0"
+    "dataFromGraph\0graphStartTime\0graphEndtime"
 };
 #undef QT_MOC_LITERAL
 
@@ -89,44 +103,48 @@ static const uint qt_meta_data_WavStepWithPowerMonitoringTest[] = {
        8,       // revision
        0,       // classname
        0,    0, // classinfo
-      12,   14, // methods
+      14,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
        0,       // flags
-       3,       // signalCount
+       2,       // signalCount
 
  // signals: name, argc, parameters, tag, flags
-       1,    2,   74,    2, 0x06 /* Public */,
-       5,    2,   79,    2, 0x06 /* Public */,
-       8,    1,   84,    2, 0x06 /* Public */,
+       1,    2,   84,    2, 0x06 /* Public */,
+       5,    2,   89,    2, 0x06 /* Public */,
 
  // slots: name, argc, parameters, tag, flags
-      10,    1,   87,    2, 0x0a /* Public */,
-      13,    1,   90,    2, 0x0a /* Public */,
-      16,    1,   93,    2, 0x0a /* Public */,
-      19,    1,   96,    2, 0x0a /* Public */,
-      22,    0,   99,    2, 0x0a /* Public */,
-      23,    1,  100,    2, 0x0a /* Public */,
-      26,    0,  103,    2, 0x0a /* Public */,
-      27,    0,  104,    2, 0x0a /* Public */,
-      28,    0,  105,    2, 0x0a /* Public */,
+       8,    1,   94,    2, 0x0a /* Public */,
+      11,    1,   97,    2, 0x0a /* Public */,
+      14,    1,  100,    2, 0x0a /* Public */,
+      17,    1,  103,    2, 0x0a /* Public */,
+      20,    0,  106,    2, 0x0a /* Public */,
+      21,    1,  107,    2, 0x0a /* Public */,
+      24,    0,  110,    2, 0x0a /* Public */,
+      25,    0,  111,    2, 0x0a /* Public */,
+      26,    0,  112,    2, 0x0a /* Public */,
+      27,    1,  113,    2, 0x0a /* Public */,
+      30,    2,  116,    2, 0x0a /* Public */,
+      34,    3,  121,    2, 0x0a /* Public */,
 
  // signals: parameters
     QMetaType::Void, QMetaType::Double, QMetaType::Double,    3,    4,
     QMetaType::Void, QMetaType::QByteArray, QMetaType::QByteArrayList,    6,    7,
-    QMetaType::Void, 0x80000000 | 9,    2,
 
  // slots: parameters
-    QMetaType::Void, 0x80000000 | 11,   12,
-    QMetaType::Void, 0x80000000 | 14,   15,
-    QMetaType::Void, 0x80000000 | 17,   18,
-    QMetaType::Void, 0x80000000 | 20,   21,
+    QMetaType::Void, 0x80000000 | 9,   10,
+    QMetaType::Void, 0x80000000 | 12,   13,
+    QMetaType::Void, 0x80000000 | 15,   16,
+    QMetaType::Void, 0x80000000 | 18,   19,
     QMetaType::Void,
-    QMetaType::Void, 0x80000000 | 24,   25,
+    QMetaType::Void, 0x80000000 | 22,   23,
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
+    QMetaType::Void, 0x80000000 | 28,   29,
+    QMetaType::Void, 0x80000000 | 31, 0x80000000 | 31,   32,   33,
+    QMetaType::Void, 0x80000000 | 35, QMetaType::Double, QMetaType::Double,   36,   37,   38,
 
        0        // eod
 };
@@ -139,29 +157,31 @@ void WavStepWithPowerMonitoringTest::qt_static_metacall(QObject *_o, QMetaObject
         switch (_id) {
         case 0: _t->signalUpdateMinMaxWavelength((*reinterpret_cast< double(*)>(_a[1])),(*reinterpret_cast< double(*)>(_a[2]))); break;
         case 1: _t->signalDisplayPowerReadings((*reinterpret_cast< QByteArray(*)>(_a[1])),(*reinterpret_cast< QList<QByteArray>(*)>(_a[2]))); break;
-        case 2: _t->signalGraphPowerMeterReadings((*reinterpret_cast< WavStepPowerTestData(*)>(_a[1]))); break;
-        case 3: _t->slotBeginTest((*reinterpret_cast< QSettings*(*)>(_a[1]))); break;
-        case 4: _t->slotGetT100DisplayNames((*reinterpret_cast< QList<QByteArray>(*)>(_a[1]))); break;
-        case 5: _t->slotSwitchMapChanged((*reinterpret_cast< QMap<int,QByteArray>(*)>(_a[1]))); break;
-        case 6: _t->slotGetPowerMeterDisplayPairs((*reinterpret_cast< QList<QPair<QByteArray,int> >(*)>(_a[1]))); break;
-        case 7: _t->slotPollForPowerMeterReadings(); break;
-        case 8: _t->slotSendPowerReadings((*reinterpret_cast< PowerReadings(*)>(_a[1]))); break;
-        case 9: _t->slotShowGraphWindow(); break;
-        case 10: _t->prepareOutputDataMap(); break;
-        case 11: _t->slotWrapUpTest(); break;
+        case 2: _t->slotBeginTest((*reinterpret_cast< QSettings*(*)>(_a[1]))); break;
+        case 3: _t->slotGetT100DisplayNames((*reinterpret_cast< QList<QByteArray>(*)>(_a[1]))); break;
+        case 4: _t->slotSwitchMapChanged((*reinterpret_cast< QMap<int,QByteArray>(*)>(_a[1]))); break;
+        case 5: _t->slotGetPowerMeterDisplayPairs((*reinterpret_cast< QList<QPair<QByteArray,int> >(*)>(_a[1]))); break;
+        case 6: _t->slotPollForPowerMeterReadings(); break;
+        case 7: _t->slotSendPowerReadings((*reinterpret_cast< PowerReadings(*)>(_a[1]))); break;
+        case 8: _t->slotShowGraphWindow(); break;
+        case 9: _t->slotWrapUpTest(); break;
+        case 10: _t->slotTestWindowClosed(); break;
+        case 11: _t->slotIsPollingContinued((*reinterpret_cast< bool*(*)>(_a[1]))); break;
+        case 12: _t->slotGetTestTimesFromFile((*reinterpret_cast< double(*)>(_a[1])),(*reinterpret_cast< double(*)>(_a[2]))); break;
+        case 13: _t->slotGetStaticGraphDataFromFile((*reinterpret_cast< QList<QPair<QByteArray,QPointF> >(*)>(_a[1])),(*reinterpret_cast< double(*)>(_a[2])),(*reinterpret_cast< double(*)>(_a[3]))); break;
         default: ;
         }
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
         switch (_id) {
         default: *reinterpret_cast<int*>(_a[0]) = -1; break;
-        case 3:
+        case 2:
             switch (*reinterpret_cast<int*>(_a[1])) {
             default: *reinterpret_cast<int*>(_a[0]) = -1; break;
             case 0:
                 *reinterpret_cast<int*>(_a[0]) = qRegisterMetaType< QSettings* >(); break;
             }
             break;
-        case 8:
+        case 7:
             switch (*reinterpret_cast<int*>(_a[1])) {
             default: *reinterpret_cast<int*>(_a[0]) = -1; break;
             case 0:
@@ -182,13 +202,6 @@ void WavStepWithPowerMonitoringTest::qt_static_metacall(QObject *_o, QMetaObject
             using _t = void (WavStepWithPowerMonitoringTest::*)(QByteArray , QList<QByteArray> );
             if (*reinterpret_cast<_t *>(_a[1]) == static_cast<_t>(&WavStepWithPowerMonitoringTest::signalDisplayPowerReadings)) {
                 *result = 1;
-                return;
-            }
-        }
-        {
-            using _t = void (WavStepWithPowerMonitoringTest::*)(WavStepPowerTestData );
-            if (*reinterpret_cast<_t *>(_a[1]) == static_cast<_t>(&WavStepWithPowerMonitoringTest::signalGraphPowerMeterReadings)) {
-                *result = 2;
                 return;
             }
         }
@@ -224,13 +237,13 @@ int WavStepWithPowerMonitoringTest::qt_metacall(QMetaObject::Call _c, int _id, v
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 12)
+        if (_id < 14)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 12;
+        _id -= 14;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 12)
+        if (_id < 14)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 12;
+        _id -= 14;
     }
     return _id;
 }
@@ -247,13 +260,6 @@ void WavStepWithPowerMonitoringTest::signalDisplayPowerReadings(QByteArray _t1, 
 {
     void *_a[] = { nullptr, const_cast<void*>(reinterpret_cast<const void*>(std::addressof(_t1))), const_cast<void*>(reinterpret_cast<const void*>(std::addressof(_t2))) };
     QMetaObject::activate(this, &staticMetaObject, 1, _a);
-}
-
-// SIGNAL 2
-void WavStepWithPowerMonitoringTest::signalGraphPowerMeterReadings(WavStepPowerTestData _t1)
-{
-    void *_a[] = { nullptr, const_cast<void*>(reinterpret_cast<const void*>(std::addressof(_t1))) };
-    QMetaObject::activate(this, &staticMetaObject, 2, _a);
 }
 QT_WARNING_POP
 QT_END_MOC_NAMESPACE

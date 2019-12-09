@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'wavstep_power_monitoring_graph_window.h'
 **
-** Created by: The Qt Meta Object Compiler version 67 (Qt 5.13.0)
+** Created by: The Qt Meta Object Compiler version 67 (Qt 5.13.2)
 **
 ** WARNING! All changes made in this file will be lost!
 *****************************************************************************/
@@ -14,7 +14,7 @@
 #if !defined(Q_MOC_OUTPUT_REVISION)
 #error "The header file 'wavstep_power_monitoring_graph_window.h' doesn't include <QObject>."
 #elif Q_MOC_OUTPUT_REVISION != 67
-#error "This file was generated using the moc from 5.13.0. It"
+#error "This file was generated using the moc from 5.13.2. It"
 #error "cannot be used with the include files from this version of Qt."
 #error "(The moc has changed too much.)"
 #endif
@@ -24,7 +24,7 @@ QT_WARNING_PUSH
 QT_WARNING_DISABLE_DEPRECATED
 struct qt_meta_stringdata_WavStep_Power_Monitoring_Graph_Window_t {
     QByteArrayData data[5];
-    char stringdata0[116];
+    char stringdata0[112];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -36,13 +36,13 @@ static const qt_meta_stringdata_WavStep_Power_Monitoring_Graph_Window_t qt_meta_
 QT_MOC_LITERAL(0, 0, 37), // "WavStep_Power_Monitoring_Grap..."
 QT_MOC_LITERAL(1, 38, 22), // "slotAddReadingsToGraph"
 QT_MOC_LITERAL(2, 61, 0), // ""
-QT_MOC_LITERAL(3, 62, 42), // "QList<WavStep_Power_Monitorin..."
-QT_MOC_LITERAL(4, 105, 10) // "dataPoints"
+QT_MOC_LITERAL(3, 62, 38), // "QList<WavStepPowerMonitoringD..."
+QT_MOC_LITERAL(4, 101, 10) // "dataPoints"
 
     },
     "WavStep_Power_Monitoring_Graph_Window\0"
     "slotAddReadingsToGraph\0\0"
-    "QList<WavStep_Power_Monitoring_Data_Point>\0"
+    "QList<WavStepPowerMonitoringDataPoint>\0"
     "dataPoints"
 };
 #undef QT_MOC_LITERAL
@@ -75,7 +75,7 @@ void WavStep_Power_Monitoring_Graph_Window::qt_static_metacall(QObject *_o, QMet
         auto *_t = static_cast<WavStep_Power_Monitoring_Graph_Window *>(_o);
         Q_UNUSED(_t)
         switch (_id) {
-        case 0: _t->slotAddReadingsToGraph((*reinterpret_cast< QList<WavStep_Power_Monitoring_Data_Point>(*)>(_a[1]))); break;
+        case 0: _t->slotAddReadingsToGraph((*reinterpret_cast< QList<WavStepPowerMonitoringDataPoint>(*)>(_a[1]))); break;
         default: ;
         }
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
@@ -85,7 +85,7 @@ void WavStep_Power_Monitoring_Graph_Window::qt_static_metacall(QObject *_o, QMet
             switch (*reinterpret_cast<int*>(_a[1])) {
             default: *reinterpret_cast<int*>(_a[0]) = -1; break;
             case 0:
-                *reinterpret_cast<int*>(_a[0]) = qRegisterMetaType< QList<WavStep_Power_Monitoring_Data_Point> >(); break;
+                *reinterpret_cast<int*>(_a[0]) = qRegisterMetaType< QList<WavStepPowerMonitoringDataPoint> >(); break;
             }
             break;
         }

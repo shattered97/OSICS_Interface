@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'mainwindow.h'
 **
-** Created by: The Qt Meta Object Compiler version 67 (Qt 5.13.0)
+** Created by: The Qt Meta Object Compiler version 67 (Qt 5.13.2)
 **
 ** WARNING! All changes made in this file will be lost!
 *****************************************************************************/
@@ -13,7 +13,7 @@
 #if !defined(Q_MOC_OUTPUT_REVISION)
 #error "The header file 'mainwindow.h' doesn't include <QObject>."
 #elif Q_MOC_OUTPUT_REVISION != 67
-#error "This file was generated using the moc from 5.13.0. It"
+#error "This file was generated using the moc from 5.13.2. It"
 #error "cannot be used with the include files from this version of Qt."
 #error "(The moc has changed too much.)"
 #endif
@@ -22,8 +22,8 @@ QT_BEGIN_MOC_NAMESPACE
 QT_WARNING_PUSH
 QT_WARNING_DISABLE_DEPRECATED
 struct qt_meta_stringdata_MainWindow_t {
-    QByteArrayData data[28];
-    char stringdata0[590];
+    QByteArrayData data[27];
+    char stringdata0[588];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -48,18 +48,17 @@ QT_MOC_LITERAL(12, 212, 26), // "signalClearSelectedDevices"
 QT_MOC_LITERAL(13, 239, 27), // "slotDisplayDecisionErrorMsg"
 QT_MOC_LITERAL(14, 267, 8), // "errorMsg"
 QT_MOC_LITERAL(15, 276, 25), // "slotDisplaySimpleErrorMsg"
-QT_MOC_LITERAL(16, 302, 30), // "on_searchForDevTypeBtn_clicked"
-QT_MOC_LITERAL(17, 333, 18), // "slotReceiveDevices"
-QT_MOC_LITERAL(18, 352, 10), // "FoundInstr"
-QT_MOC_LITERAL(19, 363, 13), // "listOfDevices"
-QT_MOC_LITERAL(20, 377, 39), // "on_testTypeComboBox_currentIn..."
-QT_MOC_LITERAL(21, 417, 5), // "index"
-QT_MOC_LITERAL(22, 423, 31), // "on_addSelectedDeviceBtn_clicked"
-QT_MOC_LITERAL(23, 455, 30), // "on_startTestPushButton_clicked"
-QT_MOC_LITERAL(24, 486, 46), // "on_selectedDevicesListWidget_..."
-QT_MOC_LITERAL(25, 533, 16), // "QListWidgetItem*"
-QT_MOC_LITERAL(26, 550, 4), // "item"
-QT_MOC_LITERAL(27, 555, 34) // "on_clearSelectedListButton_cl..."
+QT_MOC_LITERAL(16, 302, 17), // "slotDeviceCreated"
+QT_MOC_LITERAL(17, 320, 30), // "on_searchForDevTypeBtn_clicked"
+QT_MOC_LITERAL(18, 351, 18), // "slotReceiveDevices"
+QT_MOC_LITERAL(19, 370, 10), // "FoundInstr"
+QT_MOC_LITERAL(20, 381, 13), // "listOfDevices"
+QT_MOC_LITERAL(21, 395, 31), // "on_addSelectedDeviceBtn_clicked"
+QT_MOC_LITERAL(22, 427, 30), // "on_startTestPushButton_clicked"
+QT_MOC_LITERAL(23, 458, 46), // "on_selectedDevicesListWidget_..."
+QT_MOC_LITERAL(24, 505, 34), // "on_clearSelectedListButton_cl..."
+QT_MOC_LITERAL(25, 540, 41), // "on_devicetypeComboBox_current..."
+QT_MOC_LITERAL(26, 582, 5) // "index"
 
     },
     "MainWindow\0signalDeviceTypeSelected\0"
@@ -69,15 +68,15 @@ QT_MOC_LITERAL(27, 555, 34) // "on_clearSelectedListButton_cl..."
     "signalCreateN7745ADevice\0signalCreateDevice\0"
     "signalBeginTest\0signalClearSelectedDevices\0"
     "slotDisplayDecisionErrorMsg\0errorMsg\0"
-    "slotDisplaySimpleErrorMsg\0"
+    "slotDisplaySimpleErrorMsg\0slotDeviceCreated\0"
     "on_searchForDevTypeBtn_clicked\0"
     "slotReceiveDevices\0FoundInstr\0"
-    "listOfDevices\0on_testTypeComboBox_currentIndexChanged\0"
-    "index\0on_addSelectedDeviceBtn_clicked\0"
+    "listOfDevices\0on_addSelectedDeviceBtn_clicked\0"
     "on_startTestPushButton_clicked\0"
     "on_selectedDevicesListWidget_itemDoubleClicked\0"
-    "QListWidgetItem*\0item\0"
-    "on_clearSelectedListButton_clicked"
+    "on_clearSelectedListButton_clicked\0"
+    "on_devicetypeComboBox_currentIndexChanged\0"
+    "index"
 };
 #undef QT_MOC_LITERAL
 
@@ -87,7 +86,7 @@ static const uint qt_meta_data_MainWindow[] = {
        8,       // revision
        0,       // classname
        0,    0, // classinfo
-      16,   14, // methods
+      17,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -95,24 +94,25 @@ static const uint qt_meta_data_MainWindow[] = {
        7,       // signalCount
 
  // signals: name, argc, parameters, tag, flags
-       1,    1,   94,    2, 0x06 /* Public */,
-       4,    0,   97,    2, 0x06 /* Public */,
-       5,    3,   98,    2, 0x06 /* Public */,
-       9,    3,  105,    2, 0x06 /* Public */,
-      10,    3,  112,    2, 0x06 /* Public */,
-      11,    1,  119,    2, 0x06 /* Public */,
-      12,    0,  122,    2, 0x06 /* Public */,
+       1,    1,   99,    2, 0x06 /* Public */,
+       4,    0,  102,    2, 0x06 /* Public */,
+       5,    3,  103,    2, 0x06 /* Public */,
+       9,    3,  110,    2, 0x06 /* Public */,
+      10,    3,  117,    2, 0x06 /* Public */,
+      11,    1,  124,    2, 0x06 /* Public */,
+      12,    0,  127,    2, 0x06 /* Public */,
 
  // slots: name, argc, parameters, tag, flags
-      13,    1,  123,    2, 0x0a /* Public */,
-      15,    1,  126,    2, 0x0a /* Public */,
-      16,    0,  129,    2, 0x08 /* Private */,
-      17,    1,  130,    2, 0x08 /* Private */,
-      20,    1,  133,    2, 0x08 /* Private */,
-      22,    0,  136,    2, 0x08 /* Private */,
-      23,    0,  137,    2, 0x08 /* Private */,
-      24,    1,  138,    2, 0x08 /* Private */,
-      27,    0,  141,    2, 0x08 /* Private */,
+      13,    1,  128,    2, 0x0a /* Public */,
+      15,    1,  131,    2, 0x0a /* Public */,
+      16,    0,  134,    2, 0x08 /* Private */,
+      17,    0,  135,    2, 0x08 /* Private */,
+      18,    1,  136,    2, 0x08 /* Private */,
+      21,    0,  139,    2, 0x08 /* Private */,
+      22,    0,  140,    2, 0x08 /* Private */,
+      23,    0,  141,    2, 0x08 /* Private */,
+      24,    0,  142,    2, 0x08 /* Private */,
+      25,    1,  143,    2, 0x08 /* Private */,
 
  // signals: parameters
     QMetaType::Void, QMetaType::QByteArray,    3,
@@ -127,12 +127,13 @@ static const uint qt_meta_data_MainWindow[] = {
     QMetaType::Void, QMetaType::QString,   14,
     QMetaType::Void, QMetaType::QString,   14,
     QMetaType::Void,
-    QMetaType::Void, 0x80000000 | 18,   19,
-    QMetaType::Void, QMetaType::Int,   21,
+    QMetaType::Void,
+    QMetaType::Void, 0x80000000 | 19,   20,
     QMetaType::Void,
     QMetaType::Void,
-    QMetaType::Void, 0x80000000 | 25,   26,
     QMetaType::Void,
+    QMetaType::Void,
+    QMetaType::Void, QMetaType::Int,   26,
 
        0        // eod
 };
@@ -152,14 +153,26 @@ void MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         case 6: _t->signalClearSelectedDevices(); break;
         case 7: _t->slotDisplayDecisionErrorMsg((*reinterpret_cast< QString(*)>(_a[1]))); break;
         case 8: _t->slotDisplaySimpleErrorMsg((*reinterpret_cast< QString(*)>(_a[1]))); break;
-        case 9: _t->on_searchForDevTypeBtn_clicked(); break;
-        case 10: _t->slotReceiveDevices((*reinterpret_cast< FoundInstr(*)>(_a[1]))); break;
-        case 11: _t->on_testTypeComboBox_currentIndexChanged((*reinterpret_cast< int(*)>(_a[1]))); break;
+        case 9: _t->slotDeviceCreated(); break;
+        case 10: _t->on_searchForDevTypeBtn_clicked(); break;
+        case 11: _t->slotReceiveDevices((*reinterpret_cast< FoundInstr(*)>(_a[1]))); break;
         case 12: _t->on_addSelectedDeviceBtn_clicked(); break;
         case 13: _t->on_startTestPushButton_clicked(); break;
-        case 14: _t->on_selectedDevicesListWidget_itemDoubleClicked((*reinterpret_cast< QListWidgetItem*(*)>(_a[1]))); break;
+        case 14: _t->on_selectedDevicesListWidget_itemDoubleClicked(); break;
         case 15: _t->on_clearSelectedListButton_clicked(); break;
+        case 16: _t->on_devicetypeComboBox_currentIndexChanged((*reinterpret_cast< int(*)>(_a[1]))); break;
         default: ;
+        }
+    } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
+        switch (_id) {
+        default: *reinterpret_cast<int*>(_a[0]) = -1; break;
+        case 11:
+            switch (*reinterpret_cast<int*>(_a[1])) {
+            default: *reinterpret_cast<int*>(_a[0]) = -1; break;
+            case 0:
+                *reinterpret_cast<int*>(_a[0]) = qRegisterMetaType< FoundInstr >(); break;
+            }
+            break;
         }
     } else if (_c == QMetaObject::IndexOfMethod) {
         int *result = reinterpret_cast<int *>(_a[0]);
@@ -244,13 +257,13 @@ int MainWindow::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 16)
+        if (_id < 17)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 16;
+        _id -= 17;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 16)
-            *reinterpret_cast<int*>(_a[0]) = -1;
-        _id -= 16;
+        if (_id < 17)
+            qt_static_metacall(this, _c, _id, _a);
+        _id -= 17;
     }
     return _id;
 }
