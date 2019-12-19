@@ -21,6 +21,11 @@ public:
     void setEndWavelength(double endWav);
     void setWavelengthStep(double wavStep);
     void setPowerMeterSlotNum(int slotNum);
+    void calculateNumberOfSteps();
+    double calculateProgress();
+
+signals:
+    void signalSendTestProgressToGUI(double progressPercent);
 
 private:
     EXFO_OSICS_T100 *t100 = nullptr;
@@ -33,7 +38,9 @@ private:
 
     double startWav = 1465;
     double endWav = 1575;
-    double wavStep = 0.1;
+    double wavStep = 5; // change back to 0.1
+    int numberOfSteps = 1;
+    int currentStep = 1;
 
     QByteArray constructOutputFilename();
     void writeTestDataToFile(QByteArray filename);

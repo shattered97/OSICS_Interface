@@ -21,6 +21,11 @@ public:
     void setPowerStep(double powerStep);
     void setWavelength(double wavelength);
     void setPowerMeterSlotNum(int slotNum);
+    void calculateNumberOfSteps();
+    double calculateProgress();
+
+signals:
+    void signalSendTestProgressToGUI(double progressPercent);
 
 private:
     EXFO_OSICS_T100 *t100 = nullptr;
@@ -32,8 +37,11 @@ private:
 
     double startPower = 0;
     double endPower = 10;
-    double powerStep = 0.02;
+    double powerStep = 0.1; // change back to 0.02
     double wavelength = 1520;
+
+    int numberOfSteps = 1;
+    int currentStep = 1;
 
     QByteArray constructOutputFilename();
     void writeTestDataToFile(QByteArray filename);

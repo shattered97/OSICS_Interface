@@ -251,7 +251,6 @@ void WavStep_Power_Monitoring_Test_Worker::slotStopWorkerThreads(){
 void WavStep_Power_Monitoring_Test_Worker::slotGetCurrentTestTime(double *testTime){
 
     if(testTime){
-        qDebug() << "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1  ELAPSED TIME: " << timer.elapsed();
         *testTime = timer.elapsed();
     }
 

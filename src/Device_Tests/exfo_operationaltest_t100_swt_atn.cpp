@@ -20,6 +20,10 @@ EXFO_OperationalTest_T100_SWT_ATN::EXFO_OperationalTest_T100_SWT_ATN(QList<QVari
     QObject::connect(&configWindow, SIGNAL(signalGetCurrentStepDirections(QByteArray &, QByteArray &)),
                      this, SLOT(slotGetCurrentStepDirections(QByteArray &, QByteArray &)));
     QObject::connect(this, SIGNAL(signalTestingComplete()), &configWindow, SLOT(slotTestingComplete()));
+    QObject::connect(t100WavTest, SIGNAL(signalSendTestProgressToGUI(double)),
+                     &configWindow, SLOT(slotReceiveTestProgressInGUI(double)));
+    QObject::connect(t100PowerTest, SIGNAL(signalSendTestProgressToGUI(double)),
+                     &configWindow, SLOT(slotReceiveTestProgressInGUI(double)));
 }
 
 void EXFO_OperationalTest_T100_SWT_ATN::initializeResourcePathList(){

@@ -103,13 +103,17 @@ void EXFO_T100_Bristol_Wavelength_Step_Test::runDeviceTest(){
     // get min and max wavelength based on module
     startWav = t100->getT100MinWavelength();
     endWav = t100->getT100MaxWavelength();
+    qDebug() << startWav << " " << endWav;
 
-    if(powerMeter != nullptr){
-        runTestLoopWithPowerMeter(filename, startWav, endWav, wavStep);
-    }
-    else{
+    calculateNumberOfSteps();
+
+
+//    if(powerMeter != nullptr){
+//        runTestLoopWithPowerMeter(filename, startWav, endWav, wavStep);
+//    }
+//    else{
         runTestLoopBristolOnly(filename, startWav, endWav, wavStep);
-    }
+//    }
 }
 
 void EXFO_T100_Bristol_Wavelength_Step_Test::runTestLoopWithPowerMeter(QByteArray filename, double startWav, double endWav, double wavStep){
@@ -245,6 +249,8 @@ void EXFO_T100_Bristol_Wavelength_Step_Test::runTestLoopBristolOnly(QByteArray f
         testData.append(bristolPower.trimmed().append('\n'));
 
         currentWav += wavStep;
+        emit signalSendTestProgressToGUI(calculateProgress());
+        currentStep++;
     }
 
     // disable laser
@@ -255,6 +261,18 @@ void EXFO_T100_Bristol_Wavelength_Step_Test::runTestLoopBristolOnly(QByteArray f
 
     qDebug() << "================================= COMPLETE ===================================";
 
+}
+
+void EXFO_T100_Bristol_Wavelength_Step_Test::calculateNumberOfSteps(){
+    double wavelengthRange = endWav - startWav;
+    numberOfSteps = (int) wavelengthRange / wavStep;
+    qDebug() << "NUMBER OF STEPS CALCULATED: " << numberOfSteps;
+}
+
+double EXFO_T100_Bristol_Wavelength_Step_Test::calculateProgress(){
+    double progress = 100 * currentStep / numberOfSteps;
+    qDebug() << "PROGRESS CALCULATED (" << currentStep << "/" << numberOfSteps << "): " << progress;
+    return progress;
 }
 
 

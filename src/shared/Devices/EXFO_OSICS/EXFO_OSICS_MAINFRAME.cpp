@@ -199,8 +199,14 @@ QByteArray EXFO_OSICS_MAINFRAME::spectralUnitModuleQuery(int slotNum){
 
 void EXFO_OSICS_MAINFRAME::setRefWavelengthModuleCmd(int slotNum, QByteArray wavelengthNum){
     QByteArray baseCmd = "CH#:L\n";
+
+    // format the wavelength nuumber to be accurate to two decimal places
+    wavelengthNum = QByteArray::number(wavelengthNum.toDouble(), 'f', 2);
+
     baseCmd = insertSlotNum(baseCmd, slotNum);
     baseCmd = appendParamToCmdWithSpace(baseCmd, wavelengthNum);
+
+
 
     emit signalSendCmdNoRsp(theInstrLoc, baseCmd);
 }
