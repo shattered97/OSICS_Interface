@@ -38,7 +38,7 @@ private:
 
     double startWav = 1465;
     double endWav = 1575;
-    double wavStep = 5; // change back to 0.1
+    double wavStep = 0.1; // change back to 0.1
     int numberOfSteps = 1;
     int currentStep = 1;
 

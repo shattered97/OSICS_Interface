@@ -37,7 +37,7 @@ private:
 
     double startPower = 0;
     double endPower = 10;
-    double powerStep = 0.1; // change back to 0.02
+    double powerStep = 0.2; // change back to 0.02
     double wavelength = 1520;
 
     int numberOfSteps = 1;
