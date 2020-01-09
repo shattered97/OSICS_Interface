@@ -138,7 +138,7 @@ void EXFO_T100_Bristol_Wavelength_Step_Test::runTestLoopWithPowerMeter(QByteArra
     t100->setModuleOutputPowerCmd(t100SlotNum, powerToSet);
 
     // wait for values to adjust
-    QTime timer = QTime::currentTime().addSecs(5);
+    QTime timer = QTime::currentTime().addSecs(12);
     while(QTime::currentTime() < timer){
         // do nothing
     }
@@ -154,7 +154,7 @@ void EXFO_T100_Bristol_Wavelength_Step_Test::runTestLoopWithPowerMeter(QByteArra
         powerMeter->setWavelength(powerMeterSlotNum, wavelengthToSet, wavUnit);
 
        // wait for wavelength to adjust
-        QTime timer = QTime::currentTime().addSecs(5);
+        QTime timer = QTime::currentTime().addSecs(12);
         while(QTime::currentTime() < timer){
             // do nothing
         }
@@ -214,7 +214,7 @@ void EXFO_T100_Bristol_Wavelength_Step_Test::runTestLoopBristolOnly(QByteArray f
     t100->setModuleOutputPowerCmd(t100SlotNum, powerToSet);
 
     // wait for values to adjust
-    QTime timer = QTime::currentTime().addSecs(5);
+    QTime timer = QTime::currentTime().addSecs(12);
     while(QTime::currentTime() < timer){
         // do nothing
     }
@@ -227,7 +227,7 @@ void EXFO_T100_Bristol_Wavelength_Step_Test::runTestLoopBristolOnly(QByteArray f
         t100->setRefWavelengthModuleCmd(t100SlotNum, wavelengthToSet);
 
         // wait for wavelength to adjust
-        QTime timer = QTime::currentTime().addSecs(5);
+        QTime timer = QTime::currentTime().addSecs(12);
         while(QTime::currentTime() < timer){
             // do nothing
         }

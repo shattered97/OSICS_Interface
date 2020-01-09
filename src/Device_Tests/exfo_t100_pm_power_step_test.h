@@ -34,7 +34,6 @@ private:
     PowerMeter *powerMeter = nullptr;
     int powerMeterSlotNum = 3;
 
-
     double startPower = 0;
     double endPower = 10;
     double powerStep = 0.2; // change back to 0.02
