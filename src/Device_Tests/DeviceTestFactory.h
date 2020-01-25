@@ -12,6 +12,7 @@
 #include "exfo_operationaltest_t100_swt_atn_window.h"
 #include "WavStepWithPowerMonitoringTest.h"
 #include "wavstep_power_monitoring_test_window.h"
+#include "EXFO_T100_PM_Power_Step_Test_Window.h"
 
 class DeviceTestFactory : public QObject
 {

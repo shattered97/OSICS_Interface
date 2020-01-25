@@ -261,7 +261,6 @@ const QByteArray EXFO_OSICS_ATN_REF_WAVELENGTH_2 = "EXFO OSICS ATN Second Refere
 const QByteArray EXFO_OSICS_ATN_OFFSET_1 = "EXFO OSICS ATN First Offset";
 const QByteArray EXFO_OSICS_ATN_OFFSET_2 = "EXFO OSICS ATN Second Offset";
 
-
 // Wavelength Step Test With Power Monitoring Test Constants
 const int WAVSTEP_GUI_POW_POLLING_RATE_MSEC = 2000;
 const int WAVSTEP_GRAPH_MAX_POINTS_PER_SERIES = 100;
@@ -280,13 +279,24 @@ const QByteArray WAVSTEP_NO_FILE_CHOSEN = "Choose output .csv file for test data
 const QByteArray WAVSTEP_NO_T100_MODULES_SELECTED = "No T100 modules selected for switch channels.";
 const QByteArray WAVSTEP_NO_SERIES_SELECTED = "Select at least one series to graph.";
 const QByteArray WAVSTEP_SERIES_DATA_POINTS_INVALID = "Number of data points must be above 0.";
-
 const QString WAVSTEP_DEFAULT_CSV_FILENAME = "wavstep_power_monitoring_test_%1.csv";
 const QByteArray WAVSTEP_CSV_FILE_HEADING = "series,power reading (Watt),reading time, wavelength\n";
 const QByteArray WAVSTEP_SWITCH_CHANNEL_TAKEN = "T100 Module %1 is already selected for another channel.";
 const QString WAVSTEP_CSV_LINE = "%1,%2,%3,%4\n";
 
-// Error Constants
+// EXFO_T100_PM_Power_Step_Test - QSettings Test Constants
+const QByteArray T100_PM_POWER_STEP_TEST_START_POWER = "EXFO T100 and Power Meter - Power Step Test Start Power";
+const QByteArray T100_PM_POWER_STEP_TEST_END_POWER = "EXFO T100 and Power Meter - Power Step Test End Power";
+const QByteArray T100_PM_POWER_STEP_TEST_POWER_STEP = "EXFO T100 and Power Meter - Power Step Test Power Step Size";
+const QByteArray T100_PM_POWER_STEP_TEST_DWELL = "EXFO T100 and Power Meter - Power Step Test Dwell Time";
+const QByteArray T100_PM_POWER_STEP_TEST_WAVELENGTH = "EXFO T100 and Power Meter - Power Step Test Wavelength";
+const QByteArray T100_PM_POWER_STEP_TEST_T100_SLOT_NUM = "EXFO T100 and Power Meter - T100 Slot Number";
+const QByteArray T100_PM_POWER_STEP_TEST_PM_SLOT_NUM = "EXFO T100 and Power Meter - Power Meter Slot Number";
+
+// GUI Error Message Constants
+const QByteArray GUI_ERR_NON_NUMERIC_VALUE = "Value entered is invalid (non-numeric).";
+
+// Communicaton Error Constants
 const QByteArray ERR_NO_COMM_RESPONSE = "ERROR: No Response";
 const QString ERR_OPEN_SESSION_FAILED = "Failed to open session on instrument %1.";
 const QString ERR_SENDING_CMD_FAILED = "Failed to send command to instrument %1";

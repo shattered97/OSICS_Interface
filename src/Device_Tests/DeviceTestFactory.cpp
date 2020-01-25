@@ -7,11 +7,9 @@ DeviceTestFactory::DeviceTestFactory(QObject *parent) : QObject(parent)
 
 }
 
-DeviceTest *DeviceTestFactory::makeDeviceTest(QString deviceTypeName, QList<QVariant> selectedDevices){
-
-    qDebug() << deviceTypeName;
+DeviceTest *DeviceTestFactory::makeDeviceTest(QString deviceTypeName, QList<QVariant> selectedDevices)
+{
     if(deviceTypeName == EXFO_T100_ANDO_OSA_WAV_CYCLE_TEST){
-        qDebug() << "device type was exfo_t100_and0_osa";
         QMainWindow *testWindow = new QMainWindow();
         OSA_Wavelength_Step_Test *test = new OSA_Wavelength_Step_Test(selectedDevices, *testWindow);
         return test;
@@ -37,8 +35,9 @@ DeviceTest *DeviceTestFactory::makeDeviceTest(QString deviceTypeName, QList<QVar
         return test;
     }
     else if(deviceTypeName == EXFO_T100_PM_POWER_STEP_TEST){
-        QMainWindow *testWindow = new QMainWindow();
+        EXFO_T100_PM_Power_Step_Test_Window *testWindow = new EXFO_T100_PM_Power_Step_Test_Window();
         EXFO_T100_PM_Power_Step_Test *test = new  EXFO_T100_PM_Power_Step_Test(selectedDevices, *testWindow);
+        test->setWindowConfigureable(true);
         return test;
     }
     else if(deviceTypeName == EXFO_OPERATIONAL_TEST_T100_SWT_ATN){

@@ -6,11 +6,20 @@
 EXFO_T100_PM_Power_Step_Test::EXFO_T100_PM_Power_Step_Test(QList<QVariant> &selectedDevices, QMainWindow &configWindow) :
     DeviceTest (selectedDevices, configWindow)
 {
+    settings = new QSettings(QSettings::IniFormat, QSettings::SystemScope, "Test Platform");
+    settings->clear();
 
+    QObject::connect(&configWindow, SIGNAL(signalBeginTest(QSettings *)),
+                     this, SLOT(slotBeginTest(QSettings *)));
+    QObject::connect(&configWindow, SIGNAL(signalGetT100DisplayNames(QList<QByteArray> &)),
+                     this, SLOT(slotReturnT100DisplayNames(QList<QByteArray> &)));
+    QObject::connect(&configWindow, SIGNAL(signalGetPowerMeterChannels(int &)),
+                     this, SLOT(slotReturnPowerMeterChannels(int &)));
 }
 
-
 bool EXFO_T100_PM_Power_Step_Test::areDevicesValidForTest(){
+    // checks for correct device AND initializes them for the test at the same time
+
     // we need to find the EXFO T100 and a PowerMeter.
     bool t100Found = false;
     bool powerMeterFound = false;
@@ -21,25 +30,22 @@ bool EXFO_T100_PM_Power_Step_Test::areDevicesValidForTest(){
         QByteArray typeName = selectedDevices.at(i).typeName();
         typeName.chop(1);
         if(typeName == "EXFO_OSICS_MAINFRAME"){
-            // create exfo and find out if it has a T100
-            // *NOTE* for now we assume that only one T100 is plugged in or we use the first one we see
+            // create exfo and find out if it has at least one T100
             QVariant exfoVariant = selectedDevices.at(i);
             EXFO_OSICS_MAINFRAME *exfo = exfoVariant.value<EXFO_OSICS_MAINFRAME*>();
 
             QMap<int, QVariant> exfoModuleSlotQMap = exfo->getModuleSlotQVariantMap();
-            qDebug() << exfoModuleSlotQMap;
+
             for(auto e: exfoModuleSlotQMap.keys()){
                 // get type of module
                 QByteArray moduleType = exfoModuleSlotQMap.value(e).typeName();
                 moduleType.chop(1);
 
                 if(moduleType == "EXFO_OSICS_T100"){
-                    // create T100 if it doesn't already exist (in the case where there are multiple T100s installed)
-                    if(t100 == nullptr){
-                        t100SlotNum = e;
-                        t100 = exfoModuleSlotQMap.value(e).value<EXFO_OSICS_T100*>();
-                        t100Found = true;
-                    }
+                    // add all T100's found to the list of available modules
+                    availableT100s.append(exfoModuleSlotQMap.value(e).value<EXFO_OSICS_T100*>());
+
+                    t100Found = true;
                 }
             }
         }
@@ -55,10 +61,11 @@ bool EXFO_T100_PM_Power_Step_Test::areDevicesValidForTest(){
 }
 
 QByteArray EXFO_T100_PM_Power_Step_Test::constructOutputFilename(){
-    qDebug() << "in constructOutputFilename()";
-    // construct filename
-    QByteArray identityInfo = t100->identificationModuleQuery(t100SlotNum);
-    qDebug() << identityInfo;
+
+    // #TODO: needs to be updated to append the wavelength number (e.g. 1520, 1310) to beginning of filename
+
+    QByteArray identityInfo = selectedT100->identificationModuleQuery(t100SlotNum);
+
     // the serial number is the third item when comma-separated, the module type is the second item
     QByteArray serialNumber = identityInfo.split(',')[2];
     QByteArray moduleType = identityInfo.split(',')[1];
@@ -74,19 +81,17 @@ QByteArray EXFO_T100_PM_Power_Step_Test::constructOutputFilename(){
 }
 
 void EXFO_T100_PM_Power_Step_Test::runDeviceTest(){
-    qDebug() << "runDeviceTest() in powerMeterStepTestT100";
-    // construct filename
-    QByteArray filename = constructOutputFilename();
-    qDebug() << "constructed filename";
 
-    calculateNumberOfSteps();
-    runTestLoop(filename, startPower, endPower, powerStep, wavelength);
-    qDebug() << "finished running test loop";
+    // #TODO this method to be executed on another thread
+    runTestLoop(outputFilename, startPowerDBM, endPowerDBM, powerStepDBM, wavelengthNM, dwellInSeconds);
+
+    // #TODO add join() call here then emit signal to GUI that the test has finished.
 }
 
 void EXFO_T100_PM_Power_Step_Test::runTestLoop(QByteArray filename, double startPow,
-                                               double endPow, double powStep, double wavelength){
-    // add .csv header to test data
+                                               double endPow, double powStep, double wavelength, double dwell)
+{
+    // add .csv header to test data #TODO consider adding to constants file
     testData.append("T100 WAVELENGTH,");
     testData.append("T100 POWER,");
     testData.append("POWER METER READING");
@@ -94,24 +99,24 @@ void EXFO_T100_PM_Power_Step_Test::runTestLoop(QByteArray filename, double start
 
     // set wavelength (t100)
     QByteArray wavelengthToSet = QByteArray::number(wavelength);
-    t100->setRefWavelengthModuleCmd(t100SlotNum, wavelengthToSet);
+    selectedT100->setRefWavelengthModuleCmd(t100SlotNum, wavelengthToSet);
 
     // set wavelength (power meter)
     QByteArray wavUnit = "nm";
     powerMeter->setWavelength(powerMeterSlotNum, wavelengthToSet, wavUnit);
 
     // set unit
-    t100->setModulePowerUnitDBmCmd(t100SlotNum);
+    selectedT100->setModulePowerUnitDBmCmd(t100SlotNum);
 
     // enable laser
-    t100->enableModuleLaserCmd(t100SlotNum);
+    selectedT100->enableModuleLaserCmd(t100SlotNum);
 
     // set start power
     QByteArray powerToSet = QByteArray::number(startPow);
-    t100->setModuleOutputPowerCmd(t100SlotNum, powerToSet);
+    selectedT100->setModuleOutputPowerCmd(t100SlotNum, powerToSet);
 
     // wait for values to adjust
-    QTime timer = QTime::currentTime().addSecs(2);
+    QTime timer = QTime::currentTime().addSecs(dwell); // #TODO fix unit conversion
     while(QTime::currentTime() < timer){
         // do nothing
     }
@@ -121,20 +126,20 @@ void EXFO_T100_PM_Power_Step_Test::runTestLoop(QByteArray filename, double start
 
         // set power
         QByteArray powerToSet = QByteArray::number(currentPow);
-        t100->setModuleOutputPowerCmd(t100SlotNum, powerToSet);
+        selectedT100->setModuleOutputPowerCmd(t100SlotNum, powerToSet);
 
         // wait for power to adjust
-        QTime timer = QTime::currentTime().addSecs(2);
+        QTime timer = QTime::currentTime().addSecs(dwell);  // #TODO fix unit conversion
         while(QTime::currentTime() < timer){
             // do nothing
         }
 
         // write wavelength
-        QByteArray t100Wavelength = t100->refWavelengthModuleQuery(t100SlotNum);
+        QByteArray t100Wavelength = selectedT100->refWavelengthModuleQuery(t100SlotNum);
         testData.append(QByteArray::number(t100Wavelength.split('=')[1].toDouble()).append(","));
 
         // write power
-        QByteArray t100Power = t100->outputPowerModuleQuery(t100SlotNum);
+        QByteArray t100Power = selectedT100->outputPowerModuleQuery(t100SlotNum);
         testData.append(QByteArray::number(t100Power.split('=')[1].toDouble()).append(","));
 
         // write power reading
@@ -153,11 +158,12 @@ void EXFO_T100_PM_Power_Step_Test::runTestLoop(QByteArray filename, double start
 
     // reset laser power to 0
     powerToSet = QByteArray::number(startPow);
-    t100->setModuleOutputPowerCmd(t100SlotNum, powerToSet);
+    selectedT100->setModuleOutputPowerCmd(t100SlotNum, powerToSet);
 
     // shut off laser
-    t100->disableModuleLaserCmd(t100SlotNum);
+    selectedT100->disableModuleLaserCmd(t100SlotNum);
 
+    // #TODO: write test data intermittently
 
     // write file contents
     writeTestDataToFile(filename);
@@ -184,29 +190,81 @@ void EXFO_T100_PM_Power_Step_Test::writeTestDataToFile(QByteArray filename){
 }
 
 void EXFO_T100_PM_Power_Step_Test::calculateNumberOfSteps(){
-    double powerRange = endPower - startPower;
-    numberOfSteps = (int) powerRange / powerStep;
-    qDebug() << "NUMBER OF STEPS CALCULATED: " << numberOfSteps;
+    double powerRange = endPowerDBM - startPowerDBM;
+    numberOfSteps = (int) powerRange / powerStepDBM;
 }
 
 double EXFO_T100_PM_Power_Step_Test::calculateProgress(){
     double progress = 100 * currentStep / numberOfSteps;
-    qDebug() << "PROGRESS CALCULATED (" << currentStep << "/" << numberOfSteps << "): " << progress;
     return progress;
 }
 
 void EXFO_T100_PM_Power_Step_Test::setStartPower(double startPower){
-    this->startPower = startPower;
+    this->startPowerDBM = startPower;
 }
 void EXFO_T100_PM_Power_Step_Test::setEndPower(double endPower){
-    this->endPower = endPower;
+    this->endPowerDBM = endPower;
 }
 void EXFO_T100_PM_Power_Step_Test::setPowerStep(double powerStep){
-    this->powerStep = powerStep;
+    this->powerStepDBM = powerStep;
 }
 void EXFO_T100_PM_Power_Step_Test::setWavelength(double wavelength){
-    this->wavelength = wavelength;
+    this->wavelengthNM = wavelength;
 }
 void EXFO_T100_PM_Power_Step_Test::setPowerMeterSlotNum(int slotNum){
     this->powerMeterSlotNum = slotNum;
+}
+
+void EXFO_T100_PM_Power_Step_Test::slotReturnT100DisplayNames(QList<QByteArray> &displayNames)
+{
+    for(auto t100Module : availableT100s)
+    {
+        int t100SlotNum = t100Module->getSlotNum();
+
+        QByteArray t100Type = t100Module->typeOfModuleQuery(t100SlotNum);
+        t100Type = t100Type.split(':')[1].trimmed();
+
+        QByteArray formattedSlotNum = QByteArray::number(t100SlotNum);
+        formattedSlotNum = QByteArray("Slot " + formattedSlotNum);
+
+        displayNames.append(t100Type + "," + formattedSlotNum);
+    }
+}
+
+void EXFO_T100_PM_Power_Step_Test::slotReturnPowerMeterChannels(int &numberOfSlots)
+{
+    numberOfSlots = powerMeter->getNumPowerMeterChannels();
+}
+
+void EXFO_T100_PM_Power_Step_Test::slotBeginTest(QSettings *settings)
+{
+    // get settings
+    this->settings = settings;
+    getTestValuesFromSettings();
+
+    // construct filename
+    outputFilename = constructOutputFilename();
+
+    calculateNumberOfSteps();
+
+    runDeviceTest();
+}
+
+void EXFO_T100_PM_Power_Step_Test::getTestValuesFromSettings()
+{
+    startPowerDBM = settings->value(T100_PM_POWER_STEP_TEST_START_POWER).value<double>();
+    endPowerDBM = settings->value(T100_PM_POWER_STEP_TEST_END_POWER).value<double>();
+    powerStepDBM = settings->value(T100_PM_POWER_STEP_TEST_POWER_STEP).value<double>();
+    dwellInSeconds = settings->value(T100_PM_POWER_STEP_TEST_DWELL).value<double>();
+    wavelengthNM = settings->value(T100_PM_POWER_STEP_TEST_WAVELENGTH).value<double>();
+
+    powerMeterSlotNum = settings->value(T100_PM_POWER_STEP_TEST_PM_SLOT_NUM).value<int>();
+    t100SlotNum = settings->value(T100_PM_POWER_STEP_TEST_T100_SLOT_NUM).value<int>();
+
+    // set selected T100 based on slot number
+    for(auto t100Module : availableT100s){
+        if(t100Module->getSlotNum() == t100SlotNum){
+            selectedT100 = t100Module;
+        }
+    }
 }

@@ -1,0 +1,410 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>EXFO_T100_PM_Power_Step_Test_Window</class>
+ <widget class="QMainWindow" name="EXFO_T100_PM_Power_Step_Test_Window">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1024</width>
+    <height>786</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <widget class="QGroupBox" name="testSettingsGroupBox">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>90</y>
+      <width>551</width>
+      <height>531</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>12</pointsize>
+     </font>
+    </property>
+    <property name="title">
+     <string>Test Settings</string>
+    </property>
+    <widget class="QLabel" name="selectT100Label">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>50</y>
+       <width>241</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Select T100 Module:</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="startPowerLabel">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>190</y>
+       <width>241</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Start Power:</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="endPowerLabel">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>260</y>
+       <width>241</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>End Power:</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="powerStepSizeLabel">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>330</y>
+       <width>241</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Power Step Size:</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="dwellLabel">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>400</y>
+       <width>241</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Dwell:</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="wavelengthLabel">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>470</y>
+       <width>241</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Wavelength:</string>
+     </property>
+    </widget>
+    <widget class="QComboBox" name="t100ComboBox">
+     <property name="geometry">
+      <rect>
+       <x>250</x>
+       <y>50</y>
+       <width>231</width>
+       <height>41</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="startPowerEdit">
+     <property name="geometry">
+      <rect>
+       <x>250</x>
+       <y>190</y>
+       <width>231</width>
+       <height>41</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="endPowerEdit">
+     <property name="geometry">
+      <rect>
+       <x>250</x>
+       <y>260</y>
+       <width>231</width>
+       <height>41</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="powerStepSizeEdit">
+     <property name="geometry">
+      <rect>
+       <x>250</x>
+       <y>330</y>
+       <width>231</width>
+       <height>41</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="dwellEdit">
+     <property name="geometry">
+      <rect>
+       <x>250</x>
+       <y>400</y>
+       <width>231</width>
+       <height>41</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="wavelengthEdit">
+     <property name="geometry">
+      <rect>
+       <x>250</x>
+       <y>470</y>
+       <width>231</width>
+       <height>41</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QLabel" name="startPowerUnitLabel">
+     <property name="geometry">
+      <rect>
+       <x>490</x>
+       <y>190</y>
+       <width>55</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>(dBm)</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="endPowerUnitLabel">
+     <property name="geometry">
+      <rect>
+       <x>490</x>
+       <y>260</y>
+       <width>55</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>(dBm)</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="powerStepSizeUnitLabel">
+     <property name="geometry">
+      <rect>
+       <x>490</x>
+       <y>330</y>
+       <width>55</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>(dBm)</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="dwellUnitLabel">
+     <property name="geometry">
+      <rect>
+       <x>490</x>
+       <y>400</y>
+       <width>55</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>(s)</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="wavelengthUnitLabel">
+     <property name="geometry">
+      <rect>
+       <x>490</x>
+       <y>470</y>
+       <width>55</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>(nm)</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="selectPowerMeterSlotLabel">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>120</y>
+       <width>241</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Select Power Meter Slot:</string>
+     </property>
+    </widget>
+    <widget class="QComboBox" name="powerMeterComboBox">
+     <property name="geometry">
+      <rect>
+       <x>250</x>
+       <y>120</y>
+       <width>231</width>
+       <height>41</height>
+      </rect>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QGroupBox" name="testDescriptionGroupBox">
+    <property name="geometry">
+     <rect>
+      <x>580</x>
+      <y>90</y>
+      <width>421</width>
+      <height>531</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>12</pointsize>
+     </font>
+    </property>
+    <property name="title">
+     <string>Test Description</string>
+    </property>
+    <widget class="QLabel" name="descriptionStep1Label">
+     <property name="geometry">
+      <rect>
+       <x>30</x>
+       <y>40</y>
+       <width>381</width>
+       <height>51</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>1. The selected T100 module's output wavelength is set to the specified value.</string>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
+     </property>
+    </widget>
+    <widget class="QLabel" name="descriptionStep2Label">
+     <property name="geometry">
+      <rect>
+       <x>30</x>
+       <y>110</y>
+       <width>381</width>
+       <height>51</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>2. The T100 module's output power is set to the specified start value.</string>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
+     </property>
+    </widget>
+    <widget class="QLabel" name="descriptionStep3Label">
+     <property name="geometry">
+      <rect>
+       <x>30</x>
+       <y>170</y>
+       <width>381</width>
+       <height>91</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>3. The test waits for the amount of time specified in the &quot;Dwell&quot; field. After waiting, a reading is taken from the Power Meter.</string>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
+     </property>
+    </widget>
+    <widget class="QLabel" name="descriptionStep4Label">
+     <property name="geometry">
+      <rect>
+       <x>30</x>
+       <y>270</y>
+       <width>381</width>
+       <height>91</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>4. The T100 module's output power is increased by the amount specified in the &quot;Power Step Size&quot; field.</string>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
+     </property>
+    </widget>
+    <widget class="QLabel" name="descriptionStep5Label">
+     <property name="geometry">
+      <rect>
+       <x>30</x>
+       <y>370</y>
+       <width>381</width>
+       <height>61</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>5. Steps 3-4 are repeated until the &quot;End Power&quot; value is reached.</string>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QLabel" name="testTitleLabel">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>10</y>
+      <width>591</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>12</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>EXFO T100 and Power Meter - Power Meter Step Test</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="startTestButton">
+    <property name="geometry">
+     <rect>
+      <x>410</x>
+      <y>660</y>
+      <width>281</width>
+      <height>51</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>12</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>Start Test</string>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>1024</width>
+     <height>21</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

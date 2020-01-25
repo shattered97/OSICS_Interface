@@ -5,8 +5,8 @@
 #-------------------------------------------------
 
 CONFIG += static
-QT       += core gui
-QT += charts
+QT     += core gui
+QT     += charts
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -44,6 +44,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 CONFIG += c++11
 
 SOURCES += \
+        Device_Tests/EXFO_T100_PM_Power_Step_Test_Window.cpp \
         Device_Tests/EXFO_T100_SWT_PM_WM_Test.cpp \
         Device_Tests/WavStepWithPowerMonitoringTest.cpp \
         Device_Tests/exfo_operationaltest_t100_swt_atn.cpp \
@@ -88,6 +89,7 @@ SOURCES += \
 
 
 HEADERS += \
+        Device_Tests/EXFO_T100_PM_Power_Step_Test_Window.h \
         Device_Tests/EXFO_T100_SWT_PM_WM_Test.h \
         Device_Tests/exfo_operationaltest_t100_swt_atn.h \
         Device_Tests/exfo_operationaltest_t100_swt_atn_window.h \
@@ -132,6 +134,7 @@ HEADERS += \
 
 
 FORMS += \
+        Device_Tests/EXFO_T100_PM_Power_Step_Test_Window.ui \
         Device_Tests/exfo_operationaltest_t100_swt_atn_window.ui \
         Device_Tests/snapshotgraphdialog.ui \
         Device_Tests/wavstep_power_monitoring_graph_window.ui \
