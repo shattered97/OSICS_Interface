@@ -99,8 +99,6 @@ void Orchestrator::slotCreateDevice(QString type, QByteArray instrumentAddress, 
                               Q_ARG(QString, type),
                               Q_ARG(QVariant *, &deviceVariant));
 
-    qDebug() << "@@@@@@@@@@@@@@@@@ " << QThread::currentThread();
-
     DefaultInstrument *device = deviceVariant.value<DefaultInstrument*>();
     device->setConfigWindow(configWindow);
 

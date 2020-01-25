@@ -8,7 +8,6 @@ WindowFactory::WindowFactory(QObject *parent) : QObject(parent)
 QMainWindow *WindowFactory::makeWindow(QString windowType, QVariant *deviceVariant)
 {
     if(deviceVariant){
-        qDebug() << "!!!!!!!!!!!!!!!!!! " << QThread::currentThread();
         QMainWindow *window;
 
         if (windowType.contains("N7745A")){

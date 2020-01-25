@@ -9,35 +9,31 @@ EXFO_OSICS_T100::EXFO_OSICS_T100(QByteArray theIdentity, QByteArray theInstrLoc)
 
 void EXFO_OSICS_T100::setT100MinMaxWavelengths(QByteArray t100Type){
     // get module type
-//    if(t100Type == EXFO_OSICS_T100_1310_TYPE_NAME){
-//        minWavelength = EXFO_OSICS_T100_1310_MIN_WAV_NM;
-//        maxWavelength = EXFO_OSICS_T100_1310_MAX_WAV_NM;
-//    }
-//    else if(t100Type == EXFO_OSICS_T100_1415_TYPE_NAME){
-//        minWavelength = EXFO_OSICS_T100_1415_MIN_WAV_NM;
-//        maxWavelength = EXFO_OSICS_T100_1415_MAX_WAV_NM;
-//    }
-//    else if(t100Type == EXFO_OSICS_T100_1520_TYPE_NAME){
-//        minWavelength = EXFO_OSICS_T100_1520_MIN_WAV_NM;
-//        maxWavelength = EXFO_OSICS_T100_1520_MAX_WAV_NM;
-//    }
-//    else if(t100Type == EXFO_OSICS_T100_1550_TYPE_NAME){
-//        minWavelength = EXFO_OSICS_T100_1550_MIN_WAV_NM;
-//        maxWavelength = EXFO_OSICS_T100_1550_MAX_WAV_NM;
-//    }
-//    else if(t100Type == EXFO_OSICS_T100_1575_TYPE_NAME){
-//        minWavelength = EXFO_OSICS_T100_1575_MIN_WAV_NM;
-//        maxWavelength = EXFO_OSICS_T100_1575_MAX_WAV_NM;
-//    }
-//    else if(t100Type == EXFO_OSICS_T100_1620_TYPE_NAME){
-//        minWavelength = EXFO_OSICS_T100_1620_MIN_WAV_NM;
-//        maxWavelength = EXFO_OSICS_T100_1620_MAX_WAV_NM;
-//    }
+    if(t100Type == EXFO_OSICS_T100_1310_TYPE_NAME){
+        minWavelength = EXFO_OSICS_T100_1310_MIN_WAV_NM;
+        maxWavelength = EXFO_OSICS_T100_1310_MAX_WAV_NM;
+    }
+    else if(t100Type == EXFO_OSICS_T100_1415_TYPE_NAME){
+        minWavelength = EXFO_OSICS_T100_1415_MIN_WAV_NM;
+        maxWavelength = EXFO_OSICS_T100_1415_MAX_WAV_NM;
+    }
+    else if(t100Type == EXFO_OSICS_T100_1520_TYPE_NAME){
+        minWavelength = EXFO_OSICS_T100_1520_MIN_WAV_NM;
+        maxWavelength = EXFO_OSICS_T100_1520_MAX_WAV_NM;
+    }
+    else if(t100Type == EXFO_OSICS_T100_1550_TYPE_NAME){
+        minWavelength = EXFO_OSICS_T100_1550_MIN_WAV_NM;
+        maxWavelength = EXFO_OSICS_T100_1550_MAX_WAV_NM;
+    }
+    else if(t100Type == EXFO_OSICS_T100_1575_TYPE_NAME){
+        minWavelength = EXFO_OSICS_T100_1575_MIN_WAV_NM;
+        maxWavelength = EXFO_OSICS_T100_1575_MAX_WAV_NM;
+    }
+    else if(t100Type == EXFO_OSICS_T100_1620_TYPE_NAME){
+        minWavelength = EXFO_OSICS_T100_1620_MIN_WAV_NM;
+        maxWavelength = EXFO_OSICS_T100_1620_MAX_WAV_NM;
+    }
 
-
-    // #TODO TEST ONLY - REMOVE AFTER TESTING
-    minWavelength = EXFO_OSICS_T100_1310_MIN_WAV_NM;
-    maxWavelength = EXFO_OSICS_T100_1310_MAX_WAV_NM;
 }
 
 double EXFO_OSICS_T100::getT100MinWavelength(){

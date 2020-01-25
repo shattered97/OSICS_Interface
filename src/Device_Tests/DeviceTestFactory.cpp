@@ -9,7 +9,6 @@ DeviceTestFactory::DeviceTestFactory(QObject *parent) : QObject(parent)
 
 DeviceTest *DeviceTestFactory::makeDeviceTest(QString deviceTypeName, QList<QVariant> selectedDevices){
 
-    qDebug() << "22222222222 " << QThread::currentThread();
     qDebug() << deviceTypeName;
     if(deviceTypeName == EXFO_T100_ANDO_OSA_WAV_CYCLE_TEST){
         qDebug() << "device type was exfo_t100_and0_osa";

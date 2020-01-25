@@ -78,6 +78,8 @@ void EXFO_T100_PM_Power_Step_Test::runDeviceTest(){
     // construct filename
     QByteArray filename = constructOutputFilename();
     qDebug() << "constructed filename";
+
+    calculateNumberOfSteps();
     runTestLoop(filename, startPower, endPower, powerStep, wavelength);
     qDebug() << "finished running test loop";
 }
@@ -145,10 +147,13 @@ void EXFO_T100_PM_Power_Step_Test::runTestLoop(QByteArray filename, double start
         testData.append("\n");
 
         currentPow += powStep;
+        emit signalSendTestProgressToGUI(calculateProgress());
+        currentStep++;
     }
 
     // reset laser power to 0
     powerToSet = QByteArray::number(startPow);
+    t100->setModuleOutputPowerCmd(t100SlotNum, powerToSet);
 
     // shut off laser
     t100->disableModuleLaserCmd(t100SlotNum);
@@ -163,7 +168,7 @@ void EXFO_T100_PM_Power_Step_Test::runTestLoop(QByteArray filename, double start
 
 void EXFO_T100_PM_Power_Step_Test::writeTestDataToFile(QByteArray filename){
     if(testData.size() > 0){
-
+        qDebug() << filename;
         // init output file
         QFile file(filename);
         file.open(QIODevice::ReadWrite);
@@ -171,10 +176,23 @@ void EXFO_T100_PM_Power_Step_Test::writeTestDataToFile(QByteArray filename){
 
         for( auto e : testData ){
             stream << e;
+            qDebug() << testData;
         }
 
         file.close();
     }
+}
+
+void EXFO_T100_PM_Power_Step_Test::calculateNumberOfSteps(){
+    double powerRange = endPower - startPower;
+    numberOfSteps = (int) powerRange / powerStep;
+    qDebug() << "NUMBER OF STEPS CALCULATED: " << numberOfSteps;
+}
+
+double EXFO_T100_PM_Power_Step_Test::calculateProgress(){
+    double progress = 100 * currentStep / numberOfSteps;
+    qDebug() << "PROGRESS CALCULATED (" << currentStep << "/" << numberOfSteps << "): " << progress;
+    return progress;
 }
 
 void EXFO_T100_PM_Power_Step_Test::setStartPower(double startPower){

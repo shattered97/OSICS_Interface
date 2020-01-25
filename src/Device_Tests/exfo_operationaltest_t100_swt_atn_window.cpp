@@ -24,6 +24,7 @@ void EXFO_OperationalTest_T100_SWT_ATN_Window::showEvent(QShowEvent* event){
     qDebug() << "************************************************* " << resourcePath;
     ui->directionsImageLabel->setPixmap(QPixmap(resourcePath));
     ui->directionsTextField->setText(directions);
+    ui->progressBar->hide();
 //    ui->directionsTextField->show();
 }
 
@@ -40,7 +41,18 @@ void EXFO_OperationalTest_T100_SWT_ATN_Window::runTest(){
     msgBox = QMessageBox::question(this, "Confirm", "Confirm to continue with test.", QMessageBox::Yes | QMessageBox::No);
 
     if(msgBox == QMessageBox::Yes){
+        ui->progressBar->reset();
+        ui->progressBar->show();
+        QApplication::setOverrideCursor(Qt::WaitCursor);
+
         emit signalBeginNextTestStep();
+
+        QApplication::restoreOverrideCursor();
+
+        QMessageBox stepFinishedMsgBox;
+        stepFinishedMsgBox.setText("Test step completed. Click 'run' to start next step.");
+        stepFinishedMsgBox.exec();
+        ui->progressBar->hide();
 
         // get new image/directions
         QByteArray resourcePath = "";
@@ -49,13 +61,16 @@ void EXFO_OperationalTest_T100_SWT_ATN_Window::runTest(){
         ui->directionsImageLabel->setPixmap(QPixmap(resourcePath));
         ui->directionsTextField->setText(directions);
 
-        QMessageBox stepFinishedMsgBox;
-        stepFinishedMsgBox.setText("Test step completed. Click 'run' to start next step.");
-        stepFinishedMsgBox.exec();
+
 
         // disable button (re-enabled when signal is received the previous test has completed
     }
 }
+
+void EXFO_OperationalTest_T100_SWT_ATN_Window::slotReceiveTestProgressInGUI(double progressPercent){
+    ui->progressBar->setValue(progressPercent);
+}
+
 void EXFO_OperationalTest_T100_SWT_ATN_Window::on_runTestButton_clicked()
 {
 
