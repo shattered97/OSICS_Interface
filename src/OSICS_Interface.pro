@@ -94,6 +94,7 @@ HEADERS += \
         Device_Tests/exfo_t100_pm_power_step_test.h \
         Device_Tests/powermeterpollingworker.h \
         Device_Tests/snapshotgraphdialog.h \
+        Device_Tests/testconstansts.h \
         Device_Tests/wavstep_power_monitoring_file_worker.h \
         Device_Tests/wavstep_power_monitoring_graph_window.h \
         Device_Tests/wavstep_power_monitoring_test_window.h \

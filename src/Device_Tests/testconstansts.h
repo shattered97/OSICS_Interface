@@ -1,0 +1,4 @@
+#ifndef TESTCONSTANSTS_H
+#define TESTCONSTANSTS_H
+
+#endif // TESTCONSTANSTS_H
