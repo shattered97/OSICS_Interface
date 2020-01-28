@@ -148,7 +148,9 @@ void EXFO_OperationalTest_T100_SWT_ATN::slotGetCurrentStepDirections(QByteArray 
 void EXFO_OperationalTest_T100_SWT_ATN::runPowerStepTest(){
 
     // run it
-    t100PowerTest->setPowerMeterSlotNum(3);
+
+    // #TODO commented out for now due to change in the power meter step test
+//    t100PowerTest->setPowerMeterSlotNum(3);
     t100PowerTest->runDeviceTest();
     powerStepTestComplete = true;
 }

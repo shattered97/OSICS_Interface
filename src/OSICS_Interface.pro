@@ -44,18 +44,19 @@ DEFINES += QT_DEPRECATED_WARNINGS
 CONFIG += c++11
 
 SOURCES += \
-        Device_Tests/EXFO_T100_PM_Power_Step_Test_Window.cpp \
-        Device_Tests/EXFO_T100_SWT_PM_WM_Test.cpp \
-        Device_Tests/WavStepWithPowerMonitoringTest.cpp \
-        Device_Tests/exfo_operationaltest_t100_swt_atn.cpp \
-        Device_Tests/exfo_operationaltest_t100_swt_atn_window.cpp \
-        Device_Tests/exfo_t100_pm_power_step_test.cpp \
-        Device_Tests/powermeterpollingworker.cpp \
-        Device_Tests/snapshotgraphdialog.cpp \
-        Device_Tests/wavstep_power_monitoring_file_worker.cpp \
-        Device_Tests/wavstep_power_monitoring_graph_window.cpp \
-        Device_Tests/wavstep_power_monitoring_test_window.cpp \
-        Device_Tests/wavstep_power_monitoring_test_worker.cpp \
+        Device_Tests/EXFO_T100_PM_Power_Step_Test/EXFO_T100_PM_Power_Step_Test_Window.cpp \
+        Device_Tests/EXFO_T100_PM_Power_Step_Test/EXFO_T100_PM_Power_Step_Test_Worker.cpp \
+        Device_Tests/EXFO_T100_SWT_Power_Wav_Test/EXFO_T100_SWT_PM_WM_Test.cpp \
+        Device_Tests/Wav_Step_Test_With_Power_Monitoring_Graphing/WavStepWithPowerMonitoringTest.cpp \
+        Device_Tests/EXFO_Operational_Test/exfo_operationaltest_t100_swt_atn.cpp \
+        Device_Tests/EXFO_Operational_Test/exfo_operationaltest_t100_swt_atn_window.cpp \
+        Device_Tests/EXFO_T100_PM_Power_Step_Test/exfo_t100_pm_power_step_test.cpp \
+        Device_Tests/Wav_Step_Test_With_Power_Monitoring_Graphing/powermeterpollingworker.cpp \
+        Device_Tests/Wav_Step_Test_With_Power_Monitoring_Graphing/snapshotgraphdialog.cpp \
+        Device_Tests/Wav_Step_Test_With_Power_Monitoring_Graphing/wavstep_power_monitoring_file_worker.cpp \
+        Device_Tests/Wav_Step_Test_With_Power_Monitoring_Graphing/wavstep_power_monitoring_graph_window.cpp \
+        Device_Tests/Wav_Step_Test_With_Power_Monitoring_Graphing/wavstep_power_monitoring_test_window.cpp \
+        Device_Tests/Wav_Step_Test_With_Power_Monitoring_Graphing/wavstep_power_monitoring_test_worker.cpp \
         main.cpp \
         mainwindow.cpp \
         Device_Config_Windows/confign7714awindow.cpp \
@@ -66,10 +67,10 @@ SOURCES += \
         Device_Config_Windows/OSICSMainframeSetupWindow.cpp \
         Device_Tests/DeviceTest.cpp \
         Device_Tests/DeviceTestFactory.cpp \
-        Device_Tests/EXFO_T100_ATN_Power_Test.cpp \
-        Device_Tests/EXFO_T100_Bristol_Wavelength_Step_Test.cpp \
-        Device_Tests/EXFO_T100_SWT_OSA_WavelengthTest.cpp \
-        Device_Tests/OSA_Wavelength_Step_Test.cpp \
+        Device_Tests/EXFO_T100_ATN_Power_Test/EXFO_T100_ATN_Power_Test.cpp \
+        Device_Tests/EXFO_T100_Bristol_Wav_Step_Test/EXFO_T100_Bristol_Wavelength_Step_Test.cpp \
+        Device_Tests/OSA_Wav_Step_Test_With_SWT/EXFO_T100_SWT_OSA_WavelengthTest.cpp \
+        Device_Tests/OSA_Wav_Step_Test/OSA_Wavelength_Step_Test.cpp \
         shared/ConversionUtilities.cpp \
         shared/Logging.cpp \
         shared/Orchestrator.cpp \
@@ -89,17 +90,18 @@ SOURCES += \
 
 
 HEADERS += \
-        Device_Tests/EXFO_T100_PM_Power_Step_Test_Window.h \
-        Device_Tests/EXFO_T100_SWT_PM_WM_Test.h \
-        Device_Tests/exfo_operationaltest_t100_swt_atn.h \
-        Device_Tests/exfo_operationaltest_t100_swt_atn_window.h \
-        Device_Tests/exfo_t100_pm_power_step_test.h \
-        Device_Tests/powermeterpollingworker.h \
-        Device_Tests/snapshotgraphdialog.h \
-        Device_Tests/wavstep_power_monitoring_file_worker.h \
-        Device_Tests/wavstep_power_monitoring_graph_window.h \
-        Device_Tests/wavstep_power_monitoring_test_window.h \
-        Device_Tests/wavstep_power_monitoring_test_worker.h \
+        Device_Tests/EXFO_T100_PM_Power_Step_Test/EXFO_T100_PM_Power_Step_Test_Window.h \
+        Device_Tests/EXFO_T100_PM_Power_Step_Test/EXFO_T100_PM_Power_Step_Test_Worker.h \
+        Device_Tests/EXFO_T100_SWT_Power_Wav_Test/EXFO_T100_SWT_PM_WM_Test.h \
+        Device_Tests/EXFO_Operational_Test/exfo_operationaltest_t100_swt_atn.h \
+        Device_Tests/EXFO_Operational_Test/exfo_operationaltest_t100_swt_atn_window.h \
+        Device_Tests/EXFO_T100_PM_Power_Step_Test/exfo_t100_pm_power_step_test.h \
+        Device_Tests/Wav_Step_Test_With_Power_Monitoring_Graphing/powermeterpollingworker.h \
+        Device_Tests/Wav_Step_Test_With_Power_Monitoring_Graphing/snapshotgraphdialog.h \
+        Device_Tests/Wav_Step_Test_With_Power_Monitoring_Graphing/wavstep_power_monitoring_file_worker.h \
+        Device_Tests/Wav_Step_Test_With_Power_Monitoring_Graphing/wavstep_power_monitoring_graph_window.h \
+        Device_Tests/Wav_Step_Test_With_Power_Monitoring_Graphing/wavstep_power_monitoring_test_window.h \
+        Device_Tests/Wav_Step_Test_With_Power_Monitoring_Graphing/wavstep_power_monitoring_test_worker.h \
         mainwindow.h \
         Device_Config_Windows/confign7714awindow.h \
         Device_Config_Windows/ConfigOSICS_ATN.h \
@@ -109,11 +111,11 @@ HEADERS += \
         Device_Config_Windows/OSICSMainframeSetupWindow.h \
         Device_Tests/DeviceTest.h \
         Device_Tests/DeviceTestFactory.h \
-        Device_Tests/EXFO_T100_ATN_Power_Test.h \
-        Device_Tests/EXFO_T100_Bristol_Wavelength_Step_Test.h \
-        Device_Tests/EXFO_T100_SWT_OSA_WavelengthTest.h \
-        Device_Tests/OSA_Wavelength_Step_Test.h \
-        Device_Tests/WavStepWithPowerMonitoringTest.h \
+        Device_Tests/EXFO_T100_ATN_Power_Test/EXFO_T100_ATN_Power_Test.h \
+        Device_Tests/EXFO_T100_Bristol_Wav_Step_Test/EXFO_T100_Bristol_Wavelength_Step_Test.h \
+        Device_Tests/OSA_Wav_Step_Test_With_SWT/EXFO_T100_SWT_OSA_WavelengthTest.h \
+        Device_Tests/OSA_Wav_Step_Test/OSA_Wavelength_Step_Test.h \
+        Device_Tests/Wav_Step_Test_With_Power_Monitoring_Graphing/WavStepWithPowerMonitoringTest.h \
         shared/constants.h \
         shared/ConversionUtilities.h \
         shared/Logging.h \
@@ -134,11 +136,11 @@ HEADERS += \
 
 
 FORMS += \
-        Device_Tests/EXFO_T100_PM_Power_Step_Test_Window.ui \
-        Device_Tests/exfo_operationaltest_t100_swt_atn_window.ui \
-        Device_Tests/snapshotgraphdialog.ui \
-        Device_Tests/wavstep_power_monitoring_graph_window.ui \
-        Device_Tests/wavstep_power_monitoring_test_window.ui \
+        Device_Tests/EXFO_T100_PM_Power_Step_Test/EXFO_T100_PM_Power_Step_Test_Window.ui \
+        Device_Tests/EXFO_Operational_Test/exfo_operationaltest_t100_swt_atn_window.ui \
+        Device_Tests/Wav_Step_Test_With_Power_Monitoring_Graphing/snapshotgraphdialog.ui \
+        Device_Tests/Wav_Step_Test_With_Power_Monitoring_Graphing/wavstep_power_monitoring_graph_window.ui \
+        Device_Tests/Wav_Step_Test_With_Power_Monitoring_Graphing/wavstep_power_monitoring_test_window.ui \
         mainwindow.ui \
         Device_Config_windows/confign7714awindow.ui \
         Device_Config_windows/ConfigOSICS_ATN.ui \

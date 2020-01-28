@@ -9,6 +9,8 @@
 #include <QMessageBox>
 #include <QSettings>
 #include <QFileDialog>
+#include <QComboBox>
+#include <QVBoxLayout>
 
 namespace Ui {
 class EXFO_T100_PM_Power_Step_Test_Window;
@@ -97,6 +99,14 @@ private slots:
      */
     void on_startTestButton_clicked();
 
+    void on_showTestDescriptionButton_clicked();
+
+    void slotProcessPowerMeterChannelChange(int);
+
+    void slotTestComplete();
+
+    void slotReceiveTestProgress(double progressPercent);
+
 private:
     Ui::EXFO_T100_PM_Power_Step_Test_Window *ui;
 
@@ -105,17 +115,29 @@ private:
 
     bool isConfigured = false;
 
-    /**
-     * @brief populateT100SelectionComboBox Populates the T100 dropdown to contain one element per availalbe T100
-     * formatted in the following manner: "<T100 type>, Slot <x>".
-     */
-    void populateT100SelectionComboBox();
+    QList<QByteArray> t100DisplayNames;
 
-    /**
-     * @brief populatePowerMeterSlotComboBox Populates the dropdown for power meter slot selection with one element
-     * per the number of the available slots. E.g. If there are 4 slots the elements will be "1", "2", "3", "4".
-     */
-    void populatePowerMeterSlotComboBox();
+    QList<QLabel*> t100DisplayLabel;
+
+    QList<QComboBox*> powerMeterDropdowns;
+
+    QList<QString> availablePowerMeterChannels;
+
+    QList<QString> selectedPowerMeterChannels;
+
+    QList<QString> allPowerMeterChannelOptions;
+
+//    /**
+//     * @brief populateT100SelectionComboBox Populates the T100 dropdown to contain one element per availalbe T100
+//     * formatted in the following manner: "<T100 type>, Slot <x>".
+//     */
+//    void populateT100SelectionComboBox();
+
+//    /**
+//     * @brief populatePowerMeterSlotComboBox Populates the dropdown for power meter slot selection with one element
+//     * per the number of the available slots. E.g. If there are 4 slots the elements will be "1", "2", "3", "4".
+//     */
+//    void populatePowerMeterSlotComboBox();
 
     /**
      * @brief areAllFieldsCompleted Checks if all required test settings fields in the GUI have been set.  This check
@@ -150,6 +172,9 @@ private:
      */
     bool isInputValueNumeric(QByteArray inputValue);
 
+    void populateAvailableT100s();
+
+    void populatePowerMeterSlots();
 };
 
 #endif // EXFO_T100_PM_POWER_STEP_TEST_WINDOW_H

@@ -138,10 +138,13 @@ const QByteArray EXFO_T100_PM_POWER_STEP_TEST = "EXFO / T100 / Power Meter / Pow
 const QByteArray EXFO_OPERATIONAL_TEST_T100_SWT_ATN = "EXFO SWT / T100 / ATN / Operational Test";
 const QByteArray WAV_STEP_TEST_WITH_POWER_MONITORING_TEST = "Wavelength Step Test with Power Monitoring (EXFO T100)";
 
-const QByteArray TEST_TYPES[] = {N7714A_WAV_CYCLE_TEST, OSICS_WAV_CYCLE_TEST, EXFO_T100_ANDO_OSA_WAV_CYCLE_TEST,
-                                 EXFO_T100_SWT_WAV_STEP_OSA_POWER_TEST, EXFO_T100_BRISTOL_WAV_STEP_TEST,
-                                 EXFO_T100_ATN_POWER_TEST, EXFO_T100_SWT_PM_WM_TEST, EXFO_T100_PM_POWER_STEP_TEST,
-                                 EXFO_OPERATIONAL_TEST_T100_SWT_ATN, WAV_STEP_TEST_WITH_POWER_MONITORING_TEST};
+//const QByteArray TEST_TYPES[] = {N7714A_WAV_CYCLE_TEST, OSICS_WAV_CYCLE_TEST, EXFO_T100_ANDO_OSA_WAV_CYCLE_TEST,
+//                                 EXFO_T100_SWT_WAV_STEP_OSA_POWER_TEST, EXFO_T100_BRISTOL_WAV_STEP_TEST,
+//                                 EXFO_T100_ATN_POWER_TEST, EXFO_T100_SWT_PM_WM_TEST, EXFO_T100_PM_POWER_STEP_TEST,
+//                                 EXFO_OPERATIONAL_TEST_T100_SWT_ATN, WAV_STEP_TEST_WITH_POWER_MONITORING_TEST};
+const QByteArray TEST_TYPES[] = {EXFO_T100_BRISTOL_WAV_STEP_TEST,
+                                 EXFO_T100_PM_POWER_STEP_TEST,
+                                 WAV_STEP_TEST_WITH_POWER_MONITORING_TEST};
 
 
 // Wavelength Step Test With Power Monitoring Settings
@@ -290,8 +293,7 @@ const QByteArray T100_PM_POWER_STEP_TEST_END_POWER = "EXFO T100 and Power Meter 
 const QByteArray T100_PM_POWER_STEP_TEST_POWER_STEP = "EXFO T100 and Power Meter - Power Step Test Power Step Size";
 const QByteArray T100_PM_POWER_STEP_TEST_DWELL = "EXFO T100 and Power Meter - Power Step Test Dwell Time";
 const QByteArray T100_PM_POWER_STEP_TEST_WAVELENGTH = "EXFO T100 and Power Meter - Power Step Test Wavelength";
-const QByteArray T100_PM_POWER_STEP_TEST_T100_SLOT_NUM = "EXFO T100 and Power Meter - T100 Slot Number";
-const QByteArray T100_PM_POWER_STEP_TEST_PM_SLOT_NUM = "EXFO T100 and Power Meter - Power Meter Slot Number";
+const QByteArray T100_SLOT_NUM_TO_PM_SLOT_NUM_MAP = "EXFO T100 and Power Meter - T100 Slot To Power Meter Slot Map";
 
 // GUI Error Message Constants
 const QByteArray GUI_ERR_NON_NUMERIC_VALUE = "Value entered is invalid (non-numeric).";

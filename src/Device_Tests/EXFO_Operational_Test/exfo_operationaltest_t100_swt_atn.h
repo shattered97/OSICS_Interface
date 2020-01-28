@@ -2,10 +2,11 @@
 #define EXFO_OPERATIONALTEST_T100_SWT_ATN_H
 
 #include "DeviceTest.h"
-#include "EXFO_T100_SWT_PM_WM_Test.h"
-#include "EXFO_T100_ATN_Power_Test.h"
-#include "exfo_t100_pm_power_step_test.h"
-#include "EXFO_T100_Bristol_Wavelength_Step_Test.h"
+#include "EXFO_T100_SWT_Power_Wav_Test/EXFO_T100_SWT_PM_WM_Test.h"
+#include "EXFO_T100_ATN_Power_Test/EXFO_T100_ATN_Power_Test.h"
+#include "EXFO_T100_SWT_Power_Wav_Test/EXFO_T100_SWT_PM_WM_Test.h"
+#include "EXFO_T100_PM_Power_Step_Test/exfo_t100_pm_power_step_test.h"
+#include "EXFO_T100_Bristol_Wav_Step_Test/EXFO_T100_Bristol_Wavelength_Step_Test.h"
 #include "constants.h"
 
 class EXFO_OperationalTest_T100_SWT_ATN : public DeviceTest

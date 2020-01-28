@@ -3,6 +3,7 @@
 
 #include "DeviceTest.h"
 #include "EXFO_OSICS/EXFO_OSICS_T100.h"
+#include "EXFO_T100_PM_Power_Step_Test_Worker.h"
 #include "PowerMeter.h"
 
 class EXFO_T100_PM_Power_Step_Test : public DeviceTest
@@ -34,7 +35,7 @@ public:
      * @param dwell Amount of time to wait after setting the power and before reading the power.
      */
     void runTestLoop(QByteArray filename, double startPow, double endPow, double powStep, double wavelength,
-                     double dwell);
+                     double dwell, QMap<int, int> t100SlotNumToPMSlotNumMap);
 
     /**
      * @brief calculateNumberOfSteps Calculates the total number of steps that the test must take.
@@ -76,12 +77,12 @@ public:
      */
     void setWavelength(double wavelength);
 
-    /**
-     * @brief setPowerMeterSlotNum Sets the power meter slot number. Used by other tests (see operational test)
-     * that execute this test as part of a sequence.
-     * @param slotNum Slot Number to set.
-     */
-    void setPowerMeterSlotNum(int slotNum);
+//    /**
+//     * @brief setPowerMeterSlotNum Sets the power meter slot number. Used by other tests (see operational test)
+//     * that execute this test as part of a sequence.
+//     * @param slotNum Slot Number to set.
+//     */
+//    void setPowerMeterSlotNum(int slotNum);
 
 signals:
 
@@ -91,6 +92,10 @@ signals:
      * @param progressPercent Test progress percentage
      */
     void signalSendTestProgressToGUI(double progressPercent);
+
+    void signalTestComplete();
+
+    void signalGUIProcessEvents();
 
 public slots:
 
@@ -120,8 +125,7 @@ private:
     QList<EXFO_OSICS_T100*> availableT100s;
     EXFO_OSICS_T100* selectedT100 = nullptr;
     PowerMeter *powerMeter = nullptr;
-    int t100SlotNum = 0;
-    int powerMeterSlotNum = 0;
+    QMap<int, int> t100SlotNumToPMSlotNumMap;
 
     // used to get test params from window
     QSettings *settings = nullptr;
@@ -141,6 +145,10 @@ private:
     QList<QString> testData;
     QByteArray outputFilename;
 
+    // multithreading variables
+    QThread *workerThread;
+    EXFO_T100_PM_Power_Step_Test_Worker *worker;
+
     /**
      * @brief constructOutputFilename Creates an output filename for the test data based on the type of
      * module being tested and the current timestamp
@@ -159,6 +167,9 @@ private:
      * and stores it in member vars.
      */
     void getTestValuesFromSettings();
+
+    EXFO_OSICS_T100* getT100BySlotNum(int slotNum);
+
 };
 
 #endif // EXFO_T100_PM_POWER_STEP_TEST_H

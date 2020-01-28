@@ -119,3 +119,9 @@ void EXFO_OperationalTest_T100_SWT_ATN_Window::on_skipStepButton_clicked()
         }
     }
 }
+
+void EXFO_OperationalTest_T100_SWT_ATN_Window::slotGUIProcessEvents()
+{
+    qDebug() << "telling the GUI to process events";
+    QCoreApplication::processEvents();
+}

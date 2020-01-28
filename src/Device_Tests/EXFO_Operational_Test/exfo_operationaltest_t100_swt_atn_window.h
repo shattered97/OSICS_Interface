@@ -30,6 +30,7 @@ signals:
 public slots:
     void slotTestingComplete();
     void slotReceiveTestProgressInGUI(double progressPercent);
+    void slotGUIProcessEvents();
 
 private slots:
 
