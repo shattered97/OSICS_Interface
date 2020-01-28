@@ -66,8 +66,16 @@ void EXFO_OperationalTest_T100_SWT_ATN::initializeDirectionsTextList(){
 
 bool EXFO_OperationalTest_T100_SWT_ATN::areDevicesValidForTest(){
     // check the device validity for each test
-    return(switchTest->areDevicesValidForTest() && attenuatorTest->areDevicesValidForTest()&&
-           t100WavTest->areDevicesValidForTest() && t100PowerTest->areDevicesValidForTest());
+
+    // *************** TEMP Change for Mark's Testing *************************************
+
+
+
+    switchTest->areDevicesValidForTest();
+    attenuatorTest->areDevicesValidForTest();
+    t100WavTest->areDevicesValidForTest();
+    t100PowerTest->areDevicesValidForTest();
+    return true;
 }
 
 void EXFO_OperationalTest_T100_SWT_ATN::slotSkipTestStep(){

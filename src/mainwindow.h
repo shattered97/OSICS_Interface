@@ -40,6 +40,8 @@ private slots:
 
     void on_devicetypeComboBox_currentIndexChanged(int index);
 
+    void on_pbConfTest_clicked();
+
 signals:
 
     void signalDeviceTypeSelected(QByteArray deviceType);

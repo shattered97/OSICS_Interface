@@ -2,3 +2,5 @@
 #define TESTCONSTANSTS_H
 
 #endif // TESTCONSTANSTS_H
+
+static const int BRISTOL_DELAY_SEC = 10;

@@ -245,3 +245,8 @@ void MainWindow::on_devicetypeComboBox_currentIndexChanged(int index)
     // clear the contents of the list widget
     ui->foundDevicesListWidget->clear();
 }
+
+void MainWindow::on_pbConfTest_clicked()
+{
+
+}

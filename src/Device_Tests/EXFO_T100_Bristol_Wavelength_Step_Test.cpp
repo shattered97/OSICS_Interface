@@ -1,4 +1,5 @@
 #include "EXFO_T100_Bristol_Wavelength_Step_Test.h"
+#include "testconstansts.h"
 #include <QTime>
 EXFO_T100_Bristol_Wavelength_Step_Test::EXFO_T100_Bristol_Wavelength_Step_Test(QList<QVariant> &selectedDevices, QMainWindow &configWindow) :
     DeviceTest (selectedDevices, configWindow)
@@ -80,15 +81,18 @@ QByteArray EXFO_T100_Bristol_Wavelength_Step_Test::constructOutputFilename(){
     QByteArray identityInfo = t100->identificationModuleQuery(t100SlotNum);
 
     // the serial number is the third item when comma-separated, the module type is the second item
+    QByteArray moduleBand = t100->getT100BandNumber();
     QByteArray serialNumber = identityInfo.split(',')[2];
     QByteArray moduleType = identityInfo.split(',')[1];
     QByteArray testName = "Bristol_Wavemeter_wavelength_step";
     QByteArray timestamp = QDateTime::currentDateTime().toString("ddMMyyyy-hhmmss").toLatin1();
 
-    QStringList filenameElements = {serialNumber, moduleType, testName, timestamp};
+    QStringList filenameElements = {moduleBand, serialNumber, moduleType, testName, timestamp};
     QByteArray filename = filenameElements.join('_').toLatin1();
     QByteArray extension = ".csv";
     filename.append(extension);
+
+    qDebug() << "FILENAME CONSTRUCTED: " << filename;
 
     return filename;
 
@@ -138,7 +142,7 @@ void EXFO_T100_Bristol_Wavelength_Step_Test::runTestLoopWithPowerMeter(QByteArra
     t100->setModuleOutputPowerCmd(t100SlotNum, powerToSet);
 
     // wait for values to adjust
-    QTime timer = QTime::currentTime().addSecs(12);
+    QTime timer = QTime::currentTime().addSecs(BRISTOL_DELAY_SEC);
     while(QTime::currentTime() < timer){
         // do nothing
     }
@@ -154,7 +158,7 @@ void EXFO_T100_Bristol_Wavelength_Step_Test::runTestLoopWithPowerMeter(QByteArra
         powerMeter->setWavelength(powerMeterSlotNum, wavelengthToSet, wavUnit);
 
        // wait for wavelength to adjust
-        QTime timer = QTime::currentTime().addSecs(12);
+        QTime timer = QTime::currentTime().addSecs(BRISTOL_DELAY_SEC);
         while(QTime::currentTime() < timer){
             // do nothing
         }
@@ -197,8 +201,8 @@ void EXFO_T100_Bristol_Wavelength_Step_Test::runTestLoopBristolOnly(QByteArray f
 {
     // add .csv header
     testData.append("T100 WAVELENGTH,");
-    testData.append("T100 POWER,");
     testData.append("BRISTOL WAVELENGTH,");
+    testData.append("T100 POWER,");
     testData.append("BRISTOL POWER\n");
 
     //set starting wavelength (t100)
@@ -214,7 +218,7 @@ void EXFO_T100_Bristol_Wavelength_Step_Test::runTestLoopBristolOnly(QByteArray f
     t100->setModuleOutputPowerCmd(t100SlotNum, powerToSet);
 
     // wait for values to adjust
-    QTime timer = QTime::currentTime().addSecs(12);
+    QTime timer = QTime::currentTime().addSecs(BRISTOL_DELAY_SEC);
     while(QTime::currentTime() < timer){
         // do nothing
     }
@@ -227,7 +231,7 @@ void EXFO_T100_Bristol_Wavelength_Step_Test::runTestLoopBristolOnly(QByteArray f
         t100->setRefWavelengthModuleCmd(t100SlotNum, wavelengthToSet);
 
         // wait for wavelength to adjust
-        QTime timer = QTime::currentTime().addSecs(12);
+        QTime timer = QTime::currentTime().addSecs(BRISTOL_DELAY_SEC);
         while(QTime::currentTime() < timer){
             // do nothing
         }
@@ -236,13 +240,13 @@ void EXFO_T100_Bristol_Wavelength_Step_Test::runTestLoopBristolOnly(QByteArray f
         QByteArray t100Wavelength = t100->refWavelengthModuleQuery(t100SlotNum);
         testData.append(QByteArray::number(t100Wavelength.split('=')[1].toDouble()).append(','));
 
-        // get output power of t100
-        QByteArray t100Power = t100->outputPowerModuleQuery(t100SlotNum);
-        testData.append(QByteArray::number(t100Power.split('=')[1].toDouble()).append(','));
-
         // get wavelength reported by wavemeter
         QByteArray bristolWavelength = bristol->measureWavelengthSingle();
         testData.append(bristolWavelength.trimmed().append(','));
+
+        // get output power of t100
+        QByteArray t100Power = t100->outputPowerModuleQuery(t100SlotNum);
+        testData.append(QByteArray::number(t100Power.split('=')[1].toDouble()).append(','));
 
         // get power reported by wavemeter
         QByteArray bristolPower = bristol->measurePowerSingle();

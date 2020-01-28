@@ -60,15 +60,18 @@ QByteArray EXFO_T100_PM_Power_Step_Test::constructOutputFilename(){
     QByteArray identityInfo = t100->identificationModuleQuery(t100SlotNum);
     qDebug() << identityInfo;
     // the serial number is the third item when comma-separated, the module type is the second item
+    QByteArray moduleBand = t100->getT100BandNumber();
     QByteArray serialNumber = identityInfo.split(',')[2];
     QByteArray moduleType = identityInfo.split(',')[1];
     QByteArray testName = "power_step";
     QByteArray timestamp = QDateTime::currentDateTime().toString("ddMMyyyy-hhmmss").toLatin1();
 
-    QStringList filenameElements = {serialNumber, moduleType, testName, timestamp};
+    QStringList filenameElements = {moduleBand, serialNumber, moduleType, testName, timestamp};
     QByteArray filename = filenameElements.join('_').toLatin1();
     QByteArray extension = ".csv";
     filename.append(extension);
+
+    qDebug() << "FILENAME CONSTRUCTED: " << filename;
 
     return filename;
 }

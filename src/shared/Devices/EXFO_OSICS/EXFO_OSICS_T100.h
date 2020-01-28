@@ -154,6 +154,7 @@ public:
      */
     QByteArray outBNCPortSignalMonitoringQuery(int slotNum);
 
+    QByteArray getT100BandNumber();
 
 // *********** Functions for Applying/Updating Config Settings **********
 
@@ -181,6 +182,7 @@ private:
 
     QByteArray minWavelength;
     QByteArray maxWavelength;
+    QByteArray t100BandNumber;
 
     QByteArray response = "";
 };

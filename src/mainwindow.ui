@@ -35,8 +35,8 @@
    <widget class="QLabel" name="powerStatusIndicator">
     <property name="geometry">
      <rect>
-      <x>590</x>
-      <y>10</y>
+      <x>960</x>
+      <y>0</y>
       <width>55</width>
       <height>51</height>
      </rect>
@@ -52,7 +52,7 @@
     <property name="geometry">
      <rect>
       <x>780</x>
-      <y>120</y>
+      <y>40</y>
       <width>121</width>
       <height>41</height>
      </rect>
@@ -73,9 +73,9 @@
     <property name="geometry">
      <rect>
       <x>30</x>
-      <y>160</y>
+      <y>80</y>
       <width>751</width>
-      <height>221</height>
+      <height>181</height>
      </rect>
     </property>
     <property name="font">
@@ -91,7 +91,7 @@
     <property name="geometry">
      <rect>
       <x>480</x>
-      <y>380</y>
+      <y>260</y>
       <width>301</width>
       <height>41</height>
      </rect>
@@ -113,9 +113,9 @@
     <property name="geometry">
      <rect>
       <x>30</x>
-      <y>440</y>
+      <y>350</y>
       <width>751</width>
-      <height>221</height>
+      <height>141</height>
      </rect>
     </property>
     <property name="font">
@@ -128,7 +128,7 @@
     <property name="geometry">
      <rect>
       <x>30</x>
-      <y>410</y>
+      <y>320</y>
       <width>391</width>
       <height>31</height>
      </rect>
@@ -139,7 +139,7 @@
      </font>
     </property>
     <property name="text">
-     <string>Selected Devices</string>
+     <string>Selected Devices for the Test</string>
     </property>
    </widget>
    <widget class="QPushButton" name="startTestPushButton">
@@ -149,7 +149,7 @@
     <property name="geometry">
      <rect>
       <x>790</x>
-      <y>560</y>
+      <y>510</y>
       <width>221</width>
       <height>101</height>
      </rect>
@@ -167,7 +167,7 @@
     <property name="geometry">
      <rect>
       <x>30</x>
-      <y>10</y>
+      <y>540</y>
       <width>461</width>
       <height>31</height>
      </rect>
@@ -178,14 +178,14 @@
      </font>
     </property>
     <property name="text">
-     <string>Select Test Type:</string>
+     <string>Step 3:  Select Test to run</string>
     </property>
    </widget>
    <widget class="QComboBox" name="testTypeComboBox">
     <property name="geometry">
      <rect>
       <x>30</x>
-      <y>40</y>
+      <y>570</y>
       <width>751</width>
       <height>41</height>
      </rect>
@@ -196,29 +196,11 @@
      </font>
     </property>
    </widget>
-   <widget class="QLabel" name="label_8">
-    <property name="geometry">
-     <rect>
-      <x>30</x>
-      <y>90</y>
-      <width>181</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>14</pointsize>
-     </font>
-    </property>
-    <property name="text">
-     <string>Device Type:</string>
-    </property>
-   </widget>
    <widget class="QComboBox" name="devicetypeComboBox">
     <property name="geometry">
      <rect>
       <x>30</x>
-      <y>120</y>
+      <y>40</y>
       <width>751</width>
       <height>41</height>
      </rect>
@@ -236,7 +218,7 @@
     <property name="geometry">
      <rect>
       <x>480</x>
-      <y>660</y>
+      <y>490</y>
       <width>301</width>
       <height>41</height>
      </rect>
@@ -248,6 +230,42 @@
     </property>
     <property name="text">
      <string>Clear List</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label">
+    <property name="geometry">
+     <rect>
+      <x>30</x>
+      <y>10</y>
+      <width>401</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>14</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>Step 1:  Search for the Devices needed for the test</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_2">
+    <property name="geometry">
+     <rect>
+      <x>30</x>
+      <y>270</y>
+      <width>361</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>14</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>Step 2: Add Selected Device</string>
     </property>
    </widget>
   </widget>

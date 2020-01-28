@@ -34,6 +34,13 @@ void EXFO_OSICS_T100::setT100MinMaxWavelengths(QByteArray t100Type){
         maxWavelength = EXFO_OSICS_T100_1620_MAX_WAV_NM;
     }
 
+    // parse band number
+    t100BandNumber = t100Type.split('/')[1].trimmed();
+
+}
+
+QByteArray EXFO_OSICS_T100::getT100BandNumber(){
+    return t100BandNumber;
 }
 
 double EXFO_OSICS_T100::getT100MinWavelength(){

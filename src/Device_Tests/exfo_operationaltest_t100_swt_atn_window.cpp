@@ -21,7 +21,6 @@ void EXFO_OperationalTest_T100_SWT_ATN_Window::showEvent(QShowEvent* event){
     QByteArray directions = "";
     QByteArray resourcePath = "";
     emit signalGetCurrentStepDirections(resourcePath, directions);
-    qDebug() << "************************************************* " << resourcePath;
     ui->directionsImageLabel->setPixmap(QPixmap(resourcePath));
     ui->directionsTextField->setText(directions);
     ui->progressBar->hide();
